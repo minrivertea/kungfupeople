@@ -13,10 +13,10 @@ THUMBNAIL_SUBDIR = '_thumbs'
 FORCE_LOWERCASE_TAGS = True
 
 AUTH_PROFILE_MODULE = 'djangopeople.DjangoPerson'
-RECOVERY_EMAIL_FROM = 'simon@simonwillison.net'
+RECOVERY_EMAIL_FROM = 'chris@fry-it.com'
 
 ADMINS = (
-    ('Simon Willison', 'simon@simonwillison.net'),
+    ('Chris West', 'chris@fry-it.com'),
 )
 
 MANAGERS = ADMINS
