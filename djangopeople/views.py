@@ -9,6 +9,7 @@ from forms import SignupForm, PhotoUploadForm, PortfolioForm, \
     BioForm, LocationForm, FindingForm, AccountForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
+from django.db import transaction
 import os, md5, datetime
 from PIL import Image
 from cStringIO import StringIO
@@ -118,6 +119,7 @@ def lost_password_recover(request, username, days, hash):
             'message': 'That was not a valid account recovery link'
         })
 
+@transaction.commit_on_success
 def signup(request):
     if not request.user.is_anonymous():
         return HttpResponseRedirect('/')
@@ -156,6 +158,10 @@ def signup(request):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
+            
+            # make sure they get one of those new passwords
+            user.set_password(creation_args['password'])
+            user.save()
             
             # Log them in and redirect to their profile page
             # HACK! http://groups.google.com/group/django-users/
