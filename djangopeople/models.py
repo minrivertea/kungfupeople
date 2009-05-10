@@ -136,18 +136,23 @@ class Region(models.Model):
     class Admin:
         pass
 
-#class ClubMember(models.Model):
-#    club = models.ForeignKey(Club)
- #   person = models.ForeignKey(KungfuPerson)
-    
+class Club(models.Model):
+    name = models.CharField(max_length = 200)
+    url = models.URLField()
 
+class ClubMember(models.Model):
+    club = models.ForeignKey(Club)
+    person = models.ForeignKey(KungfuPerson)
+    
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
     style =models.CharField(max_length = 200)
     personal_url = models.URLField()
-    #club = models.ForeignKey(Club)
-    #club_membership = models.ManyToManyField(Club)
+    club_membership = models.ManyToManyField(Club)
+
+
+#ass
     
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
