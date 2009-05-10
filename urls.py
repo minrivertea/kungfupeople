@@ -24,6 +24,8 @@ urlpatterns = patterns('',
         'redirect_to': '/openid/complete/',    
     }),
 
+    (r'^guess-club-name.json$', views.guess_club_name_json),
+
     (r'^search/$', views.search),
     
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {

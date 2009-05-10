@@ -13,11 +13,17 @@ from django.db import transaction
 import os, md5, datetime
 from PIL import Image
 from cStringIO import StringIO
+from django.utils import simplejson
 
 def render(request, template, context_dict=None):
     return render_to_response(
         template, context_dict or {}, context_instance=RequestContext(request)
     )
+
+def render_json(data):
+    return HttpResponse(simplejson.dumps(data),
+                        mimetype='application/javascript')
+    
 
 @utils.simple_decorator
 def must_be_owner(view):
@@ -397,3 +403,15 @@ def search(request):
     else:
         return render(request, 'search.html')
 
+
+
+def guess_club_name_json(request):
+    club_url = request.GET.get('club_url')
+    if not club_url:
+        return render_json(dict(error="no url"))
+        
+    data = {}
+    # XXX TODO
+    #data = {'club_name': 'Fujian White Crane'}
+
+    return render_json(data)

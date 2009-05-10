@@ -1,13 +1,40 @@
 """
 testing views
 """
+from django.utils import simplejson
 
 from django.test import TestCase
-from models import KungfuPerson
+from djangopeople.models import KungfuPerson, Club
 
-import views
+from djangopeople import views
 
 class SimpleTest(TestCase):
-    def test_test(self):
-        """x
-        """
+    def test_signup(self):
+        """Test signup"""
+        
+        response = self.client.get('/guess-club-name.json?club_url=')
+        assert response.status_code==200
+        result = simplejson.loads(response.content)
+        self.assertTrue('error' in result)
+        self.assertTrue('club_name' not in result)
+        
+        # add a club
+        Club.objects.create(name=u"Fujian White Crane",
+                            url=u"http://www.fwckungfu.com")
+        
+        # spelling it without http
+        response = self.client.get('/guess-club-name.json?club_url=www.fwckungfu.com')
+        assert response.status_code==200
+        result = simplejson.loads(response.content)
+        self.assertTrue('error' not in result)
+        self.assertTrue('club_name' in result)
+        
+        # spelling it without http
+        response = self.client.get('/guess-club-name.json?club_url=www.fwckungfu.com')
+        assert response.status_code==200
+        result = simplejson.loads(response.content)
+        self.assertTrue('error' not in result)
+        self.assertTrue('club_name' in result)
+        
+        
+        
