@@ -12,7 +12,7 @@ THUMBNAIL_SUBDIR = '_thumbs'
 # Tagging settings
 FORCE_LOWERCASE_TAGS = True
 
-AUTH_PROFILE_MODULE = 'djangopeople.DjangoPerson'
+AUTH_PROFILE_MODULE = 'djangopeople.KungfuPerson'
 RECOVERY_EMAIL_FROM = 'chris@fry-it.com'
 
 ADMINS = (

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -137,13 +139,14 @@ class Region(models.Model):
         pass
 
 class Club(models.Model):
-    name = models.CharField(max_length = 200)
+    name = models.CharField(max_length=200)
     url = models.URLField()
+    add_date = models.DateField('date added', default=datetime.now)
     
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
-    style =models.CharField(max_length = 200)
+    style =models.CharField(max_length=200)
     personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
 

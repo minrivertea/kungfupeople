@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region
+from models import KungfuPerson, Country, User, Region, Club
 import utils
 from forms import SignupForm, PhotoUploadForm, \
     BioForm, LocationForm, FindingForm, AccountForm
@@ -13,11 +13,17 @@ from django.db import transaction
 import os, md5, datetime
 from PIL import Image
 from cStringIO import StringIO
+from django.utils import simplejson
 
 def render(request, template, context_dict=None):
     return render_to_response(
         template, context_dict or {}, context_instance=RequestContext(request)
     )
+
+def render_json(data):
+    return HttpResponse(simplejson.dumps(data),
+                        mimetype='application/javascript')
+    
 
 @utils.simple_decorator
 def must_be_owner(view):
@@ -398,3 +404,23 @@ def search(request):
     else:
         return render(request, 'search.html')
 
+
+
+def guess_club_name_json(request):
+    club_url = request.GET.get('club_url')
+    if not club_url:
+        return render_json(dict(error="no url"))
+
+    club_url = club_url.strip()
+    from urlparse import urlparse
+    if not club_url.startswith('http'):
+        club_url = 'http://' + club_url
+        
+    domain = urlparse(club_url)[1]
+    data = {}
+    
+    for club in Club.objects.filter(url__icontains=domain).order_by('-add_date'):
+        data = {'club_name': club.name}
+        break
+
+    return render_json(data)

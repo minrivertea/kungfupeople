@@ -52,6 +52,8 @@ function hasRegions(country_name) {
     return $('select#id_region optgroup[label="' + country_name + '"]').length;
 }
 
+
+
 jQuery(function($) {
     // Set up the select country thing to show flags    
     $('select#id_country').change(function() {
@@ -117,4 +119,17 @@ jQuery(function($) {
     } else {
         gmap.setCenter(new google.maps.LatLng(INITIAL_LAT, INITIAL_LON), 3);
     }
+   
+   
+   // When you fill in the club_url, prefill the club name if possible
+   $('#id_club_url').change(function() {
+      var club_url = $(this).val();
+      if ($.trim(club_url)) {
+         jQuery.getJSON('/guess-club-name.json', {club_url:club_url}, function(res) {
+            if (res && res.club_name)
+              jQuery('#id_club_name').val(res.club_name);
+         });
+      }
+   });
+   
 });
