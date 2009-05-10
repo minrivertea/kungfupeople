@@ -9,7 +9,7 @@ from djangopeople.models import KungfuPerson, Club
 from djangopeople import views
 
 class SimpleTest(TestCase):
-    def test_signup(self):
+    def test_guess_club_name(self):
         """Test signup"""
         
         response = self.client.get('/guess-club-name.json?club_url=')
@@ -42,6 +42,12 @@ class SimpleTest(TestCase):
         result = simplejson.loads(response.content)
         self.assertTrue('error' not in result)
         self.assertEqual(result['club_name'], u"Fujian White Crane")
+        
+    
+    def test_signup(self):
+        """test posting to signup"""
+        
+        assert False, "Work harder!"
         
         
         
