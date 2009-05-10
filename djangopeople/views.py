@@ -34,6 +34,7 @@ def index(request):
         'recent_people': recent_people,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),
+        'total_chris': User.objects.filter(first_name__startswith='Chris').count(),
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'countries': Country.objects.top_countries(),
     })

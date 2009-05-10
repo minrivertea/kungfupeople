@@ -54,6 +54,7 @@ window.onload = function() {
 {% endblock %}
 
 {% block content %}
+    <p class="mapnote">Chris count today = {{ total_chris }}</p>
     <p class="mapnote">Showing {{ recent_people|length }} recent signups (out of {{ total_people }}){% if user.is_anonymous %} - if you're a kung fu stylist, why not <a href="/signup/">add yourself</a> to the site?{% endif %}</p>
         <h2 class="tagline">Discover other martial artists around the world</h2>
         <!-- <ul class="detailsList split">
