@@ -31,9 +31,9 @@ class CountryManager(models.Manager):
             SELECT
                 djangopeople_country.id, count(*) AS peoplecount
             FROM
-                djangopeople_djangoperson, djangopeople_country
+                djangopeople_kungfuperson, djangopeople_country
             WHERE
-                djangopeople_country.id = djangopeople_djangoperson.country_id
+                djangopeople_country.id = djangopeople_kungfuperson.country_id
             GROUP BY country_id
             ORDER BY peoplecount DESC
         """)
@@ -82,12 +82,12 @@ class Country(models.Model):
             SELECT
                 djangopeople_region.id, count(*) AS peoplecount
             FROM
-                djangopeople_djangoperson, djangopeople_region
+                djangopeople_kungfuperson, djangopeople_region
             WHERE
-                djangopeople_region.id = djangopeople_djangoperson.region_id
+                djangopeople_region.id = djangopeople_kungfuperson.region_id
             AND
                 djangopeople_region.country_id = %d
-            GROUP BY djangopeople_djangoperson.region_id
+            GROUP BY djangopeople_kungfuperson.region_id
             ORDER BY peoplecount DESC
         """ % self.id)
         rows = cursor.fetchall()
@@ -136,13 +136,18 @@ class Region(models.Model):
     class Admin:
         pass
 
-class DjangoPerson(models.Model):
+#class ClubMember(models.Model):
+#    club = models.ForeignKey(Club)
+ #   person = models.ForeignKey(KungfuPerson)
+    
+
+class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
     style =models.CharField(max_length = 200)
     personal_url = models.URLField()
-    club_url = models.URLField()
-    
+    #club = models.ForeignKey(Club)
+    #club_membership = models.ManyToManyField(Club)
     
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
@@ -161,10 +166,10 @@ class DjangoPerson(models.Model):
         "Returns the nearest X people, but only within the same continent"
         # TODO: Add caching
         
-        people = list(self.country.djangoperson_set.select_related().exclude(pk=self.id))
+        people = list(self.country.kungfuperson_set.select_related().exclude(pk=self.id))
         if len(people) <= num:
             # Not enough in country; use people from the same continent instead
-            people = list(DjangoPerson.objects.filter(
+            people = list(KungfuPerson.objects.filter(
                 country__continent = self.country.continent,
             ).exclude(pk=self.id).select_related())
 
@@ -203,30 +208,19 @@ class DjangoPerson(models.Model):
     
     def save(self, force_insert=False, force_update=False): # TODO: Put in transaction
         # Update country and region counters
-        super(DjangoPerson, self).save(force_insert=force_insert, force_update=force_update)
-        self.country.num_people = self.country.djangoperson_set.count()
+        super(KungfuPerson, self).save(force_insert=force_insert, force_update=force_update)
+        self.country.num_people = self.country.kungfuperson_set.count()
         self.country.save()
         if self.region:
-            self.region.num_people = self.region.djangoperson_set.count()
+            self.region.num_people = self.region.kungfuperson_set.count()
             self.region.save()
     
     class Meta:
-        verbose_name_plural = 'Django people'
+        verbose_name_plural = 'Kung fu people'
 
     class Admin:
         list_display = ('user', 'profile_views')
 
-
-class PortfolioSite(models.Model):
-    title = models.CharField(max_length=100)
-    url = models.URLField(max_length=255)
-    contributor = models.ForeignKey(DjangoPerson)
-    
-    def __unicode__(self):
-        return '%s <%s>' % (self.title, self.url)
-    
-    class Admin:
-        pass
 
 class CountrySite(models.Model):
     "Community sites for various countries"

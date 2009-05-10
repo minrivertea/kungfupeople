@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
-from models import DjangoPerson, Country, Region, User, RESERVED_USERNAMES
+from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
 
@@ -74,11 +74,12 @@ class SignupForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput, required=False)
     password2 = forms.CharField(widget=forms.PasswordInput, required=False)
     
-    # Fields for creating a DjangoPerson profile
+    # Fields for creating a KungfuPerson profile
     bio = forms.CharField(widget=forms.Textarea, required=False)
     style = forms.CharField(max_length=200, required=False)
     personal_url = forms.URLField(required=False)
     club_url = forms.URLField(required=False)
+    club_name = forms.CharField(required=False)
     
     country = forms.ChoiceField(choices = [('', '')] + [
         (c.iso_code, c.name) for c in Country.objects.all()
@@ -278,60 +279,10 @@ class FindingForm(forms.Form):
         email = self.cleaned_data['email']
         if User.objects.filter(
             email = email
-        ).exclude(djangoperson = self.person).count() > 0:
+        ).exclude(KungfuPerson = self.person).count() > 0:
             raise forms.ValidationError('That e-mail is already in use')
         return email
 
-class PortfolioForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        # Dynamically add the fields for IM providers / external services
-        assert 'person' in kwargs, 'person is a required keyword argument'
-        person = kwargs.pop('person')
-        super(PortfolioForm, self).__init__(*args, **kwargs)
-        self.portfolio_fields = []
-        initial_data = {}
-        num = 1
-        for site in person.portfoliosite_set.all():
-            url_field = forms.URLField(
-                max_length=255, required=False, label='URL %d' % num
-            )
-            title_field = forms.CharField(
-                max_length=100, required=False, label='Title %d' % num
-            )
-            self.fields['title_%d' % num] = title_field
-            self.fields['url_%d' % num] = url_field
-            self.portfolio_fields.append({
-                'title_field': BoundField(self, title_field, 'title_%d' % num),
-                'url_field': BoundField(self, url_field, 'url_%d' % num),
-                'title_id': 'id_title_%d' % num,
-                'url_id': 'id_url_%d' % num,
-            })
-            initial_data['title_%d' % num] = site.title
-            initial_data['url_%d' % num] = site.url
-            num += 1
-        
-        # Add some more empty ones
-        for i in range(num, num + 3):
-            url_field = forms.URLField(
-                max_length=255, required=False, label='URL %d' % i
-            )
-            title_field = forms.CharField(
-                max_length=100, required=False, label='Title %d' % i
-            )
-            self.fields['title_%d' % i] = title_field
-            self.fields['url_%d' % i] = url_field
-            self.portfolio_fields.append({
-                'title_field': BoundField(self, title_field, 'title_%d' % i),
-                'url_field': BoundField(self, url_field, 'url_%d' % i),
-                'title_id': 'id_title_%d' % i,
-                'url_id': 'id_url_%d' % i,
-            })
-        
-        self.initial = initial_data
-        
-        # Add custom validator for each url field
-        for key in [k for k in self.fields if k.startswith('url_')]:
-            setattr(self, 'clean_%s' % key, make_validator(key, self))
 
 def make_validator(key, form):
     def check():

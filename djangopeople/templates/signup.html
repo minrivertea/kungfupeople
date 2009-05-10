@@ -112,10 +112,26 @@
             {{ form.bio }}
         </div>
         <div class="fieldWrapper">
-            {{ form.blog.errors }}
-            <label for="id_blog">Blog URL</label>
-            {{ form.blog }}
+            {{ form.style.errors }}
+            <label for="id_style">Style</label>
+            {{ form.style }}
         </div>
+        <div class="fieldWrapper">
+            {{ form.personal_url.errors }}
+            <label for="id_personal_url">Personal URL</label>
+            {{ form.personal_url }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.club_name.errors }}
+            <label for="id_club_name">Club Name</label>
+            {{ form.club_name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.club_url.errors }}
+            <label for="id_club_url">Club URL</label>
+            {{ form.club_url }}
+        </div>
+
     </fieldset>
 
 

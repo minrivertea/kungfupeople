@@ -16,7 +16,7 @@
         <div class="fieldWrapper">
             {{ form.bio.errors }}
             <label for="id_bio">Bio</label>
-            {{ form.bio }}
+            {{ form.bio|safe }}
         </div>
     </fieldset>
     <div class="buttonContainer"><input type="submit" value="Update bio"></div>

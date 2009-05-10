@@ -71,19 +71,11 @@ div.bio a.edit {
             <div class="highlight">                
                 {% if person.bio %}<div class="summary">{% filter linebreaks %}{{ person.bio|urlize }}{% if is_owner %} <a class="edit" href="/{{ user.username }}/bio/">(edit bio)</a>{% endif %}{% endfilter %}</div>{% else %}{% if is_owner %}<p><a href="/{{ user.username }}/bio/">Create your bio</a></p>{% endif %}{% endif %}
                 
-                <ul class="tags">{% for tag in person.skilltags %}
-                    <li><a rel="tag" class="skill" href="/skills/{{ tag|urlencode }}/">{{ tag }}</a></li>
-                {% endfor %}
-                {% if is_owner %}
-                    <li class="edit"><a href="/{{ user.username }}/skills/">(edit skills)</a></li>
-                {% endif %}
-                </ul>
-                {% if is_owner %}
-                <form action="/{{ person.user.username }}/skills/" method="POST" id="editSkills">
-                <p>{{ skills_form.skills }} <input type="submit" value="Save"></p>
-                </form>
-                {% endif %}
-                {% if mtags.profile.looking_for_work %}<p class="prominent">Looking for <strong>{{ mtags.profile.looking_for_work }}</strong> work</p>{% endif %}
+{{ person.style }}<br/>
+{{ person.club_url }}<br/>
+{{ person.club_name }}<br/>
+{{ person.personal_url }}<br/>
+
             </div>
             {% endif %}
         {% if show_finding %}
@@ -100,25 +92,10 @@ div.bio a.edit {
                 <p><strong>{{ im.name }}:</strong> <span class="{{ im.shortname }}">{{ im.value }}</span> {% ifequal im.shortname "django" %}{% if privacy.show_last_irc_activity %} (active {{ person.last_active_on_irc|timesince }} ago){% endif %}{% endifequal %}</p>
                 {% endfor %}
             {% endif %}
-            {% if services %}
-            <ul class="services">
-                {% for service in services %}
-                <li><a rel="me nofollow" href="{{ service.value }}" class="{{ service.shortname }}">{{ service.name }}</a></li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+
             </div>
         {% endif %}
-        {% if person.portfoliosite_set.count %}
-            <h2>{{ person.user.first_name }}'s Django portfolio{% if is_owner %} <a class="edit" href="/{{ user.username }}/portfolio/">(edit)</a>{% endif %}</h2>
-            <p class="help">Django projects {{ person.user.first_name }} has contributed to</p>
-            <ul class="siteList">
-                {% for site in person.portfoliosite_set.all %}
-                <li><a href="{{ site.url }}" class="url" rel="nofollow"><cite>{{ site.title }}</cite></a></li>
-                {% endfor %}
-            </ul>
-        {% else %}{% if is_owner %}<p><a href="/{{ user.username }}/portfolio/">Add some sites</a> to your portfolio</p>{% endif %}
-        {% endif %}
+
         
         </div>
         <div class="secondary">
