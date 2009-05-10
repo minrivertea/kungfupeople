@@ -150,6 +150,9 @@ class KungfuPerson(models.Model):
     style =models.CharField(max_length = 200)
     personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
+
+
+#ass
     
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
