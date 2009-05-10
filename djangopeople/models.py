@@ -139,10 +139,6 @@ class Region(models.Model):
 class Club(models.Model):
     name = models.CharField(max_length = 200)
     url = models.URLField()
-
-class ClubMember(models.Model):
-    club = models.ForeignKey(Club)
-    person = models.ForeignKey(KungfuPerson)
     
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -151,8 +147,6 @@ class KungfuPerson(models.Model):
     personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
 
-
-#ass
     
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)

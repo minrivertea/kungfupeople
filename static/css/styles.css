@@ -580,14 +580,14 @@ ul.tags li {
 /* @group Structure */
 
 body {
-	text-align: center;
+
 }
 
 /* @group header */
 
 .header {
 	line-height: 1;
-	padding: 3em 0 0.5em 0;
+	padding: 1em 0 1em 1em;
 }
 .header h1 .meta {
 	font-size: 12px;
@@ -681,7 +681,7 @@ div#hiddenLogin .openid a:active {
 
 .nav ul {
 	margin: 0 auto;
-	width: 80%;
+	width: 8hea0%;
 	padding: 0.5em 2% 0 2%;
 	min-width: 30em;
 	max-width: 70em;
@@ -726,7 +726,7 @@ div#hiddenLogin .openid a:active {
 
 .content {
 	margin: 0 auto 1em auto;
-	width: 70%;
+	width: 90%;
 	padding-right: 2%;
 	padding-left: 2%;
 	min-width: 30em;
