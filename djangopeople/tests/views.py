@@ -34,7 +34,15 @@ class SimpleTest(TestCase):
         assert response.status_code==200
         result = simplejson.loads(response.content)
         self.assertTrue('error' not in result)
-        self.assertTrue('club_name' in result)
+        self.assertEqual(result['club_name'], u"Fujian White Crane")
+        
+        # spelling it with http:// and /index.html
+        response = self.client.get('/guess-club-name.json?club_url=http://www.fwckungfu.com/index.html')
+        assert response.status_code==200
+        result = simplejson.loads(response.content)
+        self.assertTrue('error' not in result)
+        self.assertEqual(result['club_name'], u"Fujian White Crane")
+        
         
         
         
