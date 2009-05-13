@@ -19,11 +19,6 @@ urlpatterns = patterns('',
         views.lost_password_recover),
     (r'^signup/$', views.signup),
 
-    (r'^openid/$', 'django_openidconsumer.views.begin', {
-        'sreg': 'email,nickname,fullname',
-        'redirect_to': '/openid/complete/',    
-    }),
-
     (r'^guess-club-name.json$', views.guess_club_name_json),
 
     (r'^search/$', views.search),

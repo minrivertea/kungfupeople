@@ -25,7 +25,7 @@
             <li{% block nav_li_class_signup %}{% endblock %}><a href="/signup/">sign up as a kungfu person</a></li>
             {% else %}
             <!-- logged in -->
-            <li>You are logged in as <strong>{{ user }}</strong></li>
+            <li>You are logged in as <strong>{{ user.email }}</strong></li>
             {% if not user.get_profile.photo %}<li><a href="/{{ user.username }}/upload/">upload photo</a></li>
             {% endif %}
             <li{% block nav_li_class_profile %}{% endblock %}><a href="/{{ user.username }}/">your profile</a></li>

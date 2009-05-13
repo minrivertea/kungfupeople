@@ -67,7 +67,6 @@ class SignupForm(forms.Form):
             })
     
     # Fields for creating a User object
-    username = forms.RegexField('^[a-zA-Z0-9]+$', min_length=3, max_length=30)
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email = forms.EmailField()
@@ -76,10 +75,9 @@ class SignupForm(forms.Form):
     
     # Fields for creating a KungfuPerson profile
     bio = forms.CharField(widget=forms.Textarea, required=False)
+    trivia = forms.CharField(widget=forms.Textarea, required=False)
     style = forms.CharField(max_length=200, required=False)
     personal_url = forms.URLField(required=False)
-    club_url = forms.URLField(required=False)
-    club_name = forms.CharField(required=False)
     
     country = forms.ChoiceField(choices = [('', '')] + [
         (c.iso_code, c.name) for c in Country.objects.all()
@@ -93,15 +91,15 @@ class SignupForm(forms.Form):
     privacy_search = forms.ChoiceField(
         choices = (
             ('public', 
-             'Allow search engines to index my profile page (recommended)'),
-            ('private', "Don't allow search engines to index my profile page"),
+             'Yes (recommended)'),
+            ('private', "No"),
         ), widget = forms.RadioSelect, initial='public'
     )
     privacy_email = forms.ChoiceField(
         choices = (
-            ('public', 'Anyone can see my e-mail address'),
-            ('private', 'Only logged-in users can see my e-mail address'),
-            ('never', 'No one can ever see my e-mail address'),
+            ('public', 'Everyone'),
+            ('private', 'Logged-in users only'),
+            ('never', 'No-one'),
         ), widget = forms.RadioSelect, initial='private'
     )
 

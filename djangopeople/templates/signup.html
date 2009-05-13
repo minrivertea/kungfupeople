@@ -27,11 +27,6 @@
 
     <fieldset>
         <div class="fieldWrapper">
-            {{ form.username.errors }}
-            <label for="id_username">Username *</label>
-            {{ form.username }}
-        </div>
-        <div class="fieldWrapper">
             {{ form.first_name.errors }}
             <label for="id_first_name">First name *</label>
             {{ form.first_name }}
@@ -64,7 +59,7 @@
 
 {% block extra %}
 <div class="content">
-    <h2>2. Tell us where you live</h2>
+    <h2>2. Where do you train?</h2>
     <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
 </div>
 
@@ -80,7 +75,7 @@
             <label for="id_location_description">Location *</label>
             {{ form.location_description }}
         </div>
-        <p class="help">A short textual description of your location will be displayed on the site. We attempt to derive this from your position on the map, but you can customise it if you like.</p>
+        <p class="help">We will guess the name of your location from the map position. You can customize it if you like.</p>
         <div class="fieldWrapper country">
             {{ form.country.errors }}
             <label for="id_country">Country</label>
@@ -109,8 +104,14 @@
         <div class="fieldWrapper">
             {{ form.bio.errors }}
             <label for="id_bio">Bio</label>
-            {{ form.bio }}
+            {{ form.bio|striptags }}
         </div>
+        <div class="fieldWrapper">
+            {{ form.trivia.errors }}
+            <label for="id_trivia">Trivia</label>
+            {{ form.trivia }}
+        </div>
+	<p class="help">Write your favourite piece of trivia or martial arts story, or something inspiring from your own martial arts background.</p>
         <div class="fieldWrapper">
             {{ form.style.errors }}
             <label for="id_style">Style</label>
@@ -140,12 +141,12 @@
         <p class="help">You can set your profile page not to show up in external search engine results (such as Google or Yahoo!)</p>
         <div class="fieldWrapper radioSelect">
             {{ form.privacy_search.errors }}
-            <label for="id_privacy_search">Search visibility</label>
+            <label for="id_privacy_search">Do you want search engines to index your profile (it will be visible from Google, for example)</label>
             {{ form.privacy_search }}
         </div>
         <div class="fieldWrapper radioSelect">
             {{ form.privacy_email.errors }}
-            <label for="id_privacy_email">E-mail privacy</label>
+            <label for="id_privacy_email">Who can see your email address?</label>
             {{ form.privacy_email }}
         </div>
     </fieldset>

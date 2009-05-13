@@ -134,8 +134,9 @@ def signup(request):
         form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             # First create the user
+            username = form.cleaned_data['username']
             creation_args = {
-                'username': form.cleaned_data['username'],
+                'username': form.cleaned_data['email'],
                 'email': form.cleaned_data['email'],
             }
             if form.cleaned_data.get('password1'):
@@ -159,8 +160,7 @@ def signup(request):
                 bio = form.cleaned_data['bio'],
                 style = form.cleaned_data['style'],
                 personal_url = form.cleaned_data['personal_url'],
-                club_url = form.cleaned_data['club_url'],
-                club_name = form.cleaned_data['club_name'],
+                trivia = form.cleaned_data['trivia'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
