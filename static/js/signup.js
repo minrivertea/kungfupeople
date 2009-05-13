@@ -53,7 +53,6 @@ function hasRegions(country_name) {
 }
 
 
-
 jQuery(function($) {
     // Set up the select country thing to show flags    
     $('select#id_country').change(function() {
@@ -130,6 +129,22 @@ jQuery(function($) {
               jQuery('#id_club_name').val(res.club_name);
          });
       }
+   });
+   
+   // When you enter an email address with no username set,
+   // guess a suitable username based on the email
+   $('#id_email').change(function() {
+      if ($(this).val() && !$('#id_username').val())
+        $.getJSON('/guess-username.json', 
+                  {email:$(this).val(),
+                     first_name:$('#id_first_name').val(),
+                     last_name:$('#id_last_name').val()
+                  }, function(res) {
+                     if (res && res.username)
+                       $('#id_username').val(res.username);
+                  }
+                  );
+      
    });
    
 });
