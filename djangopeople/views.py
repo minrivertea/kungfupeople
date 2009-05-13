@@ -1,3 +1,4 @@
+from urlparse import urlparse
 from django.http import Http404, HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
@@ -160,7 +161,6 @@ def signup(request):
                 bio = form.cleaned_data['bio'],
                 style = form.cleaned_data['style'],
                 personal_url = form.cleaned_data['personal_url'],
-                trivia = form.cleaned_data['trivia'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
@@ -169,6 +169,13 @@ def signup(request):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
+            
+            club_url = form.cleaned_data['club_url']
+            club_name = form.cleaned_data['club_name']
+            if club_url or club_name:
+                club = _get_or_create_club(club_url, club_name)
+                person.club_membership.add(club)
+                person.save()
             
             # make sure they get one of those new passwords
             user.set_password(creation_args['password'])
@@ -188,6 +195,26 @@ def signup(request):
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
+
+def _get_or_create_club(url, name):
+    if url:
+        if not url.startswith('http'):
+            url = 'http://' + url
+        try:
+            url_start = '://'.join(urlparse(url)[:2])
+            return Club.objects.get(url__istartswith=url_start)
+        except Club.DoesNotExist:
+            pass
+        
+    if name:
+        # search by name
+        try:
+            return Club.objects.get(name__iexact=name)
+        except Club.DoesNotExist:
+            pass
+    
+    # still here?!
+    return Club.objects.create(url=url, name=name)
 
 import re
 notalpha_re = re.compile('[^a-zA-Z0-9]')
@@ -412,7 +439,6 @@ def guess_club_name_json(request):
         return render_json(dict(error="no url"))
 
     club_url = club_url.strip()
-    from urlparse import urlparse
     if not club_url.startswith('http'):
         club_url = 'http://' + club_url
         
@@ -424,3 +450,28 @@ def guess_club_name_json(request):
         break
 
     return render_json(data)
+
+
+def guess_username_json(request):
+    email = request.GET.get('email')
+    first_name = request.GET.get('first_name')
+    last_name = request.GET.get('last_name')
+    
+    username = base_username = email.split('@')[0].strip().lower()
+    
+    def is_taken(username):
+        try:
+            User.objects.get(username=username)
+            return True
+        except User.DoesNotExist:
+            return False
+    if is_taken(username):
+        username = first_name.strip().lower() + '_' + last_name.strip().lower()
+        
+    count = 2
+    while is_taken(username):
+        username = "%s%s" % (base_username, count)
+        count += 1
+        
+    return render_json(dict(username=username))
+   

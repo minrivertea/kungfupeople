@@ -43,6 +43,11 @@
         </div>
         {% if not openid %}
         <div class="fieldWrapper">
+            {{ form.username.errors }}
+            <label for="id_username">Username *</label>
+            {{ form.username }}
+        </div>
+        <div class="fieldWrapper">
             {{ form.password1.errors }}
             <label for="id_password1">Password *</label>
             {{ form.password1 }}

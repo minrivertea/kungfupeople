@@ -70,6 +70,7 @@ class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email = forms.EmailField()
+    username = forms.RegexField('^[a-zA-Z0-9_-]+$', min_length=3, max_length=30)
     password1 = forms.CharField(widget=forms.PasswordInput, required=False)
     password2 = forms.CharField(widget=forms.PasswordInput, required=False)
     
@@ -166,6 +167,22 @@ class SignupForm(forms.Form):
         return self.cleaned_data['region']
 
     clean_location_description = not_in_the_atlantic
+    
+    
+    def clean_first_name(self):
+        if self.cleaned_data['first_name']:
+            v = self.cleaned_data['first_name']
+            if v.islower() or v.isupper():
+                self.cleaned_data['first_name'] = v.title()
+        return self.cleaned_data['first_name']
+
+    def clean_last_name(self):
+        if self.cleaned_data['last_name']:
+            v = self.cleaned_data['last_name']
+            if v.islower() or v.isupper():
+                self.cleaned_data['last_name'] = v.title()
+        return self.cleaned_data['last_name']
+
 
 class PhotoUploadForm(forms.Form):
     photo = forms.ImageField()

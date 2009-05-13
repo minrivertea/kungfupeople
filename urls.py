@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     (r'^signup/$', views.signup),
 
     (r'^guess-club-name.json$', views.guess_club_name_json),
+    (r'^guess-username.json$', views.guess_username_json),
 
     (r'^search/$', views.search),
     
