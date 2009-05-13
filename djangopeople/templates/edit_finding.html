@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block header%}
-<h1>Edit contact information</h1>
+<h1>Edit profile information</h1>
 {% endblock %}
 
 {% block content %}
@@ -22,20 +22,15 @@
 
     <h2 id="privacy">Privacy settings</h2>
     <fieldset>
-        <p class="help">You can set your profile page not to show up in external search engine results (such as Google or Yahoo!)</p>
-        <div class="fieldWrapper radioSelect">
-            {{ form.privacy_search.errors }}
-            <label for="id_privacy_search">Search visibility</label>
-            {{ form.privacy_search }}
-        </div>
         <div class="fieldWrapper radioSelect">
             {{ form.privacy_email.errors }}
-            <label for="id_privacy_email">E-mail privacy</label>
+            <label for="id_privacy_email">Hide my email address?</label>
             {{ form.privacy_email }}
         </div>
     </fieldset>
     
     <div class="buttonContainer"><input type="submit" value="Save changes"></div>
+    <div class="buttonContainer"><input type="button" value="Cancel"></div>
     </form>
 
 {% endblock %}

@@ -25,7 +25,7 @@
             <li{% block nav_li_class_signup %}{% endblock %}><a href="/signup/">sign up as a kungfu person</a></li>
             {% else %}
             <!-- logged in -->
-            <li>You are logged in as <strong>{{ user.email }}</strong></li>
+            <li>You are logged in as <strong>{{ user.username }}</strong></li>
             {% if not user.get_profile.photo %}<li><a href="/{{ user.username }}/upload/">upload photo</a></li>
             {% endif %}
             <li{% block nav_li_class_profile %}{% endblock %}><a href="/{{ user.username }}/">your profile</a></li>
@@ -36,7 +36,7 @@
         </ul>
 		{% if not user.is_authenticated %}
 		<div id="hiddenLogin" style="display: none">
-		    <form action="/login/" method="POST"><p><label for="id_usernameH">Username</label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password</label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
+		    <form action="/login/" method="POST"><p><label for="id_usernameH">Username </label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password </label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
 		    </form>
 		</div>
 		{% endif %}

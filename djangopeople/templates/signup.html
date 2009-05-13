@@ -41,7 +41,11 @@
             <label for="id_email">E-mail *</label>
             {{ form.email }}
         </div>
-        {% if not openid %}
+        <div class="fieldWrapper CheckboxInput">
+            {{ form.privacy_email.errors }}
+	    <label for="id_privacy_email">Hide your email address?</label>
+            {{ form.privacy_email }}
+        </div>
         <div class="fieldWrapper">
             {{ form.username.errors }}
             <label for="id_username">Username *</label>
@@ -57,7 +61,6 @@
             <label for="id_password2">Password (again) *</label>
             {{ form.password2 }}
         </div>
-        {% endif %}
     
     </fieldset>
 {% endblock %}
@@ -65,7 +68,7 @@
 {% block extra %}
 <div class="content">
     <h2>2. Where do you train?</h2>
-    <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
+    <p class="help"><strong>Zoom and centre the map on your location</strong>. Your location will be shared in public, so only make it as accurate you are comfortable - perhaps you can mark the location of your club rather than your private address?</p>
 </div>
 
 <div class="mapContainer major" id="mapWrapper">
@@ -109,7 +112,7 @@
         <div class="fieldWrapper">
             {{ form.bio.errors }}
             <label for="id_bio">Bio</label>
-            {{ form.bio|striptags }}
+            {{ form.bio }}
         </div>
         <div class="fieldWrapper">
             {{ form.trivia.errors }}
@@ -138,24 +141,7 @@
             {{ form.club_name }}
         </div>
 
-    </fieldset>
-
-
-    <h2>4. Your privacy settings</h2>
-    <fieldset>
-        <p class="help">You can set your profile page not to show up in external search engine results (such as Google or Yahoo!)</p>
-        <div class="fieldWrapper radioSelect">
-            {{ form.privacy_search.errors }}
-            <label for="id_privacy_search">Do you want search engines to index your profile (it will be visible from Google, for example)</label>
-            {{ form.privacy_search }}
-        </div>
-        <div class="fieldWrapper radioSelect">
-            {{ form.privacy_email.errors }}
-            <label for="id_privacy_email">Who can see your email address?</label>
-            {{ form.privacy_email }}
-        </div>
-    </fieldset>
-    
+    </fieldset>    
     
     <div class="buttonContainer"><input type="submit" value="Sign me up"></div>
     </form>

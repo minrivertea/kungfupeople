@@ -34,38 +34,7 @@ def not_in_the_atlantic(self):
     return self.cleaned_data['location_description']
 
 class SignupForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        # Dynamically add the fields for IM providers / external services
-        
-        super(SignupForm, self).__init__(*args, **kwargs)
-        self.service_fields = []
-        for shortname, name, icon in SERVICES:
-            field = forms.URLField(
-                max_length=255, required=False, label=name
-            )
-            self.fields['service_' + shortname] = field
-            self.service_fields.append({
-                'label': name,
-                'shortname': shortname,
-                'id': 'service_' + shortname,
-                'icon': icon,
-                'field': BoundField(self, field, 'service_' + shortname),
-            })
-        
-        self.improvider_fields = []
-        for shortname, name, icon in IMPROVIDERS:
-            field = forms.CharField(
-                max_length=50, required=False, label=name
-            )
-            self.fields['im_' + shortname] = field
-            self.improvider_fields.append({
-                'label': name,
-                'shortname': shortname,
-                'id': 'im_' + shortname,
-                'icon': icon,
-                'field': BoundField(self, field, 'im_' + shortname),
-            })
-    
+
     # Fields for creating a User object
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
@@ -79,6 +48,11 @@ class SignupForm(forms.Form):
     trivia = forms.CharField(widget=forms.Textarea, required=False)
     style = forms.CharField(max_length=200, required=False)
     personal_url = forms.URLField(required=False)
+    privacy_email = forms.BooleanField(required=False, widget = forms.CheckboxInput)
+
+    # Fields for adding a club membership
+    club_url = forms.CharField(max_length=200, required=False)
+    club_name = forms.CharField(max_length=200, required=False)
     
     country = forms.ChoiceField(choices = [('', '')] + [
         (c.iso_code, c.name) for c in Country.objects.all()
@@ -88,21 +62,8 @@ class SignupForm(forms.Form):
     location_description = forms.CharField(max_length=50)
     
     region = GroupedChoiceField(required=False, choices=region_choices())
-    
-    privacy_search = forms.ChoiceField(
-        choices = (
-            ('public', 
-             'Yes (recommended)'),
-            ('private', "No"),
-        ), widget = forms.RadioSelect, initial='public'
-    )
-    privacy_email = forms.ChoiceField(
-        choices = (
-            ('public', 'Everyone'),
-            ('private', 'Logged-in users only'),
-            ('never', 'No-one'),
-        ), widget = forms.RadioSelect, initial='private'
-    )
+
+
 
     
     # Upload a photo is a separate page, because if validation fails we 
@@ -187,10 +148,6 @@ class SignupForm(forms.Form):
 class PhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
-
-class BioForm(forms.Form):
-    bio = forms.CharField(widget=forms.Textarea, required=False)
-
 class AccountForm(forms.Form):
     openid_server = forms.URLField(required=False)
     openid_delegate = forms.URLField(required=False)
@@ -221,82 +178,27 @@ class LocationForm(forms.Form):
     
     clean_location_description = not_in_the_atlantic
 
-class FindingForm(forms.Form):
+class FindingForm(forms.Form):    
     def __init__(self, *args, **kwargs):
-        # Dynamically add the fields for IM providers / external services
-        self.person = kwargs.pop('person') # So we can validate e-mail later
+        self.person = kwargs.pop('person', 1) # So we can validate e-mail later
         super(FindingForm, self).__init__(*args, **kwargs)
-        self.service_fields = []
-        for shortname, name, icon in SERVICES:
-            field = forms.URLField(
-                max_length=255, required=False, label=name
-            )
-            self.fields['service_' + shortname] = field
-            self.service_fields.append({
-                'label': name,
-                'shortname': shortname,
-                'id': 'service_' + shortname,
-                'icon': icon,
-                'field': BoundField(self, field, 'service_' + shortname),
-            })
-        
-        self.improvider_fields = []
-        for shortname, name, icon in IMPROVIDERS:
-            field = forms.CharField(
-                max_length=50, required=False, label=name
-            )
-            self.fields['im_' + shortname] = field
-            self.improvider_fields.append({
-                'label': name,
-                'shortname': shortname,
-                'id': 'im_' + shortname,
-                'icon': icon,
-                'field': BoundField(self, field, 'im_' + shortname),
-            })
-    
+
     email = forms.EmailField()
-    blog = forms.URLField(required=False)
-    privacy_search = forms.ChoiceField(
-        choices = (
-            ('public', 
-             'Allow search engines to index my profile page (recommended)'),
-            ('private', "Don't allow search engines to index my profile page"),
-        ), widget = forms.RadioSelect, initial='public'
-    )
-    privacy_email = forms.ChoiceField(
-        choices = (
-            ('public', 'Anyone can see my e-mail address'),
-            ('private', 'Only logged-in users can see my e-mail address'),
-            ('never', 'No one can ever see my e-mail address'),
-        ), widget = forms.RadioSelect, initial='private'
-    )
-    privacy_im = forms.ChoiceField(
-        choices = (
-            ('public', 'Anyone can see my IM details'),
-            ('private', 'Only logged-in users can see my IM details'),
-        ), widget = forms.RadioSelect, initial='private'
-    )
-    privacy_irctrack = forms.ChoiceField(
-        choices = (
-            ('public', 'Keep track of the last time I was seen on IRC (requires your IRC nick)'),
-            ('private', "Don't record the last time I was seen on IRC"),
-        ), widget = forms.RadioSelect, initial='public'
-    )
-    looking_for_work = forms.ChoiceField(
-        choices = (
-            ('', 'Not looking for work at the moment'),
-            ('freelance', 'Looking for freelance work'),
-            ('full-time', 'Looking for full-time work'),
-        ), required=False #, widget = forms.RadioSelect, initial=''
-    )
-    
+    privacy_email = forms.BooleanField(required=False, widget = forms.CheckboxInput)
+
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(
-            email = email
-        ).exclude(KungfuPerson = self.person).count() > 0:
-            raise forms.ValidationError('That e-mail is already in use')
+        person = User.objects.filter(email=email)
+        if User.objects.filter(email=email).count() > 0:
+            raise forms.ValidationError('That e-mail is already being used') 
         return email
+
+class ProfileForm(forms.Form):
+    bio = forms.CharField(widget = forms.Textarea, required=False)
+    trivia = forms.CharField(widget = forms.Textarea, required=False)
+    personal_url = forms.URLField( required=False)
+    club_url = forms.URLField( required=False)
+    club_name = forms.CharField(max_length=200, required=False)
 
 
 def make_validator(key, form):

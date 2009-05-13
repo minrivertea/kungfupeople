@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    BioForm, LocationForm, FindingForm, AccountForm
+    LocationForm, FindingForm, AccountForm, ProfileForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -137,7 +137,7 @@ def signup(request):
             # First create the user
             username = form.cleaned_data['username']
             creation_args = {
-                'username': form.cleaned_data['email'],
+                'username': form.cleaned_data['username'],
                 'email': form.cleaned_data['email'],
             }
             if form.cleaned_data.get('password1'):
@@ -160,7 +160,9 @@ def signup(request):
                 user = user,
                 bio = form.cleaned_data['bio'],
                 style = form.cleaned_data['style'],
+                trivia = form.cleaned_data['trivia'],
                 personal_url = form.cleaned_data['personal_url'],
+                privacy_email = form.cleaned_data['privacy_email'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
@@ -170,10 +172,11 @@ def signup(request):
                 location_description = form.cleaned_data['location_description']
             )
             
-            club_url = form.cleaned_data['club_url']
-            club_name = form.cleaned_data['club_name']
-            if club_url or club_name:
-                club = _get_or_create_club(club_url, club_name)
+            # and then add their club membership if provided
+            url = form.cleaned_data['club_url']
+            name = form.cleaned_data['club_name']
+            if url or name:
+                club = _get_or_create_club(url, name)
                 person.club_membership.add(club)
                 person.save()
             
@@ -295,7 +298,6 @@ def profile(request, username):
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
    
-    
     return render(request, 'profile.html', {
         'person': person,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
@@ -306,20 +308,46 @@ def profile(request, username):
 def edit_finding(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     if request.method == 'POST':
-        form = FindingForm(request.POST, person=person)
+        form = FindingForm(request.POST)
         if form.is_valid():
-            user = person.user
+            user = person.user             
             user.email = form.cleaned_data['email']
             user.save()
-            
+            person.privacy_email = form.cleaned_data['privacy_email']
+            person.save()
+ 
+            return HttpResponseRedirect('/%s/' % username)
+    else:
+        form = FindingForm(initial={
+            'email': person.user.email,
+            'privacy_email': person.privacy_email,
+        }, person=person)
+    return render(request, 'edit_finding.html', {
+        'form': form,
+        'person': person,
+    })
+
+@must_be_owner
+def edit_profile(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            person.bio = form.cleaned_data['bio']
+            person.trivia = form.cleaned_data['trivia']
+            person.personal_url = form.cleaned_data['personal_url']
+            person.club_membership.url = form.cleaned_data['club_url']
+            person.club_membership.name = form.cleaned_data['club_name']
+            person.save()
             return HttpResponseRedirect('/%s/' % username)
     else:
         initial = {
-            'email': person.user.email,
+            'bio': person.bio,
+            'trivia': person.trivia,
+            'personal_url': person.personal_url,
         }
-        
-        form = FindingForm(initial=initial, person=person)
-    return render(request, 'edit_finding.html', {
+        form = ProfileForm(initial=initial)
+    return render(request, 'edit_profile.html', {
         'form': form,
         'person': person,
     })
@@ -351,21 +379,6 @@ def edit_password(request, username):
         return HttpResponseRedirect('/%s/' % username)
     else:
         return render(request, 'edit_password.html')
-
-@must_be_owner
-def edit_bio(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
-    if request.method == 'POST':
-        form = BioForm(request.POST)
-        if form.is_valid():
-            person.bio = form.cleaned_data['bio']
-            person.save()
-            return HttpResponseRedirect('/%s/' % username)
-    else:
-        form = BioForm(initial = {'bio': person.bio})
-    return render(request, 'edit_bio.html', {
-        'form': form,
-    })
 
 @must_be_owner
 def edit_location(request, username):
@@ -466,7 +479,8 @@ def guess_username_json(request):
         except User.DoesNotExist:
             return False
     if is_taken(username):
-        username = first_name.strip().lower() + '_' + last_name.strip().lower()
+        #for double-barrelled names, this removes the hyphen
+        username = first_name.strip().lower() + '' + last_name.strip().replace("-", "").lower()
         
     count = 2
     while is_taken(username):
