@@ -37,7 +37,10 @@ def must_be_owner(view):
 
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
-    definition = KungfuPerson.objects.filter(what_is_kungfu=False).order_by('?')[:1].get()
+    try:
+        definition = KungfuPerson.objects.filter(what_is_kungfu=False).order_by('?')[:1].get()
+    except KungfuPerson.DoesNotExist:
+        definition = ''
     styles = KungfuPerson.objects.filter(style__icontains="white crane").count()
     return render(request, 'index.html', {
         'recent_people': recent_people,
@@ -76,11 +79,16 @@ def login(request):
         return render(request, 'login.html', {
             'next': request.REQUEST.get('next', '/%s/' % user.username),
         })
+    print "A"
     username = request.POST.get('username')
     password = request.POST.get('password')
+    print "B"
     user = auth.authenticate(username=username, password=password)
+    print "C"
     if user is not None and user.is_active:
+        print "D"
         auth.login(request, user)
+        print "E"
         return HttpResponseRedirect(
             request.POST.get('next', '/%s/' % user.username)
         )
@@ -256,12 +264,20 @@ def upload_profile_photo(request, username):
         form = PhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
             # Figure out what type of image it is
-            image_content = request.FILES['photo']['content']
+            photo = request.FILES['photo']
+            image_content = photo.read()
             format = Image.open(StringIO(image_content)).format
             format = format.lower().replace('jpeg', 'jpg')
             filename = md5.new(image_content).hexdigest() + '.' + format
             # Save the image
             path = os.path.join(settings.MEDIA_ROOT, 'profiles', filename)
+            # check that the dir of the path exists
+            dirname = os.path.dirname(path)
+            if not os.path.isdir(dirname):
+                try:
+                    os.mkdir(dirname)
+                except IOError:
+                    raise IOError, "Unable to created the directory %s" % dirname
             open(path, 'w').write(image_content)
             person.photo = 'profiles/%s' % filename
             person.save()
@@ -507,7 +523,7 @@ def guess_username_json(request):
     first_name = request.GET.get('first_name')
     last_name = request.GET.get('last_name')
     
-    username = base_username = email.split('@')[0].strip().lower()
+    username = base_username = email.split('@')[0].strip().lower().replace('.','')
     
     def is_taken(username):
         try:

@@ -6,15 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block title %}{% endblock %} Kung Fu People</title>
     <link rel="stylesheet" href="/static/css/styles.css" type="text/css" media="all" charset="utf-8">
-    <script type="text/javascript" src="/static/js/jquery-1.2.1.js"></script>
-    <script type="text/javascript" src="/static/js/common.js"></script>
-    <script src="/static/js/cufon-yui.js" type="text/javascript"></script>
-    <script src="/static/js/Seven_Monkey_Fury_BB_400.font.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      Cufon.replace('h1');
-    </script>
-
-    {% block js %}{% endblock %}
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     {% block extracss %}{% endblock %}
     
 </head>
@@ -57,11 +49,26 @@
 <script type="text/javascript"> Cufon.now(); </script>
 
 
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+    {#<script type="text/javascript" src="/static/js/jquery-1.3.2.min.js"></script> #}
+    <script type="text/javascript" src="/static/js/common.js"></script>
+    <script src="/static/js/cufon-yui.js" type="text/javascript"></script>
+    <script src="/static/js/Seven_Monkey_Fury_BB_400.font.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      Cufon.replace('h1');
+    </script>
+
+    {% block js %}{% endblock %}
+
+{% if GOOGLE_ANALYTICS_TRACKER_ID %}
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
-_uacct = "UA-3465389-1";
-urchinTracker();
-</script>
+try{
+var pageTracker = _gat._getTracker("{{ GOOGLE_ANALYTICS_TRACKER_ID }}");
+pageTracker._trackPageview();
+}catch(err){}</script>
+{% endif %}
 </body>
 </html>

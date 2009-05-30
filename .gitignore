@@ -3,3 +3,5 @@ local_settings.py
 *.pyc
 *~
 kungfupeople.db
+static/profiles
+sorl.old
