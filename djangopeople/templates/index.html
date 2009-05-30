@@ -47,7 +47,7 @@ window.onload = function() {
 
 {% endblock %}
 
-{% block count %}<p>Over {{ total_people }} martial artists have joined the site already!</p> {% endblock %}
+{% block count %}<p>The worldwide community of martial artists</p> {% endblock %}
 
 {% block map %}
     <div class="mapContainer major">
@@ -56,25 +56,33 @@ window.onload = function() {
 {% endblock %}
 
 {% block content %}
-    <p class="mapnote">Chris count today = {{ total_chris }}</p>
-    <p class="mapnote">Showing {{ recent_people|length }} recent signups (out of {{ total_people }}){% if user.is_anonymous %} - if you're a kung fu stylist, why not <a href="/signup/">add yourself</a> to the site?{% endif %}</p>
-        <h2 class="tagline">Discover other martial artists around the world</h2>
-        <!-- <ul class="detailsList split">
-            {% for person in recent_people_limited %}
-            <li>
-                <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="main">
-                <h3><a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a></h3>
-                <p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}"></a> {{ person.location_description }}</p>
-                
-            </li>
-            {% endfor %}
-        </ul> -->
-        <ul class="detailsList split">
-            {% for country in countries %}
-            <li>
-                <a href="/{{ country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ country.iso_code|lower }}.gif" alt="{{ country }}" title="{{ country }}"></a> <a href="/{{ country.iso_code|lower }}/"><strong>{{ country }}</strong></a> {{ country.peoplecount }} {% ifequal country.peoplecount 1 %}person{% else %}people{% endifequal %}
-            </li>
-            {% endfor %}
-        </ul>
 
+	<div id="box1">
+		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
+	</div>
+	<div id="box2">
+	    <p><strong>What is kung fu?</strong> {{ definition.what_is_kungfu }} (says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</p>
+	    <p><strong>White Cranes:</strong> {{ styles }}</p>
+	    <p>Chris count today = {{ total_chris }}</p>
+	    <p>Videos by our users = {{ total_videos }}</p>
+	    <p>Showing {{ recent_people|length }} recent signups (out of {{ total_people }}){% if user.is_anonymous %} - if you're a kung fu stylist, why not <a href="/signup/">add yourself</a> to the site?{% endif %}</p>
+	    <h2 class="tagline">Discover other martial artists around the world</h2>
+        	<!-- <ul class="detailsList split">
+        	    {% for person in recent_people_limited %}
+        	    <li>
+        	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="main">
+        	        <h3><a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a></h3>
+        	        <p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}"></a> {{ person.location_description }}</p>
+                
+        	    </li>
+        	    {% endfor %}
+        	</ul> -->
+        	<ul class="detailsList split">
+        	    {% for country in countries %}
+        	    <li>
+        	        <a href="/{{ country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ country.iso_code|lower }}.gif" alt="{{ country }}" title="{{ country }}"></a> <a href="/{{ country.iso_code|lower }}/"><strong>{{ country }}</strong></a> {{ country.peoplecount }} {% ifequal country.peoplecount 1 %}person{% else %}people{% endifequal %}
+        	    </li>
+        	    {% endfor %}
+        	</ul>
+	</div>
 {% endblock %}

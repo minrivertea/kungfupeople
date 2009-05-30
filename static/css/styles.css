@@ -33,7 +33,7 @@ strong.openid {
 /* @group Headings */
 
 h1 {
-	font-size: 3em;
+	font-size: 4em;
 }
 
 h2 {
@@ -586,8 +586,10 @@ body {
 /* @group header */
 
 .header {
+	height: 120px;
 	line-height: 1;
-	padding: 1em 0 3em 1em;
+	padding: 1em 0 0em 1em;
+	border: 1px solid black;
 }
 .header h1 .meta {
 	font-size: 12px;
@@ -672,17 +674,14 @@ div#hiddenLogin .openid a:active {
 
 /* @group Navigation */
 
-.nav {
-	border-bottom: 1px solid #92CC47;
-}
-.nav:hover {
-	border-bottom: 1px solid #326342;
+#nav {
+	height: auto;
 }
 
-.nav ul {
+#nav ul {
 	margin: 0 auto;
 	width: 8hea0%;
-	padding: 0.5em 2% 0 2%;
+	padding: 0.5em 2% 0 50%;
 	min-width: 30em;
 	max-width: 70em;
 	overflow: hidden;
@@ -690,7 +689,7 @@ div#hiddenLogin .openid a:active {
 	list-style-type: none;
 }
 
-.nav ul li {
+#nav ul li {
 	margin:0;
 	padding:0 1em 0 0;
 	display: inline;
@@ -699,11 +698,11 @@ div#hiddenLogin .openid a:active {
 	color: #234F32;
 }
 
-.nav a:link,
-.nav a:visited,
-.nav a:hover,
-.nav a:active,
-.nav a:focus {
+#nav a:link,
+#nav a:visited,
+#nav a:hover,
+#nav a:active,
+#nav a:focus {
 	color: #234F32;
 	background-color: #E0FFB8;
 	text-decoration: none;
@@ -714,9 +713,9 @@ div#hiddenLogin .openid a:active {
 	background-color:#92CC47;
 	color: white;
 }
-.nav a:hover,
-.nav a:active,
-.nav a:focus {
+#nav a:hover,
+#nav a:active,
+#nav a:focus {
 	background-color: #326342;
 	color: white;
 }
@@ -726,12 +725,9 @@ div#hiddenLogin .openid a:active {
 
 .content {
 	margin: 0 auto 1em auto;
-	width: 90%;
+	width: 100%;
 	padding-right: 2%;
 	padding-left: 2%;
-	min-width: 30em;
-	max-width: 70em;
-	overflow: hidden;
 	text-align: left;
 }
 
@@ -786,4 +782,29 @@ select#id_country {
 /* @end */
 
 /* @end */
+
+#profile_photo {
+    width: 120px;
+    height: 180px;
+    border: 1px solid black;
+    background-color: white;
+    float: left;
+    margin: 0px 20px 20px 0px;
+}
+
+#box1 {
+    width: 150px;
+    float: left;
+    height: auto;
+    display: block;
+    border-right: 1px solid black;
+    margin-right: 20px;
+}
+
+#box2 {
+    display: block;
+    width: 600px;
+    float: left;
+}
+    
 

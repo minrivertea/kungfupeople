@@ -8,47 +8,55 @@
     <link rel="stylesheet" href="/static/css/styles.css" type="text/css" media="all" charset="utf-8">
     <script type="text/javascript" src="/static/js/jquery-1.2.1.js"></script>
     <script type="text/javascript" src="/static/js/common.js"></script>
+    <script src="/static/js/cufon-yui.js" type="text/javascript"></script>
+    <script src="/static/js/Seven_Monkey_Fury_BB_400.font.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      Cufon.replace('h1');
+    </script>
+
     {% block js %}{% endblock %}
     {% block extracss %}{% endblock %}
     
 </head>
 <body{% block bodymeta %}{% endblock %}>
 
-    <div class="nav">
+    <div class="header">
+        {% block header %}<h1>Kung Fu People</h1>{% endblock %} {% block count %}{% endblock %}
+    </div>
+
+    <div id="nav">
         <ul>
             <li{% block nav_li_class_home %}{% endblock %}><a href="/">home</a></li>
             <li{% block nav_li_class_about %}{% endblock %}><a href="/about/">about</a></li>
             <li{% block nav_li_class_search %}{% endblock %}><a href="/search/">search</a></li>
             {% if not user.is_authenticated %}
             <!-- not logged in -->
-            <li{% block nav_li_class_login %}{% endblock %}><a href="/login/" class="login">log in</a></li>
             <li{% block nav_li_class_signup %}{% endblock %}><a href="/signup/">sign up as a kungfu person</a></li>
             {% else %}
             <!-- logged in -->
             <li>You are logged in as <strong>{{ user.username }}</strong></li>
-            {% if not user.get_profile.photo %}<li><a href="/{{ user.username }}/upload/">upload photo</a></li>
-            {% endif %}
             <li{% block nav_li_class_profile %}{% endblock %}><a href="/{{ user.username }}/">your profile</a></li>
-            <li{% block nav_li_class_account %}{% endblock %}><a href="/{{ user.username }}/account/">your account</a></li>
             <li><a href="/logout/">log out</a></li>
             {% endif %}
 
         </ul>
 		{% if not user.is_authenticated %}
-		<div id="hiddenLogin" style="display: none">
 		    <form action="/login/" method="POST"><p><label for="id_usernameH">Username </label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password </label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
 		    </form>
-		</div>
 		{% endif %}
     </div>
-    <div class="header">
-        {% block header %}<h1>Kung Fu People</h1>{% endblock %} {% block count %}{% endblock %}
-    </div>
+
+
 {% block map %}{% endblock %}
+
+
     <div class="content">
         {% block content %}{% endblock %}
     </div>
 {% block extra %}{% endblock %}
+<script type="text/javascript"> Cufon.now(); </script>
+
+
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 </script>
 <script type="text/javascript">

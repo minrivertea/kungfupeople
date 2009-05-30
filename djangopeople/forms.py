@@ -188,8 +188,7 @@ class FindingForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        person = User.objects.filter(email=email)
-        if User.objects.filter(email=email).count() > 0:
+        if User.objects.filter(email = email).exclude(kungfuperson = self.person).count() > 0:
             raise forms.ValidationError('That e-mail is already being used') 
         return email
 
@@ -199,6 +198,11 @@ class ProfileForm(forms.Form):
     personal_url = forms.URLField( required=False)
     club_url = forms.URLField( required=False)
     club_name = forms.CharField(max_length=200, required=False)
+    what_is_kungfu = forms.CharField(max_length=144, required=False)
+
+class VideoForm(forms.Form):
+    video = forms.CharField(widget = forms.Textarea, required=False)
+    video_description = forms.CharField(widget = forms.Textarea, required=False)
 
 
 def make_validator(key, form):

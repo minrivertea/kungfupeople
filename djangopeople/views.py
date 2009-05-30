@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, FindingForm, AccountForm, ProfileForm
+    LocationForm, FindingForm, AccountForm, ProfileForm, VideoForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -37,10 +37,15 @@ def must_be_owner(view):
 
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
+    definition = KungfuPerson.objects.filter(what_is_kungfu=False).order_by('?')[:1].get()
+    styles = KungfuPerson.objects.filter(style__icontains="white crane").count()
     return render(request, 'index.html', {
         'recent_people': recent_people,
+        'definition': definition,
+        'styles': styles,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),
+        'total_videos': KungfuPerson.objects.filter(video=False).count(),
         'total_chris': User.objects.filter(first_name__startswith='Chris').count(),
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'countries': Country.objects.top_countries(),
@@ -52,6 +57,13 @@ def about(request):
         'countries': Country.objects.top_countries(),
     })
 
+def about_new(request):
+    return render(request, 'about_new.html')
+
+def about_what(request):
+    return render(request, 'about_what.html')
+
+
 def recent(request):
     return render(request, 'recent.html', {
         'people': KungfuPerson.objects.all().select_related().order_by('-auth_user.date_joined')[:50],
@@ -62,7 +74,7 @@ from django.contrib import auth
 def login(request):
     if request.method != 'POST':
         return render(request, 'login.html', {
-            'next': request.REQUEST.get('next', ''),
+            'next': request.REQUEST.get('next', '/%s/' % user.username),
         })
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -177,6 +189,7 @@ def signup(request):
             name = form.cleaned_data['club_name']
             if url or name:
                 club = _get_or_create_club(url, name)
+                club.save()
                 person.club_membership.add(club)
                 person.save()
             
@@ -295,11 +308,14 @@ def region(request, country_code, region_code):
 
 def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
+    club = get_object_or_404(Club, kungfuperson = person)
+    others = list(KungfuPerson.objects.filter(style__icontains=person.style).exclude(pk=person.id).order_by('?')[:5])
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
    
     return render(request, 'profile.html', {
         'person': person,
+        'others': others,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
     })
@@ -338,6 +354,7 @@ def edit_profile(request, username):
             person.personal_url = form.cleaned_data['personal_url']
             person.club_membership.url = form.cleaned_data['club_url']
             person.club_membership.name = form.cleaned_data['club_name']
+            person.what_is_kungfu = form.cleaned_data['what_is_kungfu']
             person.save()
             return HttpResponseRedirect('/%s/' % username)
     else:
@@ -345,11 +362,31 @@ def edit_profile(request, username):
             'bio': person.bio,
             'trivia': person.trivia,
             'personal_url': person.personal_url,
+            'what_is_kungfu': person.what_is_kungfu,
         }
         form = ProfileForm(initial=initial)
     return render(request, 'edit_profile.html', {
         'form': form,
         'person': person,
+    })
+
+@must_be_owner
+def add_video(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    if request.method == 'POST':
+        form = VideoForm(request.POST)
+        if form.is_valid():
+            video = form.cleaned_data['video']
+            video_description = form.cleaned_data['video_description']
+            person.video = video
+            person.save()
+            return HttpResponseRedirect('/%s/' % username)
+    else:
+        form = VideoForm()
+    return render(request, 'add_video.html', {
+        'form': form,
+        'person': person,
+        'user': person.user,
     })
 
 @must_be_owner

@@ -47,13 +47,11 @@ div.bio a.edit {
         <h1 class="fn n">
 			<span class="given-name">{{ person.user.first_name }}</span> 
 			<span class="family-name">{{ person.user.last_name }}</span>
-			{% if is_owner %}
-				<a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">(upload new photo)</a>{% endif %}
 		</h1>
         <p class="meta adr">
 			<a href="/{{ person.country.iso_code|lower }}/" class="nobg">
 				<img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name">
-			</a> <span class="region">{{ person.location_description_html }}</span>{% if is_owner %} <a href="/{{ person.user.username }}/location/" class="changeloc">(change)</a>{% endif %}</p>
+			</a> <span class="region">{{ person.location_description_html }}</span></p>
 {% endblock %}
 
 {% block map %}
@@ -66,28 +64,57 @@ div.bio a.edit {
         <div class="primary">
            {% if is_owner or person.bio %}
             <div class="highlight">                
-                {% if person.bio %}<div class="summary">{% filter linebreaks %}{{ person.bio|urlize }}{% if is_owner %} <a class="edit" href="/{{ user.username }}/profile/">(edit bio)</a>{% endif %}{% endfilter %}</div>{% else %}{% if is_owner %}<p><a href="/{{ user.username }}/profile/">Create your bio</a></p>{% endif %}{% endif %}
+                {% if person.bio %}<div class="summary">
+			<div id="profile_photo"><img src="{{ person.photo }}"/></div>
+			{% if person.style %}<p><strong>Style:</strong> {{ person.style }}</p>{% endif %}
+			{% if person.what_is_kungfu %}<p>{{ person.what_is_kungfu }}</p>{% endif %}
+			{% if not person.privacy_email %}<p><strong>Email: </strong> {{ person.user.email }}</p>{% endif %}
+			{% if person.personal_url %}<p><strong>Personal website:</strong><a href="{{ person.personal_url }}"> {{ person.personal_url }}</a></p>{% endif %}
+			{% if person.club_membership %} {{ club.name }} {% endif %}
+                        {% if club %} YES {% endif %}
+			{% filter linebreaks %}{{ person.bio|urlize }}{% if is_owner %} <a class="edit" href="/{{ user.username }}/profile/">(edit bio)</a>{% endif %}{% endfilter %}</div>{% else %}{% if is_owner %}<p><a href="/{{ user.username }}/profile/">Create your bio</a></p>{% endif %}{% endif %}
+            {% if not user.get_profile.photo %}<a href="/{{ user.username }}/upload/">upload photo</a>{% endif %}
                
 
             </div>
             {% endif %}
-{{ person.style }}<br/>
-{{ person.club_membership.url }}<br/>
-{{ person.club_name }}<br/>
-{{ person.personal_url }}<br/>
-        {% if show_finding %}
-            <div class="finding">
-            <h2>Finding {{ person.user.first_name }}{% if is_owner %} <a class="edit" href="/{{ user.username }}/finding/">(edit)</a>{% endif %}</h2>
- 
-                <p><strong>email:</strong> <a href="mailto:{{ person.user.email }}" class="mail email">{{ person.user.email }}</a></p>
 
 
-            </div>
-        {% endif %}
+
+
+{% if person.video %}            <div class="highlight"><p>   {{ person.video|safe }} </p></div> {% endif %}
+
+
+       
 
         
         </div>
         <div class="secondary">
+		
+		{% if not others %}
+		<p>{% if is_owner %}You're {% else %}{{ person.user.get_full_name }} is {% endif %} the only {{ person.style }} stylist in the whole world! <a href="/tell_your_friends">Tell your friends now!</a></p>
+		{% else %}
+		<h2>Other {{ person.style }} stylists</h2>
+		<ul>	        
+		{% for person in others %}
+		<li><a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a></li>
+		{% endfor %}
+		</ul>
+		{% endif %}
+
+
+{% if is_owner %}
+<ul>
+  <li><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">Upload a photo</a></li>
+  {% if not person.video %}<li><a href="/{{user.username }}/video/" class="meta" id="add_video">Add a video</a></li>{% endif %}
+  <li><a href="/{{ user.username }}/location/">Change your location</a></li>
+  <li><a href="/{{ user.username }}/finding/">Update your contact details</a></li>
+  <li><a href="/{{ user.username }}/profile/">Edit your profile information</a></li>
+  <li>{% if user.has_usable_password %}<a href="/{{ user.username }}/password/">Change your password</a>{% else %}You do not have a password set - <a href="/{{ user.username }}/password/">set one now?</a>{% endif %}</li>
+</ul>
+{% else%}
+{% endif %}
+
             {% with person.get_nearest as people %}
             {% if people %}
             <h2>People near {{ person.user.first_name }}</h2>
@@ -97,7 +124,7 @@ div.bio a.edit {
                 <li>
                     <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="main">
                     <h3><a href="{{ person.get_absolute_url }}">{{ person }}</a></h3>
-                    <p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}"></a>  {{ person.location_description }}<br>{{ person.distance_in_miles|floatformat:0 }} mile{{ person.distance_in_miles|floatformat:0|pluralize }} away</p>
+                    <p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}"></a>  {{ person.location_description }}<br>{{ person.style }}</p>
                 </li>
                 {% endfor %}
             </ul>

@@ -151,6 +151,9 @@ class KungfuPerson(models.Model):
     club_membership = models.ManyToManyField(Club)
     trivia = models.TextField(blank=True)
     privacy_email = models.BooleanField()
+    video = models.TextField(blank=False)
+    video_description = models.TextField(blank=False)
+    what_is_kungfu = models.CharField(max_length=144, blank=False)
     
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
