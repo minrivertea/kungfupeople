@@ -1,9 +1,17 @@
+import re
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
 from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
+
+try:
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    import warnings
+    warnings.warn("BeautifulSoup not installed (easy_install BeautifulSoup)")
+    BeautifulSoup = None
 
 def region_choices():
     # For use with GroupedChoiceField
@@ -201,8 +209,26 @@ class ProfileForm(forms.Form):
     what_is_kungfu = forms.CharField(max_length=144, required=False)
 
 class VideoForm(forms.Form):
-    video = forms.CharField(widget = forms.Textarea, required=False)
-    video_description = forms.CharField(widget = forms.Textarea, required=False)
+    embed_src = forms.CharField(widget=forms.Textarea, required=False)
+    description = forms.CharField(widget=forms.Textarea, required=False)
+    
+    def clean_embed_src(self):
+        embed_src = self.cleaned_data['embed_src']
+        
+        # check the tags it's allowed to contain
+        allowed_tags = ('object', 'embed', 'param')
+        for tag in re.findall(r'<(\w+)[^>]*>', embed_src):
+            if tag not in allowed_tags:
+                raise forms.ValidationError("Tag not allowed (<%s>)" % tag)
+            
+        from HTMLParser import HTMLParseError
+        try:
+            soup = BeautifulSoup(embed_src.strip())
+        except HTMLParseError:
+            raise forms.ValidationError("HTML too broken to be parsed")
+            
+        self.cleaned_data['embed_src'] = str(soup)
+        return self.cleaned_data['embed_src']
 
 
 def make_validator(key, form):

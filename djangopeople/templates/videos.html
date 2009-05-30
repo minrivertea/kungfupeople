@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title%}{{ person }} videos |{% endblock %}
+{% block content %}
+
+<h2>Videos ({{ videos.count }})</h2>
+
+<div id="videos">
+  {% for video in videos %}
+    <div class="video">
+      {{ video.embed_src|safe }}
+      <br/>
+      <span class="description">{{ video.description }}</span>
+      {% if not video.approved %}
+        <p style="color:red">Video not approved yet! Only you can see it</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}
+

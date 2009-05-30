@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region, Club
+from models import KungfuPerson, Country, User, Region, Club, Video
 import utils
 from forms import SignupForm, PhotoUploadForm, \
     LocationForm, FindingForm, AccountForm, ProfileForm, VideoForm
@@ -386,16 +386,29 @@ def edit_profile(request, username):
         'person': person,
     })
 
+
+def videos(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    videos = Video.objects.filter(user=person.user)
+    if not (request.user and request.user.username == username):
+        # you're not watching your own videos
+        videos = videos.filter(approved=True)
+        
+    user = person.user
+    return render(request, 'videos.html', locals())
+    
+
 @must_be_owner
 def add_video(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     if request.method == 'POST':
         form = VideoForm(request.POST)
         if form.is_valid():
-            video = form.cleaned_data['video']
-            video_description = form.cleaned_data['video_description']
-            person.video = video
-            person.save()
+            embed_src = form.cleaned_data['embed_src']
+            description = form.cleaned_data['description']
+            video = Video.objects.create(user=person.user,
+                                         embed_src=embed_src,
+                                         description=description.strip())
             return HttpResponseRedirect('/%s/' % username)
     else:
         form = VideoForm()

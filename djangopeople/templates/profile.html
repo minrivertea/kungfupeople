@@ -81,8 +81,9 @@ div.bio a.edit {
 
 
 
-
+{% comment %}
 {% if person.video %}            <div class="highlight"><p>   {{ person.video|safe }} </p></div> {% endif %}
+{% endcomment %}
 
 
        
@@ -106,7 +107,7 @@ div.bio a.edit {
 {% if is_owner %}
 <ul>
   <li><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">Upload a photo</a></li>
-  {% if not person.video %}<li><a href="/{{user.username }}/video/" class="meta" id="add_video">Add a video</a></li>{% endif %}
+  <li><a href="/{{user.username }}/videos/" class="meta" id="add_video">Add a video</a></li>
   <li><a href="/{{ user.username }}/location/">Change your location</a></li>
   <li><a href="/{{ user.username }}/finding/">Update your contact details</a></li>
   <li><a href="/{{ user.username }}/profile/">Edit your profile information</a></li>

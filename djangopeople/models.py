@@ -143,16 +143,28 @@ class Club(models.Model):
     url = models.URLField()
     add_date = models.DateField('date added', default=datetime.now)
     
+class Video(models.Model):
+    user = models.ForeignKey(User)
+    embed_src = models.TextField()
+    description = models.TextField(blank=True)
+    add_date = models.DateField('date added', default=datetime.now)
+    approved = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ('-add_date',)
+        
+    def __unicode__(self):
+        return self.description and self.description.replace('\n', ' ')\
+          or self.embed_src[:40]
+    
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
-    style =models.CharField(max_length=200)
+    style = models.CharField(max_length=200)
     personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
     trivia = models.TextField(blank=True)
     privacy_email = models.BooleanField()
-    video = models.TextField(blank=False)
-    video_description = models.TextField(blank=False)
     what_is_kungfu = models.CharField(max_length=144, blank=False)
     
     # Location stuff - all location fields are required
