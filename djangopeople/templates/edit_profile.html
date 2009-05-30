@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Edit contact information |{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block header%}
+<h1>Edit contact information</h1>
+{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="/{{ person.user.username }}/profile/">
+    <h2>Edit your profile information</h2>
+
+    <fieldset>
+        <div class="fieldWrapper">
+            {{ form.bio.errors }}
+            <label for="id_bio">Bio</label>
+            {{ form.bio }}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <div class="fieldWrapper">
+            {{ form.trivia.errors }}
+            <label for="id_trivia">Trivia</label>
+            {{ form.trivia }}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <div class="fieldWrapper">
+            {{ form.personal_url.errors }}
+            <label for="id_personal_url">Personal URL</label>
+            {{ form.personal_url }}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <div class="fieldWrapper">
+            {{ form.what_is_kungfu.errors }}
+            <label for="id_what_is_kungfu">What is kungfu?</label>
+            {{ form.what_is_kungfu }}
+        </div>
+    </fieldset>
+
+    <div class="buttonContainer"><input type="submit" value="Save changes"></div>
+
+    </form>
+
+
+{% endblock %}
