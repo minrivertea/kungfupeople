@@ -57,26 +57,17 @@ a:visited,
 a:hover,
 a:active,
 a:focus {
-	border: none;
-	color: #AB5603;
-	text-decoration: underline;
-	padding: 0 1px;
+
 }
 a:hover,
 a:active,
 a:focus {
-	background-color: #E0FFB8;
-	color: #414F32;
-	text-decoration: none;
+
 }
 a:active {
-	text-decoration: underline;
+
 }
-a.nobg:hover,
-a.nobg:active,
-a.nobg:focus {
-	background-color: white;
-}
+
 /* @end */
 
 /* @group Forms */
@@ -190,27 +181,7 @@ form.search {
 
 /* @group Links */
 
-a.mail:link, 
-a.mail:visited, 
-a.mail:hover, 
-a.mail:active, 
-a.mail:focus {
-	padding: 0 0 0 35px;
-	background-image: url(/static/img/email_go.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
 
-a.ext:link, 
-a.ext:visited, 
-a.ext:hover, 
-a.ext:active, 
-a.ext:focus {
-	padding: 0 0 0 35px;	
-	background-image: url(/static/img/world_go.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
 div.finding p strong {
 	width: 6.5em;
 	display: block;
@@ -411,16 +382,11 @@ ul.split li {
 
 .mapContainer {
 	text-align: left;
-	border-style: solid;
-	border-color: #92CC47;
-	border-width: 0.7em 0 0.3em;
 	margin: 0 0 1em 0;
 }
 
 #gmap {
 	background-color: #99B3CC;
-	border: 1px solid #326342;
-	border-width: 2px 0 1px 0;
 	margin: 2px 0 1px 0;
 	width: 100%;
 /*	background-image: url(/static/img/map.png); */
@@ -528,51 +494,6 @@ ul.tagcloud li.t5 {
 
 
 
-/* @group tags */
-
-ul.tags {
-	font-size: 0.8em;
-	margin: 1em 0;
-	padding: 0;
-}
-
-ul.tags li {
-	list-style-type: none;
-	display: inline;
-	margin: 0 0.5em 0 0;
-	padding: 0;
-}
-
-.tags a:link,
-.tags a:visited,
-.tags a:hover,
-.tags a:active,
-.tags a:focus {
-	color: white;
-	background-color: #234F32;
-	text-decoration: none;
-	line-height: 1.8;
-	padding: 2px;
-}
-.tags a:hover,
-.tags a:active,
-.tags a:focus {
-	background-color: #092E20;
-}
-
-.tags li.edit a:link,
-.tags li.edit a:visited,
-.tags li.edit a:hover,
-.tags li.edit a:active,
-.tags li.edit a:focus {
-	color: black;
-	background-color: transparent;
-	text-decoration: underline;
-	line-height: 1.8;
-	padding: 2px;
-}
-
-/* @end */
 
 
 /* @end */
@@ -586,22 +507,44 @@ body {
 /* @group header */
 
 .header {
-	height: 120px;
+	height: 140px;
 	line-height: 1;
 	padding: 1em 0 0em 1em;
-	border: 1px solid black;
 }
+
+.header a {
+
+}
+
+.header p {
+	margin: 0px 0px 10px 40px;
+}
+
+#title {
+	display: block;
+	float: left;
+	margin-left: 20px;
+	height: 60px;
+}
+
+#title h1 {
+	margin-bottom: 0px;
+}
+
+#search {
+	float: left;
+	display: block;
+}
+
+
+
 .header h1 .meta {
 	font-size: 12px;
 	display: inline;
 	float: none;
 	color: #AB5603;
 }
-.header h1 .meta:hover,
-.header h1 .meta:active,
-.header h1 .meta:focus {
-	color: #414F32;
-}
+
 .header img.main {
 	float: left;
 	margin: 3px 15px 0 0;
@@ -676,25 +619,25 @@ div#hiddenLogin .openid a:active {
 
 #nav {
 	height: auto;
+	width: 100px;
+	text-align: right;
+	display: block;
+	float: left;
+	border-right: 1px solid #92CC47;
 }
 
 #nav ul {
 	margin: 0 auto;
-	width: 8hea0%;
-	padding: 0.5em 2% 0 50%;
-	min-width: 30em;
-	max-width: 70em;
-	overflow: hidden;
-	text-align: left;
+	width: 100%;
+	padding: 0.5em 2% 0 0%;
+	text-align: right;
 	list-style-type: none;
 }
 
 #nav ul li {
 	margin:0;
-	padding:0 1em 0 0;
-	display: inline;
+	padding:0 1em 1.5em 0;
 	font-size: 0.8em;
-	white-space: nowrap;
 	color: #234F32;
 }
 
@@ -703,21 +646,16 @@ div#hiddenLogin .openid a:active {
 #nav a:hover,
 #nav a:active,
 #nav a:focus {
-	color: #234F32;
-	background-color: #E0FFB8;
-	text-decoration: none;
-	padding: 3px 5px;
+
 }
 .current a:link,
 .current a:visited {
-	background-color:#92CC47;
-	color: white;
+
 }
 #nav a:hover,
 #nav a:active,
 #nav a:focus {
-	background-color: #326342;
-	color: white;
+
 }
 /* @end */
 
