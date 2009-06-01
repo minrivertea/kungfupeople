@@ -48,7 +48,7 @@ def index(request):
         'styles': styles,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),
-        'total_videos': KungfuPerson.objects.filter(video=False).count(),
+        'total_videos': Video.objects.filter(approved=True).count(),
         'total_chris': User.objects.filter(first_name__startswith='Chris').count(),
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'countries': Country.objects.top_countries(),
@@ -391,9 +391,12 @@ def videos(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
     videos = Video.objects.filter(user=person.user)
     if not (request.user and request.user.username == username):
+        your_videos = False
         # you're not watching your own videos
         videos = videos.filter(approved=True)
-        
+    else:
+        your_videos = True
+
     user = person.user
     return render(request, 'videos.html', locals())
     
@@ -417,6 +420,19 @@ def add_video(request, username):
         'person': person,
         'user': person.user,
     })
+
+@must_be_owner
+def delete_video(request, username, pk):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    user = person.user
+    video = get_object_or_404(Video, pk=pk)
+    if not user == video.user:
+        raise Http404("Not your video")
+    
+    video.delete()
+    
+    return HttpResponseRedirect('/%s/videos/' % user.username)
+
 
 @must_be_owner
 def edit_account(request, username):
