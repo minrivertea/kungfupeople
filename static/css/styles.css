@@ -714,7 +714,7 @@ div#hiddenLogin .openid a:active {
 
 div#mapWrapper {
     position: relative;
-    width: 100%;
+    width: 98%;
 }
 div#gmap {
     height: 300px;
@@ -725,7 +725,7 @@ div#crosshair {
     top: 12.5em;
     height: 19px;
     width: 19px;
-    left: 50%;
+    left: 49%;
     margin-top: -8px;
     margin-left: -8px;
     display: block;
@@ -798,7 +798,8 @@ select#id_country {
 }
 
 ul.latest-list {
-    margin: 0px;
+    margin: 0px 0 0 10px;
+    padding-top: 7px;
 }
 
 li.latest-list {

@@ -66,7 +66,7 @@ window.onload = function() {
 		<h3>What's new today?</h3>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-		<p>ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p class="mapnote">ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 	    <p><strong>What is kung fu?</strong> {{ definition.what_is_kungfu }} (says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</p>
 	    <p><strong>White Cranes:</strong> {{ styles }}</p>
 	    <p>Chris count today = {{ total_chris }}</p>
@@ -80,25 +80,17 @@ window.onload = function() {
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
         	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="latest">
- 			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a> ({{ person.style }})
-        	        		<p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"></a> {{ person.location_description }}</p>
+ 			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a> ({{ person.country.iso_code }})
+        	        		<p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"></a> {{ person.style }}</p>
                 
  					</li>
         				{% endfor %}
 				</ul>
 
 		</div>
-	    <h2 class="tagline">Discover other martial artists around the world</h2>
-        	<!-- <ul class="detailsList split">
-        	    {% for person in recent_people %}
-        	    <li>
-        	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="main">
-        	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a>
-        	        <p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}"></a> {{ person.location_description }}</p>
-                
-        	    </li>
-        	    {% endfor %}
-        	</ul> -->
+
+
+
         	<ul class="detailsList split">
         	    {% for country in countries %}
         	    <li>
