@@ -10,11 +10,12 @@
 	text-decoration: none;
 }
 body, textarea {
-	background-color: white;
 	color: #000;
 	font-family: Helvetica,Arial,sans-serif;
 	font-size:100%;
 	line-height: 1.2em;
+	background-color: #d0ef7e;
+	/*background-color: #8CA93E;*/
 }
 body * {
 	font-size: 1em;
@@ -42,6 +43,14 @@ h2 {
 	font-size: 1.5em;
 	line-height: 1em;
 	color: #234F32;
+}
+
+h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 1.3em;
+	font-weight: bold;
+	color: #8CA93E;
+	margin-bottom: 10px;
 }
 
 /* @end */
@@ -381,16 +390,24 @@ ul.split li {
 /* @group map */
 
 .mapContainer {
-	text-align: left;
+	text-align: center;
 	margin: 0 0 1em 0;
+	padding: 15px;
+
 }
 
 #gmap {
 	background-color: #99B3CC;
 	margin: 2px 0 1px 0;
-	width: 100%;
+	width: 98%;
 /*	background-image: url(/static/img/map.png); */
 	background-position: top left;
+	border: 10px solid white;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+
 }
 
 .minor #gmap {
@@ -399,6 +416,7 @@ ul.split li {
 
 .major #gmap {
 	height: 25em;
+
 }
 
 /* @end */
@@ -507,9 +525,9 @@ body {
 /* @group header */
 
 .header {
-	height: 140px;
+	height: 100px;
 	line-height: 1;
-	padding: 1em 0 0em 1em;
+	margin: 20px;
 }
 
 .header a {
@@ -523,7 +541,7 @@ body {
 #title {
 	display: block;
 	float: left;
-	margin-left: 20px;
+	margin-left: 10px;
 	height: 60px;
 }
 
@@ -619,11 +637,10 @@ div#hiddenLogin .openid a:active {
 
 #nav {
 	height: auto;
-	width: 100px;
+	width: 130px;
 	text-align: right;
 	display: block;
 	float: left;
-	border-right: 1px solid #92CC47;
 }
 
 #nav ul {
@@ -635,10 +652,13 @@ div#hiddenLogin .openid a:active {
 }
 
 #nav ul li {
-	margin:0;
-	padding:0 1em 1.5em 0;
+	margin-bottom: 5px;
+	padding: 0.5em;
 	font-size: 0.8em;
-	color: #234F32;
+	color: white;
+	border-top: 1px white solid;
+	border-right: 1px white solid;
+	border-bottom: 1px white solid;
 }
 
 #nav a:link,
@@ -646,6 +666,7 @@ div#hiddenLogin .openid a:active {
 #nav a:hover,
 #nav a:active,
 #nav a:focus {
+	color: white;
 
 }
 .current a:link,
@@ -663,9 +684,7 @@ div#hiddenLogin .openid a:active {
 
 .content {
 	margin: 0 auto 1em auto;
-	width: 100%;
-	padding-right: 2%;
-	padding-left: 2%;
+	width: 98%;
 	text-align: left;
 }
 
@@ -695,9 +714,9 @@ div#hiddenLogin .openid a:active {
 
 div#mapWrapper {
     position: relative;
+    width: 100%;
 }
 div#gmap {
-    width: 100%;
     height: 300px;
     background-color: #ccc;
 }
@@ -730,19 +749,66 @@ select#id_country {
     margin: 0px 20px 20px 0px;
 }
 
-#box1 {
-    width: 150px;
+#intro-box {
+    font-family: Georgia,serif;
+    font-size: 1em;
+    line-height: 1.8em;
+    color: #a6a6a6;
+    width: 20%;
     float: left;
-    height: auto;
     display: block;
-    border-right: 1px solid black;
+    background-color: white;
+    margin-right: 2%;
+    padding: 10px;
+    border: 10px white solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+}
+
+#content-box {
+    width: 71%;
+    float: left;
+    display: block;
+    min-height: 800px;
+    background-color: white;
+    padding: 10px;
+    border: 10px white solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+}
+
+#content-box p {
+    padding-bottom: 10px;
+    line-height: 1.5em;
+}
+
+#inside-left {
+    float: left;
+    width: 65%;
     margin-right: 20px;
 }
 
-#box2 {
-    display: block;
-    width: 600px;
+#inside-right {
     float: left;
+    width: 30%;
+}
+
+ul.latest-list {
+    margin: 0px;
+}
+
+li.latest-list {
+    list-style-type:none;
+
+}
+
+.latest-list img {
+    float: left;
+    margin-right: 5px;
 }
     
 

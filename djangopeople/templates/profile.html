@@ -41,18 +41,12 @@ div.bio a.edit {
 
 {% block bodymeta %} class="vcard hresume"{% endblock %}
 
-{% block header %}
-        {% if person.photo %}<img src="{% thumbnail person.photo 83x83 crop %}" alt="{{ person }}" class="main photo">{% endif %}
+
         
-        <h1 class="fn n">
-			<span class="given-name">{{ person.user.first_name }}</span> 
-			<span class="family-name">{{ person.user.last_name }}</span>
-		</h1>
-        <p class="meta adr">
-			<a href="/{{ person.country.iso_code|lower }}/" class="nobg">
-				<img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name">
-			</a> <span class="region">{{ person.location_description_html }}</span></p>
-{% endblock %}
+        
+
+
+
 
 {% block map %}
     <div class="mapContainer minor">
@@ -62,10 +56,17 @@ div.bio a.edit {
 
     {% block content %}
         <div class="primary">
+
+        <h2 class="fn n"><span class="given-name">{{ person.user.first_name }}</span> <span class="family-name">{{ person.user.last_name }}</span></h2>
+        <p class="meta adr">
+			<a href="/{{ person.country.iso_code|lower }}/" class="nobg">
+				<img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name">
+			</a> <span class="region">{{ person.location_description_html }}</span></p>
+		
            {% if is_owner or person.bio %}
             <div class="highlight">                
                 {% if person.bio %}<div class="summary">
-			<div id="profile_photo"><img src="{{ person.photo }}"/></div>
+			{% if person.photo %}<img src="{% thumbnail person.photo 83x83 crop %}" alt="{{ person }}" class="main photo">{% endif %}
 			{% if person.style %}<p><strong>Style:</strong> {{ person.style }}</p>{% endif %}
 			{% if person.what_is_kungfu %}<p>{{ person.what_is_kungfu }}</p>{% endif %}
 			{% if not person.privacy_email %}<p><strong>Email: </strong> {{ person.user.email }}</p>{% endif %}
