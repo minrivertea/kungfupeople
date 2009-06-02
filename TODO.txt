@@ -1,2 +1,3 @@
-* Links to /videos/ on profile page
-* Ability to delete one of your videos in <username>/videos/
+* Change from crosshair to this
+http://code.google.com/apis/maps/documentation/examples/marker-drag.html
+on signup
