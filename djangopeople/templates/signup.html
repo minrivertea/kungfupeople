@@ -4,17 +4,18 @@
 
 {% block nav_li_class_signup %} class="current"{% endblock %}>
 
-{% block js %}
-<script src="http://www.google.com/jsapi?key={{ api_key }}" type="text/javascript">
-</script>
-<script type="text/javascript" src="/static/js/jquery.color.js"></script>
-<script type="text/javascript" src="/static/js/signup.js"></script>
-<link rel="stylesheet" href="/static/css/flags.css" type="text/css">
+{% block extracss %}
+<link rel="stylesheet" href="/static/css/flags.css" type="text/css"/>
 <style type="text/css">
 #id_location_description {
     width: 24em;
 }
 </style>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/static/js/jquery.color.js"></script>
+<script type="text/javascript" src="/static/js/signup.js"></script>
 {% endblock %}
 
 {% block header%}
@@ -74,6 +75,15 @@
 <div class="mapContainer major" id="mapWrapper">
     <div id="gmap">&nbsp;</div>
     <div id="crosshair"></div>
+    
+    <div id="loading">
+    &nbsp;
+    
+      <span id="loading-inner">
+      <img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." />
+        <span class="text">Please wait...</span>
+      </span>
+    </div>
 </div>
 
 <div class="content">

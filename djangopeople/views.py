@@ -489,7 +489,17 @@ def edit_location(request, username):
             person.save()
             return HttpResponseRedirect('/%s/' % username)
     else:
-        form = LocationForm()
+        initial = dict()
+        if person.country:
+            initial = dict(initial, country=person.country.iso_code)
+        if person.location_description:
+            initial = dict(initial, location_description=person.location_description)
+        if person.latitude and person.longitude:
+            initial = dict(initial, 
+                           latitude=person.latitude,
+                           longitude=person.longitude)
+            
+        form = LocationForm(initial=initial)
     return render(request, 'edit_location.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,

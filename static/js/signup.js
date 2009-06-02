@@ -6,7 +6,7 @@ jQuery.fn.yellowFade = function() {
     }, 1500);
 }
 
-google.load('maps', '2');
+google.load('maps', '3');
 
 var INITIAL_LAT = 43.834526782236814;
 var INITIAL_LON = -37.265625;
@@ -22,6 +22,8 @@ function reverseGeocode() {
     }
     var url = 'http://ws.geonames.org/findNearbyPlaceNameJSON?'
     url += 'lat=' + lat + '&lng=' + lon + '&callback=?';
+   $('.text', '#loading-inner:hidden').text('Fetching name by location...');
+   $('#loading-inner:hidden').show();
     jQuery.getJSON(url, function(json) {
         if (typeof json.geonames != 'undefined' && json.geonames.length > 0) {
             // We got results
@@ -45,6 +47,7 @@ function reverseGeocode() {
                 $('#id_region').val('');
             }
         }
+       $('#loading-inner:visible').hide();
     });
 }
 
@@ -53,7 +56,9 @@ function hasRegions(country_name) {
 }
 
 
-jQuery(function($) {
+var gmap;
+google.setOnLoadCallback(function() {
+
     // Set up the select country thing to show flags    
     $('select#id_country').change(function() {
         $(this).parent().find('span.flag').remove();
@@ -82,8 +87,8 @@ jQuery(function($) {
     $('input#id_latitude').parent().hide();
     $('input#id_longitude').parent().hide();
     
-    var gmap = new google.maps.Map2(document.getElementById('gmap'));
-    gmap.addControl(new google.maps.LargeMapControl());
+    gmap = new google.maps.Map2(document.getElementById('gmap'));
+    gmap.addControl(new google.maps.LargeMapControl3D());
     gmap.addControl(new google.maps.MapTypeControl());    
     var lookupTimer = false;
     
@@ -92,7 +97,7 @@ jQuery(function($) {
         if (lookupTimer) {
             clearTimeout(lookupTimer);
         }
-        lookupTimer = setTimeout(reverseGeocode, 1500);
+        lookupTimer = setTimeout(reverseGeocode, 1200);
         $('#id_latitude').val(center.lat());
         $('#id_longitude').val(center.lng());
     });
@@ -114,7 +119,7 @@ jQuery(function($) {
             $('#id_latitude').val(),
             $('#id_longitude').val()
         );
-        gmap.setCenter(point, 10);
+        gmap.setCenter(point, 9);
     } else {
         gmap.setCenter(new google.maps.LatLng(INITIAL_LAT, INITIAL_LON), 3);
     }
@@ -146,5 +151,8 @@ jQuery(function($) {
                   );
       
    });
+   
+   
+   $('#loading-inner').hide();
    
 });
