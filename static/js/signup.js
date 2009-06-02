@@ -22,6 +22,8 @@ function reverseGeocode() {
     }
     var url = 'http://ws.geonames.org/findNearbyPlaceNameJSON?'
     url += 'lat=' + lat + '&lng=' + lon + '&callback=?';
+   $('.text', '#loading-inner:hidden').text('Fetching name by location...');
+   $('#loading-inner:hidden').show();
     jQuery.getJSON(url, function(json) {
         if (typeof json.geonames != 'undefined' && json.geonames.length > 0) {
             // We got results
@@ -45,6 +47,7 @@ function reverseGeocode() {
                 $('#id_region').val('');
             }
         }
+       $('#loading-inner:visible').hide();
     });
 }
 
@@ -92,7 +95,7 @@ jQuery(function($) {
         if (lookupTimer) {
             clearTimeout(lookupTimer);
         }
-        lookupTimer = setTimeout(reverseGeocode, 1500);
+        lookupTimer = setTimeout(reverseGeocode, 1200);
         $('#id_latitude').val(center.lat());
         $('#id_longitude').val(center.lng());
     });
@@ -146,5 +149,8 @@ jQuery(function($) {
                   );
       
    });
+   
+   
+   $('#loading-inner').hide();
    
 });
