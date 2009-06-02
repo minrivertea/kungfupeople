@@ -57,18 +57,20 @@ window.onload = function() {
 
 {% block content %}
 
-	<div id="intro-box">
+	<div class="intro-box">
 		<h3>What is kungfu people?</h3>
 		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
 	</div>
-	<div id="content-box">
+
+
+	<div id="home-content-box">
 		<div id="inside-left">
 		<h3>What's new today?</h3>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
 		<p class="mapnote">ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	    <p><strong>What is kung fu?</strong> {{ definition.what_is_kungfu }} (says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</p>
-	    <p><strong>White Cranes:</strong> {{ styles }}</p>
+	    
+	    
 	    <p>Chris count today = {{ total_chris }}</p>
 	    <p>Videos by our users = {{ total_videos }}</p>
 	    <p>Showing {{ recent_people|length }} recent signups (out of {{ total_people }}){% if user.is_anonymous %} - if you're a kung fu stylist, why not <a href="/signup/">add yourself</a> to the site?{% endif %}</p>
@@ -79,7 +81,7 @@ window.onload = function() {
 				<ul class="latest-list">
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
-        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="latest">
+        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-an-image.png{% endif %}" alt="{{ person }}" class="latest">
  			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a> ({{ person.country.iso_code }})
         	        		<p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"></a> {{ person.style }}</p>
                 
@@ -99,4 +101,18 @@ window.onload = function() {
         	    {% endfor %}
         	</ul>
 	</div>
+
+
+	<div class="intro-box">
+		<h3>What is kung fu?</h3>
+<p>{{ definition.what_is_kungfu }} <br/>(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</p>
+	
+	</div>
+
+	<div class="intro-box">
+		<h3>Most popular styles</h3>
+<p><strong>White Cranes:</strong> {{ styles }}</p>
+	
+	</div>
+
 {% endblock %}
