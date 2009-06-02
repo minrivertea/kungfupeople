@@ -71,9 +71,6 @@ window.onload = function() {
 		<p class="mapnote">ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 	    
 	    
-	    <p>Chris count today = {{ total_chris }}</p>
-	    <p>Videos by our users = {{ total_videos }}</p>
-	    <p>Showing {{ recent_people|length }} recent signups (out of {{ total_people }}){% if user.is_anonymous %} - if you're a kung fu stylist, why not <a href="/signup/">add yourself</a> to the site?{% endif %}</p>
 		</div>
 		
 		<div id="inside-right">
@@ -93,13 +90,6 @@ window.onload = function() {
 
 
 
-        	<ul class="detailsList split">
-        	    {% for country in countries %}
-        	    <li>
-        	        <a href="/{{ country.iso_code|lower }}/" class="nobg"><img src="/static/img/flags/{{ country.iso_code|lower }}.gif" alt="{{ country }}" title="{{ country }}"></a> <a href="/{{ country.iso_code|lower }}/"><strong>{{ country }}</strong></a> {{ country.peoplecount }} {% ifequal country.peoplecount 1 %}person{% else %}people{% endifequal %}
-        	    </li>
-        	    {% endfor %}
-        	</ul>
 	</div>
 
 
@@ -112,6 +102,12 @@ window.onload = function() {
 	<div class="intro-box">
 		<h3>Most popular styles</h3>
 <p><strong>White Cranes:</strong> {{ styles }}</p>
+	
+	</div>
+
+	<div class="intro-box">
+		<h3>Find a club in your area</h3>
+<p>If you're thinking about starting kung fu, this website can help you find a good club in your area.</p>
 	
 	</div>
 

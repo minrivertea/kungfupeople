@@ -5,11 +5,10 @@
 {% block js %}
 {% endblock %}
 
-{% block header%}
-<h1>Edit contact information</h1>
-{% endblock %}
 
 {% block content %}
+
+<div id="content-box">
 
     <form method="post" action="/{{ person.user.username }}/profile/">
     <h2>Edit your profile information</h2>
@@ -49,6 +48,8 @@
     <div class="buttonContainer"><input type="submit" value="Save changes"></div>
 
     </form>
+
+</div>
 
 
 {% endblock %}

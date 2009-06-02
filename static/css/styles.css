@@ -14,7 +14,7 @@ body, textarea {
 	font-family: Helvetica,Arial,sans-serif;
 	font-size:100%;
 	line-height: 1.2em;
-	background-color: #d0ef7e;
+	background: #d0ef7e url('/static/img/body-background.png') no-repeat top left;
 	/*background-color: #8CA93E;*/
 }
 body * {
@@ -663,6 +663,7 @@ div#hiddenLogin .openid a:active {
 	padding: 0.5em;
 	font-size: 0.8em;
 	color: white;
+	background-color: red;
 	border-top: 1px white solid;
 	border-right: 1px white solid;
 	border-bottom: 1px white solid;
@@ -766,8 +767,8 @@ select#id_country {
     display: block;
     background-color: white;
     margin: 0px 2% 20px 0px;;
-    padding: 10px;
-    border: 10px white solid;
+    padding: 17px;
+    border: 3px #8CA93E solid;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
@@ -812,7 +813,7 @@ select#id_country {
 #floater {
     float: right;
     height: auto;
-    width: 30%;
+    width: 40%;
     text-align: right;
 }
 
