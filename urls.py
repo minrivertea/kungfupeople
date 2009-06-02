@@ -9,7 +9,7 @@ admin.autodiscover()
 from djangopeople import views
 from djangopeople.models import KungfuPerson
 
-#print admin.site
+print admin.site
 
 def redirect(url):
     return lambda res: HttpResponseRedirect(url)

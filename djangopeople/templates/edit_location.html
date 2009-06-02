@@ -22,15 +22,18 @@
 {% block content %}
 {% endblock %}
 {% block extra %}
-<div class="content">
-    <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
-</div>
-<div class="mapContainer major" id="mapWrapper">
-    <div id="gmap">&nbsp;</div>
-    <div id="crosshair"></div>
-</div>
 
-<div class="content">
+
+	<div class="mapContainer major" id="mapWrapper">
+	    <div id="gmap">&nbsp;</div>
+	    <div id="crosshair"></div>
+	</div>
+
+
+	<div id="content-box">
+	    <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
+
+
     <form method="post" action="/{{ user.username }}/location/">
     <fieldset>
         <div class="fieldWrapper" id="location">
@@ -60,8 +63,9 @@
             {{ form.region }}
         </div>
     </fieldset>
-    <div class="buttonContainer"><input type="submit" value="Change location"></div>
+    <div class="buttonContainer"><input type="submit" value="Update location"></div>
     </form>
+	</div>
 </div>
 
 {% endblock %}

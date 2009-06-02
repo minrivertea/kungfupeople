@@ -7,10 +7,21 @@
 <h1>{{ flatpage.title }}</h1>
 {% endblock %}
 
+{% block map %}
+
+	<div class="mapContainer minor">
+		<div id="gmap">
+		</div>
+	</div>
+
+{% endblock %}
+
 {% block content %}
 
-
-{{ flatpage.content }}
+	<div id="content-box">
+		<h2>{{ flatpage.title }}</h2>
+		{{ flatpage.content }}
+	</div>
 
 {% endblock %}
 

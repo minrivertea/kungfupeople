@@ -397,8 +397,12 @@ def videos(request, username):
     else:
         your_videos = True
 
-    user = person.user
-    return render(request, 'videos.html', locals())
+    return render(request, 'videos.html', {
+        'person': person,
+        'videos': videos,
+        'is_owner': request.user.username == username,
+        'your_videos': your_videos,
+    })
     
 
 @must_be_owner

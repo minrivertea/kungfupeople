@@ -9,24 +9,30 @@ div.video { margin-bottom:20px; }
 {% block title%}{{ person }} videos |{% endblock %}
 {% block content %}
 
-<h2>Videos ({{ videos.count }})</h2>
+<div id="content-box">
 
-<div id="videos">
-  {% for video in videos %}
-    <div class="video">
-      {{ video.embed_src|safe }}
-      <br/>
-      <span class="description">{{ video.description }}</span>
-      {% if your_videos %}
-        <a href="delete/{{ video.id }}/">Delete</a><br/>
-        {% if not video.approved %}
-          <p style="color:red">Video not approved yet! Only you can see it</p>
-        {% endif %}
-      {% endif %}
-    </div>
-  {% endfor %}
+	<a href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
+
+	<h2>{{ person.user.get_full_name }}'s Videos ({{ videos.count }})</h2>
+	{% if is_owner %}<a href="/{{ person.user.username }}/videos/add/">Add a video</a>{% endif %}
+
+	<div id="videos">
+	  {% for video in videos %}
+	    <div class="video">
+	      {{ video.embed_src|safe }}
+	      <br/>
+	      <span class="description">{{ video.description }}</span>
+	      {% if your_videos %}
+	        <a href="delete/{{ video.id }}/">Delete</a><br/>
+	        {% if not video.approved %}
+	          <p style="color:red">Video not approved yet! Only you can see it</p>
+	        {% endif %}
+	      {% endif %}
+	    </div>
+	  {% endfor %}
+	</div>
+
 </div>
-
 
 {% endblock %}
 

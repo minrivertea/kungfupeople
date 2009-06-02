@@ -11,9 +11,6 @@ urlpatterns = patterns('',
     (r'^$', views.index),
     (r'^login/$', views.login),
     (r'^logout/$', views.logout),
-    (r'^about/$', views.about),
-    (r'^about/new_to_kungfu/$', views.about_new),
-    (r'^about/whatyoucando/$', views.about_what),
     (r'^recent/$', views.recent),
     (r'^recover/$', views.lost_password),
     (r'^recover/([a-z0-9]{3,})/([a-f0-9]+)/([a-f0-9]{32})/$',
@@ -25,7 +22,6 @@ urlpatterns = patterns('',
 
     (r'^search/$', views.search),
     
-    (r'^([a-z]{2})/$', views.country),
     (r'^([a-z]{2})/sites/$', views.country_sites),
     (r'^([a-z]{2})/(\w+)/$', views.region),
     
