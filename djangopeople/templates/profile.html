@@ -5,13 +5,8 @@
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
 {% block js %}{% load thumbnail %}
-<script src="http://www.google.com/jsapi?key={{ api_key }}" type="text/javascript">
-</script>
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
-
-google.load('maps', '3');
-
 var nearby_people = [
     // latitude, longitude, name, username, location description, flag, isocode
     {% for p in person.get_nearest %}

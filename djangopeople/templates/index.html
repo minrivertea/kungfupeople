@@ -3,47 +3,16 @@
 {% block nav_li_class_home %} class="current"{% endblock %}>
 
 {% block js %}{% load thumbnail %}
-<script src="http://www.google.com/jsapi?key={{ api_key }}" type="text/javascript">
-</script>
 <script type="text/javascript">
-google.load('maps', '2');
-
+{# This javascript variable is going to be used in index.js #}
 var people = [
     // latitude, longitude, name, username, location description
     {% for person in recent_people %}
     [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
-
-window.onload = function() {
-    window.gmap = new google.maps.Map2(document.getElementById('gmap'));
-    gmap.addControl(new google.maps.LargeMapControl());
-    gmap.addControl(new google.maps.MapTypeControl());
-    
-//    gmap.setCenter(new google.maps.LatLng(43.834526782236814, -37.265625), 2);
-    gmap.setCenter(new google.maps.LatLng(19.97335, -15.8203), 2);
-    // Plot the people as markers
-    $.each(people, function() {
-        var lat = this[0];
-        var lon = this[1];
-        var name = this[2];
-        var username = this[3];
-        var location_description = this[4];
-        var photo = this[5];
-        var iso_code = this[6];
-        var point = new google.maps.LatLng(lat, lon);
-        var marker = new google.maps.Marker(point, getMarkerOpts());
-        gmap.addOverlay(marker);
-        // Hook up the marker click event
-        google.maps.Event.addListener(marker, 'click', function() {
-            marker.openInfoWindow(makeWindow(
-                name, username, location_description, photo, iso_code, 
-                lat, lon
-            ));
-        });
-    });
-};
 </script>
+<script type="text/javascript" src="/static/js/index.js"></script>
 
 {% endblock %}
 
@@ -78,9 +47,11 @@ window.onload = function() {
 				<ul class="latest-list">
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
-        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-an-image.png{% endif %}" alt="{{ person }}" class="latest">
- 			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a> ({{ person.country.iso_code }})
-        	        		<p class="meta"><a href="/{{ person.country.iso_code|lower }}/" class="nobg"></a> {{ person.style }}</p>
+        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+ 			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><a 
+                                        href="/{{ person.country.iso_code|lower }}/" class="nobgx">{% if person.country.iso_code or person.country.flag %}<img src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}" class="xmain">{% endif %}</a>
+        	        		<p class="meta">
+                                        {{ person.style }}</p>
                 
  					</li>
         				{% endfor %}

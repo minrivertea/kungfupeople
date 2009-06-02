@@ -1,4 +1,10 @@
-window.onload = function() {    
+google.load('maps', '3');
+
+var gmap; 
+
+google.setOnLoadCallback(function() {
+   
+   
     function ShrinkControl() {}
     ShrinkControl.prototype = new GControl();
     ShrinkControl.prototype.initialize = function(gmap) {
@@ -53,8 +59,8 @@ window.onload = function() {
     var largeMapControl = new google.maps.LargeMapControl();
     var mapTypeControl = new google.maps.MapTypeControl()
     var shrinkControl = new ShrinkControl();
-    
-    window.gmap = new google.maps.Map2(document.getElementById('gmap'));
+   
+    gmap = new google.maps.Map2(document.getElementById('gmap'));
     
     /* Map enlarges and becomes active when you click on it */
     $('#gmap').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
@@ -87,9 +93,7 @@ window.onload = function() {
     gmap.setCenter(point, 9);
     var marker = new google.maps.Marker(point, getMarkerOpts());
     gmap.addOverlay(marker);
-}
 
-jQuery(function($) {
     $('#editSkills').hide();
     $('ul.tags li.edit a').toggle(
         function() {

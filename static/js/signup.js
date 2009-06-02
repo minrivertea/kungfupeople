@@ -56,7 +56,9 @@ function hasRegions(country_name) {
 }
 
 
-jQuery(function($) {
+var gmap;
+google.setOnLoadCallback(function() {
+
     // Set up the select country thing to show flags    
     $('select#id_country').change(function() {
         $(this).parent().find('span.flag').remove();
@@ -85,8 +87,8 @@ jQuery(function($) {
     $('input#id_latitude').parent().hide();
     $('input#id_longitude').parent().hide();
     
-    var gmap = new google.maps.Map2(document.getElementById('gmap'));
-    gmap.addControl(new google.maps.LargeMapControl());
+    gmap = new google.maps.Map2(document.getElementById('gmap'));
+    gmap.addControl(new google.maps.LargeMapControl3D());
     gmap.addControl(new google.maps.MapTypeControl());    
     var lookupTimer = false;
     

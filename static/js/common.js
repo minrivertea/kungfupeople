@@ -26,7 +26,7 @@ function makeWindow(name, username, location, photo, iso_code, lat, lon) {
 
 function zoomOn(lat, lon) {
     //gmap.closeInfoWindow();
-    gmap.setCenter(new google.maps.LatLng(lat, lon), 12);
+    gmap.setCenter(new google.maps.LatLng(lat, lon), 10);
 }
 
 function hideNearbyPeople(gmap) {
