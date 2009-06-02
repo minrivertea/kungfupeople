@@ -6,7 +6,7 @@ jQuery.fn.yellowFade = function() {
     }, 1500);
 }
 
-google.load('maps', '2');
+google.load('maps', '3');
 
 var INITIAL_LAT = 43.834526782236814;
 var INITIAL_LON = -37.265625;
@@ -117,7 +117,7 @@ jQuery(function($) {
             $('#id_latitude').val(),
             $('#id_longitude').val()
         );
-        gmap.setCenter(point, 10);
+        gmap.setCenter(point, 9);
     } else {
         gmap.setCenter(new google.maps.LatLng(INITIAL_LAT, INITIAL_LON), 3);
     }

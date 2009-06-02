@@ -84,7 +84,7 @@ window.onload = function() {
     var point = new google.maps.LatLng(
         person_latitude, person_longitude
     );
-    gmap.setCenter(point, 12);
+    gmap.setCenter(point, 9);
     var marker = new google.maps.Marker(point, getMarkerOpts());
     gmap.addOverlay(marker);
 }
