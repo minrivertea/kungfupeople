@@ -48,7 +48,7 @@ var people = [
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
 
-        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
  			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><a 
                                         href="/{{ person.country.iso_code|lower }}/" class="nobgx">{% if person.country.iso_code or person.country.flag %}<img src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}" class="xmain">{% endif %}</a>
         	        		<p class="meta">
@@ -68,7 +68,7 @@ var people = [
 
 	<div class="intro-box">
 		<strong>What is kung fu?</strong>
-<p><span class="large-text">&ldquo;</span>{{ definition.what_is_kungfu }}<span class="large-text">&rdquo;</span>  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
+<p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
 	
 	</div>
 

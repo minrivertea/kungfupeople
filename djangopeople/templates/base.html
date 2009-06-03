@@ -16,12 +16,12 @@
 	<div id="nav">
 
 	        <ul>
-	            <li{% block nav_li_class_home %}{% endblock %}><a href="/">home</a></li>
-	            <li{% block nav_li_class_about %}{% endblock %}><a href="/about/">about</a></li>
+	            <li><a href="/">home</a></li>
+	            <li><a href="/about/">about</a></li>
 	            {% if not user.is_authenticated %}
 	            <!-- not logged in -->
-	            <li{% block nav_li_class_signup %}{% endblock %}><a href="/signup/">sign up</a></li>
-	            <li{% block nav_li_class_login %}{% endblock %}><a href="/login/">login</a></li>
+	            <li><a href="/signup/">sign up</a></li>
+	            <li><a href="/login/">login</a></li>
 	            {% else %}
 	            <!-- logged in -->
 	            <li>logged in as <strong><a href="/{{ user.username }}/">{{ user.username }}</a></strong> (<a href="/logout/">log out</a>)</li>
@@ -34,6 +34,10 @@
 			</div>
 			{% endif %}
    	</div>
+
+	<div id="title">
+		<h1>kung fu people</h1>
+	</div>
 
 
 
