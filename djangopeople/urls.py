@@ -28,13 +28,11 @@ urlpatterns = patterns('',
     
     (r'^([a-z0-9]{3,})/$', views.profile),
     (r'^([a-z0-9]{3,})/password/$', views.edit_password),
-    (r'^([a-z0-9]{3,})/account/$', views.edit_account),
     (r'^([a-z0-9]{3,})/videos/add/$', views.add_video),
     (r'^([a-z0-9]{3,})/videos/$', views.videos),
     (r'^([a-z0-9]{3,})/videos/delete/(\d+)/$', views.delete_video),
     (r'^([a-z0-9]{3,})/profile/$', views.edit_profile),
     (r'^([a-z0-9]{3,})/location/$', views.edit_location),
-    (r'^([a-z0-9]{3,})/finding/$', views.edit_finding),
     (r'^([a-z0-9]{3,})/upload/$', views.upload_profile_photo),
     (r'^([a-z0-9]{3,})/upload/done/$', views.upload_done),
 )

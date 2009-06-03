@@ -50,10 +50,9 @@ div.bio a.edit {
 		<div id="floater">
 		<ul>
 		  <li class="small-text"><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">Upload a photo</a></li>
-		  <li class="small-text"><a href="/{{user.username }}/videos/" class="meta" id="add_video">Videos</a> (<a href="/{{user.username }}/videos/add/" class="meta">add</a>)</li>
+		  <li class="small-text"><a href="/{{user.username }}/videos/add/" class="meta">Add a video</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/location/">Change your location</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/finding/">Update your contact details</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile information</a></li>
+		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile</a></li>
 		  <li class="small-text">{% if user.has_usable_password %}<a href="/{{ user.username }}/password/">Change your password</a>{% else %}You do not have a password set - <a href="/{{ user.username }}/password/">set one now?</a>{% endif %}</li>
 		</ul>
 		</div>

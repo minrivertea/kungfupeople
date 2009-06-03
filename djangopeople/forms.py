@@ -186,27 +186,24 @@ class LocationForm(forms.Form):
     
     clean_location_description = not_in_the_atlantic
 
-class FindingForm(forms.Form):    
-    def __init__(self, *args, **kwargs):
-        self.person = kwargs.pop('person', 1) # So we can validate e-mail later
-        super(FindingForm, self).__init__(*args, **kwargs)
 
-    email = forms.EmailField()
-    privacy_email = forms.BooleanField(required=False, widget = forms.CheckboxInput)
+class ProfileForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.person = kwargs.pop('person', None) # So we can validate e-mail later
+        super(ProfileForm, self).__init__(*args, **kwargs)
+
+    bio = forms.CharField(widget = forms.Textarea, required=False)
+    personal_url = forms.URLField( required=False)
+    club_url = forms.URLField( required=False)
+    club_name = forms.CharField(max_length=200, required=False)
+    what_is_kungfu = forms.CharField(max_length=144, required=False)
+    email = forms.EmailField(required=False)
 
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email = email).exclude(kungfuperson = self.person).count() > 0:
             raise forms.ValidationError('That e-mail is already being used') 
         return email
-
-class ProfileForm(forms.Form):
-    bio = forms.CharField(widget = forms.Textarea, required=False)
-    trivia = forms.CharField(widget = forms.Textarea, required=False)
-    personal_url = forms.URLField( required=False)
-    club_url = forms.URLField( required=False)
-    club_name = forms.CharField(max_length=200, required=False)
-    what_is_kungfu = forms.CharField(max_length=144, required=False)
 
 class VideoForm(forms.Form):
     embed_src = forms.CharField(widget=forms.Textarea, required=False)

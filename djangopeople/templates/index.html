@@ -26,11 +26,6 @@ var people = [
 
 {% block content %}
 
-	<div class="intro-box">
-		<h3>What is kungfu people?</h3>
-		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
-	</div>
-
 
 	<div id="home-content-box">
 		<div id="inside-left">
@@ -48,13 +43,12 @@ var people = [
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
 
-        	        		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
- 			       	        <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><a 
-                                        href="/{{ person.country.iso_code|lower }}/" class="nobgx">{% if person.country.iso_code or person.country.flag %}<img src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}" class="xmain">{% endif %}</a>
-        	        		<p class="meta">
-                                        {{ person.style }}</p>
+        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+					</div>
 
-                
+ 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
+					<img class="list-map-image" src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
+        	        		<span class="small-text">{{ person.style }}</span>              
  					</li>
         				{% endfor %}
 				</ul>
@@ -65,6 +59,15 @@ var people = [
 
 	</div>
 
+	<div class="intro-box">
+		<h3>Most popular styles</h3>
+		<p><strong>White Cranes:</strong> {{ styles }}</p>
+	</div>
+
+	<div class="intro-box">
+		<h3>What is kungfu people?</h3>
+		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
+	</div>
 
 	<div class="intro-box">
 		<strong>What is kung fu?</strong>
@@ -72,11 +75,7 @@ var people = [
 	
 	</div>
 
-	<div class="intro-box">
-		<h3>Most popular styles</h3>
-<p><strong>White Cranes:</strong> {{ styles }}</p>
-	
-	</div>
+
 
 	<div class="intro-box">
 		<h3>Find a club in your area</h3>

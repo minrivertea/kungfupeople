@@ -11,28 +11,40 @@
 
 {% block content %}
 
-	<div id="content-box">
+	<div class="form-container">
+	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
 
-	<a href="/{{ person.user.username }}">(back to your profile)</a>
+	<h2>1. Paste your video code</h2>
 
-    <form method="post" action="/{{ user.username }}/videos/add/">
-    <p>Add a video to your profile page by entering HTML code in the space provided below. You can add videos from sites like <a href="http://www.youtube.com">Youtube</a> or <a href="http://www.vimeo.com">Vimeo</a> by pasting the 'embed' code they provide into the space below.</p>
+    	<form method="post" action="/{{ user.username }}/videos/add/">
 
-    <p>The video can be of yourself (why not show off your patterns a little!) but doesn't have to be. Try to keep it kung fu related, and remember that anything obscene or offensive will be removed.</p>
-    <fieldset>
-        <div class="fieldWrapper">
+    
+	<fieldset>
+	    <div class="fieldWrapper">
             {{ form.embed_src.errors }}
             <label for="id_video">Video code</label>
             {{ form.embed_src|safe }}
-        </div>
-        <div class="fieldWrapper">
+            </div>
+            <div class="fieldWrapper">
             {{ form.description.errors }}
             <label for="id_video_description">Video description</label>
             {{ form.description }}
-        </div>
-    </fieldset>
-    <div class="buttonContainer"><input type="submit" value="Add Video"></div>
-    </form>
+            </div>
+    	</fieldset>
+
+	<h2>2. Save your video</h2>
+    
+	<div class="buttonContainer"><input type="submit" value="Add Video"></div>
+	</form>
 	</div>
+
+	<div class="form-container">
+    	<p>Add a video to your profile page by entering HTML code in the space provided below. You can add videos from sites like <a href="http://www.youtube.com">Youtube</a> or <a href="http://www.vimeo.com">Vimeo</a> by pasting the 'embed' code they provide into the space below.</p>
+
+	<p>The video can be of yourself (why not show off your patterns a little!) but doesn't have to be. Try to keep it kung fu related, and remember that anything obscene or offensive will be removed.</p>
+	</div>
+
+	
+
 
 {% endblock %}

@@ -14,7 +14,7 @@ body, textarea {
 	font-family: Helvetica,Arial,sans-serif;
 	font-size:100%;
 	line-height: 1.2em;
-	background: white url('/static/img/body-background.png') repeat-y left;
+	background: #ffe095 url('/static/img/body-background.png') no-repeat top left;
 	/*background-color: #8CA93E;*/
 }
 body * {
@@ -38,8 +38,8 @@ ul, li {
 /* @group Headings */
 
 h1 {
-	font-size: 4em;
-	color: #8CA93E;
+	font-size: 5em;
+	color: #bd0505;
 }
 
 h2 {
@@ -48,14 +48,14 @@ h2 {
 	font-size: 1.5em;
 	font-weight: bold;
 	line-height: 1em;
-	color: #8CA93E;
+	color: #bd0505;
 }
 
 h3 {
 	font-family: Helvetica, sans-serif;
 	font-size: 1.3em;
 	font-weight: bold;
-	color: #8CA93E;
+	color: #bd0505;
 	margin-bottom: 10px;
 }
 
@@ -72,12 +72,16 @@ a:visited,
 a:hover,
 a:active,
 a:focus {
+	color: #7e9f24;
+	padding:2px;
 
 }
 a:hover,
 a:active,
 a:focus {
-
+	background-color: #7e9f24;
+	padding:2px;
+	color: white;
 }
 a:active {
 
@@ -128,14 +132,19 @@ ul.errorlist li {
 	width: 10em;
 	clear: left;
 	float: left;
-	margin-bottom: 0.9em;
-	font-weight: bold
+	text-align: right;
+	margin-bottom: 0.6em;
+	margin-right: 10px;
+	font-weight: bold;
+	font-size: 0.9em;
 }
 
 .fieldWrapper input, .fieldWrapper textarea {
-	margin-bottom: 0.9em;
+	margin-bottom: 0.6em;
 	border: 1px inset #326342;
+	background: none white;
 }
+
 input.submit {
 	background-color: #E0FFB8;
 	color: #414F32;
@@ -404,7 +413,8 @@ ul.split li {
 
 #gmap {
 	background-color: #99B3CC;
-	margin: 2px 0 1px 0;
+	float: left;
+	margin: 2px 0 10px 0;
 	width: 98%;
 /*	background-image: url(/static/img/map.png); */
 	background-position: top left;
@@ -556,7 +566,7 @@ body {
 	float: left;
 	font-family: Helvetica, Arial, sans-serif;
 	margin-bottom: 0px;
-	font-size: 48px;
+	font-size: 6em;
 	font-weight: bold;
 }
 
@@ -679,8 +689,7 @@ div#hiddenLogin .openid a:active {
 #nav a:visited,
 #nav a:hover,
 #nav a:active,
-#nav a:focus {
-	color: black;
+#nav a:focus {a
 
 }
 .current a:link,
@@ -735,8 +744,8 @@ div#gmap {
     background-color: #ccc;
 }
 div#crosshair {
-    position: absolute;
-    top: 12.5em;
+    position: relative;
+    top: 550px;
     height: 19px;
     width: 19px;
     left: 49%;
@@ -849,19 +858,47 @@ select#id_country {
     width: 30%;
 }
 
+.form-container {
+    width: 45%;
+    float: left;
+    min-height: 250px;
+    margin: 0 10px 15px 18px;
+    background-color: white;
+    padding: 10px;
+    border: 10px white solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+}
+
+.form-container p {
+	font-size: 1.1em;
+	line-height: 1.8em;
+	padding: 0px 80px 10px 20px;
+}
+
+.form-container-wide {
+    width: 95%;
+    float: left;
+    margin: 0 10px 15px 18px;
+    background-color: white;
+    padding: 10px;
+    border: 10px white solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+}
+
 ul.latest-list {
     margin: 0px 0 0 10px;
     padding-top: 7px;
 }
 
 li.latest-list {
-    list-style-type:none;
-
-}
-
-.latest-list img {
-    float: left;
-    margin-right: 15px;
+	list-style-type:none;
+	margin-bottom: 10px;
 }
 
 .small-text {
@@ -877,5 +914,18 @@ li.latest-list {
     font-size: 1.1em;
     font-style: italic;
 }
-    
+
+.list-photo {
+	float: left;
+	margin-right: 10px;
+}
+
+.list-text {
+	float: left;
+	display: block;
+}
+
+.list-map-image {
+	padding-left: 4px;
+}
 

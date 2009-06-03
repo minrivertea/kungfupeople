@@ -11,29 +11,31 @@
 <div id="content-box">
 
     <form method="post" action="/{{ person.user.username }}/profile/">
-    <h2>Edit your profile information</h2>
+    	<h2>1. Edit your contact details</h2>
 
-    <fieldset>
-        <div class="fieldWrapper">
+    	<fieldset>
+    	    <div class="fieldWrapper">
+    	        {{ form.email.errors }}
+    	        <label for="id_email">E-mail</label>
+    	        {{ form.email }}
+    	    </div>
+    	</fieldset>
+
+	<fieldset>
+            <div class="fieldWrapper">
+                {{ form.personal_url.errors }}
+                <label for="id_personal_url">Personal URL</label>
+                {{ form.personal_url }}
+            </div>
+	</fieldset>
+
+    	<h2>2. Edit your profile information</h2>
+    
+	<fieldset>
+	    <div class="fieldWrapper">
             {{ form.bio.errors }}
             <label for="id_bio">Bio</label>
             {{ form.bio }}
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <div class="fieldWrapper">
-            {{ form.trivia.errors }}
-            <label for="id_trivia">Trivia</label>
-            {{ form.trivia }}
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <div class="fieldWrapper">
-            {{ form.personal_url.errors }}
-            <label for="id_personal_url">Personal URL</label>
-            {{ form.personal_url }}
         </div>
     </fieldset>
 
@@ -44,6 +46,8 @@
             {{ form.what_is_kungfu }}
         </div>
     </fieldset>
+
+    	<h2>3. Save your changes</h2>
 
     <div class="buttonContainer"><input type="submit" value="Save changes"></div>
 

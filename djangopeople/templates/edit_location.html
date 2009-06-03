@@ -21,12 +21,12 @@
 {% endblock %}
 
 {% block content %}
-{% endblock %}
-{% block extra %}
 
-<div class="content">
-    <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
-</div>
+	<div class="form-container-wide">
+		<h2>1. Place the marker on your new location</h2>
+	    	<p><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
+	</div>
+
 <div class="mapContainer major" id="mapWrapper">
     <div id="gmap">&nbsp;</div>
     <div id="crosshair"></div>
@@ -41,9 +41,9 @@
 </div>
 
 
-	<div id="content-box">
-	    <p class="help"><strong>Zoom and center the map on your location</strong>. Your map location will be shared in public, so only make it as accurate as makes you comfortable.</p>
+	<div class="form-container">
 
+	<h2>2. Confirm your location</h2>
 
     <form method="post" action="/{{ user.username }}/location/">
     <fieldset>
@@ -52,7 +52,6 @@
             <label for="id_location_description">Location *</label>
             {{ form.location_description }}
         </div>
-        <p class="help">A short textual description of your location will be displayed on the site. We attempt to derive this from your position on the map, but you can customise it if you like.</p>
         <div class="fieldWrapper country">
             {{ form.country.errors }}
             <label for="id_country">Country</label>
@@ -73,10 +72,17 @@
             <label for="id_region">Region</label>
             {{ form.region }}
         </div>
-    </fieldset>
-    <div class="buttonContainer"><input type="submit" value="Update location"></div>
-    </form>
 	</div>
+	</fieldset>
+
+	<div class="form-container">
+
+	<h2>3. Save your new location</h2>
+
+    	<div class="buttonContainer"><input type="submit" value="Update location"></div>
+    	</div>
+	</form>
+
 </div>
 
 {% endblock %}

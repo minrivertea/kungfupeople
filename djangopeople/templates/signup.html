@@ -23,77 +23,75 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="/signup/">
-    <h2>1. Create your account</h2>    
+	<div class="form-container">
+    		<form method="post" action="/signup/">
+    		<h2>1. Create your account</h2>    
 
-    <fieldset>
-        <div class="fieldWrapper">
-            {{ form.first_name.errors }}
-            <label for="id_first_name">First name *</label>
-            {{ form.first_name }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.last_name.errors }}
-            <label for="id_last_name">Last name *</label>
-            {{ form.last_name }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.email.errors }}
-            <label for="id_email">E-mail *</label>
-            {{ form.email }}
-        </div>
-        <div class="fieldWrapper CheckboxInput">
-            {{ form.privacy_email.errors }}
-	    <label for="id_privacy_email">Hide your email address?</label>
-            {{ form.privacy_email }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.username.errors }}
-            <label for="id_username">Username *</label>
-            {{ form.username }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.password1.errors }}
-            <label for="id_password1">Password *</label>
-            {{ form.password1 }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.password2.errors }}
-            <label for="id_password2">Password (again) *</label>
-            {{ form.password2 }}
-        </div>
+    		<fieldset>
+        		<div class="fieldWrapper">
+        		    {{ form.first_name.errors }}
+        		    <label for="id_first_name">First name *</label>
+    		            {{ form.first_name }}
+        		</div>
+        		<div class="fieldWrapper">
+       			     {{ form.last_name.errors }}
+        		     <label for="id_last_name">Last name *</label>
+       			     {{ form.last_name }}
+        		</div>
+       			<div class="fieldWrapper">
+ 		           {{ form.email.errors }}
+ 		           <label for="id_email">E-mail *</label>
+		            {{ form.email }}
+		        </div>
+		        <div class="fieldWrapper">
+		            {{ form.username.errors }}
+		            <label for="id_username">Username *</label>
+		            {{ form.username }}
+		        </div>
+		        <div class="fieldWrapper">
+		            {{ form.password1.errors }}
+		            <label for="id_password1">Password *</label>
+		            {{ form.password1 }}
+		        </div>
+		       <div class="fieldWrapper">
+ 		           {{ form.password2.errors }}
+		            <label for="id_password2">Password (again) *</label>
+		            {{ form.password2 }}
+		        </div>
     
-    </fieldset>
-{% endblock %}
+		</fieldset>
+	</div>
 
-{% block extra %}
-<div class="content">
-    <h2>2. Where do you train?</h2>
-    <p class="help"><strong>Zoom and centre the map on your location</strong>. Your location will be shared in public, so only make it as accurate you are comfortable - perhaps you can mark the location of your club rather than your private address?</p>
-</div>
+
+	<div class="form-container">
+
+    	<h2>2. Where do you train?</h2>
+    	<p><strong>Zoom and centre the map on your location</strong>. Your location will be shared in public, so only make it as accurate you are comfortable - perhaps you can mark the location of your club rather than your private address?</p>
+
+	</div>
 
 <div class="mapContainer major" id="mapWrapper">
     <div id="gmap">&nbsp;</div>
     <div id="crosshair"></div>
-    
-    <div id="loading">
-    &nbsp;
-    
-      <span id="loading-inner">
-      <img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." />
-        <span class="text">Please wait...</span>
-      </span>
-    </div>
 </div>
 
-<div class="content">
+
+	<div class="form-container-wide">
+    <div id="loading">
+    	&nbsp;
+    	<span id="loading-inner">
+		<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." />
+        	<span class="text">Please wait...</span>
+      	</span>
+    </div>
     <fieldset>
+        <p class="help">We will guess the name of your location from the map position. You can customize it if you like.</p>
         <div class="fieldWrapper" id="location">
             {{ form.location_description.errors }}
             <label for="id_location_description">Location *</label>
             {{ form.location_description }}
         </div>
-        <p class="help">We will guess the name of your location from the map position. You can customize it if you like.</p>
+
         <div class="fieldWrapper country">
             {{ form.country.errors }}
             <label for="id_country">Country</label>
@@ -115,6 +113,9 @@
             {{ form.region }}
         </div>
     </fieldset>
+	</div>
+
+	<div class="form-container">
     
     <h2>3. Tell us about yourself!!</h2>
 
@@ -124,12 +125,6 @@
             <label for="id_bio">Bio</label>
             {{ form.bio }}
         </div>
-        <div class="fieldWrapper">
-            {{ form.trivia.errors }}
-            <label for="id_trivia">Trivia</label>
-            {{ form.trivia }}
-        </div>
-	<p class="help">Write your favourite piece of trivia or martial arts story, or something inspiring from your own martial arts background.</p>
         <div class="fieldWrapper">
             {{ form.style.errors }}
             <label for="id_style">Style</label>
@@ -152,8 +147,16 @@
         </div>
 
     </fieldset>    
+	</div>
+
+	<div class="form-container">
+
+	    <h2>4. Finish!!</h2>
+
+	<p>To create your profile on kung fu people and add yourself to the growing community, click the button below.</p><p><em>Your data is stored securely and will not be shared with third parties, but if you're concerned, read our <a href="/privacy/">privacy policy</a>.</em></p>
     
     <div class="buttonContainer"><input type="submit" value="Sign me up"></div>
     </form>
+	</div>
 </div>
 {% endblock %}

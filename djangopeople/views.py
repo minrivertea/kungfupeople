@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club, Video
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, FindingForm, AccountForm, ProfileForm, VideoForm
+    LocationForm, AccountForm, ProfileForm, VideoForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -337,48 +337,27 @@ def profile(request, username):
     })
 
 @must_be_owner
-def edit_finding(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
-    if request.method == 'POST':
-        form = FindingForm(request.POST)
-        if form.is_valid():
-            user = person.user             
-            user.email = form.cleaned_data['email']
-            user.save()
-            person.privacy_email = form.cleaned_data['privacy_email']
-            person.save()
- 
-            return HttpResponseRedirect('/%s/' % username)
-    else:
-        form = FindingForm(initial={
-            'email': person.user.email,
-            'privacy_email': person.privacy_email,
-        }, person=person)
-    return render(request, 'edit_finding.html', {
-        'form': form,
-        'person': person,
-    })
-
-@must_be_owner
 def edit_profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         if form.is_valid():
+            user = person.user             
+            user.email = form.cleaned_data['email']
             person.bio = form.cleaned_data['bio']
-            person.trivia = form.cleaned_data['trivia']
             person.personal_url = form.cleaned_data['personal_url']
             person.club_membership.url = form.cleaned_data['club_url']
             person.club_membership.name = form.cleaned_data['club_name']
             person.what_is_kungfu = form.cleaned_data['what_is_kungfu']
+            user.save()
             person.save()
             return HttpResponseRedirect('/%s/' % username)
     else:
         initial = {
             'bio': person.bio,
-            'trivia': person.trivia,
             'personal_url': person.personal_url,
             'what_is_kungfu': person.what_is_kungfu,
+            'email': person.user.email,
         }
         form = ProfileForm(initial=initial)
     return render(request, 'edit_profile.html', {

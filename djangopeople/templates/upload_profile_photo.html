@@ -6,7 +6,7 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-        <div id="content-box">
+        <div class="form-container">
             <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
             <form enctype="multipart/form-data" method="post" action=".">
                 <div class="fieldWrapper">
@@ -14,9 +14,12 @@
                     <label for="id_photo">Photo</label>
                     {{ form.photo }}
                 </div>
-                <p class="help">Photos will be resized and cropped to a 83x83 square; for the best results, make sure you are uploading a square image. </p>                      
-                <p><input type="submit" value="Upload"></p>
+                                     
+                <div class="buttonContainer"><input type="submit" value="Upload"></div>
             </form>
-
         </div>
+
+	<div class="form-container">
+		<p>Photos will be resized and cropped to a 83x83 square; for the best results, make sure you are uploading a square image. </p> 
+	</div>
     {% endblock %}
