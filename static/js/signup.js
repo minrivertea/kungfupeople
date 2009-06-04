@@ -92,7 +92,7 @@ function __create_marker(point) {
       $('#id_longitude').val(point.lng());
       
       marker.openInfoWindowHtml('<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." /> '+
-				+"Please wait...<br/>Fetching location name");
+				"Please wait...<br/>Fetching location name");
       if (lookupTimer)
 	clearTimeout(lookupTimer);
       lookupTimer = setTimeout(reverseGeocode, 1000);

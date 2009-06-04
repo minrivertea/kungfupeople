@@ -1,8 +1,3 @@
-* Change from crosshair to this
-http://code.google.com/apis/maps/documentation/examples/marker-drag.html
-in signup.html
-in edit_location.html
-
 * Edit Profile form (forms.py ProfileForm) has validation error. The 'def clean_email' doesn't work, it doesn't .exclude() your own email address properly. Result - you can't open that form, NOT change your email, and still save the form.
 
 * Login function doesn't work. Try logging in from the main navigation
