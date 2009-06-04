@@ -9,6 +9,7 @@ from djangopeople.models import KungfuPerson
 
 urlpatterns = patterns('',
     (r'^$', views.index),
+    (r'^club/([A-Za-z0-9-]{3,})/$', views.club),
     (r'^login/$', views.login),
     (r'^logout/$', views.logout),
     (r'^recent/$', views.recent),

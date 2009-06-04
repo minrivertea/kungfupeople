@@ -82,7 +82,23 @@ div.bio a.edit {
 		</p>
 		<div class="highlight">
 		{% if person.style %}<p><strong>Style:</strong> {{ person.style }}</p>{% endif %}
-            	<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>               		
+            	<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
+		
+		{% if clubs %}
+		<p><strong>Club{{ clubs.count|pluralize }}:</strong></p>
+		{% for club in clubs %}
+		  <p>
+		    {% if club.url %}
+		      <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>
+		    {% else %}
+		    {{ club.name }}
+		    {% endif %}
+		  </p>
+
+		{% endfor %}
+
+		{% endif %}
+		
 		</div>
        
 	</div>
@@ -103,15 +119,19 @@ div.bio a.edit {
    		{% with person.get_nearest as people %}
     		{% if people %}
    		<h3>People near {{ person.user.first_name }}</h3>
-            	    <ul class="latest-list">
-			{% for person in people %}
-   		        <li class="latest-list">
-   		        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}" class="latest-list">
-   		         <a href="{{ person.get_absolute_url }}">{{ person }}</a> ({{ person.country.iso_code }})
-    		         <p>{{ person.style }}</p>
-   			 </li>
-    		         {% endfor %}
-		    </ul>
+				<ul class="latest-list">
+			        	{% for person in people %}
+        	    			<li class="latest-list">
+
+        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+					</div>
+
+ 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
+					<img class="list-map-image" src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
+        	        		<span class="small-text">{{ person.style }}</span>              
+ 					</li>
+        				{% endfor %}
+				</ul>
    		{% endif %}
    		{% endwith %}
    	</div>

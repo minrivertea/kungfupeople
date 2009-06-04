@@ -45,7 +45,7 @@ h1 {
 h2 {
 	font-family: Helvetica, sans-serif;
 	margin: 0.8em 0 1em 0;
-	font-size: 1.5em;
+	font-size: 2em;
 	font-weight: bold;
 	line-height: 1em;
 	color: #bd0505;
@@ -763,6 +763,10 @@ select#id_country {
 
 /* @end */
 
+p {
+	margin-bottom: 1.2em;
+}
+
 #profile_photo {
     width: 120px;
     height: 180px;
@@ -820,8 +824,8 @@ select#id_country {
 }
 
 #content-box, #home-content-box p {
-    padding-bottom: 10px;
-    line-height: 1.5em;
+	padding-bottom: 10px;
+	line-height: 1.5em;
 }
 
 #floater {
@@ -899,6 +903,7 @@ ul.latest-list {
 li.latest-list {
 	list-style-type:none;
 	margin-bottom: 10px;
+	height: 45px;
 }
 
 .small-text {
@@ -927,5 +932,10 @@ li.latest-list {
 
 .list-map-image {
 	padding-left: 4px;
+}
+
+.form-hint {
+	font-size: 0.8em;
+	color: #666;
 }
 

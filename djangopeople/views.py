@@ -178,11 +178,8 @@ def signup(request):
             # Now create the KungfuPerson
             person = KungfuPerson.objects.create(
                 user = user,
-                bio = form.cleaned_data['bio'],
                 style = form.cleaned_data['style'],
-                trivia = form.cleaned_data['trivia'],
                 personal_url = form.cleaned_data['personal_url'],
-                privacy_email = form.cleaned_data['privacy_email'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
@@ -195,8 +192,10 @@ def signup(request):
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
+            slug = name.strip().replace(' ', '-').lower()
             if url or name:
                 club = _get_or_create_club(url, name)
+                club.slug = slug
                 club.save()
                 person.club_membership.add(club)
                 person.save()
@@ -324,7 +323,7 @@ def region(request, country_code, region_code):
 
 def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
-    club = get_object_or_404(Club, kungfuperson = person)
+    clubs = person.club_membership.all()
     others = list(KungfuPerson.objects.filter(style__icontains=person.style).exclude(pk=person.id).order_by('?')[:5])
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
@@ -332,15 +331,27 @@ def profile(request, username):
     return render(request, 'profile.html', {
         'person': person,
         'others': others,
+        'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
     })
 
+def club(request, name):
+    club = get_object_or_404(Club, slug=name)
+    count = Club.objects.all().count()
+
+    return render(request, 'club.html', locals())
+
 @must_be_owner
 def edit_profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
+    try:
+        example = KungfuPerson.objects.exclude(what_is_kungfu=u'').order_by('?')[0]
+    except IndexError:
+        example = None
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST)
+        form = ProfileForm(request.POST, person=person)
         if form.is_valid():
             user = person.user             
             user.email = form.cleaned_data['email']
@@ -359,10 +370,11 @@ def edit_profile(request, username):
             'what_is_kungfu': person.what_is_kungfu,
             'email': person.user.email,
         }
-        form = ProfileForm(initial=initial)
+        form = ProfileForm(initial=initial, person=person)
     return render(request, 'edit_profile.html', {
         'form': form,
         'person': person,
+        'example': example,
     })
 
 

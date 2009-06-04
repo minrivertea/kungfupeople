@@ -52,11 +52,8 @@ class SignupForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput, required=False)
     
     # Fields for creating a KungfuPerson profile
-    bio = forms.CharField(widget=forms.Textarea, required=False)
-    trivia = forms.CharField(widget=forms.Textarea, required=False)
     style = forms.CharField(max_length=200, required=False)
     personal_url = forms.URLField(required=False)
-    privacy_email = forms.BooleanField(required=False, widget = forms.CheckboxInput)
 
     # Fields for adding a club membership
     club_url = forms.CharField(max_length=200, required=False)
@@ -201,7 +198,7 @@ class ProfileForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(email = email).exclude(kungfuperson = self.person).count() > 0:
+        if User.objects.filter(email = email).exclude(kungfuperson = self.person).count():
             raise forms.ValidationError('That e-mail is already being used') 
         return email
 

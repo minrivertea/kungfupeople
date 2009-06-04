@@ -43,7 +43,10 @@
         <div class="fieldWrapper">
             {{ form.what_is_kungfu.errors }}
             <label for="id_what_is_kungfu">What is kungfu?</label>
-            {{ form.what_is_kungfu }}
+            {{ form.what_is_kungfu }} 
+            {% if example %} 
+                <span class="form-hint">(eg. "{{ example.what_is_kungfu }}")</span>
+            {% endif %}
         </div>
     </fieldset>
 

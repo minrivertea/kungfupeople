@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -139,9 +139,17 @@ class Region(models.Model):
         pass
 
 class Club(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField()
     url = models.URLField()
     add_date = models.DateField('date added', default=datetime.now)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Clubs"
+
     
 class Video(models.Model):
     user = models.ForeignKey(User)
