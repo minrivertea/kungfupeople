@@ -33,6 +33,10 @@ var bbox_east = {{ country.bbox_east }};
 {% endblock %}
 
     {% block content %}
+
+	<div id="content-box">
+
+	<h3>{{ country }}</h3>
     {% with country.countrysite_set.all as sites %}
     {% if sites %}
     <div class="highlight">
@@ -45,6 +49,8 @@ var bbox_east = {{ country.bbox_east }};
     </div>
     {% endif %}
     {% endwith %}
+
+
         <ul class="detailsList split">
             {% load person_list_items %}{% person_list_items country.kungfuperson_set.all %}
         </ul>
@@ -58,4 +64,5 @@ var bbox_east = {{ country.bbox_east }};
             {% endfor %}
         </ul>
         {% endif %}
+	</div>
     {% endblock %}

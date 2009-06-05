@@ -339,7 +339,7 @@ def profile(request, username):
 def club(request, name):
     club = get_object_or_404(Club, slug=name)
     members = KungfuPerson.objects.filter(club_membership=club)
-    count = Club.objects.all().count()
+    count = members.count()
 
     return render(request, 'club.html', locals())
 

@@ -99,14 +99,15 @@ div.bio a.edit {
 
 		
 		<div class="highlight">
-			{% if is_owner %}
-			{% if person.bio %}
+			
+				{% if person.bio %}
 				<p><strong>About {{ person.user.first_name }}</strong></p>
 		           	<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
-			{% else %}
-				<p>You haven't written a bio yet - why not <a href="/{{ user.username }}/profile/">introduce yourself a little.</a></p>
-			{% endif %}
-			{% endif %}
+				{% else %}
+					{% if is_owner %}
+					<p>You haven't written a bio yet - why not <a href="/{{ user.username }}/profile/">introduce yourself a little.</a></p>					{% endif %}
+				{% endif %}
+			
 		
 		
 		
