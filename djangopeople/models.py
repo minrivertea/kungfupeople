@@ -142,6 +142,8 @@ class Club(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     url = models.URLField()
+    description = models.TextField()
+    logo = models.ImageField(blank=True, upload_to='logos')
     add_date = models.DateField('date added', default=datetime.now)
 
     def __unicode__(self):

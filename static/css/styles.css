@@ -939,3 +939,19 @@ li.latest-list {
 	color: #666;
 }
 
+#profile-head {
+	height: 110px;
+}
+
+#profile-head h3, p {
+	margin-bottom: 0px;
+}
+
+.profile-photo {
+	height: 100px;
+	width: 100px;
+	margin: 0px 15px 15px 0px;
+	float: left;
+	display: block;
+}
+
