@@ -202,11 +202,13 @@ def signup(request):
             user.set_password(creation_args['password'])
             user.save()
             
-            # Log them in and redirect to their profile page
-            # HACK! http://groups.google.com/group/django-users/
-            #    browse_thread/thread/39488db1864c595f
-            user.backend='django.contrib.auth.backends.ModelBackend' 
-            auth.login(request, user)
+            from django.contrib.auth import load_backend, login
+            for backend in settings.AUTHENTICATION_BACKENDS:
+                if user == load_backend(backend).get_user(user.pk):
+                    user.backend = backend
+            if hasattr(user, 'backend'):
+                login(request, user)
+
             return HttpResponseRedirect(person.get_absolute_url())
         else: print form.errors
     else:
