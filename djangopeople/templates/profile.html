@@ -115,11 +115,16 @@ div.bio a.edit {
        
 	</div>
 
-	{% if is_owner %}
+	{% if is_owner%}
 	<div id="right-box">
 		<p><strong>Your definition of kung fu:</strong></p>
+                {% if person.what_is_kungfu %}
 		<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>
 		<p class="small-text"><a href="/{{ person.user.username }}/profile/">(edit this quote)</a></p>
+                {% else %}
+                <p><em>You have not entered one yet</em></p>
+		<p class="small-text"><a href="/{{ person.user.username }}/profile/">(add your own quote)</a></p>
+                {% endif %}
 		
 	</div>
 	{% endif %}
