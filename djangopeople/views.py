@@ -1,3 +1,4 @@
+import re
 from urlparse import urlparse
 from django.http import Http404, HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
@@ -25,7 +26,6 @@ def render_json(data):
     return HttpResponse(simplejson.dumps(data),
                         mimetype='application/javascript')
     
-
 @utils.simple_decorator
 def must_be_owner(view):
     def inner(request, *args, **kwargs):
@@ -545,16 +545,57 @@ def guess_club_name_json(request):
 
     club_url = club_url.strip()
     if not club_url.startswith('http'):
-        club_url = 'http://' + club_url
+        if not club_url.startswith('file://'):
+            club_url = 'http://' + club_url
         
     domain = urlparse(club_url)[1]
     data = {}
     
     for club in Club.objects.filter(url__icontains=domain).order_by('-add_date'):
-        data = {'club_name': club.name}
-        break
+        data = {'club_name': club.name, 'readonly': True}
+        # easy!
+        return render_json(data)
+    
+    # hmm, perhaps we need to download the HTML and scrape the <title> tag
+    club_name_guess = _club_name_from_url(club_url, request)
+    if club_name_guess:
+        data['club_name'] = club_name_guess
 
     return render_json(data)
+
+def _club_name_from_url(url, request=None):
+    if request:
+        request_meta = request.META
+    else:
+        request_meta = {}
+        
+    html = utils.download_url(url, request_meta)
+    
+    title_regex = re.compile(r'<title>(.*?)</title>', re.I|re.M|re.DOTALL)
+    try:
+        title = title_regex.findall(html)[0].strip()
+    except IndexError:
+        print html
+        return None
+    
+    try:
+        title = unicode(title, 'utf-8')
+    except UnicodeDecodeError:
+        try:
+            title = unicode(title, 'latin1')
+        except UnicodeDecodeError:
+            title = unicode(title, 'utf-8', 'ignore')
+    
+    parts = re.split('\s+-\s+', title)
+    try:
+        return parts[0]
+    except IndexError:
+        pass # :(
+    
+    
+    return None
+    
+    
 
 
 def guess_username_json(request):
