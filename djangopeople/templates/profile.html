@@ -156,7 +156,7 @@ div.bio a.edit {
 
    		{% with person.get_nearest as people %}
     		{% if people %}
-   		<h3>People near {{ person.user.first_name }}</h3>
+   		<h3>People near {% if is_owner %}you{% else %}{{ person.user.first_name }}{% endif %}</h3>
 				<ul class="latest-list">
 			        	{% for person in people %}
         	    			<li class="latest-list">

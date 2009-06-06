@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title%} {{ club }} |{% endblock %}
+
+{% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
+
+{% block js %}{% load thumbnail %}
+{% if person.latitude and person.longitude %}
+<script type="text/javascript">
+var nearby_people = [
+    // latitude, longitude, name, username, location description, flag, isocode
+    {% for p in person.get_nearest %}
+    [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+var person_latitude = {{ person.latitude }};
+var person_longitude = {{ person.longitude }};
+</script>
+<script type="text/javascript" src="/static/js/profile.js"></script>
+<style type="text/css">
+#id_skills {
+    width: 80%;
+}
+a.changeloc, h2 a.edit, div.bio a.edit {
+    font-size: 0.5em;
+    text-decoration: none;
+    vertical-align: middle;
+}
+div.bio a.edit {
+    font-size: 0.8em;
+}
+</style>
+{% endif %}
+
+{% endblock %}  
+
+
+{% block map %}
+    <div class="mapContainer minor">
+        <div id="gmap">&nbsp;</div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+	<div id="content-box">
+
+		<div id="profile-head">
+
+
+		{% if style.photo %}
+		    <img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ style }}" class="profile-photo">
+		{% else %}
+		{% endif %}
+
+       		<h3>{{ style.name }}</h3>
+
+		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in stylists %}<a href="/{{ stylists.country.iso_code|lower }}/">{{ stylists.country }}</a>, {% endfor %}
+
+		</div>
+
+
+		<div class="highlight">
+		
+		{% if members %}
+		    <strong>Stylists</strong>
+		    <ul class="latest-list">
+		{% for stylist in stylists %}
+   			<li class="latest-list">
+			<div class="list-photo"><img src="{% if stylist.photo %}{% thumbnail stylist.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+			</div>
+			<a class="list-item-title" href="{{ stylist.get_absolute_url }}">{{ stylist.user.get_full_name }}</a><br/>
+			<img class="list-map-image" src="{% if stylist.country.iso_code %}/static/img/flags/{{ stylist.country.iso_code|lower }}.gif{% else %}/static/{{ stylist.country.flag }}{% endif %}" alt="{{ stylist.country }}"/>
+        	        <span class="small-text">{{ stylist.location_description }}</span>              
+ 			</li>
+		{% endfor %}
+		    </ul>
+		{% endif %}
+		</div>
+
+       
+	</div>
+
+	<div id="right-box">
+
+		<p>Thinking about joining a kung fu club? Read some of <a href="/join-kungfu-club-tips/">our tips for joining a club...</a></p>
+		
+   	</div>
+
+{% endblock %}
