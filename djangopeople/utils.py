@@ -47,3 +47,20 @@ def simple_decorator(decorator):
     new_decorator.__doc__ = decorator.__doc__
     new_decorator.__dict__.update(decorator.__dict__)
     return new_decorator
+
+
+import urllib2
+def download_url(url, request_meta):
+
+    headers = {}
+    if request_meta.get('HTTP_USER_AGENT'):
+        headers['User-Agent'] = request_meta.get('HTTP_USER_AGENT')
+    if request_meta.get('HTTP_ACCEPT_LANGUAGE'):
+        headers['Accept-Language'] = request_meta.get('HTTP_ACCEPT_LANGUAGE')
+    if request_meta.get('HTTP_ACCEPT'):
+        headers['Accept-Encoding'] = request_meta.get('HTTP_ACCEPT')
+        
+    req = urllib2.Request(url, None, headers)
+    u = urllib2.urlopen(req)
+    headers = u.info()
+    return u.read()

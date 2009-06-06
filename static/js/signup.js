@@ -55,7 +55,7 @@ function reverseGeocode() {
 		  marker.openInfoWindowHtml(html);
 		  
 		  if (gmap.getZoom() >= 3)
-		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+1);
+		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+2);
 		  
 	       }
 	       
@@ -198,9 +198,13 @@ google.setOnLoadCallback(function() {
    $('#id_club_url').change(function() {
       var club_url = $(this).val();
       if ($.trim(club_url)) {
-         jQuery.getJSON('/guess-club-name.json', {club_url:club_url}, function(res) {
-            if (res && res.club_name)
-              jQuery('#id_club_name').val(res.club_name);
+         $.getJSON('/guess-club-name.json', {club_url:club_url}, function(res) {
+            if (res && res.club_name) {
+               $('#id_club_name').val(res.club_name);
+               console.log(res.readonly);
+               if (res.readonly)
+                 $('#id_club_name').attr('readonly','readonly').attr('disabled','disabled').addClass('readonly');
+            }
          });
       }
    });
