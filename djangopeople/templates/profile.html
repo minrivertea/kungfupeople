@@ -49,6 +49,7 @@ div.bio a.edit {
 
 		{% if is_owner %}
 		<div id="floater">
+		<img src="/static/img/edit.png">
 		<ul>
 		  <li class="small-text"><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">Upload a photo</a></li>
 		  <li class="small-text"><a href="/{{user.username }}/videos/add/" class="meta">Add a video</a></li>
@@ -79,17 +80,20 @@ div.bio a.edit {
 		<a href="/{{ person.country.iso_code|lower }}/" class="nobg">
 		<img src="/static/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name">
 		</a> 
-		<span class="region">{{ person.location_description_html }}</span>
+		<span class="region">{{ person.location_description }}</span>
 		</p>
-		{% if person.style %}<p><strong>Style:</strong> {{ person.style }}</p>{% endif %}
+		{% if styles %}
+		<p class="small-text"><strong>Styles:</strong>{% for style in styles %} <a href="/style/{{ style.slug }}">{{ style.name|title }}</a>, {% endfor %}
+		{% endif %}
 
 		{% if clubs %}
-		<p><strong>Club{{ clubs.count|pluralize }}:</strong>{% for club in clubs %}{% if club.url %}
-		      <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>
+		<p class="small-text"><strong>Club{{ clubs.count|pluralize }}:</strong>{% for club in clubs %}{% if club.url %}
+		      <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}, </a>
 		    {% else %}
 		    {{ club.name }}
-		    {% endif %}
-		  </p>
+		</p>
+		{% endif %}
+
 
 		{% endfor %}
 
@@ -133,7 +137,6 @@ div.bio a.edit {
 	<div id="right-box">
 		
 		{% if not others %}
-		<p>{% if is_owner %}You're {% else %}{{ person.user.get_full_name }} is {% endif %} the only {{ person.style }} stylist in the whole world! <a href="/tell_your_friends">Tell your friends now!</a></p>
 		{% else %}
 		<h3>Other {{ person.style }} stylists</h3>
 		<ul class="latest-list">	        

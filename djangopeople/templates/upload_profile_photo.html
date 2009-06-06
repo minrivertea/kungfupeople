@@ -9,17 +9,34 @@
         <div class="form-container">
             <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
             <form enctype="multipart/form-data" method="post" action=".">
-                <div class="fieldWrapper">
+
+
+	<fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
                     {{ form.photo.errors }}
                     <label for="id_photo">Photo</label>
-                    {{ form.photo }}
-                </div>
-                                     
-                <div class="buttonContainer"><input type="submit" value="Upload"></div>
+		</div>
+
+		<div class="form-field-right">
+			{{ form.photo }}
+		</div>
+	</div>
+
+	<div class="form-field-submit">
+    		<div class="buttonContainer">
+    		<input type="submit" value="Upload">
+    		</div>
+	
+	</div>
+	</fieldset>
+
+
             </form>
         </div>
 
 	<div class="form-container">
 		<p>Photos will be resized and cropped to a 100x100 square; for the best results, make sure you are uploading a square image. </p> 
+		<img class="diagram-photo" src="/static/img/upload-a-photo.png"/><img src="/static/img/arrow-right.png"/>
 	</div>
     {% endblock %}

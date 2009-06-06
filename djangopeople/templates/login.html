@@ -45,27 +45,49 @@ input.openid {
 {% block content %}
 	<div class="form-container">
 	<h3>Login</h3>
-    <form method="post" action="/login/">
-    {% if is_invalid %}
-        <p class="invalid">Your login attempt has failed. Please check your details and try again.</p>
-    {% endif %}
-    <fieldset>
-        <div class="fieldWrapper">
-            <label for="id_username">Username</label>
-            <input type="text" name="username" id="id_username" value="{{ username }}">
-        </div>
-        <div class="fieldWrapper">
-            <label for="id_password">Password</label>
-            <input type="password" name="password" id="id_password">
-        </div>
-        <p class="form-hint"><a href="/recover/">Lost your password?</a></p>
-        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-    </fieldset>
-    <div class="buttonContainer">
-        <input type="submit" value="Log in">
-    </div>
-    </form>
+    	<form method="post" action="/login/">
+    	{% if is_invalid %}
+    	    <p class="invalid">Your login attempt has failed. Please check your details and try again.</p>
+    	{% endif %}
+
+	<fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            		<label for="id_username">Username</label>
+		</div>
+		<div class="form-field-right">
+			<input type="text" name="username" id="id_username" value="{{ username }}">
+		</div>
 	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+        	    <label for="id_password">Password</label>
+		</div>
+		<div class="form-field-right">
+		    <input type="password" name="password" id="id_password">
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+ 
+		</div>
+		<div class="form-field-submit">
+    			<div class="buttonContainer">
+    	    		<input type="submit" value="Log in">
+    			</div>
+		</div>
+	</div>
+    	</fieldset>
+
+
+
+    	</form>
+	</div>
+
+        <p class="small-text"><a href="/recover/">Lost your password?</a></p>
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 
 
 {% endblock %}
