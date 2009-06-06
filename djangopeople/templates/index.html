@@ -8,11 +8,11 @@
 var people = [
     // latitude, longitude, name, username, location description
     {% for person in recent_people %}
-    [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+    [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
 </script>
-<script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
 
 {% endblock %}
 
@@ -43,11 +43,11 @@ var people = [
 			        	{% for person in recent_people %}
         	    			<li class="latest-list">
 
-        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
 					</div>
 
  			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
+					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
         	        		<span class="small-text">{{ person.style }}</span>              
  					</li>
         				{% endfor %}
@@ -68,7 +68,7 @@ var people = [
 	</div>
 
 	<div class="intro-box">
-		<img class="list-photo" width="50" height="50" src="/static/img/arrow-up.png"/>
+		<img class="list-photo" width="50" height="50" src="/img/arrow-up.png"/>
 		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
 	</div>
 

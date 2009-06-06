@@ -12,7 +12,7 @@
 
 	<h2>Your current styles(s)</h2>
 	{% for style in styles %}
-	<p><a href="/style/{{ style.slug }}">{{ style|title }}</a><a class="small-text" href="/{{ person.user.username }}/style/delete/{{ style.slug }}/">(<img title="remove this style" class="small-icon" src="/static/img/delete.png">)</a>
+	<p><a href="/style/{{ style.slug }}">{{ style|title }}</a><a class="small-text" href="/{{ person.user.username }}/style/delete/{{ style.slug }}/">(<img title="remove this style" class="small-icon" src="/img/delete.png">)</a>
 	</p>
 	{% endfor %}
 
