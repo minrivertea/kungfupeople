@@ -6,3 +6,14 @@
 * About us page needs writing
 * "tell your friends" email function needs doing
 *
+
+
+LINKS
+
+http://dryicons.com/ - - provided the icons
+http://www.djangoproject.com
+http://simonwillison.net - - provided original inspiration and source code
+http://www.peterbe.com
+http://www.westiseast.co.uk
+http://www.fry-it.com
+http://www.geonames.com

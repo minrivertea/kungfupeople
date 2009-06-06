@@ -189,7 +189,6 @@ class ProfileForm(forms.Form):
         super(ProfileForm, self).__init__(*args, **kwargs)
 
     bio = forms.CharField(widget = forms.Textarea, required=False)
-    personal_url = forms.URLField( required=False)
     club_url = forms.URLField( required=False)
     club_name = forms.CharField(max_length=200, required=False)
     what_is_kungfu = forms.CharField(max_length=144, required=False)
@@ -204,6 +203,9 @@ class ProfileForm(forms.Form):
 class ClubForm(forms.Form):
     club_name = forms.CharField(max_length=200)
     club_url = forms.URLField()
+
+class StyleForm(forms.Form):
+    style_name = forms.CharField(max_length=200)
 
 class VideoForm(forms.Form):
     embed_src = forms.CharField(widget=forms.Textarea, required=False)

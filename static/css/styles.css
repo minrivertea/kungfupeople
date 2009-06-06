@@ -15,6 +15,7 @@ body, textarea {
 	font-size:100%;
 	line-height: 1.2em;
 	background: #ffe095 url('/static/img/body-background.png') no-repeat top left;
+
 	/*background-color: #8CA93E;*/
 }
 body * {
@@ -128,7 +129,7 @@ ul.errorlist li {
 	margin: 5px 0 0 10px;
 }
 
-.fieldWrapper label {
+.form-field-outer label {
 	width: 10em;
 	clear: left;
 	float: left;
@@ -146,27 +147,27 @@ ul.errorlist li {
 }
 
 input.submit {
+	float: right;
 	background-color: #ffafaf;
 	color: #414F32;
-	border-color: #E0FFB8;
-	border-style: outset;
 	padding: 2px 5px;
 }
 .buttonContainer input{
-	background-color: #ffafaf;
-	color: black;
-	margin-top: 2em;
-	border-style: outset;
-	padding: 2px 5px;
+	float: left;
+	margin: 0px;
+	background-color: #bd0505;
+	color: white;
+	padding: 5px 20px 5px 20px;
 	font-size: 0.9em;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
+	border: none;
+-moz-border-radius-bottomleft:20px;
+-moz-border-radius-bottomright:20px;
+-moz-border-radius-topleft:20px;
+-moz-border-radius-topright:20px;
 }
 
 .buttonContainer input:active {
-	border-style: inset
+
 }
 
 fieldset {
@@ -549,6 +550,7 @@ body {
 	height: 120px;
 	line-height: 1;
 	margin: 20px;
+	padding-left: 0px;
 }
 
 .header a {
@@ -837,8 +839,14 @@ p {
     float: right;
     display: block;
     height: auto;
-    width: 40%;
-    text-align: right;
+    width: 20%;
+    text-align: left;
+    padding-left: 60px;
+}
+
+#floater img {
+	margin-left: -60px;
+	float: left;
 }
 
 #right-box {
@@ -855,6 +863,10 @@ p {
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
 -moz-border-radius-topright:10px;
+}
+
+#right-box p {
+	margin-bottom: 10px;
 }
 
 #inside-left {
@@ -961,3 +973,44 @@ li.latest-list {
 	display: block;
 }
 
+.diagram-photo {
+	margin-right: 60px;
+	float: left;
+}
+
+.small-icon {
+	position: relative;
+	top: 3px;
+}
+
+.form-field-outer {
+	display: block;
+	float: left;
+	width: 90%;
+	height: auto;
+	margin-bottom: 20px;
+}
+
+.form-field-left {
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+.form-field-right {
+	float: left;
+	width: 60%;
+	background-color: white;
+}
+
+.form-field-right input, .form-field-right textarea {
+	margin-bottom: 0.6em;
+	border: 1px inset #326342;
+	background: none white;
+}
+
+.form-field-submit {
+	float: left;
+	margin-left: 160px;
+}

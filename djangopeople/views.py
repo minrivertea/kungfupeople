@@ -5,10 +5,10 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region, Club, Video
+from models import KungfuPerson, Country, User, Region, Club, Video, Style
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, AccountForm, ProfileForm, VideoForm, ClubForm
+    LocationForm, AccountForm, ProfileForm, VideoForm, ClubForm, StyleForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -38,12 +38,10 @@ def must_be_owner(view):
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
     definition = KungfuPerson.objects.filter(what_is_kungfu=False).exclude(what_is_kungfu='').order_by('?')[:1].get()
-    styles = KungfuPerson.objects.filter(style__icontains="white crane").count()
     clubs = Club.objects.all().order_by('-add_date')[:5]
     return render(request, 'index.html', {
         'recent_people': recent_people,
         'definition': definition,
-        'styles': styles,
         'clubs': clubs,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),
@@ -173,7 +171,6 @@ def signup(request):
             # Now create the KungfuPerson
             person = KungfuPerson.objects.create(
                 user = user,
-                style = form.cleaned_data['style'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
@@ -182,6 +179,15 @@ def signup(request):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
+
+            # and then add the style if provided
+            name = form.cleaned_data['style']
+            slug = name.strip().replace(' ', '-').lower()
+            if name:
+                style = _get_or_create_style(name)
+                style.slug = slug
+                style.save()
+                person.styles.add(style)
             
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
@@ -234,6 +240,17 @@ def _get_or_create_club(url, name):
     
     # still here?!
     return Club.objects.create(url=url, name=name)
+
+def _get_or_create_style(name):
+    if name:
+        # search by name
+        try:
+            return Style.objects.get(name__iexact=name)
+        except Style.DoesNotExist:
+            pass
+    
+    # still here?!
+    return Style.objects.create(name=name)
 
 import re
 notalpha_re = re.compile('[^a-zA-Z0-9]')
@@ -324,13 +341,13 @@ def region(request, country_code, region_code):
 def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     clubs = person.club_membership.all()
-    others = list(KungfuPerson.objects.filter(style__icontains=person.style).exclude(pk=person.id).order_by('?')[:5])
+    styles = person.styles.all()
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
    
     return render(request, 'profile.html', {
         'person': person,
-        'others': others,
+        'styles': styles,
         'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
@@ -342,6 +359,14 @@ def club(request, name):
     count = members.count()
 
     return render(request, 'club.html', locals())
+
+def style(request, name):
+    style = get_object_or_404(Style, slug=name)
+    stylists = KungfuPerson.objects.filter(styles=style)
+    count = stylists.count()
+
+    return render(request, 'style.html', locals())
+
 
 @must_be_owner
 def edit_profile(request, username):
@@ -357,7 +382,6 @@ def edit_profile(request, username):
             user = person.user             
             user.email = form.cleaned_data['email']
             person.bio = form.cleaned_data['bio']
-            person.personal_url = form.cleaned_data['personal_url']
             person.club_membership.url = form.cleaned_data['club_url']
             person.club_membership.name = form.cleaned_data['club_name']
             person.what_is_kungfu = form.cleaned_data['what_is_kungfu']
@@ -367,7 +391,6 @@ def edit_profile(request, username):
     else:
         initial = {
             'bio': person.bio,
-            'personal_url': person.personal_url,
             'what_is_kungfu': person.what_is_kungfu,
             'email': person.user.email,
         }
@@ -411,6 +434,39 @@ def delete_club_membership(request, username, clubname):
     person.club_membership.remove(club)
     
     return HttpResponseRedirect('/%s/club/' % user.username)
+
+@must_be_owner
+def edit_style(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    styles = person.styles.all()
+
+    if request.method == 'POST':
+        form = StyleForm(request.POST)
+        if form.is_valid():        
+            name = form.cleaned_data['style_name']
+            slug = name.strip().replace(' ', '-').lower()
+            if name:
+                style = _get_or_create_style(name)
+                style.slug = slug
+                style.save()
+                person.styles.add(style)
+                person.save()
+                return HttpResponseRedirect('/%s/style/' % username)
+    else:
+        form = StyleForm()
+    return render(request, 'edit_style.html', locals())
+
+@must_be_owner
+def delete_style(request, username, style):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    user = request.user
+    style = get_object_or_404(Style, slug=style)
+
+    if not user == person.user:
+        raise Http404("You're not authorised to perform this action")
+    person.styles.remove(style)
+    
+    return HttpResponseRedirect('/%s/style/' % user.username)
    
 
 

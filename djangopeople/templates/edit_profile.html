@@ -10,49 +10,62 @@
 
 <div id="content-box">
 
+	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+
     <form method="post" action="/{{ person.user.username }}/profile/">
     	<h2>1. Edit your contact details</h2>
 
-    	<fieldset>
-    	    <div class="fieldWrapper">
+	<fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
     	        {{ form.email.errors }}
     	        <label for="id_email">E-mail</label>
-    	        {{ form.email }}
-    	    </div>
-    	</fieldset>
+		</div>
 
-	<fieldset>
-            <div class="fieldWrapper">
-                {{ form.personal_url.errors }}
-                <label for="id_personal_url">Personal URL</label>
-                {{ form.personal_url }}
-            </div>
+		<div class="form-field-right">
+    	        {{ form.email }}
+		</div>
+	</div>
 	</fieldset>
+	
 
     	<h2>2. Edit your profile information</h2>
     
 	<fieldset>
-	    <div class="fieldWrapper">
-            {{ form.bio.errors }}
-            <label for="id_bio">Bio</label>
-            {{ form.bio }}
-        </div>
-    </fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            	{{ form.bio.errors }}
+            	<label for="id_bio">Bio</label>
+		</div>
 
-    <fieldset>
-        <div class="fieldWrapper">
-            {{ form.what_is_kungfu.errors }}
-            <label for="id_what_is_kungfu">What is kungfu?</label>
-            {{ form.what_is_kungfu }} 
-            {% if example %} 
-                <span class="form-hint">(eg. "{{ example.what_is_kungfu }}")</span>
-            {% endif %}
-        </div>
-    </fieldset>
+		<div class="form-field-right">
+    	        {{ form.bio }}
+		</div>
+	</div>
+	</fieldset>
+
+	<fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
+        	{{ form.what_is_kungfu.errors }}
+        	<label for="id_what_is_kungfu">What is kungfu?</label>
+		</div>
+		<div class="form-field-right">
+    	        {{ form.what_is_kungfu }} 
+            	{% if example %} 
+                <br/><span class="form-hint">(eg. "{{ example.what_is_kungfu }}")</span>
+            	{% endif %}
+		</div>
+	</div>
+	</fieldset>
 
     	<h2>3. Save your changes</h2>
 
-    <div class="buttonContainer"><input type="submit" value="Save changes"></div>
+	<div class="form-field-submit">
+    		<div class="buttonContainer">
+    		<input type="submit" value="Save details">
+    		</div>
+	</div>
 
     </form>
 

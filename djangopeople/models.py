@@ -152,6 +152,19 @@ class Club(models.Model):
     class Meta:
         verbose_name_plural = "Clubs"
 
+
+class Style(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField()
+    description = models.TextField()
+    add_date = models.DateField('date added', default=datetime.now)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Styles"
+
     
 class Video(models.Model):
     user = models.ForeignKey(User)
@@ -170,7 +183,7 @@ class Video(models.Model):
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
-    style = models.CharField(max_length=200)
+    styles = models.ManyToManyField(Style)
     personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
     trivia = models.TextField(blank=True)
