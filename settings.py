@@ -103,7 +103,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'djangopeople',
     'sorl.thumbnail',
-                  
+    'django_static',
 )
 
 
