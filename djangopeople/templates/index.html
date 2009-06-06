@@ -77,11 +77,13 @@ var people = [
 		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
 	</div>
 
+        {% if definition %}
 	<div class="intro-box">
 		<strong>What is kung fu?</strong>
-<p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
+                <p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
 	
 	</div>
+        {% endif %}
 
 
 
