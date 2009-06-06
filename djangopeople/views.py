@@ -37,7 +37,12 @@ def must_be_owner(view):
 
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
-    definition = KungfuPerson.objects.filter(what_is_kungfu=False).exclude(what_is_kungfu='').order_by('?')[:1].get()
+    try:
+        definition = KungfuPerson.objects.filter(what_is_kungfu=False
+                            ).exclude(what_is_kungfu='').order_by('?')[:1].get()
+    except KungfuPerson.DoesNotExist:
+        definition = None
+    
     clubs = Club.objects.all().order_by('-add_date')[:5]
     return render(request, 'index.html', {
         'recent_people': recent_people,
