@@ -38,8 +38,9 @@ def must_be_owner(view):
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
     try:
-        definition = KungfuPerson.objects.filter(what_is_kungfu=False
-                            ).exclude(what_is_kungfu='').order_by('?')[:1].get()
+        definition = KungfuPerson.objects.exclude(
+                                        what_is_kungfu=''
+                                     ).order_by('?')[:1].get()
     except KungfuPerson.DoesNotExist:
         definition = None
     
@@ -53,7 +54,6 @@ def index(request):
         'total_videos': Video.objects.filter(approved=True).count(),
         'total_chris': User.objects.filter(first_name__startswith='Chris').count(),
         'api_key': settings.GOOGLE_MAPS_API_KEY,
-        'countries': Country.objects.top_countries(),
     })
 
 def about(request):

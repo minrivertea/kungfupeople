@@ -1,0 +1,815 @@
+    longitude    |    latitude    |      country_name      |     place_name      | country_code 
+-----------------+----------------+------------------------+---------------------+--------------
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+ -115.7667007450 |  49.5167007446 | Canada                 | Cranbrook           | CA
+  -97.1470031738 |  32.7597007751 | United States          | Arlington           | US
+ -119.3119964600 |  34.3381004333 | United States          | Ventura             | US
+    4.4000000954 |  52.0833015442 | Netherlands            | Leidschendam        | NL
+  -84.9054031372 |  39.8381004333 | United States          | Richmond            | US
+  -72.9241027832 |  41.3111000061 | United States          | New Haven           | US
+  -82.4690017700 |  28.1490001678 | United States          | Lutz                | US
+  -15.4167003632 |  28.1000003815 | Spain                  | Las Palmas          | ES
+   18.3833007813 |  43.8499984741 | Bosnia and Herzegovina | Sarajevo            | BA
+   -2.6166999340 |  53.5332984924 | United Kingdom         | Wigan               | GB
+  -88.9518966675 |  39.8432998657 | United States          | Decatur             | US
+ -123.1088027950 |  44.0539016724 | United States          | Eugene              | US
+  144.7944030760 |  13.4617004395 | Guam                   | Barrigada           | GU
+ -118.1616973880 |  33.7975997925 | United States          | Long Beach          | US
+  -83.5811996460 |  41.6654014587 | United States          | Toledo              | US
+ -118.1361999510 |  34.1562995911 | United States          | Pasadena            | US
+ -122.0324020390 |  37.0101013184 | United States          | Santa Cruz          | US
+  -80.9319000244 |  28.7010002136 | United States          | Mims                | US
+  -88.8920974731 |  38.3177986145 | United States          | Mount Vernon        | US
+   -3.2000000477 |  55.9500007629 | United Kingdom         | Edinburgh           | GB
+ -122.6639022830 |  45.3422012329 | United States          | West Linn           | US
+  -84.2295989990 |  39.1659011841 | United States          | Milford             | US
+  -74.5044021606 |  43.0638999939 | United States          | Johnstown           | US
+   -2.0167999268 |  53.7500000000 | United Kingdom         | Hebden Bridge       | GB
+  -70.7985992432 |  42.0647010803 | United States          | Pembroke            | US
+  -99.7863006592 |  32.4131011963 | United States          | Abilene             | US
+  -84.3864974976 |  33.8003997803 | United States          | Atlanta             | US
+  -74.5006027222 |  40.8064002991 | United States          | Morristown          | US
+  -84.1785964966 |  39.7448997498 | United States          | Dayton              | US
+  -87.9649963379 |  43.0522003174 | United States          | Milwaukee           | US
+ -104.7833023070 |  39.6276016235 | United States          | Aurora              | US
+  -73.0495986938 |  43.5737991333 | United States          | West Rutland        | US
+  -63.1333007813 |  46.2332992554 | Canada                 | Charlottetown       | CA
+  -79.6166992188 |  43.5167007446 | Canada                 | Clarkson            | CA
+  -78.8200988770 |  43.0708007813 | United States          | North Tonawanda     | US
+    7.6999998093 |  47.9166984558 | Germany                | Bad Krozingen       | DE
+   -0.2500000000 |  52.5833015442 | United Kingdom         | Peterborough        | GB
+  -84.1399002075 |  40.5766983032 | United States          | Wapakoneta          | US
+  -84.2977981567 |  43.6439018250 | United States          | Midland             | US
+  115.8332977300 | -31.9333000183 | Australia              | Perth               | AU
+   -1.5832999945 |  52.2832984924 | United Kingdom         | Warwick             | GB
+  150.8166046140 | -33.7667999268 | Australia              | Mount Druitt        | AU
+   80.2833023071 |  13.0832996368 | India                  | Madras              | IN
+  -77.6369018555 |  43.2089996338 | United States          | Rochester           | US
+  -94.9413986206 |  46.3434982300 | United States          | Aldrich             | US
+  -87.3147964478 |  39.4662017822 | United States          | Terre Haute         | US
+  -95.9474029541 |  41.2112998962 | United States          | Omaha               | US
+  -82.8031997681 |  27.9165000916 | United States          | Largo               | US
+   -1.1667000055 |  52.9667015076 | United Kingdom         | Nottingham          | GB
+ -112.2027969360 |  33.0167999268 | United States          | Maricopa            | US
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+  -86.1407012939 |  39.8061981201 | United States          | Indianapolis        | US
+   19.1499996185 |  48.7332992554 | Slovakia               | Banská Bystrica     | SK
+    7.9000000954 |  47.2999992371 | Switzerland            | Rothrist            | CH
+  -89.6582031250 |  30.6432991028 | United States          | Carriere            | US
+  -87.7036972046 |  41.9473991394 | United States          | Chicago             | US
+  -66.9167022705 |  10.5000000000 | Venezuela              | Caracas             | VE
+  -75.3648986816 |  40.6361007690 | United States          | Bethlehem           | US
+  -93.9417037964 |  38.9842987061 | United States          | Odessa              | US
+   -8.4435997009 |  52.8067016602 | Ireland                | Killaloe            | IE
+  -82.3023986816 |  27.9002990723 | United States          | Brandon             | US
+  -85.5426025391 |  36.2443008423 | United States          | Cookeville          | US
+   -4.5666999817 |  55.9500007629 | United Kingdom         | Dumbarton           | GB
+ -115.2049026490 |  36.1515007019 | United States          | Las Vegas           | US
+ -117.3513031010 |  34.5337982178 | United States          | Victorville         | US
+  -83.1201019287 |  39.8638992310 | United States          | Grove City          | US
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+  -84.0101013184 |  33.9542999268 | United States          | Lawrenceville       | US
+  -93.1001968384 |  44.9486999512 | United States          | Saint Paul          | US
+  -81.6285018921 |  38.3627014160 | United States          | Charleston          | US
+    2.1833000183 |  41.3833007813 | Spain                  | Barcelona           | ES
+  -83.5297012329 |  42.4165000916 | United States          | Northville          | US
+  -79.9711990356 |  36.7044982910 | United States          | Fieldale            | US
+  174.8831939700 | -41.2332992554 | New Zealand            | Petone              | NZ
+ -122.7833023070 |  49.2667007446 | Canada                 | Coquitlam           | CA
+ -123.4641036990 |  44.5910987854 | United States          | Philomath           | US
+  -81.9616012573 |  28.0613994598 | United States          | Lakeland            | US
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+  -84.2614974976 |  33.7503013611 | United States          | Decatur             | US
+  -73.9069976807 |  40.7792015076 | United States          | Astoria             | US
+  -97.3128967285 |  27.6348991394 | United States          | Corpus Christi      | US
+  -95.4214019775 |  44.3993988037 | United States          | Lucan               | US
+  -87.9760971069 |  41.8815994263 | United States          | Villa Park          | US
+  -84.0254974365 |  43.4440994263 | United States          | Saginaw             | US
+  -73.8379974365 |  42.6929016113 | United States          | Albany              | US
+   35.5097007751 |  33.8718986511 | Lebanon                | Beirut              | LB
+  -87.9649963379 |  43.0522003174 | United States          | Milwaukee           | US
+  -73.5923004150 |  40.7057991028 | United States          | Uniondale           | US
+ -108.1303024290 |  44.3534011841 | United States          | Basin               | US
+ -122.1483993530 |  37.7034988403 | United States          | San Leandro         | US
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -81.6563034058 |  36.2191009521 | United States          | Boone               | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+  -80.6615982056 |  41.0871009827 | United States          | Youngstown          | US
+  -85.7960968018 |  30.2091999054 | United States          | Panama City Beach   | US
+  113.2500000000 |  23.1166992188 | China                  | Guangzhou           | CN
+    2.3333001137 |  48.8666992188 | France                 | Paris               | FR
+ -119.3005981450 |  35.4961013794 | United States          | Shafter             | US
+  144.2832946780 | -36.7667999268 | Australia              | Bendigo             | AU
+  -79.5000000000 |  43.1500015259 | Canada                 | Mississauga         | CA
+  -81.6473007202 |  41.4789009094 | United States          | Cleveland           | US
+   14.0333003998 |  48.1666984558 | Austria                | Wels                | AT
+    6.7500000000 |  51.4333000183 | Germany                | Duisburg            | DE
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -79.7491989136 |  39.8936996460 | United States          | Uniontown           | US
+  -82.8038024902 |  34.1301994324 | United States          | Elberton            | US
+  151.1833038330 | -33.7999992371 | Australia              | Chatswood           | AU
+  -89.4442977905 |  38.8844985962 | United States          | Greenville          | US
+  -96.5382003784 |  33.0162010193 | United States          | Wylie               | US
+   11.5832996368 |  48.1500015259 | Germany                | Munich              | DE
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  -73.6938018799 |  40.8372993469 | United States          | Port Washington     | US
+ -117.7596969600 |  34.0634994507 | United States          | Pomona              | US
+  -81.2500000000 |  42.9832992554 | Canada                 | London              | CA
+  -82.4781036377 |  27.9983997345 | United States          | Tampa               | US
+ -121.4445037840 |  38.5764999390 | United States          | Sacramento          | US
+  -74.2917022705 |  40.6777992249 | United States          | Kenilworth          | US
+ -123.1088027950 |  44.0539016724 | United States          | Eugene              | US
+ -123.4020996090 |  43.2178993225 | United States          | Roseburg            | US
+   -2.0167999268 |  52.6833000183 | United Kingdom         | Cannock             | GB
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   23.7332000732 |  37.9832992554 | Greece                 | Athens              | GR
+  -71.1328964233 |  42.3800010681 | United States          | Cambridge           | US
+   34.8666992188 |  32.0222015381 | Israel                 | Qiryat Ono          | IL
+   11.0333003998 |  50.9832992554 | Germany                | Erfurt              | DE
+  -93.9401016235 |  41.8560981750 | United States          | Woodward            | US
+   -0.5332999825 |  53.2332992554 | United Kingdom         | Lincoln             | GB
+  -97.7373962402 |  33.8204002380 | United States          | Nocona              | US
+    2.1833000183 |  41.3833007813 | Spain                  | Barcelona           | ES
+  -82.7772979736 |  42.6757011414 | United States          | New Baltimore       | US
+ -111.9288024900 |  33.3843994141 | United States          | Tempe               | US
+ -110.6832962040 |  50.7999992371 | Canada                 | Buffalo             | CA
+  -83.5811996460 |  41.6654014587 | United States          | Toledo              | US
+  139.7514038090 |  35.6850013733 | Japan                  | Tokyo               | JP
+  -96.7993011475 |  32.8097991943 | United States          | Dallas              | US
+  -96.5968017578 |  39.1822013855 | United States          | Manhattan           | US
+    5.4333000183 |  43.5332984924 | France                 | Aix-en-provence     | FR
+  -84.7525024414 |  33.7220993042 | United States          | Douglasville        | US
+   -0.0500000007 |  53.5332984924 | United Kingdom         | Grimsby             | GB
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  -83.3720016479 |  42.3684005737 | United States          | Livonia             | US
+    5.7666997910 |  45.0833015442 | France                 | Vizille             | FR
+    9.1999998093 |  45.4667015076 | Italy                  | Milan               | IT
+  -85.6377029419 |  30.1954994202 | United States          | Panama City         | US
+  -79.9576034546 |  37.2743988037 | United States          | Roanoke             | US
+ -111.8589019770 |  48.2042007446 | United States          | Conrad              | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+   18.0499992371 |  59.3333015442 | Sweden                 | Stockholm           | SE
+ -112.0039978030 |  33.6237983704 | United States          | Phoenix             | US
+  -82.5580978394 |  28.4655990601 | United States          | Spring Hill         | US
+ -111.8733978270 |  33.6645011902 | United States          | Scottsdale          | US
+ -103.2157974240 |  34.3926010132 | United States          | Clovis              | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+   -1.5832999945 |  52.2832984924 | United Kingdom         | Warwick             | GB
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  -97.3188018799 |  27.8922996521 | United States          | Portland            | US
+  -79.8000030518 |  43.3166999817 | Canada                 | Burlington          | CA
+ -111.7273025510 |  33.4253005981 | United States          | Mesa                | US
+   28.0832996368 | -26.2000007629 | South Africa           | Johannesburg        | ZA
+   76.9499969482 |  43.2500000000 | Kazakhstan             | Almaty              | KZ
+ -112.0839004520 |  33.5222015381 | United States          | Phoenix             | US
+  -68.3096008301 |  45.8152008057 | United States          | Sherman             | US
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+   18.6000003815 | -33.9000015259 | South Africa           | Parow               | ZA
+   28.0832996368 | -26.2000007629 | South Africa           | Johannesburg        | ZA
+  -79.4499969482 |  44.0499992371 | Canada                 | Newmarket           | CA
+ -116.4235000610 |  43.5992012024 | United States          | Meridian            | US
+   55.2799987793 |  25.2520999908 | United Arab Emirates   | Dubai               | AE
+  -71.4486999512 |  42.9841003418 | United States          | Manchester          | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -82.8589019775 |  41.5227012634 | United States          | Port Clinton        | US
+  -88.1592025757 |  42.1584014893 | United States          | Barrington          | US
+  -77.2665023804 |  38.6257019043 | United States          | Woodbridge          | US
+  -67.1275024414 |  18.1842994690 | Puerto Rico            | Mayaguez            | PR
+  121.0599975590 |  13.7594003677 | Philippines            | Batangas            | PH
+  -80.3569030762 |  25.6585998535 | United States          | Miami               | US
+ -113.8000030520 |  52.2667007446 | Canada                 | Red Deer            | CA
+  -96.7993011475 |  32.8097991943 | United States          | Dallas              | US
+ -122.0729980470 |  37.6502990723 | United States          | Hayward             | US
+  -87.7596969604 |  41.7090988159 | United States          | Oak Lawn            | US
+ -103.6327972410 |  41.9922981262 | United States          | Scottsbluff         | US
+ -117.8189010620 |  33.9958000183 | United States          | Diamond Bar         | US
+  -84.3523025513 |  33.5092010498 | United States          | Jonesboro           | US
+ -110.6832962040 |  50.7999992371 | Canada                 | Buffalo             | CA
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   -2.9832999706 |  51.5833015442 | United Kingdom         | Newport             | GB
+  -64.7667007446 |  46.0833015442 | Canada                 | Moncton             | CA
+ -123.3731002810 |  42.4589996338 | United States          | Grants Pass         | US
+   -0.6000000238 |  51.1833000183 | United Kingdom         | Godalming           | GB
+   17.0333003998 |  51.0999984741 | Poland                 | Wroclaw             | PL
+  104.0665969850 |  30.6667003632 | China                  | Chengdu             | CN
+ -122.0224990840 |  37.9528999329 | United States          | Concord             | US
+   18.6667003632 |  54.3499984741 | Poland                 | Gdansk              | PL
+   -2.2832999229 |  53.7000007629 | United Kingdom         | Rawtenstall         | GB
+  -58.7500000000 | -38.5499992371 | Argentina              | Necochea            | AR
+  121.4085998530 |  31.0049991608 | China                  | Shanghai            | CN
+   -0.8833000064 |  41.6333007813 | Spain                  | Zaragoza            | ES
+ -104.8585968020 |  39.3779983521 | United States          | Castle Rock         | US
+  -68.8402023315 |  44.8634986877 | United States          | Bangor              | US
+  -82.1790008545 |  28.2336997986 | United States          | Zephyrhills         | US
+   11.3667001724 |  46.5167007446 | Italy                  | Bolzano             | IT
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+ -122.1483993530 |  37.7034988403 | United States          | San Leandro         | US
+ -122.3419036870 |  47.6738014221 | United States          | Seattle             | US
+  -93.4652023315 |  42.0359992981 | United States          | Ames                | US
+  -84.2481994629 |  33.2463989258 | United States          | Griffin             | US
+  -91.1955032349 |  43.8306007385 | United States          | La Crosse           | US
+  -81.1294021606 |  29.3187999725 | United States          | Ormond Beach        | US
+  -77.3880996704 |  38.9552993774 | United States          | Herndon             | US
+  -73.5667037964 |  45.4500007629 | Canada                 | Verdun              | CA
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -84.1158981323 |  39.3381996155 | United States          | Morrow              | US
+    2.3333001137 |  48.8666992188 | France                 | Paris               | FR
+   -3.0000000000 |  53.4166984558 | United Kingdom         | Liverpool           | GB
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+   -2.2500000000 |  52.3833007813 | United Kingdom         | Kidderminster       | GB
+  -78.8503036499 |  41.2528991699 | United States          | Brockway            | US
+  -93.2741012573 |  45.2573013306 | United States          | Andover             | US
+  -79.7667007446 |  43.6833000183 | Canada                 | Brampton            | CA
+   17.7999992371 |  59.3666992188 | Sweden                 | Hässelby            | SE
+   18.4167003632 | -33.9166984558 | South Africa           | Cape Town           | ZA
+    4.3333001137 |  50.8333015442 | Belgium                | Brussels            | BE
+  -80.6541976929 |  27.9801006317 | United States          | Palm Bay            | US
+  -92.0385971069 |  30.2077999115 | United States          | Lafayette           | US
+  -77.6611022949 |  39.9375991821 | United States          | Chambersburg        | US
+  153.0166931150 | -27.5000000000 | Australia              | Brisbane            | AU
+  100.5167007450 |  13.7500000000 | Thailand               | Bangkok             | TH
+   -2.9832999706 |  51.5833015442 | United Kingdom         | Newport             | GB
+  115.8332977300 | -31.9333000183 | Australia              | Perth               | AU
+  -73.1840972900 |  44.4524002075 | United States          | South Burlington    | US
+  -81.6285018921 |  38.3627014160 | United States          | Charleston          | US
+  -82.9882965088 |  39.9967994690 | United States          | Columbus            | US
+  -78.8291015625 |  42.9095993042 | United States          | Buffalo             | US
+  -75.6999969482 |  45.4166984558 | Canada                 | Ottawa              | CA
+  -89.7326965332 |  41.8247985840 | United States          | Sterling            | US
+  -88.2829971313 |  36.6355018616 | United States          | Murray              | US
+ -113.5000000000 |  53.5499992371 | Canada                 | Edmonton            | CA
+  -92.9438018799 |  44.9197998047 | United States          | Saint Paul          | US
+  115.8332977300 | -31.9333000183 | Australia              | Perth               | AU
+  -83.6586990356 |  32.8373985291 | United States          | Macon               | US
+ -120.3592987060 |  47.3707008362 | United States          | Wenatchee           | US
+  -92.3802032471 |  35.0639991760 | United States          | Conway              | US
+  -81.1498031616 |  34.0814018250 | United States          | Columbia            | US
+  -78.6311035156 |  35.8429985046 | United States          | Raleigh             | US
+  -74.9439010620 |  39.9757003784 | United States          | Moorestown          | US
+  -71.0190963745 |  42.0826988220 | United States          | Brockton            | US
+ -118.2892990110 |  34.1281013489 | United States          | Los Angeles         | US
+  -94.5502014160 |  39.1024017334 | United States          | Kansas City         | US
+  125.3227996830 |  43.8800010681 | China                  | Changchun           | CN
+  -95.0278015137 |  45.1059989929 | United States          | Willmar             | US
+ -117.7143020630 |  34.1222991943 | United States          | Claremont           | US
+ -122.6654968260 |  47.5906982422 | United States          | Bremerton           | US
+    8.6833000183 |  50.1166992188 | Germany                | Frankfurt Am Main   | DE
+ -157.9636993410 |  21.4701004028 | United States          | Mililani            | US
+   -0.1500000060 |  50.8333015442 | United Kingdom         | Brighton            | GB
+  153.2666931150 | -27.5333003998 | Australia              | Cleveland           | AU
+ -104.9793014530 |  39.7436981201 | United States          | Denver              | US
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  -86.6108016968 |  34.7018013000 | United States          | Huntsville          | US
+  -74.1990966797 |  40.6636009216 | United States          | Elizabeth           | US
+  150.9833068850 | -33.8166999817 | Australia              | Westmead            | AU
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -88.0585021973 |  41.8661003113 | United States          | Glen Ellyn          | US
+  -83.3710021973 |  42.3317985535 | United States          | Westland            | US
+   14.4672002792 |  35.8460998535 | Malta                  | Mqabba              | MT
+  -76.8491973877 |  39.1966018677 | United States          | Columbia            | US
+  -91.7790985107 |  37.9264984131 | United States          | Rolla               | US
+   21.0000000000 |  52.2500000000 | Poland                 | Warsaw              | PL
+  138.6000061030 | -34.9333000183 | Australia              | Adelaide            | AU
+  -86.5169982910 |  39.1679000854 | United States          | Bloomington         | US
+   14.5131998062 |  35.8703002930 | Malta                  | Fgura               | MT
+  -87.9649963379 |  43.0522003174 | United States          | Milwaukee           | US
+  -74.1601028442 |  39.9872016907 | United States          | Toms River          | US
+  -71.4486999512 |  42.9841003418 | United States          | Manchester          | US
+  -76.4832992554 |  44.2332992554 | Canada                 | Kingston            | CA
+  -82.7955017090 |  27.8428001404 | United States          | Seminole            | US
+   -0.2500000000 |  51.4166984558 | United Kingdom         | New Malden          | GB
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -90.9713973999 |  30.3792991638 | United States          | Baton Rouge         | US
+  -84.6288986206 |  40.5345001221 | United States          | Celina              | US
+  -75.6999969482 |  45.4166984558 | Canada                 | Ottawa              | CA
+ -122.2192993160 |  37.7949981689 | United States          | Oakland             | US
+   12.5832996368 |  55.6666984558 | Denmark                | Copenhagen          | DK
+  -89.6166000366 |  40.6963005066 | United States          | Peoria              | US
+  -46.6166992188 | -23.5333003998 | Brazil                 | São Paulo           | BR
+  -84.3864974976 |  33.8003997803 | United States          | Atlanta             | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+   14.4666996002 |  50.0833015442 | Czech Republic         | Prague              | CZ
+ -124.1476974490 |  43.3740005493 | United States          | Coos Bay            | US
+ -122.6500015260 |  49.0999984741 | Canada                 | Langley             | CA
+   11.5832996368 |  48.1500015259 | Germany                | Munich              | DE
+  -81.6551971436 |  30.2938995361 | United States          | Jacksonville        | US
+   -2.2167000771 |  53.5000000000 | United Kingdom         | Manchester          | GB
+   -1.3667000532 |  52.7167015076 | United Kingdom         | Coalville           | GB
+    6.0332999229 |  47.2500000000 | France                 | Besançon            | FR
+   -2.2167000771 |  53.5000000000 | United Kingdom         | Manchester          | GB
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+ -111.8795013430 |  33.2818984985 | United States          | Chandler            | US
+  -77.3833007813 |  44.1666984558 | Canada                 | Belleville          | CA
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+ -117.2080001830 |  33.9199981689 | United States          | Moreno Valley       | US
+  153.0166931150 | -27.5000000000 | Australia              | Brisbane            | AU
+ -118.2987976070 |  34.0415992737 | United States          | Los Angeles         | US
+  -96.7993011475 |  32.8097991943 | United States          | Dallas              | US
+ -122.2693023680 |  37.5479011536 | United States          | Foster City         | US
+ -122.6961975100 |  45.4509010315 | United States          | Portland            | US
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -98.0742034912 |  29.7043991089 | United States          | New Braunfels       | US
+  -88.9033966064 |  40.4660987854 | United States          | Bloomington         | US
+  -82.4598007202 |  34.7266006470 | United States          | Piedmont            | US
+  153.0166931150 | -27.5000000000 | Australia              | Brisbane            | AU
+  -88.2985000610 |  42.6496009827 | United States          | Burlington          | US
+ -122.8212966920 |  49.1363983154 | Canada                 | Surrey              | CA
+  -76.1494979858 |  43.0513992310 | United States          | Syracuse            | US
+ -121.9357986450 |  37.7678985596 | United States          | San Ramon           | US
+  -89.0775985718 |  37.7860984802 | United States          | Carterville         | US
+  -81.5158004761 |  28.7313003540 | United States          | Apopka              | US
+  -77.5920028687 |  43.2246017456 | United States          | Rochester           | US
+  -97.7695999146 |  30.3036994934 | United States          | Austin              | US
+  -79.9549026489 |  37.3637008667 | United States          | Roanoke             | US
+  -84.4272994995 |  33.5523986816 | United States          | Riverdale           | US
+  -82.1149978638 |  41.3648986816 | United States          | Elyria              | US
+  100.5167007450 |  13.7500000000 | Thailand               | Bangkok             | TH
+  -97.5189971924 |  35.4715003967 | United States          | Oklahoma City       | US
+ -122.1483993530 |  37.7034988403 | United States          | San Leandro         | US
+  -80.8600006104 |  35.2076988220 | United States          | Charlotte           | US
+  151.3083038330 | -33.5332984924 | Australia              | Umina               | AU
+  -69.9000015259 |  18.4666996002 | Dominican Republic     | Santo Domingo       | DO
+  -89.8216018677 |  34.9179992676 | United States          | Olive Branch        | US
+  -82.7772979736 |  42.6757011414 | United States          | New Baltimore       | US
+  -90.3025970459 |  38.6385002136 | United States          | Saint Louis         | US
+  -83.9468002319 |  42.4580993652 | United States          | Pinckney            | US
+  138.6000061030 | -34.9333000183 | Australia              | Adelaide            | AU
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+  -81.6731033325 |  41.3140983582 | United States          | Broadview Heights   | US
+  -86.7566986084 |  41.2156982422 | United States          | North Judson        | US
+ -106.7274017330 |  34.7743988037 | United States          | Los Lunas           | US
+  -93.9488983154 |  39.3442001343 | United States          | Richmond            | US
+   -0.1000000015 |  51.3833007813 | United Kingdom         | Croydon             | GB
+ -112.1872024540 |  33.2765007019 | United States          | Scottsdale          | US
+  -87.8366012573 |  41.6995010376 | United States          | Palos Hills         | US
+  -97.7417984009 |  31.2164001465 | United States          | Killeen             | US
+  -89.6858978271 |  39.7719993591 | United States          | Springfield         | US
+ -111.7273025510 |  33.4253005981 | United States          | Mesa                | US
+ -123.1333007810 |  49.2500000000 | Canada                 | Vancouver           | CA
+  -73.9763031006 |  40.7619018555 | United States          | New York            | US
+   30.5167007446 |  50.4333000183 | Ukraine                | Kiev                | UA
+ -122.1557006840 |  47.6026992798 | United States          | Bellevue            | US
+   -2.6166999340 |  53.3833007813 | United Kingdom         | Great Sankey        | GB
+  -81.6278991699 |  41.0232009888 | United States          | Barberton           | US
+   -2.3499999046 |  53.7667007446 | United Kingdom         | Accrington          | GB
+  -87.8575973511 |  42.5376014709 | United States          | Kenosha             | US
+ -118.2987976070 |  34.0415992737 | United States          | Los Angeles         | US
+  -77.3164978027 |  38.8489990234 | United States          | Fairfax             | US
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+ -122.6500015260 |  49.0999984741 | Canada                 | Langley             | CA
+  -68.4823989868 |  47.1922988892 | United States          | Fort Kent           | US
+  -76.8445968628 |  40.2843017578 | United States          | Harrisburg          | US
+  -74.2917022705 |  40.6777992249 | United States          | Kenilworth          | US
+  -87.2582015991 |  30.4577999115 | United States          | Pensacola           | US
+  -90.3025970459 |  38.6385002136 | United States          | Saint Louis         | US
+  -88.7071990967 |  42.8047981262 | United States          | Whitewater          | US
+ -121.4445037840 |  38.5764999390 | United States          | Sacramento          | US
+  -81.6473007202 |  41.4789009094 | United States          | Cleveland           | US
+  -77.4801025391 |  37.5409011841 | United States          | Richmond            | US
+   -3.2000000477 |  55.9500007629 | United Kingdom         | Edinburgh           | GB
+   33.3666992188 |  35.1666984558 | Cyprus                 | Nicosia             | CY
+  -75.5883026123 |  40.8366012573 | United States          | Palmerton           | US
+  -94.5502014160 |  39.1024017334 | United States          | Kansas City         | US
+  -97.7036972046 |  38.3768997192 | United States          | Mcpherson           | US
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+   -0.6999999881 |  52.2999992371 | United Kingdom         | Wellingborough      | GB
+  -85.4299011230 |  38.3438987732 | United States          | Crestwood           | US
+  -77.0231018066 |  38.9096984863 | United States          | Washington          | US
+   31.2500000000 |  30.0499992371 | Egypt                  | Cairo               | EG
+  -65.1832962036 |  47.0332984924 | Canada                 | Miramichi           | CA
+ -122.0195999150 |  37.3842010498 | United States          | Sunnyvale           | US
+  -81.6473007202 |  41.4789009094 | United States          | Cleveland           | US
+  -86.1407012939 |  39.8061981201 | United States          | Indianapolis        | US
+  -86.1407012939 |  39.8061981201 | United States          | Indianapolis        | US
+  -93.7405014038 |  41.5663986206 | United States          | West Des Moines     | US
+   21.2271995544 |  45.7494010925 | Romania                | Timisoara           | RO
+  -71.3225021362 |  42.6416015625 | United States          | Lowell              | US
+  -86.0880966187 |  39.6794013977 | United States          | Indianapolis        | US
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+    6.6332998276 |  49.7500000000 | Germany                | Trier               | DE
+ -104.9793014530 |  39.7436981201 | United States          | Denver              | US
+ -121.6231002810 |  37.8526000977 | United States          | Byron               | US
+  -83.9784011841 |  43.4314002991 | United States          | Saginaw             | US
+  -83.1407012939 |  42.4608001709 | United States          | Ferndale            | US
+   -8.6332998276 |  40.8666992188 | Portugal               | Ovar                | PT
+  -79.4499969482 |  46.2999992371 | Canada                 | North Bay           | CA
+  -86.8641967773 |  40.3987007141 | United States          | Lafayette           | US
+  -88.0582962036 |  41.8661003113 | United States          | Glen Ellyn          | US
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+  -73.5832977295 |  45.5000000000 | Canada                 | Montreal            | CA
+  -87.6744003296 |  41.8675003052 | United States          | Chicago             | US
+  -71.4073028564 |  42.0876007080 | United States          | Franklin            | US
+  -86.1600036621 |  39.7723999023 | United States          | Indianapolis        | US
+  -86.1600036621 |  39.7723999023 | United States          | Indianapolis        | US
+  -96.9628982544 |  32.8568992615 | United States          | Irving              | US
+   16.1833000183 |  58.5999984741 | Sweden                 | Norrköping          | SE
+  -81.9033966064 |  28.8649997711 | United States          | Fruitland Park      | US
+  -75.3814010620 |  40.6552009583 | United States          | Bethlehem           | US
+  -97.6763000488 |  30.5093994141 | United States          | Round Rock          | US
+  -96.7650985718 |  38.9660987854 | United States          | Junction City       | US
+  -80.0924987793 |  26.7212009430 | United States          | West Palm Beach     | US
+  -99.3470001221 |  38.9001007080 | United States          | Hays                | US
+  -87.6377029419 |  41.8824005127 | United States          | Chicago             | US
+    9.0666999817 |  45.5666999817 | Italy                  | Garbagnate Milanese | IT
+  -95.3669967651 |  29.7523002625 | United States          | Houston             | US
+  -77.0231018066 |  38.9096984863 | United States          | Washington          | US
+   -0.8833000064 |  52.2500000000 | United Kingdom         | Northampton         | GB
+  -88.8643035889 |  40.5191993713 | United States          | Bloomington         | US
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+ -117.1322021480 |  32.7976989746 | United States          | San Diego           | US
+  -86.0522994995 |  40.0724983215 | United States          | Carmel              | US
+  -89.9521026611 |  35.1241989136 | United States          | Memphis             | US
+  -77.4755020142 |  38.9880981445 | United States          | Sterling            | US
+ -150.9060974120 |  60.6605987549 | United States          | Kenai               | US
+  -97.8398971558 |  33.1519012451 | United States          | Bridgeport          | US
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+  -84.5615005493 |  33.3909988403 | United States          | Peachtree City      | US
+  -96.5858993530 |  33.1884002686 | United States          | Mckinney            | US
+  -77.3375015259 |  38.8357009888 | United States          | Fairfax             | US
+   -4.1385998726 |  50.3964004517 | United Kingdom         | Plymouth            | GB
+  -88.9197998047 |  38.6367988586 | United States          | Salem               | US
+ -117.5799026490 |  34.1459999084 | United States          | Rancho Cucamonga    | US
+  -81.3039016724 |  28.9403991699 | United States          | Orange City         | US
+  -48.4832992554 |  -1.4500000477 | Brazil                 | Belém               | BR
+  -77.0231018066 |  38.9096984863 | United States          | Washington          | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+  -89.5273971558 |  43.0736999512 | United States          | Madison             | US
+  -87.6636962891 |  41.6966018677 | United States          | Chicago             | US
+   14.3052997589 |  46.6246986389 | Austria                | Klagenfurt          | AT
+  -81.3305969238 |  28.5037002563 | United States          | Orlando             | US
+ -104.9793014530 |  39.7436981201 | United States          | Denver              | US
+  121.4085998530 |  31.0049991608 | China                  | Shanghai            | CN
+  -87.8112030029 |  42.0309982300 | United States          | Niles               | US
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -73.8918991089 |  41.6903991699 | United States          | Poughkeepsie        | US
+   -2.5833001137 |  51.4500007629 | United Kingdom         | Bristol             | GB
+  -78.2136001587 |  39.2029991150 | United States          | Winchester          | US
+   28.3166999817 | -26.1833000183 | South Africa           | Benoni              | ZA
+ -117.9588012700 |  34.0372009277 | United States          | La Puente           | US
+  -82.3951034546 |  27.0755004883 | United States          | Venice              | US
+  -93.1001968384 |  44.9486999512 | United States          | Saint Paul          | US
+  -73.9718017578 |  40.8894996643 | United States          | Englewood           | US
+  -77.4701995850 |  38.7391014099 | United States          | Manassas            | US
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+  138.8500061030 | -32.7332992554 | Australia              | Erskine             | AU
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+ -105.6076965330 |  44.2256011963 | United States          | Gillette            | US
+  -77.3880996704 |  38.9552993774 | United States          | Herndon             | US
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+  -81.6299972534 |  28.7619991302 | United States          | Mount Dora          | US
+  -79.6287994385 |  36.3400001526 | United States          | Reidsville          | US
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+  -74.1470031738 |  40.7210998535 | United States          | Newark              | US
+ -104.8996963500 |  39.7428016663 | United States          | Denver              | US
+  -73.5167007446 |  45.5332984924 | Canada                 | Longueuil           | CA
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+ -105.7500000000 |  53.2000007629 | Canada                 | Prince Albert       | CA
+   28.2294006348 | -25.7068996429 | South Africa           | Pretoria            | ZA
+  -83.5026016235 |  42.6565017700 | United States          | White Lake          | US
+  -81.6551971436 |  30.2938995361 | United States          | Jacksonville        | US
+  149.2167053220 | -35.2832984924 | Australia              | Canberra            | AU
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+   16.3666992188 |  48.2000007629 | Austria                | Vienna              | AT
+ -122.2192993160 |  37.7949981689 | United States          | Oakland             | US
+    2.3333001137 |  48.8666992188 | France                 | Paris               | FR
+  -86.8942031860 |  33.5833015442 | United States          | Birmingham          | US
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+    7.9166998863 |  47.3499984741 | Switzerland            | Olten               | CH
+  115.8332977300 | -31.9333000183 | Australia              | Perth               | AU
+  103.8557968140 |   1.2930999994 | Singapore              | Singapore           | SG
+  -86.7844009399 |  36.1458015442 | United States          | Nashville           | US
+   24.1000003815 |  56.9500007629 | Latvia                 | Riga                | LV
+  151.1000061030 | -33.9667015076 | Australia              | Hurstville          | AU
+  -73.2843017578 |  41.1745986938 | United States          | Fairfield           | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   -1.7500000000 |  53.7832984924 | United Kingdom         | Bradford            | GB
+   -2.5999999046 |  51.8833007813 | United Kingdom         | Walford             | GB
+   -0.7500000000 |  51.4166984558 | United Kingdom         | Bracknell           | GB
+   -8.5500001907 |  41.3499984741 | Portugal               | Ribeirão            | PT
+   18.3332996368 |  49.6833000183 | Czech Republic         | Frýdek-místek       | CZ
+   -9.1332998276 |  38.7167015076 | Portugal               | Lisbon              | PT
+   -3.4333000183 |  47.7332992554 | France                 | Ploemeur            | FR
+   11.8832998276 |  45.4166984558 | Italy                  | Padova              | IT
+  151.9667053220 | -27.5499992371 | Australia              | Toowoomba           | AU
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+  -90.4443969727 |  38.6142997742 | United States          | Saint Louis         | US
+   28.0832996368 | -26.2000007629 | South Africa           | Johannesburg        | ZA
+    5.3832998276 |  52.1500015259 | Netherlands            | Amersfoort          | NL
+   -2.9667000771 |  56.5000000000 | United Kingdom         | Dundee              | GB
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+   24.1000003815 |  56.9500007629 | Latvia                 | Riga                | LV
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+   78.4744033813 |  17.3752994537 | India                  | Hyderabad           | IN
+  121.3056030270 |  24.9869003296 | Taiwan                 | Taoyüan             | TW
+   -1.4213999510 |  54.9878005981 | United Kingdom         | South Shields       | GB
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -85.7854003906 |  39.5238990784 | United States          | Shelbyville         | US
+ -113.5000000000 |  53.5499992371 | Canada                 | Edmonton            | CA
+ -118.2987976070 |  34.0415992737 | United States          | Los Angeles         | US
+  153.0166931150 | -27.5000000000 | Australia              | Brisbane            | AU
+  151.2082977300 | -33.7667999268 | Australia              | Forestville         | AU
+   -3.5332999229 |  55.8833007813 | United Kingdom         | Livingston          | GB
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+    4.4000000954 |  52.1500015259 | Netherlands            | Wassenaar           | NL
+ -122.3000030520 |  49.0499992371 | Canada                 | Abbotsford          | CA
+   23.8999996185 |  54.9000015259 | Lithuania              | Kaunas              | LT
+  -58.6725006104 | -34.5875015259 | Argentina              | Buenos Aires        | AR
+  -71.1299972534 |  41.9113006592 | United States          | Taunton             | US
+ -104.9994964600 |  39.7524986267 | United States          | Denver              | US
+  -86.6372985840 |  36.0371017456 | United States          | Antioch             | US
+ -123.0197982790 |  44.9500007629 | United States          | Salem               | US
+ -118.3115005490 |  37.5060005188 | United States          | Bishop              | US
+  -63.5999984741 |  44.6500015259 | Canada                 | Halifax             | CA
+  -88.5174026489 |  36.1348991394 | United States          | Mc Kenzie           | US
+ -111.9288024900 |  33.3843994141 | United States          | Tempe               | US
+  -92.3665008545 |  34.7337989807 | United States          | Little Rock         | US
+   55.2799987793 |  25.2520999908 | United Arab Emirates   | Dubai               | AE
+ -119.2272033690 |  35.3832015991 | United States          | Bakersfield         | US
+  101.6999969480 |   3.1666998863 | Malaysia               | Kuala Lumpur        | MY
+  101.6999969480 |   3.1666998863 | Malaysia               | Kuala Lumpur        | MY
+ -112.0496978760 |  33.4651985168 | United States          | Phoenix             | US
+   80.2833023071 |  13.0832996368 | India                  | Madras              | IN
+  -77.4801025391 |  37.5409011841 | United States          | Richmond            | US
+  -83.3731994629 |  42.3968009949 | United States          | Livonia             | US
+   80.2833023071 |  13.0832996368 | India                  | Madras              | IN
+  139.8500061030 |  38.9000015259 | Japan                  | Usen                | JP
+  -95.7185974121 |  40.1604003906 | United States          | Verdon              | US
+  -93.4946975708 |  45.1234016418 | United States          | Osseo               | US
+ -122.4514999390 |  47.2165985107 | United States          | Tacoma              | US
+  -73.5167007446 |  45.5332984924 | Canada                 | Longueuil           | CA
+ -115.0249023440 |  36.0327987671 | United States          | Henderson           | US
+  -85.0678024292 |  30.4134006500 | United States          | Blountstown         | US
+   -0.7667000294 |  51.6333007813 | United Kingdom         | High Wycombe        | GB
+  -77.6139984131 |  37.6198005676 | United States          | Richmond            | US
+  -97.7695999146 |  30.3036994934 | United States          | Austin              | US
+  -83.6863021851 |  43.1225013733 | United States          | Mount Morris        | US
+  -89.7403030396 |  44.3359985352 | United States          | Wisconsin Rapids    | US
+  -79.8000030518 |  43.3166999817 | Canada                 | Burlington          | CA
+ -104.6166992190 |  50.4500007629 | Canada                 | Regina              | CA
+  -84.4926986694 |  38.0293006897 | United States          | Lexington           | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+ -117.7288970950 |  33.9472999573 | United States          | Chino Hills         | US
+  -76.0912017822 |  39.3047981262 | United States          | Worton              | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+ -123.0613021850 |  48.0656013489 | United States          | Sequim              | US
+   37.6156005859 |  55.7522010803 | Russian Federation     | Moscow              | RU
+  121.5250015260 |  25.0391998291 | Taiwan                 | Taipei              | TW
+  -72.0385971069 |  41.3531990051 | United States          | Groton              | US
+  -80.5333023071 |  43.4667015076 | Canada                 | Waterloo            | CA
+  -84.3985977173 |  39.2747993469 | United States          | Cincinnati          | US
+  153.3332977300 | -27.9832992554 | Australia              | Nerang              | AU
+  -79.2519989014 |  42.1044998169 | United States          | Jamestown           | US
+  -95.5224990845 |  32.3319015503 | United States          | Chandler            | US
+  -83.7446975708 |  33.9296989441 | United States          | Bethlehem           | US
+  -80.3839035034 |  25.8588008881 | United States          | Miami               | US
+ -119.7950973510 |  36.7695007324 | United States          | Fresno              | US
+  -87.9236984253 |  42.1286010742 | United States          | Wheeling            | US
+   -8.6499996185 |  40.6333007813 | Portugal               | Aveiro              | PT
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -79.5000000000 |  43.1500015259 | Canada                 | Mississauga         | CA
+  -74.3459014893 |  40.1045989990 | United States          | Jackson             | US
+  -80.8290023804 |  35.2060012817 | United States          | Charlotte           | US
+  -80.0434036255 |  42.0577011108 | United States          | Erie                | US
+   -8.3832998276 |  43.3666992188 | Spain                  | A Coruña            | ES
+    1.1667000055 |  52.0833015442 | United Kingdom         | Ipswich             | GB
+  -80.5740966797 |  35.8987007141 | United States          | Mocksville          | US
+   -3.0332999229 |  53.4000015259 | United Kingdom         | Birkenhead          | GB
+ -113.8497009280 |  46.9402008057 | United States          | Missoula            | US
+  -81.8268966675 |  26.5736999512 | United States          | Fort Myers          | US
+    6.9499998093 |  50.9333000183 | Germany                | Köln                | DE
+   -2.2000000477 |  52.2000007629 | United Kingdom         | Worcester           | GB
+  -99.3110961914 |  33.6158981323 | United States          | Seymour             | US
+  -87.6856994629 |  41.5971984863 | United States          | Markham             | US
+   18.6000003815 | -33.9000015259 | South Africa           | Parow               | ZA
+ -121.9536972050 |  37.3558006287 | United States          | Santa Clara         | US
+    4.6666998863 |  52.5499992371 | Netherlands            | Castricum           | NL
+  -92.7263031006 |  34.7621994019 | United States          | Paron               | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -90.1330032349 |  40.3802986145 | United States          | Lewistown           | US
+  -81.6473007202 |  41.4789009094 | United States          | Cleveland           | US
+  -76.7817001343 |  39.1441001892 | United States          | Jessup              | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -91.8002014160 |  47.9280014038 | United States          | Winton              | US
+    6.0666999817 |  52.0999984741 | Netherlands            | Eerbeek             | NL
+  -86.6108016968 |  34.7018013000 | United States          | Huntsville          | US
+  -92.5378036499 |  44.5232009888 | United States          | Red Wing            | US
+  -95.4729003906 |  30.1145000458 | United States          | Spring              | US
+  -82.8038024902 |  34.1301994324 | United States          | Elberton            | US
+  -96.2343978882 |  43.0705986023 | United States          | Sioux Center        | US
+  -73.8423995972 |  40.7229003906 | United States          | Forest Hills        | US
+  -34.9000015259 |  -8.0500001907 | Brazil                 | Recife              | BR
+ -118.4350967410 |  33.9776992798 | United States          | Marina Del Rey      | US
+ -104.9793014530 |  39.7436981201 | United States          | Denver              | US
+  -99.3070983887 |  29.2770996094 | United States          | D Hanis             | US
+  -96.2770004272 |  42.3727989197 | United States          | Sergeant Bluff      | US
+   24.9342002869 |  60.1755981445 | Finland                | Helsinki            | FI
+   13.3667001724 |  38.1166992188 | Italy                  | Palermo             | IT
+ -114.0832977300 |  51.0833015442 | Canada                 | Calgary             | CA
+   -4.2500000000 |  55.8333015442 | United Kingdom         | Glasgow             | GB
+ -104.9793014530 |  39.7436981201 | United States          | Denver              | US
+  -93.0334014893 |  41.7232017517 | United States          | Newton              | US
+   28.9647006989 |  41.0186004639 | Turkey                 | Istanbul            | TR
+ -105.0460968020 |  40.8330001831 | United States          | Wellington          | US
+  -85.3843002319 |  42.5186004639 | United States          | Delton              | US
+  -80.5000000000 |  43.4500007629 | Canada                 | Kitchener           | CA
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -82.3697967529 |  27.4137992859 | United States          | Bradenton           | US
+  -70.4983978271 |  43.4183006287 | United States          | Kennebunkport       | US
+ -111.8740005490 |  33.3200988770 | United States          | Chandler            | US
+ -121.2818984980 |  38.8185005188 | United States          | Rocklin             | US
+  -72.9241027832 |  41.3111000061 | United States          | New Haven           | US
+   -4.2500000000 |  55.8333015442 | United Kingdom         | Glasgow             | GB
+   -2.5000000000 |  53.2667007446 | United Kingdom         | Northwich           | GB
+  -88.7021026611 |  35.7125015259 | United States          | Jackson             | US
+    4.8832998276 |  51.6500015259 | Netherlands            | Oosterhout          | NL
+  -75.9160995483 |  36.6753005981 | United States          | Virginia Beach      | US
+  -82.9882965088 |  39.9967994690 | United States          | Columbus            | US
+   -9.1332998276 |  38.7167015076 | Portugal               | Lisbon              | PT
+  -77.9887008667 |  34.3174018860 | United States          | Wilmington          | US
+   -1.5168000460 |  54.9000015259 | United Kingdom         | Washington          | GB
+  -71.6010971069 | -33.0477981567 | Chile                  | Valparaíso          | CL
+  -97.7527999878 |  30.3999996185 | United States          | Austin              | US
+  -81.6551971436 |  30.2938995361 | United States          | Jacksonville        | US
+  -93.6184005737 |  41.5898017883 | United States          | Des Moines          | US
+  -77.9316024780 |  34.4347000122 | United States          | Rocky Point         | US
+ -105.1052017210 |  40.1717987061 | United States          | Longmont            | US
+   -1.9167000055 |  52.4667015076 | United Kingdom         | Birmingham          | GB
+  -96.1943969727 |  41.5379981995 | United States          | Blair               | US
+  -68.5000000000 |  63.7332992554 | Canada                 | Iqaluit             | CA
+ -104.6166992190 |  50.4500007629 | Canada                 | Regina              | CA
+   -2.2167000771 |  53.5000000000 | United Kingdom         | Manchester          | GB
+  -72.7800979614 |  41.5372009277 | United States          | Meriden             | US
+  -78.8224029541 |  42.8171005249 | United States          | Buffalo             | US
+  -61.4500007629 |  10.6499996185 | Trinidad and Tobago    | San Juan            | TT
+  -87.3395996094 |  36.5089988708 | United States          | Clarksville         | US
+  -88.0160980225 |  43.7685012817 | United States          | Plymouth            | US
+  -98.5139999390 |  29.4717006683 | United States          | San Antonio         | US
+  -84.6686019897 |  34.0649986267 | United States          | Acworth             | US
+  -74.3688964844 |  40.7139015198 | United States          | Summit              | US
+  -82.2986984253 |  27.9295005798 | United States          | Brandon             | US
+  -89.3068008423 |  39.1174011230 | United States          | Fillmore            | US
+  -77.3976974487 |  40.4903984070 | United States          | Port Royal          | US
+  -81.6285018921 |  38.3627014160 | United States          | Charleston          | US
+ -122.2192993160 |  37.7949981689 | United States          | Oakland             | US
+  -95.5785980225 |  28.9715003967 | United States          | Brazoria            | US
+ -110.6832962040 |  50.0332984924 | Canada                 | Medicine Hat        | CA
+   37.6156005859 |  55.7522010803 | Russian Federation     | Moscow              | RU
+  -97.0093002319 |  44.1596984863 | United States          | Nunda               | US
+  -77.3007965088 |  35.5234985352 | United States          | Greenville          | US
+ -111.7273025510 |  33.4253005981 | United States          | Mesa                | US
+  -87.9649963379 |  43.0522003174 | United States          | Milwaukee           | US
+ -118.4040985110 |  33.9164009094 | United States          | El Segundo          | US
+   53.2332992554 |  56.8499984741 | Russian Federation     | Izhevsk             | RU
+ -106.6668014530 |  52.1333007813 | Canada                 | Saskatoon           | CA
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+ -112.0839004520 |  33.5222015381 | United States          | Phoenix             | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+  -86.5169982910 |  39.1679000854 | United States          | Bloomington         | US
+ -106.6668014530 |  52.1333007813 | Canada                 | Saskatoon           | CA
+   80.2833023071 |  13.0832996368 | India                  | Madras              | IN
+  -76.7466964722 |  37.3540000916 | United States          | Williamsburg        | US
+   77.5832977295 |  12.9832000732 | India                  | Bangalore           | IN
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -73.7436981201 |  41.0056991577 | United States          | White Plains        | US
+   77.4332962036 |  28.6667003632 | India                  | Ghaziabad           | IN
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+   72.8257980347 |  18.9750003815 | India                  | Bombay              | IN
+   -0.3499999940 |  49.1833000183 | France                 | Caen                | FR
+   78.1166992188 |   9.9333000183 | India                  | Madurai             | IN
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -78.8790969849 |  38.4505996704 | United States          | Harrisonburg        | US
+  153.5666046140 | -28.8666992188 | Australia              | Ballina             | AU
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -80.2593002319 |  26.0097007751 | United States          | Hollywood           | US
+  -81.6285018921 |  38.3627014160 | United States          | Charleston          | US
+  -94.4430007935 |  42.9725990295 | United States          | West Bend           | US
+  -76.0707015991 |  40.1086006165 | United States          | New Holland         | US
+  153.0166931150 | -27.5000000000 | Australia              | Brisbane            | AU
+  -74.1034011841 |  44.3511009216 | United States          | Saranac Lake        | US
+    6.1666998863 |  46.2000007629 | Switzerland            | Geneva              | CH
+  -95.2505035400 |  29.5503997803 | United States          | Pearland            | US
+  -75.8266983032 |  39.9682998657 | United States          | Coatesville         | US
+   19.4666996002 |  51.7500000000 | Poland                 | Lodz                | PL
+  -95.4151992798 |  29.7754993439 | United States          | Houston             | US
+  144.9667053220 | -37.8166999817 | Australia              | Melbourne           | AU
+  -82.7520980835 |  27.8812007904 | United States          | Largo               | US
+  -85.6304016113 |  39.0281982422 | United States          | North Vernon        | US
+  -90.3025970459 |  38.6385002136 | United States          | Saint Louis         | US
+  -78.9017028809 |  35.9925003052 | United States          | Durham              | US
+ -122.8212966920 |  49.1363983154 | Canada                 | Surrey              | CA
+   -1.3166999817 |  51.0167007446 | United Kingdom         | Winchester          | GB
+   10.7500000000 |  59.9166984558 | Norway                 | Oslo                | NO
+ -122.0074005130 |  37.4249000549 | United States          | Sunnyvale           | US
+  -73.0045013428 |  40.8777999878 | United States          | Coram               | US
+  -89.3600006104 |  43.0208015442 | United States          | Madison             | US
+  -89.6858978271 |  39.7719993591 | United States          | Springfield         | US
+  -79.8235015869 |  40.4169006348 | United States          | Turtle Creek        | US
+  -72.9004974365 |  43.6445007324 | United States          | Rutland             | US
+ -122.0074005130 |  37.4249000549 | United States          | Sunnyvale           | US
+   -0.6999999881 |  51.5167007446 | United Kingdom         | Maidenhead          | GB
+  -89.9610977173 |  41.8227996826 | United States          | Morrison            | US
+  -97.3331985474 |  32.7551002502 | United States          | Fort Worth          | US
+  -90.5477981567 |  38.5861015320 | United States          | Ballwin             | US
+  -98.0857009888 |  40.0892982483 | United States          | Superior            | US
+  -80.8971023560 |  28.9181003571 | United States          | Edgewater           | US
+  -89.4735031128 |  43.1855010986 | United States          | Waunakee            | US
+   19.9167003632 |  50.0833015442 | Poland                 | Cracow              | PL
+   -1.9167000055 |  52.4667015076 | United Kingdom         | Birmingham          | GB
+ -122.1424026490 |  37.4225006104 | United States          | Palo Alto           | US
+  -55.1666984558 |  47.1666984558 | Canada                 | Marystown           | CA
+  -78.9010009766 |  40.3376998901 | United States          | Johnstown           | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+   24.7280998230 |  59.4338989258 | Estonia                | Tallinn             | EE
+  -96.4629974365 |  38.6641006470 | United States          | Council Grove       | US
+   -0.2167000026 |  51.9166984558 | United Kingdom         | Stevenage           | GB
+  -89.9521026611 |  35.1241989136 | United States          | Memphis             | US
+   -0.5666999817 |  51.2167015076 | United Kingdom         | Guildford           | GB
+   -0.0333000012 |  51.3833007813 | United Kingdom         | Beckenham           | GB
+  -81.6473007202 |  41.4789009094 | United States          | Cleveland           | US
+  -80.3332977295 |  35.8737983704 | United States          | Lexington           | US
+    0.4666999876 |  51.5666999817 | United Kingdom         | Basildon            | GB
+  -88.0947036743 |  41.9483985901 | United States          | Bloomingdale        | US
+   73.8666992188 |  18.5333003998 | India                  | Pune                | IN
+  -87.6744003296 |  41.8675003052 | United States          | Chicago             | US
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -73.9763031006 |  40.7619018555 | United States          | New York            | US
+   14.8999996185 |  46.9333000183 | Slovenia               | Bic                 | SI
+   -0.6999999881 |  51.5167007446 | United Kingdom         | Maidenhead          | GB
+  -73.0942993164 |  41.3846015930 | United States          | Seymour             | US
+    0.8999999762 |  51.8833007813 | United Kingdom         | Colchester          | GB
+   -1.4833999872 |  51.2000007629 | United Kingdom         | Andover             | GB
+  -96.7993011475 |  32.8097991943 | United States          | Dallas              | US
+  -86.1522979736 |  38.1841011047 | United States          | Corydon             | US
+  -73.9553985596 |  40.6525001526 | United States          | Brooklyn            | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+ -122.3419036870 |  47.6738014221 | United States          | Seattle             | US
+  -73.6463012695 |  42.7624015808 | United States          | Troy                | US
+   20.6333007813 |  46.0833015442 | Romania                | Sânnicolaul Mare    | RO
+  -80.0073013306 |  35.9586982727 | United States          | High Point          | US
+  -70.7604980469 |  41.7177009583 | United States          | Marion              | US
+  -97.3331985474 |  32.7551002502 | United States          | Fort Worth          | US
+  -76.1857986450 |  36.9095001221 | United States          | Norfolk             | US
+  -96.7460021973 |  32.8731002808 | United States          | Dallas              | US
+  -71.4373016357 |  41.8390007019 | United States          | Providence          | US
+  -83.1201019287 |  39.8638992310 | United States          | Grove City          | US
+   -1.6833000183 |  48.0833015442 | France                 | Rennes              | FR
+  -88.2986984253 |  42.0270004272 | United States          | Elgin               | US
+ -104.9994964600 |  39.7524986267 | United States          | Denver              | US
+  -73.6432037354 |  43.3101005554 | United States          | Glens Falls         | US
+  -81.2589035034 |  33.9791984558 | United States          | Lexington           | US
+   -3.6833000183 |  40.4000015259 | Spain                  | Madrid              | ES
+  -73.6667022705 |  45.4166984558 | Canada                 | Lachine             | CA
+  -84.4635009766 |  33.8709983826 | United States          | Atlanta             | US
+  -84.0058975220 |  35.9445991516 | United States          | Knoxville           | US
+   -0.0166999996 |  51.3666992188 | United Kingdom         | West Wickham        | GB
+  -94.7410964966 |  31.3094997406 | United States          | Lufkin              | US
+  -98.3433990479 |  34.6265983582 | United States          | Lawton              | US
+  -79.4168014526 |  43.6666984558 | Canada                 | Toronto             | CA
+  -86.7647018433 |  34.7228012085 | United States          | Madison             | US
+  -93.7835006714 |  32.4491996765 | United States          | Shreveport          | US
+   28.2294006348 | -25.7068996429 | South Africa           | Pretoria            | ZA
+  -90.0575027466 |  29.9731006622 | United States          | New Orleans         | US
+ -117.1322021480 |  32.7976989746 | United States          | San Diego           | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+ -118.5105972290 |  34.1553993225 | United States          | Encino              | US
+  176.8332977300 | -39.6500015259 | New Zealand            | Hastings            | NZ
+  -78.6463012695 |  36.3482017517 | United States          | Oxford              | US
+  -84.5161972046 |  39.2831001282 | United States          | Cincinnati          | US
+  174.7666931150 | -36.8666992188 | New Zealand            | Auckland            | NZ
+  115.8332977300 | -31.9333000183 | Australia              | Perth               | AU
+  -95.3419036865 |  38.8916015625 | United States          | Lawrence            | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+  -91.5430984497 |  44.7899017334 | United States          | Eau Claire          | US
+  106.8293991090 |  -6.1743998528 | Indonesia              | Jakarta             | ID
+  174.0832977300 | -39.0666999817 | New Zealand            | New Plymouth        | NZ
+  151.2167053220 | -33.8833007813 | Australia              | Sydney              | AU
+  -80.9882965088 |  34.0391006470 | United States          | Columbia            | US
+   -0.1167000011 |  51.5000000000 | United Kingdom         | London              | GB
+  -77.0500030518 | -12.0500001907 | Peru                   | Lima                | PE
+    7.9333000183 |  47.2832984924 | Switzerland            | Zofingen            | CH
+  -83.1015014648 |  42.3661994934 | United States          | Detroit             | US
+  -64.7667007446 |  46.0833015442 | Canada                 | Moncton             | CA
+ -117.2527999880 |  33.0500984192 | United States          | Encinitas           | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+  -84.4882965088 |  42.7282981873 | United States          | East Lansing        | US
+  -82.6922988892 |  28.0144996643 | United States          | Safety Harbor       | US
+  174.7832946780 | -41.2999992371 | New Zealand            | Wellington          | NZ
+  -93.0829010010 |  36.9786987305 | United States          | Sparta              | US
+  -75.5361022949 |   6.2913999557 | Colombia               | Medellín            | CO
+  175.2832946780 | -37.7832984924 | New Zealand            | Hamilton            | NZ
+  -87.6744003296 |  41.8675003052 | United States          | Chicago             | US
+  -90.5269012451 |  14.6211004257 | Guatemala              | Guatemala City      | GT
+   -1.0167000294 |  50.8666992188 | United Kingdom         | Waterlooville       | GB
+(922 rows)
+
