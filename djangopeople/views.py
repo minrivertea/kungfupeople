@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club, Video
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, AccountForm, ProfileForm, VideoForm
+    LocationForm, AccountForm, ProfileForm, VideoForm, ClubForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -37,10 +37,7 @@ def must_be_owner(view):
 
 def index(request):
     recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
-    try:
-        definition = KungfuPerson.objects.filter(what_is_kungfu=False).order_by('?')[:1].get()
-    except KungfuPerson.DoesNotExist:
-        definition = ''
+    definition = KungfuPerson.objects.filter(what_is_kungfu=False).exclude(what_is_kungfu='').order_by('?')[:1].get()
     styles = KungfuPerson.objects.filter(style__icontains="white crane").count()
     clubs = Club.objects.all().order_by('-add_date')[:5]
     return render(request, 'index.html', {
@@ -177,7 +174,6 @@ def signup(request):
             person = KungfuPerson.objects.create(
                 user = user,
                 style = form.cleaned_data['style'],
-                personal_url = form.cleaned_data['personal_url'],
                 country = Country.objects.get(
                     iso_code = form.cleaned_data['country']
                 ),
@@ -381,6 +377,42 @@ def edit_profile(request, username):
         'person': person,
         'example': example,
     })
+
+@must_be_owner
+def edit_club(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    clubs = person.club_membership.all()
+
+    if request.method == 'POST':
+        form = ClubForm(request.POST)
+        if form.is_valid():        
+            url = form.cleaned_data['club_url']
+            name = form.cleaned_data['club_name']
+            slug = name.strip().replace(' ', '-').lower()
+            if url or name:
+                club = _get_or_create_club(url, name)
+                club.slug = slug
+                club.save()
+                person.club_membership.add(club)
+                person.save()
+                return HttpResponseRedirect('/%s/club/' % username)
+    else:
+        form = ClubForm()
+    return render(request, 'edit_club.html', locals())
+
+@must_be_owner
+def delete_club_membership(request, username, clubname):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    user = request.user
+    club = get_object_or_404(Club, slug=clubname)
+
+    if not user == person.user:
+        raise Http404("You're not authorised to perform this action")
+    person.club_membership.remove(club)
+    
+    return HttpResponseRedirect('/%s/club/' % user.username)
+   
+
 
 
 def videos(request, username):

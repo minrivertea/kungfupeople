@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}{{ person.user.get_full_name }}'s videos |{% endblock %}
+
 {% block extracss %}
 <style type="text/css">
 div.video { margin-bottom:20px; }
@@ -11,7 +13,7 @@ div.video { margin-bottom:20px; }
 
 <div id="content-box">
 
-	<a href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
+	<a class="small-text" href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
 
 	<h2>{{ person.user.get_full_name }}'s Videos ({{ videos.count }})</h2>
 	{% if is_owner %}<a href="/{{ person.user.username }}/videos/add/">Add a video</a>{% endif %}

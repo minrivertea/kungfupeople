@@ -2,7 +2,7 @@ import re
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
-from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES
+from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
 
@@ -53,7 +53,6 @@ class SignupForm(forms.Form):
     
     # Fields for creating a KungfuPerson profile
     style = forms.CharField(max_length=200, required=False)
-    personal_url = forms.URLField(required=False)
 
     # Fields for adding a club membership
     club_url = forms.CharField(max_length=200, required=False)
@@ -201,6 +200,10 @@ class ProfileForm(forms.Form):
         if User.objects.filter(email = email).exclude(kungfuperson = self.person).count():
             raise forms.ValidationError('That e-mail is already being used') 
         return email
+
+class ClubForm(forms.Form):
+    club_name = forms.CharField(max_length=200)
+    club_url = forms.URLField()
 
 class VideoForm(forms.Form):
     embed_src = forms.CharField(widget=forms.Textarea, required=False)
