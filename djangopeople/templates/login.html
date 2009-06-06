@@ -43,9 +43,11 @@ input.openid {
 {% endblock %}
 
 {% block content %}
+	<div class="form-container">
+	<h3>Login</h3>
     <form method="post" action="/login/">
     {% if is_invalid %}
-        <p class="invalid">Your login attempt failed.</p>
+        <p class="invalid">Your login attempt has failed. Please check your details and try again.</p>
     {% endif %}
     <fieldset>
         <div class="fieldWrapper">
@@ -56,27 +58,14 @@ input.openid {
             <label for="id_password">Password</label>
             <input type="password" name="password" id="id_password">
         </div>
-        <p><a href="/recover/">Lost your password?</a></p>
+        <p class="form-hint"><a href="/recover/">Lost your password?</a></p>
         {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
     </fieldset>
     <div class="buttonContainer">
         <input type="submit" value="Log in">
     </div>
     </form>
+	</div>
 
-<h2>Or sign in with your OpenID</h2>
-
-    <form method="post" action="/openid/">
-    <fieldset>
-        <div class="fieldWrapper">
-            <label for="id_openid">OpenID</label>
-            <input id="id_openid" class="openid" type="text" name="openid_url">
-        </div>
-        <p><a href="/recover/">OpenID not working?</a></p>
-    </fieldset>
-    <div class="buttonContainer">
-        <input type="submit" value="Log in with OpenID">
-    </div>
-    </form>
 
 {% endblock %}

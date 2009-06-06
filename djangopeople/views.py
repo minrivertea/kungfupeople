@@ -42,10 +42,12 @@ def index(request):
     except KungfuPerson.DoesNotExist:
         definition = ''
     styles = KungfuPerson.objects.filter(style__icontains="white crane").count()
+    clubs = Club.objects.all().order_by('-add_date')[:5]
     return render(request, 'index.html', {
         'recent_people': recent_people,
         'definition': definition,
         'styles': styles,
+        'clubs': clubs,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),
         'total_videos': Video.objects.filter(approved=True).count(),
@@ -77,18 +79,13 @@ from django.contrib import auth
 def login(request):
     if request.method != 'POST':
         return render(request, 'login.html', {
-            'next': request.REQUEST.get('next', '/%s/' % user.username),
+            'next': request.REQUEST.get('next', ''),
         })
-    print "A"
     username = request.POST.get('username')
     password = request.POST.get('password')
-    print "B"
     user = auth.authenticate(username=username, password=password)
-    print "C"
     if user is not None and user.is_active:
-        print "D"
         auth.login(request, user)
-        print "E"
         return HttpResponseRedirect(
             request.POST.get('next', '/%s/' % user.username)
         )
@@ -98,6 +95,7 @@ def login(request):
             'username': username, # Populate form
             'next': request.REQUEST.get('next', ''),
         })
+
 
 def logout(request):
     auth.logout(request)
@@ -295,8 +293,12 @@ def upload_done(request, username):
 
 def country(request, country_code):
     country = get_object_or_404(Country, iso_code = country_code.upper())
+    people = KungfuPerson.objects.filter(country = country)
+
     return render(request, 'country.html', {
         'country': country,
+        'people': people,
+
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'regions': country.top_regions(),
     })

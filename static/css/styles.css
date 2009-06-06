@@ -146,18 +146,23 @@ ul.errorlist li {
 }
 
 input.submit {
-	background-color: #E0FFB8;
+	background-color: #ffafaf;
 	color: #414F32;
 	border-color: #E0FFB8;
 	border-style: outset;
 	padding: 2px 5px;
 }
 .buttonContainer input{
-	background-color: #E0FFB8;
-	color: #414F32;
+	background-color: #ffafaf;
+	color: black;
 	margin-top: 2em;
 	border-style: outset;
 	padding: 2px 5px;
+	font-size: 0.9em;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
 }
 
 .buttonContainer input:active {
@@ -442,12 +447,12 @@ ul.split li {
 	border-color: #94DA3A;
 	border-style: solid;
 	border-width: 1px 0;
-	padding: 0 1em 1em 1em;
+	padding: 10px 1em 1em 1em;
 	margin: 1.45em 0 2em 0;
 	color: #234F32;
 }
 .highlight p {
-	margin-top: 1em;
+	margin-bottom: 1em;
 }
 .highlight form {
 	margin-bottom: 1em;
@@ -843,6 +848,7 @@ p {
     display: block;
     background-color: white;
     margin-right: 2%;
+    margin-bottom: 10px;
     padding: 17px;
     border: 3px #8CA93E solid;
 -moz-border-radius-bottomleft:10px;

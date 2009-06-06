@@ -36,7 +36,7 @@ var bbox_east = {{ country.bbox_east }};
 
 	<div id="content-box">
 
-	<h3>{{ country }}</h3>
+	<h3>Kungfu People in {{ country }}</h3>
     {% with country.countrysite_set.all as sites %}
     {% if sites %}
     <div class="highlight">
@@ -50,10 +50,23 @@ var bbox_east = {{ country.bbox_east }};
     {% endif %}
     {% endwith %}
 
+{% if people %}
+<ul class="latest-list">
+{% for person in people %}
+<li>
 
-        <ul class="detailsList split">
-            {% load person_list_items %}{% person_list_items country.kungfuperson_set.all %}
-        </ul>
+<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+					</div>
+
+ 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
+					<img class="list-map-image" src="{% if person.country.iso_code %}/static/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/static/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
+        	        		<span class="small-text">{{ person.style }}</span>              
+
+</li>
+{% endfor %}
+{% endif %}
+
+
         {% if regions %}
         <h2>Regions</h2>
         <ul class="detailsList split">

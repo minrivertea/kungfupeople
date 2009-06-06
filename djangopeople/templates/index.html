@@ -53,6 +53,14 @@ var people = [
         				{% endfor %}
 				</ul>
 
+			<h3>Latest clubs</h3>
+				<ul class="latest-list">
+					{% for club in clubs %}
+					<li class="latest-list"><a href="/club/{{ club.slug }}/">{{ club }}</a></li>
+					{% endfor %}
+				</ul>
+		
+
 		</div>
 
 
@@ -60,8 +68,8 @@ var people = [
 	</div>
 
 	<div class="intro-box">
-		<h3>Most popular styles</h3>
-		<p><strong>White Cranes:</strong> {{ styles }}</p>
+		<img class="list-photo" src="/static/img/arrow-up.png">
+		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
 	</div>
 
 	<div class="intro-box">

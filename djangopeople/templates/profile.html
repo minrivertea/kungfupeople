@@ -105,7 +105,7 @@ div.bio a.edit {
 		           	<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
 				{% else %}
 					{% if is_owner %}
-					<p>You haven't written a bio yet - why not <a href="/{{ user.username }}/profile/">introduce yourself a little.</a></p>					{% endif %}
+					<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>					{% endif %}
 				{% endif %}
 			
 		
@@ -115,6 +115,15 @@ div.bio a.edit {
        
 	</div>
 
+	{% if is_owner %}
+	<div id="right-box">
+		<p><strong>Your definition of kung fu:</strong></p>
+		<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>
+		<p class="small-text"><a href="/{{ person.user.username }}/profile/">(edit this quote)</a></p>
+		
+	</div>
+	{% endif %}
+	
 	<div id="right-box">
 		
 		{% if not others %}

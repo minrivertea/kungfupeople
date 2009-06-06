@@ -1,8 +1,6 @@
 import os
 from django.conf.urls.defaults import *
 from django.conf import settings
-
-
 from djangopeople import views
 from djangopeople.models import KungfuPerson
 
