@@ -6,18 +6,8 @@
 
 {% block js %}{% load thumbnail %}
 {% if person.latitude and person.longitude %}
-<script type="text/javascript">
-var nearby_people = [
-    // latitude, longitude, name, username, location description, flag, isocode
-    {% for p in person.get_nearest %}
-    [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
 
-var person_latitude = {{ person.latitude }};
-var person_longitude = {{ person.longitude }};
-</script>
-<script type="text/javascript" src="/js/profile.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 <style type="text/css">
 #id_skills {
     width: 80%;
