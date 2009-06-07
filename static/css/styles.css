@@ -82,7 +82,7 @@ body * {
 -moz-border-radius-topright:10px;
 }
 
-#signup:hover {
+#signup:hover, #signup a:hover {
 	font-family: Trebuchet, sans-serif;
 	font-weight: bold;
 	font-size: 2em;
@@ -103,8 +103,6 @@ body * {
 -moz-border-radius-topleft:10px;
 -moz-border-radius-topright:10px;
 }
-
-
 
 
 .mapContainer {
@@ -241,8 +239,8 @@ body * {
     	float: left;
     	display: block;
     	background-color: white;
-	margin-bottom: 40px;
-	margin-top: -20px;
+	margin-bottom: 20px;
+	margin-top: 0px;
 	padding: 17px;
     	border: 3px solid white;
 -moz-border-radius-bottomleft:10px;
@@ -258,7 +256,7 @@ body * {
 	height: auto;
     	float: left;
     	background-color: #8CA93E;
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 	margin-top: -20px;
 	padding: 17px;
     	border: 3px solid #8CA93E;
@@ -312,14 +310,6 @@ a img {
 	background-color: none;
 }
 
-a:hover img {
-	border: none;
-	background-color: none;
-	filter:alpha(opacity=50);
-	-moz-opacity:0.5;
-	-khtml-opacity: 0.5;
-	opacity: 0.5;
-}
 
 a:link,
 a:visited,
@@ -769,8 +759,6 @@ li.latest-list {
 	margin: 0px 15px 15px 0px;
 	float: left;
 }
-
-
 
 .diagram-photo {
 	margin-right: 60px;
