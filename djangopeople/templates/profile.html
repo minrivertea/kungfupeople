@@ -79,7 +79,7 @@ div.bio a.edit {
 		{% if person.photo %}
 		    <img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
 		{% else %}
-		    {% if is_owner %}<a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
+		    {% if is_owner %}<a href="/{{ person.user.username }}/upload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
 		{% endif %}
 
        		<h3>{{ person.user.get_full_name }}</h3>

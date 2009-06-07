@@ -53,7 +53,7 @@ body * {
 }
 
 #title {
-	margin: 20px 0 0 0px;
+	margin: 40px 0 0 50px;
 	display: block;
 	float: left;
 	height: 60px;
@@ -309,6 +309,16 @@ h3 {
 
 a img {
 	border: none;
+	background-color: none;
+}
+
+a:hover img {
+	border: none;
+	background-color: none;
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
 }
 
 a:link,
@@ -440,135 +450,6 @@ div.finding {
 	width: 100%;
 	overflow: hidden; /* clear contained floats */
 }
-span.aim {
-	padding: 0 0 0 35px;
-	background-image: url(/img/improviders/aim.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-span.yim {
-	padding: 0 0 0 35px;
-	background-image: url(/img/improviders/yim.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-span.jabber {
-	padding: 0 0 0 35px;
-	background-image: url(/img/improviders/jabber.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-span.msn {
-	padding: 0 0 0 35px;
-	background-image: url(/img/improviders/msn.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-span.gtalk {
-	padding: 0 0 0 35px;
-	background-image: url(/img/improviders/gtalk.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-span.django {
-	padding: 0 0 0 35px;
-	background-image: url(/img/services/django.png);
-	background-repeat: no-repeat;
-	background-position: 10px 0;
-}
-
-
-/* @end */
-
-/* @group Lists */
-
-p.help {
-	margin-bottom: 1em;
-}
-
-/* @group Service list */
-
-.services {
-	margin: 1em 0 2em 0;
-	padding: 0;
-	list-style-type: none;
-	width: 100%;
-	overflow: hidden;
-}
-.services li {
-	width: 40%;
-	float: left;
-	margin: 0 10% 0.3em 0;
-}
-
-.services .delicious {
-	padding-left: 25px;
-	background-image: url(/img/services/delicious.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .djangosnippets, 
-.services .djangosites {
-	padding-left: 25px;
-	background-image: url(/img/services/django.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .facebook {
-	padding-left: 25px;
-	background-image: url(/img/services/facebook.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .flickr {
-	padding-left: 25px;
-	background-image: url(/img/services/flickr.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .linkedin {
-	padding-left: 25px;
-	background-image: url(/img/services/linkedin.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .magnolia {
-	padding-left: 25px;
-	background-image: url(/img/services/magnolia.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .pownce {
-	padding-left: 25px;
-	background-image: url(/img/services/pownce.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-.services .twitter {
-	padding-left: 25px;
-	background-image: url(/img/services/twitter.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-}
-
-/* @end */
-
-/* @group siteList */
-
-.siteList {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-.siteList li {
-	padding: 0 0 0 25px;
-	margin: 0 0 0.5em 0;
-	background-image: url(/img/world_go.png);
-	background-repeat: no-repeat;
-	background-position: 0 0;
-}
-
-/* @end */
 
 /* @group Details lists */
 
@@ -800,7 +681,7 @@ p {
 	width: 40%;
     	float: left;
     	min-height: 250px;
-    	margin: 0 0px 15px 18px;
+    	margin: 0 20px 15px 0px;
     	background-color: white;
     	padding: 10px;
     	border: 10px white solid;
@@ -820,7 +701,7 @@ p {
     min-width: 900px;
 	width: 90%;
     float: left;
-    margin: 0 10px 15px 18px;
+    margin: 0 10px 15px 0px;
     background-color: white;
     padding: 10px;
     border: 10px white solid;
@@ -889,22 +770,7 @@ li.latest-list {
 	float: left;
 }
 
-.profile-photo img, a:link, a:visited {
-	background-color: none;
-	margin: 0;
-	padding: 0;
-}
 
-.profile-photo img, .profile-photo a:hover {
-	background-color: none;
-	margin: 0;
-	padding: 0;
-	filter:alpha(opacity=50);
-	-moz-opacity:0.5;
-	-khtml-opacity: 0.5;
-	opacity: 0.5;
-
-}
 
 .diagram-photo {
 	margin-right: 60px;
