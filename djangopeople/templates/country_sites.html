@@ -7,7 +7,7 @@
 
 {% block header %}{% load thumbnail %}
         <h1>Sites in {{ country }}</h1>
-        <p class="meta"><img src="/static/img/flags/{{ country.iso_code|lower }}.gif" title="{{ country }}" class="flag"></a> {{ country }}</p>
+        <p class="meta"><img src="/img/flags/{{ country.iso_code|lower }}.gif" title="{{ country }}" class="flag"></a> {{ country }}</p>
 {% endblock %}
 
 {% block map %}

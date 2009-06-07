@@ -12,10 +12,10 @@ var INITIAL_LAT = 43.834526782236814;
 var INITIAL_LON = -37.265625;
 
 function __zoom_in() {
-   gmap.setZoom(gmap.getZoom()+1);
+   gmap.setZoom(gmap.getZoom()+2);
 }
 function __zoom_out() {
-   gmap.setZoom(gmap.getZoom()-1);
+   gmap.setZoom(gmap.getZoom()-2);
 }
 
 function reverseGeocode() {

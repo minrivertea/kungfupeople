@@ -10,7 +10,7 @@ body, textarea {
 	color: #000;
 	font-family: Helvetica,Arial,sans-serif;
 	line-height: 1.2em;
-	background: #ffe095 url('/static/img/body-background.png') no-repeat top left;
+	background: #ffe095 url('/img/body-background.png') no-repeat top left;
 }
 
 body * {
@@ -336,6 +336,243 @@ form.search {
 }
 /* @end */
 
+/* @end */
+
+/* @group Helper Styles */
+
+/* @group Links */
+
+
+div.finding p strong {
+	width: 6.5em;
+	display: block;
+	float: left;
+}
+div.finding p {
+	clear: both;
+}
+div.finding {
+	margin-bottom: 1em;
+	width: 100%;
+	overflow: hidden; /* clear contained floats */
+}
+span.aim {
+	padding: 0 0 0 35px;
+	background-image: url(/img/improviders/aim.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+span.yim {
+	padding: 0 0 0 35px;
+	background-image: url(/img/improviders/yim.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+span.jabber {
+	padding: 0 0 0 35px;
+	background-image: url(/img/improviders/jabber.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+span.msn {
+	padding: 0 0 0 35px;
+	background-image: url(/img/improviders/msn.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+span.gtalk {
+	padding: 0 0 0 35px;
+	background-image: url(/img/improviders/gtalk.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+span.django {
+	padding: 0 0 0 35px;
+	background-image: url(/img/services/django.png);
+	background-repeat: no-repeat;
+	background-position: 10px 0;
+}
+
+
+/* @end */
+
+/* @group Lists */
+
+p.help {
+	margin-bottom: 1em;
+}
+
+/* @group Service list */
+
+.services {
+	margin: 1em 0 2em 0;
+	padding: 0;
+	list-style-type: none;
+	width: 100%;
+	overflow: hidden;
+}
+.services li {
+	width: 40%;
+	float: left;
+	margin: 0 10% 0.3em 0;
+}
+
+.services .delicious {
+	padding-left: 25px;
+	background-image: url(/img/services/delicious.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .djangosnippets, 
+.services .djangosites {
+	padding-left: 25px;
+	background-image: url(/img/services/django.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .facebook {
+	padding-left: 25px;
+	background-image: url(/img/services/facebook.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .flickr {
+	padding-left: 25px;
+	background-image: url(/img/services/flickr.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .linkedin {
+	padding-left: 25px;
+	background-image: url(/img/services/linkedin.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .magnolia {
+	padding-left: 25px;
+	background-image: url(/img/services/magnolia.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .pownce {
+	padding-left: 25px;
+	background-image: url(/img/services/pownce.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+.services .twitter {
+	padding-left: 25px;
+	background-image: url(/img/services/twitter.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+/* @end */
+
+/* @group siteList */
+
+.siteList {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+.siteList li {
+	padding: 0 0 0 25px;
+	margin: 0 0 0.5em 0;
+	background-image: url(/img/world_go.png);
+	background-repeat: no-repeat;
+	background-position: 0 0;
+}
+
+/* @end */
+
+/* @group Details lists */
+
+ul.detailsList {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul.detailsList li {
+	margin: 0 0 1em 0;
+	clear: both;
+	width: 100%;
+	overflow: hidden;
+}
+
+ul.detailsList li img.main {
+	float: left;
+	margin: 0 10px 10px 0;
+	width:  2.5em;
+}
+
+ul.detailsList li h3 {
+	font-size: 1.2em;
+}
+
+ul.detailsList li .meta {
+	font-size: 0.8em;
+	margin-top: 3px;
+	color: #666
+}
+
+/* @end */
+
+
+/* @group list split */
+
+ul.split {
+	width: 100%;
+	overflow: hidden;
+	margin-top: 1em;
+}
+
+ul.split li {
+	width: 44%;
+	float: left;
+	clear: none;
+	margin-right: 5%;
+}
+
+/* @end */
+
+/* @end */
+
+/* @group map */
+
+.mapContainer {
+	text-align: center;
+	margin: 0 0 1em 0;
+	padding: 15px;
+
+}
+
+#gmap {
+	background-color: #99B3CC;
+	float: left;
+	margin: 2px 0 10px 0;
+	width: 98%;
+/*	background-image: url(/img/map.png); */
+	background-position: top left;
+	border: 10px solid white;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+
+}
+
+.minor #gmap {
+	height: 7em;
+}
+
+.major #gmap {
+	height: 25em;
+
+}
+
+/* @end */
 
 .highlight {
 	background-color: #E0FFB8;
@@ -353,7 +590,6 @@ form.search {
 div.highlight ul {
 	list-style-type: none;
 }
-
 
 
 /* @group header */
@@ -380,7 +616,6 @@ div.highlight ul {
 	float: left;
 	display: block;
 }
-
 
 
 
@@ -470,7 +705,7 @@ div#crosshair {
     margin-top: -8px;
     margin-left: -8px;
     display: block;
-    background: url(/static/img/crosshair.gif);
+    background: url(/img/crosshair.gif);
     background-position: center center;
     background-repeat: no-repeat;
 }

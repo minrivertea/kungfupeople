@@ -26,6 +26,7 @@ RESERVED_USERNAMES = set((
 
 class CountryManager(models.Manager):
     def top_countries(self):
+        raise NotImplementedError, "This doesn't work in postgres"
         # Returns populated countries in order of population
         from django.db import connection
         cursor = connection.cursor()

@@ -1,4 +1,4 @@
-.flag { float: left; width: 16px; height: 11px; background: url(/static/img/flags/flags.png) no-repeat; margin-right: 3px; }
+.flag { float: left; width: 16px; height: 11px; background: url(/img/flags/flags.png) no-repeat; margin-right: 3px; }
 .iso-ad { background-position: 0 -1px; } 
 .iso-ae { background-position: 0 -13px; } 
 .iso-af { background-position: 0 -25px; } 

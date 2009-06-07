@@ -10,14 +10,14 @@
 var nearby_people = [
     // latitude, longitude, name, username, location description, flag, isocode
     {% for p in person.get_nearest %}
-    [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/static/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+    [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
 
 var person_latitude = {{ person.latitude }};
 var person_longitude = {{ person.longitude }};
 </script>
-<script type="text/javascript" src="/static/js/profile.js"></script>
+<script type="text/javascript" src="/js/profile.js"></script>
 <style type="text/css">
 #id_skills {
     width: 80%;
@@ -70,10 +70,10 @@ div.bio a.edit {
 		    <ul class="latest-list">
 		{% for member in members %}
    			<li class="latest-list">
-			<div class="list-photo"><img src="{% if member.photo %}{% thumbnail member.photo 40x40 crop %}{% else %}/static/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+			<div class="list-photo"><img src="{% if member.photo %}{% thumbnail member.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
 			</div>
 			<a class="list-item-title" href="{{ member.get_absolute_url }}">{{ member.user.get_full_name }}</a><br/>
-			<img class="list-map-image" src="{% if member.country.iso_code %}/static/img/flags/{{ member.country.iso_code|lower }}.gif{% else %}/static/{{ member.country.flag }}{% endif %}" alt="{{ member.country }}"/>
+			<img class="list-map-image" src="{% if member.country.iso_code %}/img/flags/{{ member.country.iso_code|lower }}.gif{% else %}/{{ member.country.flag }}{% endif %}" alt="{{ member.country }}"/>
         	        <span class="small-text">{{ member.location_description }}</span>              
  			</li>
 		{% endfor %}
