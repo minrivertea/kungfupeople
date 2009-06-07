@@ -11,7 +11,9 @@
 </head>
 <body{% block bodymeta %}{% endblock %}>
 
-    <div class="header">
+<div id="body-container">
+
+    <div id="header">
 
 	<div id="nav">
 
@@ -35,20 +37,22 @@
 			{% endif %}
    	</div>
 
+	<div id="logo">
+	</div>
+
 	<div id="title">
-		<img class="list-photo" src="/static/img/logo4.png"/>
 		<h1>kung fu people</h1>
 	</div>
 
-
-
     </div>
-
+	<div id="centre-content">
 
 {% block map %}{% endblock %}
 
 
         {% block content %}{% endblock %}
+
+	</div>
 
 	{% block extra %}{% endblock %}
 
@@ -72,5 +76,6 @@ var pageTracker = _gat._getTracker("{{ GOOGLE_ANALYTICS_TRACKER_ID }}");
 pageTracker._trackPageview();
 }catch(err){}</script>
 {% endif %}
+</div>
 </body>
 </html>

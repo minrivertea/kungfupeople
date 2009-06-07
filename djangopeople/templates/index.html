@@ -26,6 +26,34 @@ var people = [
 
 {% block content %}
 
+	<div id="left-box">
+
+	<div class="intro-box">
+		<img class="list-photo" width="50" height="50" src="/static/img/arrow-up.png"/>
+		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
+	</div>
+
+	<div class="intro-box">
+		<h3>What is kungfu people?</h3>
+		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
+	</div>
+
+        {% if definition %}
+	<div class="intro-box">
+		<strong>What is kung fu?</strong>
+                <p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
+	
+	</div>
+        {% endif %}
+
+	<div class="intro-box">
+		<h3>Find a club in your area</h3>
+<p>If you're thinking about starting kung fu, this website can help you find a good club in your area.</p>
+	
+	</div>
+
+	</div>
+
 
 	<div id="home-content-box">
 		<div id="inside-left">
@@ -67,30 +95,6 @@ var people = [
 
 	</div>
 
-	<div class="intro-box">
-		<img class="list-photo" width="50" height="50" src="/static/img/arrow-up.png"/>
-		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
-	</div>
 
-	<div class="intro-box">
-		<h3>What is kungfu people?</h3>
-		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
-	</div>
-
-        {% if definition %}
-	<div class="intro-box">
-		<strong>What is kung fu?</strong>
-                <p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
-	
-	</div>
-        {% endif %}
-
-
-
-	<div class="intro-box">
-		<h3>Find a club in your area</h3>
-<p>If you're thinking about starting kung fu, this website can help you find a good club in your area.</p>
-	
-	</div>
 
 {% endblock %}
