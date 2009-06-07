@@ -15,6 +15,14 @@ var people = [
 <script type="text/javascript" src="/js/index.js"></script>
 
 {% endblock %}
+	
+	{% block signup %}
+	<a href="/signup/">
+	<div id="signup">
+	<p><strong>Signup today!!</strong></p>
+	</div>
+	</a>
+	{% endblock %}
 
 {% block count %}<p>The worldwide community of martial artists</p> {% endblock %}
 
@@ -28,9 +36,9 @@ var people = [
 
 	<div id="left-box">
 
-	<div class="intro-box">
+	<div class="intro-box-top">
 		<img class="list-photo" width="50" height="50" src="/static/img/arrow-up.png"/>
-		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
+		<p class="small-text"><strong>Showing the latest {{ total_people }} signups on kungfupeople!</strong></p>
 	</div>
 
 	<div class="intro-box">
@@ -46,21 +54,16 @@ var people = [
 	</div>
         {% endif %}
 
-	<div class="intro-box">
-		<h3>Find a club in your area</h3>
-<p>If you're thinking about starting kung fu, this website can help you find a good club in your area.</p>
-	
-	</div>
 
 	</div>
 
 
 	<div id="home-content-box">
 		<div id="inside-left">
-		<h3>What's new today?</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<h3>Kungfu People Alpha Test</h3>
+		<p>Welcome to the Kungfu People Alpha Test. This website has been launched recently, and still contains a number of bugs and is incomplete. You're welcome to play with the website, test it, try to break it - just make sure you tell us what's wrong by emailing us at: XXXXXXXXXXXX.</p>
 
-		<p class="mapnote">ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p class="highlight"><strong>What's an Alpha Test?</strong> In an Alpha Test, the website is intentionally incomplete and definitely contains bugs. Users should test the functionality, and report any problems to the site owners. Any data you add, profiles you create, images you upload etc. will be deleted.</p>
 	    
 	    
 		</div>
@@ -84,7 +87,7 @@ var people = [
 			<h3>Latest clubs</h3>
 				<ul class="latest-list">
 					{% for club in clubs %}
-					<li class="latest-list"><a href="/club/{{ club.slug }}/">{{ club }}</a></li>
+					<li><a href="/club/{{ club.slug }}/">{{ club }}</a></li>
 					{% endfor %}
 				</ul>
 		
@@ -95,10 +98,6 @@ var people = [
 
 	</div>
 
-	<div class="intro-box">
-		<img class="list-photo" width="50" height="50" src="/img/arrow-up.png"/>
-		<p><strong>The map shows the {{ total_people }} most recent signups on kungfupeople.com</strong></p>
-	</div>
 
 
 {% endblock %}

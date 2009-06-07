@@ -44,6 +44,12 @@
 		<h1>kung fu people</h1>
 	</div>
 
+	{% if not user.is_authenticated %}
+	{% block signup %}
+	{% endblock %}
+	{% endif %}
+
+
     </div>
 	<div id="centre-content">
 

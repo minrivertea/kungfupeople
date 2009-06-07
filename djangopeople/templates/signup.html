@@ -25,41 +25,70 @@
 {% block content %}
 	<div class="form-container">
     		<form method="post" action="/signup/">
-    		<h2>1. Create your account</h2>    
+    		<h2>1. Create your account</h2> 
 
-    		<fieldset>
-        		<div class="fieldWrapper">
-        		    {{ form.first_name.errors }}
-        		    <label for="id_first_name">First name *</label>
-    		            {{ form.first_name }}
-        		</div>
-        		<div class="fieldWrapper">
-       			     {{ form.last_name.errors }}
-        		     <label for="id_last_name">Last name *</label>
-       			     {{ form.last_name }}
-        		</div>
-       			<div class="fieldWrapper">
- 		           {{ form.email.errors }}
- 		           <label for="id_email">E-mail *</label>
-		            {{ form.email }}  <span class="form-hint">(Your email will not be made public)</span>
-		        </div>
-		        <div class="fieldWrapper">
+
+    	<fieldset>
+	<div class="form-field-outer">
+		<div class="form-field-left">
+        		{{ form.first_name.errors }}
+        		<label for="id_first_name">First name *</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.first_name }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+       			{{ form.last_name.errors }}
+        		<label for="id_last_name">Last name *</label>
+		</div>
+		<div class="form-field-right">
+       			{{ form.last_name }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+ 			{{ form.email.errors }}
+ 			<label for="id_email">E-mail *</label>
+		</div>
+		<div class="form-field-right">
+       			{{ form.email }}  <span class="form-hint">(Your email will not be made public)</span>
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
 		            {{ form.username.errors }}
 		            <label for="id_username">Username *</label>
-		            {{ form.username }}
-		        </div>
-		        <div class="fieldWrapper">
+		</div>
+		<div class="form-field-right">
+       			{{ form.username }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
 		            {{ form.password1.errors }}
 		            <label for="id_password1">Password *</label>
-		            {{ form.password1 }}
-		        </div>
-		       <div class="fieldWrapper">
- 		           {{ form.password2.errors }}
+		</div>
+		<div class="form-field-right">
+       			    {{ form.password1 }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+ 		            {{ form.password2.errors }}
 		            <label for="id_password2">Password (again) *</label>
-		            {{ form.password2 }}
-		        </div>
-    
-		</fieldset>
+		</div>
+		<div class="form-field-right">
+       			    {{ form.password2 }}
+		</div>
+	</div>
+	</fieldset>
 	</div>
 
 
@@ -78,60 +107,106 @@
 
 	<div class="form-container-wide">
     <fieldset>
-        <div class="fieldWrapper" id="location">
-            {{ form.location_description.errors }}
-            <label for="id_location_description">Location *</label>
-            {{ form.location_description }}  <span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
-        </div>
 
-        <div class="fieldWrapper country">
-            {{ form.country.errors }}
-            <label for="id_country">Country</label>
-            {{ form.country }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.latitude.errors }}
-            <label for="id_latitude">Latitude</label>
-            {{ form.latitude }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.longitude.errors }}
-            <label for="id_longitude">Longitude</label>
-            {{ form.longitude }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.region.errors }}
-            <label for="id_region">Region</label>
-            {{ form.region }}
-        </div>
-    </fieldset>
+	<div class="form-field-outer" id="location">
+		<div class="form-field-left">
+            		{{ form.location_description.errors }}
+            		<label for="id_location_description">Location *</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.location_description }}  <br/><span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
+		</div>
 	</div>
 
-	<div class="form-container">
+	<div class="form-field-outer" id="country">
+		<div class="form-field-left">
+            		{{ form.country.errors }}
+            		<label for="id_country">Country</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.country }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.latitude.errors }}
+            		<label for="id_latitude">Latitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.latitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.longitude.errors }}
+            		<label for="id_longitude">Longitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.longitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.region.errors }}
+            		<label for="id_region">Region</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.region }}
+		</div>
+	</div>
+
+    </fieldset>
+
+    </div>
+
+    <div class="form-container">
     
     <h2>3. Tell us about yourself</h2>
 
     <fieldset>
-        <div class="fieldWrapper">
-            {{ form.style.errors }}
-            <label for="id_style">Style</label>
-            {{ form.style }}  <span class="form-hint">(eg. White Crane)</span>
-        </div>
-        <div class="fieldWrapper">
-            {{ form.club_url.errors }}
-            <label for="id_club_url">Club URL</label>
-            {{ form.club_url }}
-        </div>
-        <div class="fieldWrapper">
-            {{ form.club_name.errors }}
-            <label for="id_club_name">Club Name</label>
-            {{ form.club_name }}  
-        </div>
-        <div class="fieldWrapper">
-            
-            <label for="id_note">Note!</label>
-            <span class="small-text">(You'll have the chance to add more stuff to your profile later, but for now, let's keep it simple!)</span>
-        </div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            		{{ form.style.errors }}
+            		<label for="id_style">Style</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.style }}  <br/><span class="form-hint">(eg. White Crane, Shaolin, etc.)</span>
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            		{{ form.club_url.errors }}
+            		<label for="id_club_url">Club URL</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.club_url }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            		{{ form.club_name.errors }}
+            		<label for="id_club_name">Club Name</label>
+		</div>
+		<div class="form-field-right">
+			 {{ form.club_name }} 
+		</div>
+	</div>
+
+	<div class="form-field-outer" id="country">
+		<div class="form-field-left">
+			<label for="id_note">Note!</label>
+		</div>
+		<div class="form-field-right">
+			<span class="small-text">(You'll have the chance to add more stuff to your profile later, but for now, let's keep it simple!)</span> 
+		</div>
+	</div>
+
     </fieldset> 
 	   
 	</div>
@@ -143,7 +218,12 @@
 	<p>To create your profile on kung fu people and add yourself to the growing community, click the button below.</p>
 	<p><em><span class="form-hint">Your data is stored securely and will not be shared with third parties, but if you're concerned, read our <a href="/privacy/">privacy policy</a>.</span></em></p>
     
-    <div class="buttonContainer"><input type="submit" value="Sign me up"></div>
+			<p>
+    			<div class="buttonContainer">
+    	    		<input type="submit" value="Signup">
+    			</div>
+			</p>
+
     </form>
 	</div>
 </div>

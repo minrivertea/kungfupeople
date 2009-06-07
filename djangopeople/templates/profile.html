@@ -35,6 +35,14 @@ div.bio a.edit {
 
 {% endblock %}  
 
+	{% block signup %}
+	<a href="/signup/">
+	<div id="signup">
+	<p><strong>Signup today!!</strong></p>
+	</div>
+	</a>
+	{% endblock %}
+
 
 {% block map %}
     <div class="mapContainer minor">
@@ -105,22 +113,29 @@ div.bio a.edit {
 		
 		<div class="highlight">
 			
-				{% if person.bio %}
-				<p><strong>About {{ person.user.first_name }}</strong></p>
-		           	<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
-				{% else %}
-					{% if is_owner %}
-					<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>					{% endif %}
+				{% if not is_owner %}
+					{% if person.bio %}
+					<p><strong>About {{ person.user.first_name }}</strong></p>
+		           		<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
+					{% else %}
+					<p>{{ person.user.first_name }} has not yet written anything yet.</p>	
+					{% endif %}
+				{% endif %}
+
+				{% if is_owner and not person.bio %}
+				<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
 				{% endif %}
 			
-		
-		
-		
 		</div>
        
 	</div>
 
 	<div id="right-column">
+
+	<div class="right-box-top">
+	<p class="small-text"><strong>Click anywhere on the map to show {% if is_owner %}your{% else %}{{ person.user.first_name }}'s{% endif %} location on a world map.</strong></p>
+
+	</div>
 
 	{% if is_owner%}
 	<div class="right-box">

@@ -66,6 +66,8 @@ input.openid {
 		</div>
 		<div class="form-field-right">
 		    <input type="password" name="password" id="id_password">
+ <p class="small-text"><a href="/recover/">Lost your password?</a></p>
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 		</div>
 	</div>
 
@@ -83,11 +85,12 @@ input.openid {
 
 
 
+
+
+
     	</form>
 	</div>
 
-        <p class="small-text"><a href="/recover/">Lost your password?</a></p>
-        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-
+       
 
 {% endblock %}

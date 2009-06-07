@@ -66,6 +66,10 @@ google.setOnLoadCallback(function() {
     $('#gmap').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
         'title', 'Activate larger map'
     );
+
+    $('.right-box-top').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
+        'title', 'Activate larger map'
+    );
     gmap.disableDragging();
     function onMapClicked() {
         $('#gmap').css({'cursor': ''}).attr('title', '');
@@ -84,6 +88,7 @@ google.setOnLoadCallback(function() {
             // Unbind event so user can actually interact with map
             $('#gmap').unbind('click', onMapClicked);
         });
+        $('.right-box-top').animate({opacity: 1.0});
     }
     $('#gmap').click(onMapClicked);
     
