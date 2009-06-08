@@ -153,13 +153,14 @@ div.bio a.edit {
 	
 
 	
-	<div class="right-box">
+
 		
 		{% if not others %}
 		{% else %}
+		<div class="right-box">
 		<h3>Other {{ person.style }} stylists</h3>
 		<ul class="latest-list">	        
-		{% for person in others %}
+			{% for person in others %}
         	    			<li class="latest-list">
 
         	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
@@ -169,12 +170,14 @@ div.bio a.edit {
 					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
         	        		<span class="small-text">{{ person.style }}</span>              
  					</li>
-		{% endfor %}
+			{% endfor %}
 		</ul>
+		</div>
 		{% endif %}
 
    		{% with person.get_nearest as people %}
     		{% if people %}
+		<div class="right-box">
    		<h3>People near {% if is_owner %}you{% else %}{{ person.user.first_name }}{% endif %}</h3>
 				<ul class="latest-list">
 			        	{% for person in people %}
@@ -189,9 +192,9 @@ div.bio a.edit {
  					</li>
         				{% endfor %}
 				</ul>
+		</div>
    		{% endif %}
    		{% endwith %}
-   	</div>
 
 	</div>
 
