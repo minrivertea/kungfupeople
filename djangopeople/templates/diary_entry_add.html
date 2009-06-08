@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}{{ entry.title }} |{% endblock %}
+
+{% block extracss %}
+<style type="text/css">
+div.video { margin-bottom:20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="content-box">
+
+    <form method="post" action="/{{ person.user.username }}/diary/add/">
+    	<h2>Add a diary entry</h2>
+
+    	<fieldset>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+    	        	{{ form.title.errors }}
+    	        	<label for="id_title">Title</label>
+		</div>
+
+		<div class="form-field-right">
+    	        	{{ form.title }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+    	        	{{ form.content.errors }}
+    	        	<label for="id_content">Content</label>
+		</div>
+
+		<div class="form-field-right">
+    	        	{{ form.content }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+    	        	{{ form.is_public.errors }}
+    	        	<label for="id_is_public">Is this entry public?</label>
+		</div>
+
+		<div class="form-field-right">
+    	        	{{ form.is_public }} <span class="form-hint">(tick the box if you want other people to see this)</span>
+		</div>
+	</div>
+
+	<div class="form-field-submit">
+    		<div class="buttonContainer">
+    		<input type="submit" value="Save Entry">
+    		</div>
+	</div>
+
+</div>
+
+{% if entries %}
+<div id="right-column">
+<div class="right-box">
+<h3>Your previous entries</h3>
+<ul>
+{% for entry in entries %}
+<li><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/">{{ entry.title|truncatewords:4 }}</a></li>
+{% endfor %}
+</ul>
+</div>
+</div>
+{% endif %}
+	
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends "profile.html" %}
+
+{% block title%}Congratulations |{% endblock %}
+
+{% block js %}{% endblock %}
+{% block map %}{% endblock %}
+
+    {% block content %}
+        <div id="content-box">
+            <h2>Congratulations!</h2>
+
+	    <p><strong>You've successfully created a profile on KungfuPeople.com!</strong> You might be wondering what comes next? Well, first you might want to add a little more to your profile: <em>(or just <a href="/{{ person.user.username }}/">click here to view your profile)</a></em></p>
+
+		<p> </p>
+
+		<ul>
+		<li><a href="/">Write a short introduction to yourself</a></li>
+		<li><a href="/">Add your club and style information</a></li>
+		<li><a href="/">Write your first kungfu diary entry</a></li>
+
+		</ul>
+
+
+
+	</div>
+    {% endblock %}

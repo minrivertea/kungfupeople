@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ entry.title }} |{% endblock %}
+
+{% block extracss %}
+<style type="text/css">
+div.video { margin-bottom:20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="content-box">
+
+	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+
+	<h2>{{ entry.title }}</h2>
+
+	<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a> {{ entry.content }}</p>
+
+</div>
+
+{% endblock %}
+
