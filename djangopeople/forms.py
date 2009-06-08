@@ -2,7 +2,7 @@ import re
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
-from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club
+from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
 
@@ -152,9 +152,10 @@ class SignupForm(forms.Form):
 class PhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
-class AccountForm(forms.Form):
-    openid_server = forms.URLField(required=False)
-    openid_delegate = forms.URLField(required=False)
+class DiaryEntryForm(forms.Form):
+    title = forms.CharField()
+    content = forms.CharField(widget = forms.Textarea)
+    is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
 
 class LocationForm(forms.Form):
     country = forms.ChoiceField(choices = [('', '')] + [

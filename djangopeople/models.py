@@ -166,6 +166,25 @@ class Style(models.Model):
     class Meta:
         verbose_name_plural = "Styles"
 
+
+class DiaryEntry(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField()
+    content = models.TextField()
+    date_added = models.DateTimeField('date added', default=datetime.now)
+    #tags = 
+    is_public = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Entries"
+
+
+    
+    
+
     
 class Video(models.Model):
     user = models.ForeignKey(User)
@@ -263,10 +282,7 @@ class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
     styles = models.ManyToManyField(Style)
-    personal_url = models.URLField()
     club_membership = models.ManyToManyField(Club)
-    trivia = models.TextField(blank=True)
-    privacy_email = models.BooleanField()
     what_is_kungfu = models.CharField(max_length=144, blank=False)
     
     # Location stuff - all location fields are required
@@ -278,6 +294,9 @@ class KungfuPerson(models.Model):
     
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')
+
+    # Diary Entries
+    diary_entries = models.ManyToManyField(DiaryEntry)
     
     # Stats
     profile_views = models.IntegerField(default=0)

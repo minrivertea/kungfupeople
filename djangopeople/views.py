@@ -5,10 +5,10 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region, Club, Video, Style
+from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry
 import utils
 from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, AccountForm, ProfileForm, VideoForm, ClubForm, StyleForm
+    LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -43,7 +43,7 @@ def index(request):
         definition = None
     clubs = Club.objects.all().order_by('-add_date')[:5]
     your_person = None
-    if request.user:
+    if request.user and not request.user.is_anonymous():
         your_person = request.user.get_profile()
     return render(request, 'index.html', {
         'recent_people': recent_people,
@@ -217,7 +217,7 @@ def signup(request):
             if hasattr(user, 'backend'):
                 login(request, user)
 
-            return HttpResponseRedirect(person.get_absolute_url())
+            return HttpResponseRedirect('/%s/whatnext/' % username)
         else: print form.errors
     else:
         form = SignupForm()
@@ -226,6 +226,22 @@ def signup(request):
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
+
+def whatnext(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+
+    return render(request, 'whatnext.html', locals())
+
+
+def diary_entry(request, username, slug):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    entry = get_object_or_404(DiaryEntry, slug=slug)
+    user = request.user
+    if not entry.is_public and not user == person.user:
+        raise Http404("You're not authorised to view this page")
+
+    return render(request, 'diary_entry.html', locals())
+    
 
 def _get_or_create_club(url, name):
     if url:
@@ -348,12 +364,14 @@ def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
+    diary_entries = person.diary_entries.all()
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
    
     return render(request, 'profile.html', {
         'person': person,
         'styles': styles,
+        'diary_entries': diary_entries,
         'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
@@ -406,6 +424,66 @@ def edit_profile(request, username):
         'person': person,
         'example': example,
     })
+
+@must_be_owner
+def diary_entry_add(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    entries = person.diary_entries.all().order_by('-date_added')[:5]
+    
+    if request.method == 'POST':
+        form = DiaryEntryForm(request.POST)
+        if form.is_valid():  
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            is_public = form.cleaned_data['is_public']
+            slug = title.strip().replace(' ', '-').lower()
+            entry = DiaryEntry.objects.create(title=title,
+                                         content=content,
+                                         is_public=is_public,
+                                         slug=slug)
+            person.diary_entries.add(entry)
+            person.save()
+            return HttpResponseRedirect('/%s/' % username)
+
+    else:
+        form = DiaryEntryForm()
+    return render(request, 'diary_entry_add.html', locals())
+
+
+@must_be_owner
+def diary_entry_edit(request, username, slug):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    entry = get_object_or_404(DiaryEntry, slug=slug)
+
+    if request.method == 'POST':
+        form = DiaryEntryForm(request.POST)
+        if form.is_valid():  
+            entry.title = form.cleaned_data['title']
+            entry.content = form.cleaned_data['content']
+            entry.is_public = form.cleaned_data['is_public']
+            entry.slug = entry.title.strip().replace(' ', '-').lower()
+            entry.save()
+            return HttpResponseRedirect('/%s/diary/%s/' % (username, entry.slug))
+    else:
+        initial = {
+            'title': entry.title,
+            'content': entry.content,
+            'is_public': entry.is_public,
+        }
+        form = DiaryEntryForm(initial=initial)
+    return render(request, 'diary_entry_edit.html', locals())
+
+@must_be_owner
+def diary_entry_delete(request, username, slug):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    entry = get_object_or_404(DiaryEntry, slug=slug)
+    user = person.user
+    
+    entry.delete()
+
+    return HttpResponseRedirect('/%s/' % user.username)
+
+    
 
 @must_be_owner
 def edit_club(request, username):

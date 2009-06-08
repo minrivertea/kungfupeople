@@ -64,6 +64,7 @@ div.bio a.edit {
 		  <li class="small-text"><a href="/{{ user.username }}/location/">Change your location</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/club/">Edit your clubs</a></li>
+		  <li class="small-text"><a href="/{{ user.username }}/diary/add">Add a diary entry</a></li>
 		</ul>
 		</div>
 
@@ -127,6 +128,16 @@ div.bio a.edit {
 				{% endif %}
 			
 		</div>
+
+		{% if diary_entries %}
+		<div class="highlight">
+				{% for entry in diary_entries %}
+				<a href="diary/{{ entry.slug }}/"><strong>{{ entry.title }}</strong></a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
+				<p>{{ entry.content }}</p>
+				{% endfor %}		
+
+		</div>
+		{% endif %}
        
 	</div>
 
