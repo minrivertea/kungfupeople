@@ -42,8 +42,12 @@ def index(request):
     except KungfuPerson.DoesNotExist:
         definition = None
     clubs = Club.objects.all().order_by('-add_date')[:5]
+    your_person = None
+    if request.user:
+        your_person = request.user.get_profile()
     return render(request, 'index.html', {
         'recent_people': recent_people,
+        'your_person': your_person,
         'definition': definition,
         'clubs': clubs,
         'recent_people_limited': recent_people[:4],
@@ -652,6 +656,15 @@ def guess_club_name_json(request):
         data['club_name'] = club_name_guess
 
     return render_json(data)
+
+def guess_nearby_clubs(request):
+    latitude = request.GET.get('latitude')
+    longitude = request.GET.get('longitude')
+    clubs = []
+    
+    return render_json(clubs)
+
+
 
 def _club_name_from_url(url, request=None):
     if request:

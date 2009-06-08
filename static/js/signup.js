@@ -54,8 +54,8 @@ function reverseGeocode() {
 		  html += "</font>"
 		  marker.openInfoWindowHtml(html);
 		  
-		  if (gmap.getZoom() >= 3)
-		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+2);
+		  if (gmap.getZoom() >= 2)
+		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+3);
 		  
 	       }
 	       

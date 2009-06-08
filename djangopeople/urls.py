@@ -37,6 +37,6 @@ urlpatterns = patterns('',
     (r'^([a-z0-9]{3,})/style/$', views.edit_style),
     (r'^([a-z0-9]{3,})/profile/$', views.edit_profile),
     (r'^([a-z0-9]{3,})/location/$', views.edit_location),
-    (r'^([a-z0-9]{3,})/upload/$', views.upload_profile_photo),
+    url(r'^([a-z0-9]{3,})/upload/$', views.upload_profile_photo, name="upload_profile_photo"),
     (r'^([a-z0-9]{3,})/upload/done/$', views.upload_done),
 )

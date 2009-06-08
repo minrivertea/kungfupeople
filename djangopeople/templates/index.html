@@ -71,10 +71,22 @@ var people = [
 		<div id="inside-right">
 			<h3>Latest members</h3>
 				<ul class="latest-list">
-			        	{% for person in recent_people %}
+			        	{% for person in recent_people_limited %}
         	    			<li class="latest-list">
 
-        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+        	        		<div class="list-photo">
+                                           {% if your_person %}
+					   {% ifequal person your_person %}
+                                             <a href="{{ person.get_absolute_url }}upload/"
+                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
+                                           {% else %}
+                                              <a href="{{ person.get_absolute_url }}"
+                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
+                                           {% endifequal %}
+                                           {% else %}
+					   <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40">
+                                           {% endif %}
+					
 					</div>
 
  			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>

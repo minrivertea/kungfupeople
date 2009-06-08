@@ -181,6 +181,84 @@ class Video(models.Model):
         return self.description and self.description.replace('\n', ' ')\
           or self.embed_src[:40]
     
+from django.db import connection
+from string import Template
+    
+class DistanceManager(models.Manager):
+
+    
+    def nearest_to(self, point, number=20, within_range=None, offset=0,
+                   extra_where_sql=''):
+        """finds the model objects nearest to a given point
+        
+        `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
+        
+        returns a list of tuples, sorted by increasing distance from the given `point`. 
+        each tuple being (model_object, dist), where distance is in the units of the 
+        spatial ref sys given by `to_srid`"""
+        if not isinstance(point, tuple):
+            raise TypeError
+        
+        cursor = connection.cursor()
+        x, y = point
+        table = self.model._meta.db_table
+        distance_clause = ''
+        if within_range:
+            # Need to turn the select below into a subquery so I can do where distance <= X
+            raise NotImplementedError, "Not supported yet"
+        
+        if extra_where_sql or distance_clause:
+            extra_where_sql = 'WHERE\n\t' + extra_where_sql
+        sql = Template("""
+            SELECT 
+              gl.id,
+              ATAN2(
+                SQRT(
+                  POW(COS(RADIANS($x)) *
+                      SIN(RADIANS(gl.latitude - $y)), 2) + 
+                  POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
+                      SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                      COS(RADIANS(gl.latitude - $y)), 2)), 
+                 (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
+                  COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                  COS(RADIANS(gl.latitude - $y)))
+                ) * 6372.795 AS distance
+            FROM 
+              djangopeople_kungfuperson gl
+            
+              %s
+              %s
+            ORDER BY distance ASC
+            LIMIT $number
+            OFFSET $offset
+            ;
+        """ % (extra_where_sql, distance_clause))
+        sql_string = sql.substitute(locals())
+        print sql_string
+        cursor.execute(sql_string)
+        nearbys = cursor.fetchall()
+        # get a list of primary keys of the nearby model objects
+        ids = [p[0] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[1] for p in nearbys]
+        #print [p for p in nearbys]
+        places = self.filter(id__in=ids)
+        # the QuerySet comes back in an undefined order; let's
+        # order it by distance from the given point
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        return zip(order_by(places, ids, 'id'), dists)
+
+    
+    
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
@@ -203,6 +281,9 @@ class KungfuPerson(models.Model):
     
     # Stats
     profile_views = models.IntegerField(default=0)
+    
+    
+    objects = DistanceManager()
      
     def get_nearest(self, num=5):
         "Returns the nearest X people, but only within the same continent"
