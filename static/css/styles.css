@@ -210,7 +210,7 @@ body * {
 	min-width: 500px;
 	width: 70%;
     	float: left;
-    	margin: 0 20px 0 0px;
+    	margin: 0 20px 50px 0px;
     	display: block;
     	background-color: white;
     	padding: 10px;
@@ -308,6 +308,15 @@ h3 {
 	margin-bottom: 10px;
 }
 
+h4 {
+	font-family: Helvetica, sans-serif;
+	font-size: 1em;
+	font-weight: bold;
+	color: #8CA93E;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #666;
+}
+
 /* @end */
 
 /* @group Links */
@@ -344,6 +353,7 @@ a:active {
 
 label {
 	cursor: pointer;
+	margin-bottom: -10px;
 }
 th { 
 	text-align: left;
@@ -465,17 +475,20 @@ ul.detailsList li {
 
 ul.detailsList li img.main {
 	float: left;
-	margin: 0 10px 10px 0;
-	width:  2.5em;
+	margin: 0 10px 10px 10px;
+	width:  60px;
 }
 
 ul.detailsList li h3 {
-	font-size: 1.2em;
+	font-size: 1em;
+	text-align: left;
+	margin: 0px;
+	
 }
 
 ul.detailsList li .meta {
 	font-size: 0.8em;
-	margin-top: 3px;
+	text-align: left;
 	color: #666
 }
 
@@ -649,7 +662,7 @@ p {
 }
 
 #floater img {
-	margin-left: -60px;
+	margin-left: -40px;
 	float: left;
 }
 
@@ -729,6 +742,7 @@ li.latest-list {
 
 .list-map-image {
 	padding-left: 4px;
+	margin-right: 5px;
 }
 
 .form-hint {
@@ -738,6 +752,7 @@ li.latest-list {
 
 #profile-head {
 	height: 110px;
+	margin: 15px 0 10px 20px;
 }
 
 #profile-head h3, p {
@@ -747,8 +762,13 @@ li.latest-list {
 .profile-photo {
 	height: 100px;
 	width: 100px;
-	margin: 0px 15px 15px 0px;
+	margin: 0px 20px 10px 0px;
 	float: left;
+}
+
+.profile-bio {
+	margin-left: 20px;
+	padding-right: 250px;
 }
 
 .diagram-photo {
@@ -793,14 +813,39 @@ li.latest-list {
 	margin-left: 160px;
 }
 
-.upload-photo-text {
-	text-align: center;
-	display: block;
-	width: 50px;
-	overflow: wrap;
-	padding: 10px;
-	font-family: Trebuchet, sans-serif;
-	font-weight: bold;
-	font-size: 0.7em;
-	line-height: 1.2em;
+.diaries {
+	width: 40%;
+	float: left;
+	background-color: #E0FFB8;
+	border-color: #94DA3A;
+	border-style: solid;
+	border-width: 1px 0;
+	padding: 10px 1em 1em 25px;
+	margin: 1.45em 25px 2em 0;
+	color: #234F32;
+
 }
+
+.diaries h4 {
+	color: #BD0505;
+	margin-left: -10px;
+	border: none;
+}
+
+.diaries p {
+	margin-bottom: 1em;
+}
+
+diaries ul {
+	list-style-type: none;
+}
+
+a.diary-title {
+	margin-left: -3px;
+}
+
+.diary-summary-text {
+	font-size: 0.8em;
+	margin-top: -5px;
+}
+

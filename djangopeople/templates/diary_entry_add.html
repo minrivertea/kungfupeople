@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}{{ entry.title }} |{% endblock %}
+{% block title %}{{ page_title }} |{% endblock %}
+
+{% block extrajs %} 
+
+<script type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
+
+<script type="text/javascript">
+tinyMCE.init({
+	theme : "advanced",
+	mode : "textareas",
+});
+</script>
+
+{% endblock %}
 
 {% block extracss %}
 <style type="text/css">
@@ -12,8 +25,8 @@ div.video { margin-bottom:20px; }
 
 <div id="content-box">
 
-    <form method="post" action="/{{ person.user.username }}/diary/add/">
-    	<h2>Add a diary entry</h2>
+    <form method="post" action=".">
+    	<h2>{{ page_title }}</h2>
 
     	<fieldset>
 

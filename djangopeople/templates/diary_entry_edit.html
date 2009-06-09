@@ -2,6 +2,20 @@
 
 {% block title %}{{ entry.title }} |{% endblock %}
 
+
+{% block extrajs %} 
+
+<script type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
+
+<script type="text/javascript">
+tinyMCE.init({
+	theme : "advanced",
+	mode : "textareas",
+});
+</script>
+{% endblock %}
+
+
 {% block extracss %}
 <style type="text/css">
 div.video { margin-bottom:20px; }

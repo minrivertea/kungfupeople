@@ -429,6 +429,7 @@ def edit_profile(request, username):
 def diary_entry_add(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entries = person.diary_entries.all().order_by('-date_added')[:5]
+    page_title = "Add a diary entry"
     
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)
@@ -454,6 +455,7 @@ def diary_entry_add(request, username):
 def diary_entry_edit(request, username, slug):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entry = get_object_or_404(DiaryEntry, slug=slug)
+    page_title = "Edit a diary entry"
 
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)
@@ -471,7 +473,7 @@ def diary_entry_edit(request, username, slug):
             'is_public': entry.is_public,
         }
         form = DiaryEntryForm(initial=initial)
-    return render(request, 'diary_entry_edit.html', locals())
+    return render(request, 'diary_entry_add.html', locals())
 
 @must_be_owner
 def diary_entry_delete(request, username, slug):
