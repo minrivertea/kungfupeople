@@ -284,9 +284,6 @@ ul, li {
 	margin-left: 30px;
 }
 
-#content-box p {
-	margin-bottom: 15px;
-}
 
 
 /* @group Headings */
@@ -845,7 +842,7 @@ a.diary-title {
 }
 
 .diary-summary-text {
+	line-height: 1.2em;
 	font-size: 0.8em;
-	margin-top: -5px;
 }
 

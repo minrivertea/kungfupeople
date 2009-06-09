@@ -364,14 +364,16 @@ def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
-    diary_entries = person.diary_entries.all()
+    diary_entries_private = person.diary_entries.all()
+    diary_entries_public = person.diary_entries.filter(is_public=True)
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
    
     return render(request, 'profile.html', {
         'person': person,
         'styles': styles,
-        'diary_entries': diary_entries,
+        'diary_entries_private': diary_entries_private,
+        'diary_entries_public': diary_entries_public,
         'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
@@ -437,11 +439,28 @@ def diary_entry_add(request, username):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             is_public = form.cleaned_data['is_public']
-            slug = title.strip().replace(' ', '-').lower()
-            entry = DiaryEntry.objects.create(title=title,
-                                         content=content,
-                                         is_public=is_public,
-                                         slug=slug)
+            slug = title.strip().replace(' ', '-').lower()            
+
+            entry = DiaryEntry.objects.create(
+                title=title,
+                content=content,
+                is_public=is_public,
+                slug=slug, 
+                country=person.country,
+                latitude=person.latitude,
+                longitude=person.longitude,
+                location_description=person.location_description,
+                region=person.region,
+            )
+
+            if form.cleaned_data.get('country'):
+                entry.country=form.cleaned_data['country'],
+                entry.latitude=form.cleaned_data['latitude'],
+                entry.longitude=form.cleaned_data['longitude'],
+                entry.location_description=form.cleaned_data['location_description'],
+                entry.region=form.cleaned_data['region'],
+                entry.save()
+
             person.diary_entries.add(entry)
             person.save()
             return HttpResponseRedirect('/%s/' % username)

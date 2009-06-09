@@ -56,14 +56,14 @@ div.bio a.edit {
 
        		<h3>{{ style.name }}</h3>
 
-		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in stylists %}<a href="/{{ stylists.country.iso_code|lower }}/">{{ stylists.country }}</a>, {% endfor %}
+		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in stylists %}<a href="/{{ stylist.country.iso_code|lower }}/">{{ stylist.country }}</a>, {% endfor %}
 
 		</div>
 
 
 		<div class="highlight">
 		
-		{% if members %}
+		{% if stylists %}
 		    <strong>Stylists</strong>
 		    <ul class="latest-list">
 		{% for stylist in stylists %}

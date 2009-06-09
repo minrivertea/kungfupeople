@@ -156,6 +156,14 @@ class DiaryEntryForm(forms.Form):
     title = forms.CharField()
     content = forms.CharField(widget = forms.Textarea)
     is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
+    country = forms.ChoiceField(required=False, choices = [('', '')] + [
+        (c.iso_code, c.name) for c in Country.objects.all()
+    ])
+    latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
+    longitude = forms.FloatField(required=False, min_value=-180, max_value=180)
+    location_description = forms.CharField(required=False, max_length=50)
+    
+    region = GroupedChoiceField(required=False, choices=region_choices())
 
 class LocationForm(forms.Form):
     country = forms.ChoiceField(choices = [('', '')] + [
