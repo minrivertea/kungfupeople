@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ entry.title }} |{% endblock %}
+{% block title %}{{ entry.title }} | Diary |{% endblock %}
 
 {% block extracss %}
 <style type="text/css">
@@ -8,15 +8,29 @@ div.video { margin-bottom:20px; }
 </style>
 {% endblock %}
 
+{% block map %}
+    <div class="mapContainer minor">
+        <div id="gmap">&nbsp;</div>
+    </div>
+{% endblock %}
+
 {% block content %}
 
 <div id="content-box">
 
-	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+	<a class="small-text" href="/{{ person.user.username }}">(back to {% if is_owner %}your{% else %}{{ person.user.first_name }}'s{% endif %} profile)</a>
 
 	<h2>{{ entry.title }}</h2>
 
-	<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a> {{ entry.content }}</p>
+	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %} {{ entry.content|safe }}</p>
+
+</div>
+
+<div id="right-column">
+
+	<div class="right-box-top">
+	<p>This item has been geo-tagged! Click on the map to see where this content relates to.</p>
+	</div>
 
 </div>
 

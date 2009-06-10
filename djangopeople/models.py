@@ -178,15 +178,34 @@ class DiaryEntry(models.Model):
     #tags = 
     is_public = models.BooleanField(default=False)
 
+    # Location stuff - all location fields are required
+    country = models.ForeignKey(Country)
+    region = models.ForeignKey(Region, blank=True, null=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    location_description = models.CharField(max_length=50)
+
+    def location_description_html(self):
+        region = ''
+        if self.region:
+            region = '<a href="%s">%s</a>' % (
+                self.region.get_absolute_url(), self.region.name
+            )
+            bits = self.location_description.split(', ')        
+            if len(bits) > 1 and bits[-1] == self.region.name:
+                bits[-1] = region
+            else:
+                bits.append(region)
+                bits[:-1] = map(escape, bits[:-1])
+            return mark_safe(', '.join(bits))
+        else:
+            return self.location_description
+
     def __unicode__(self):
         return self.title
 
     class Meta:
         verbose_name_plural = "Entries"
-
-
-    
-    
 
     
 class Video(models.Model):

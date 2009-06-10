@@ -59,7 +59,7 @@ div.bio a.edit {
 		<div id="floater">
 		<img src="/img/edit.png">
 		<ul>
-		  <li class="small-text"><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">Upload a photo</a></li>
+		  <li class="small-text"><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">{% if person.photo %}Change your photo{% else %}Upload a photo{% endif %}</a></li>
 		  <li class="small-text"><a href="/{{user.username }}/videos/add/" class="meta">Add a video</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/location/">Change your location</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile</a></li>
@@ -80,7 +80,7 @@ div.bio a.edit {
 		{% if person.photo %}
 		    <img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
 		{% else %}
-		    {% if is_owner %}<a href="/{{ person.user.username }}/upload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
+		    {% if is_owner %}<a href="/{{ person.user.username }}/upload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo-text.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
 		{% endif %}
 
        		<h3>{{ person.user.get_full_name }}</h3>
@@ -116,32 +116,43 @@ div.bio a.edit {
 		</div>
 
 		
-		<div class="highlight">
-			
-				{% if not is_owner %}
-					{% if person.bio %}
-					<p><strong>About {{ person.user.first_name }}</strong></p>
-		           		<p>{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
-					{% else %}
-					<p>{{ person.user.first_name }} has not yet written anything yet.</p>	
-					{% endif %}
-				{% endif %}
-
-				{% if is_owner and not person.bio %}
+			<div class="profile-bio">
+			{% if person.bio %}
+				<h4>About {% if is_owner %}you{% else %}{{ person.user.first_name }}{% endif %}</h4>
+		           	<p class="profile-bio">{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
+			{% else %}
+				{% if is_owner %}
 				<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
+				{% else %}
+				<p>{{ person.user.first_name }} has not yet written anything yet.</p>
 				{% endif %}
+			{% endif %}
+			</div>
 			
-		</div>
 
-		{% if diary_entries %}
-		<div class="highlight">
-				{% for entry in diary_entries %}
-				<a href="diary/{{ entry.slug }}/"><strong>{{ entry.title }}</strong></a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
-				<p>{{ entry.content }}</p>
+
+		{% if diary_entries_private %}
+			<div class="diaries">
+			<h4>Kungfu Diary</h4>
+			{% if is_owner %}
+				{% for entry in diary_entries_private %}
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
+				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
 				{% endfor %}		
+			{% else %}
+				{% for entry in diary_entries_public %}
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
+				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+				{% endfor %}	
+			{% endif %}
+			</div>
+		{% endif %}
+
+		<div class="diaries">
+			<h4>Photos</h4>
+		
 
 		</div>
-		{% endif %}
        
 	</div>
 
