@@ -171,6 +171,8 @@ class Style(models.Model):
 
 
 class DiaryEntry(models.Model):
+    user = models.ForeignKey(User)
+    
     title = models.CharField(max_length=200)
     slug = models.SlugField()
     content = models.TextField()
@@ -317,9 +319,6 @@ class KungfuPerson(models.Model):
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')
 
-    # Diary Entries
-    diary_entries = models.ManyToManyField(DiaryEntry)
-    
     # Stats
     profile_views = models.IntegerField(default=0)
     

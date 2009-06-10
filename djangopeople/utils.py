@@ -64,3 +64,10 @@ def download_url(url, request_meta):
     u = urllib2.urlopen(req)
     headers = u.info()
     return u.read()
+
+
+from unaccent import unaccented_map
+def unaccent_string(ustring, encoding="ascii"):
+    if not isinstance(ustring, unicode):
+        ustring = ustring.decode(encoding)
+    return ustring.translate(unaccented_map()).encode(encoding, "ignore")

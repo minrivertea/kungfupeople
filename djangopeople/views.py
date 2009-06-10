@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry
 import utils
+from utils import unaccent_string
 from forms import SignupForm, PhotoUploadForm, \
     LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
@@ -200,7 +201,7 @@ def signup(request):
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
-            slug = slugify(name)
+            slug = slugify(unaccent_string(name))
             #slug = name.strip().replace(' ', '-').lower()
             if url or name:
                 club = _get_or_create_club(url, name)
