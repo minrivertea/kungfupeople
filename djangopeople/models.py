@@ -165,6 +165,9 @@ class Style(models.Model):
 
     class Meta:
         verbose_name_plural = "Styles"
+        
+    def get_absolute_url(self):
+        return "/style/%s/" % self.slug
 
 
 class DiaryEntry(models.Model):
