@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load django_static %}
 
 {% block title %}Edit your clubs |{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% slimfile "/js/edit_club.js" %}"></script>
+{% endblock %}
 
 
 
@@ -10,7 +15,7 @@
 
 	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
 
-	<h2>Your current club(s)</h2>
+	<h2>Your current club{{ clubs|pluralize }}</h2>
 	{% for club in clubs %}
 	<p><a href="/club/{{ club.slug }}">{{ club }}</a><a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/">(<img title="remove this club" class="small-icon" src="/img/delete.png">)</a>
 	</p>

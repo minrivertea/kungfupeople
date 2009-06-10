@@ -16,6 +16,7 @@ import os, md5, datetime
 from PIL import Image
 from cStringIO import StringIO
 from django.utils import simplejson
+from urllib2 import HTTPError, URLError
 
 def render(request, template, context_dict=None):
     return render_to_response(
@@ -729,10 +730,16 @@ def guess_club_name_json(request):
         return render_json(data)
     
     # hmm, perhaps we need to download the HTML and scrape the <title> tag
-    club_name_guess = _club_name_from_url(club_url, request)
-    if club_name_guess:
-        data['club_name'] = club_name_guess
-
+    try:
+        club_name_guess = _club_name_from_url(club_url, request)
+        if club_name_guess:
+            data['club_name'] = club_name_guess
+    except HTTPError:
+        data['error'] = u"Can't find that URL"
+    except URLError:
+        data['error'] = u"URL not recognized"
+    
+    
     return render_json(data)
 
 def guess_nearby_clubs(request):

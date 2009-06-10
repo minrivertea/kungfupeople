@@ -201,7 +201,6 @@ google.setOnLoadCallback(function() {
          $.getJSON('/guess-club-name.json', {club_url:club_url}, function(res) {
             if (res && res.club_name) {
                $('#id_club_name').val(res.club_name);
-               console.log(res.readonly);
                if (res.readonly)
                  $('#id_club_name').attr('readonly','readonly').attr('disabled','disabled').addClass('readonly');
             }
