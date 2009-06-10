@@ -717,6 +717,34 @@ li.latest-list {
     font-size: 0.8em;
 }
 
+#flatpage {
+	min-width: 500px;
+	width: 70%;
+    	float: left;
+    	margin: 0 20px 50px 0px;
+    	display: block;
+    	background-color: white;
+    	padding: 10px;
+    	border: 10px white solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+}
+
+#flatpage p {
+	padding: 0 140px 0 0px;
+	line-height: 1.5em;
+}
+
+.meta {
+    font-size: 0.8em;
+    color: #666;
+    margin: -30px 0 20px 5px;
+}
+
+
+
 .large-text {
     font-size: 1.5em;
 }

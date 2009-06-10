@@ -1,10 +1,11 @@
-google.load('maps', '3');
+google.load('maps', '2',{'other_params':'sensor=false'});
 
 var gmap;
 google.setOnLoadCallback(function() {
     var latlng = new google.maps.LatLng(19.97335, -15.8203);
     gmap = new google.maps.Map2(document.getElementById('gmap'));
     gmap.setCenter(latlng, 2);
+
     
     //gmap.addControl(new google.maps.LargeMapControl());
     gmap.addControl(new google.maps.LargeMapControl3D());
