@@ -4,6 +4,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry
 import utils
@@ -198,7 +199,8 @@ def signup(request):
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
-            slug = name.strip().replace(' ', '-').lower()
+            slug = slugify(name)
+            #slug = name.strip().replace(' ', '-').lower()
             if url or name:
                 club = _get_or_create_club(url, name)
                 club.slug = slug

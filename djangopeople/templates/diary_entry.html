@@ -8,6 +8,38 @@ div.video { margin-bottom:20px; }
 </style>
 {% endblock %}
 
+
+{% block js %}{% load thumbnail %}
+{% if entry.latitude and entry.longitude %}
+<script type="text/javascript">
+var nearby_people = [
+    // latitude, longitude, name, username, location description, flag, isocode
+    {% for e in entry.get_nearest %}
+    [{{ e.latitude }}, {{ e.longitude }}, "{{ e|escapejs }}", "{{ e.user.username|escapejs }}", "{{ e.location_description|escapejs }}", "{% if e.photo %}{% thumbnail e.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ e.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
+var entry_latitude = {{ entry.latitude }};
+var entry_longitude = {{ entry.longitude }};
+</script>
+<script type="text/javascript" src="/js/diary.js"></script>
+<style type="text/css">
+#id_skills {
+    width: 80%;
+}
+a.changeloc, h2 a.edit, div.bio a.edit {
+    font-size: 0.5em;
+    text-decoration: none;
+    vertical-align: middle;
+}
+div.bio a.edit {
+    font-size: 0.8em;
+}
+</style>
+{% endif %}
+
+{% endblock %}  
+
 {% block map %}
     <div class="mapContainer minor">
         <div id="gmap">&nbsp;</div>
@@ -22,6 +54,8 @@ div.video { margin-bottom:20px; }
 
 	<h2>{{ entry.title }}</h2>
 
+	<p>{{ entry.country }}</p>
+
 	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %} {{ entry.content|safe }}</p>
 
 </div>
@@ -29,7 +63,7 @@ div.video { margin-bottom:20px; }
 <div id="right-column">
 
 	<div class="right-box-top">
-	<p>This item has been geo-tagged! Click on the map to see where this content relates to.</p>
+	<p>This item has been geo-tagged in <strong>{{ entry.location_description }} ({{ entry.country.iso_code }})</strong>! Click on the map to see other items related to this area.</p>
 	</div>
 
 </div>
