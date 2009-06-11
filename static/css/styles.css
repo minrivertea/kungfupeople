@@ -521,9 +521,6 @@ ul.split li {
 	margin: 1.45em 0 2em 0;
 	color: #234F32;
 }
-.highlight p {
-	margin-bottom: 1em;
-}
 
 div.highlight ul {
 	list-style-type: none;
@@ -705,6 +702,7 @@ p {
 ul.latest-list {
     margin: 0px 0 0 10px;
     padding-top: 7px;
+    line-height: 1.2em;
 }
 
 li.latest-list {
@@ -721,7 +719,7 @@ li.latest-list {
 	min-width: 500px;
 	width: 70%;
     	float: left;
-    	margin: 0 20px 50px 0px;
+    	margin: 0 20px 0px 0px;
     	display: block;
     	background-color: white;
     	padding: 10px;
@@ -730,11 +728,6 @@ li.latest-list {
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
 -moz-border-radius-topright:10px;
-}
-
-#flatpage p {
-	padding: 0 140px 0 0px;
-	line-height: 1.5em;
 }
 
 .meta {
@@ -872,5 +865,23 @@ a.diary-title {
 .diary-summary-text {
 	line-height: 1.2em;
 	font-size: 0.8em;
+}
+
+#main-content-area {
+	min-width: 400px;
+	width: 70%;
+	float: left;
+}
+
+#main-content-area p {
+	margin: 0 0 20px 10px;
+}
+
+.content-photos {
+	min-width: 160px;
+	width: 25%;
+	margin-right: 10px;
+	height: 400px;
+	float: right;
 }
 

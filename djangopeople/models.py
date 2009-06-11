@@ -144,7 +144,7 @@ class Club(models.Model):
     slug = models.SlugField()
     url = models.URLField()
     description = models.TextField()
-    logo = models.ImageField(blank=True, upload_to='logos')
+    logo = models.ImageField(blank=True, upload_to='clubs')
     add_date = models.DateField('date added', default=datetime.now)
 
     def __unicode__(self):
@@ -168,7 +168,6 @@ class Style(models.Model):
         
     def get_absolute_url(self):
         return "/style/%s/" % self.slug
-
 
 class DiaryEntry(models.Model):
     user = models.ForeignKey(User)
@@ -208,6 +207,44 @@ class DiaryEntry(models.Model):
 
     class Meta:
         verbose_name_plural = "Entries"
+
+class Photo(models.Model):
+    user = models.ForeignKey(User)
+    diary_entry = models.ForeignKey(DiaryEntry)
+ 
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    photo = models.ImageField(blank=True, upload_to='diary-photos')
+    date_added = models.DateField('date added', default=datetime.now)
+
+    # Location stuff - all location fields are required
+    country = models.ForeignKey(Country)
+    region = models.ForeignKey(Region, blank=True, null=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    location_description = models.CharField(max_length=50)
+
+    def location_description_html(self):
+        region = ''
+        if self.region:
+            region = '<a href="%s">%s</a>' % (
+                self.region.get_absolute_url(), self.region.name
+            )
+            bits = self.location_description.split(', ')        
+            if len(bits) > 1 and bits[-1] == self.region.name:
+                bits[-1] = region
+            else:
+                bits.append(region)
+                bits[:-1] = map(escape, bits[:-1])
+            return mark_safe(', '.join(bits))
+        else:
+            return self.location_description
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Photos"
 
     
 class Video(models.Model):

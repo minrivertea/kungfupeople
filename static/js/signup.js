@@ -6,7 +6,7 @@ jQuery.fn.yellowFade = function() {
     }, 1500);
 }
 
-google.load('maps', '3');
+google.load('maps', '2',{'other_params':'sensor=false'});
 
 var INITIAL_LAT = 43.834526782236814;
 var INITIAL_LON = -37.265625;

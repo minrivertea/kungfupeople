@@ -165,6 +165,22 @@ class DiaryEntryForm(forms.Form):
     
     region = GroupedChoiceField(required=False, choices=region_choices())
 
+    def clean_region(self):
+        # If a region is selected, ensure it matches the selected country
+        if self.cleaned_data['region']:
+            try:
+                region = Region.objects.get(
+                    code = self.cleaned_data['region'],
+                    country__iso_code = self.cleaned_data['country']
+                )
+            except ObjectDoesNotExist:
+                raise forms.ValidationError(
+                    'The region you selected does not match the country'
+                )
+        return self.cleaned_data['region']
+    
+    clean_location_description = not_in_the_atlantic
+
 class LocationForm(forms.Form):
     country = forms.ChoiceField(choices = [('', '')] + [
         (c.iso_code, c.name) for c in Country.objects.all()

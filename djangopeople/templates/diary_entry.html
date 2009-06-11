@@ -44,7 +44,17 @@ var entry_longitude = {{ entry.longitude }};
 	<h2>{{ entry.title }}</h2>
 	<p class="meta">{{ entry.date_added|date:"d M Y" }} | <a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a> |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
 
-	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %} {{ entry.content|safe }}</p>
+	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %}</p>
+
+	<div id="main-content-area">
+
+{{ entry.content|safe }}
+
+	</div>
+
+		<div class="content-photos">
+			<h4>Related Photos</h4>
+		</div>
 
 </div>
 

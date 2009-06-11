@@ -1,4 +1,4 @@
-google.load('maps', '3');
+google.load('maps', '2',{'other_params':'sensor=false'});
 
 var gmap;
 google.setOnLoadCallback(function() {

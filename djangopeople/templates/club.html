@@ -56,20 +56,35 @@ div.bio a.edit {
 		<div class="highlight">
 		
 		{% if members %}
-		    <strong>Members</strong>
-		    <ul class="latest-list">
-		{% for member in members %}
-   			<li class="latest-list">
-			<div class="list-photo"><img src="{% if member.photo %}{% thumbnail member.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-			</div>
-			<a class="list-item-title" href="{{ member.get_absolute_url }}">{{ member.user.get_full_name }}</a><br/>
-			<img class="list-map-image" src="{% if member.country.iso_code %}/img/flags/{{ member.country.iso_code|lower }}.gif{% else %}/{{ member.country.flag }}{% endif %}" alt="{{ member.country }}"/>
-        	        <span class="small-text">{{ member.location_description }}</span>              
- 			</li>
-		{% endfor %}
-		    </ul>
+			<h3>Latest members</h3>
+				<ul class="latest-list">
+			        	{% for person in members %}
+        	    			<li class="latest-list">
+
+        	        		<div class="list-photo">
+                                           {% if your_person %}
+					   {% ifequal person your_person %}
+                                             <a href="{{ person.get_absolute_url }}upload/"
+                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
+                                           {% else %}
+                                              <a href="{{ person.get_absolute_url }}"
+                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
+                                           {% endifequal %}
+                                           {% else %}
+					   <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40">
+                                           {% endif %}
+					
+					</div>
+
+ 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
+					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/><span class="small-text">{{ person.country }}</span>
+        	        		<span class="small-text">{{ person.style }}</span>              
+ 					</li>
+        				{% endfor %}
+				</ul>
 		{% endif %}
 		</div>
+		
 
        
 	</div>
