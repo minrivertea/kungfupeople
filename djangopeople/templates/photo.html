@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title%} Photo |{% endblock %}
+
+{% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
+
+{% block js %}{% load thumbnail %}
+{% if person.latitude and person.longitude %}
+
+<script type="text/javascript" src="/js/common.js"></script>
+<style type="text/css">
+#id_skills {
+    width: 80%;
+}
+a.changeloc, h2 a.edit, div.bio a.edit {
+    font-size: 0.5em;
+    text-decoration: none;
+    vertical-align: middle;
+}
+div.bio a.edit {
+    font-size: 0.8em;
+}
+</style>
+{% endif %}
+
+{% endblock %}  
+
+
+{% block map %}
+    <div class="mapContainer minor">
+        <div id="gmap">&nbsp;</div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+	<div id="content-box">
+
+		{% if club.photo %}
+		    <img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
+		{% else %}
+		{% endif %}
+
+       		<h2>Photo</h2>
+		<p class="meta">{{ photo.date_added|date:"d M Y" }} | <a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a> |  {{ photo.location_description }} ({{ photo.country.iso_code }})  |  {% if is_owner %} <a href="edit">Edit</a>  |  <a href="delete">Delete</a> {% endif %}</p>
+	
+		<p><em>{{ photo.description }}</em></p>
+
+		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
+
+	</div>
+
+	<div id="right-column">
+
+	<div class="right-box">
+
+		<p>Thinking about joining a kung fu club? Read some of <a href="/join-kungfu-club-tips/">our tips for joining a club...</a></p>
+		
+   	</div>
+
+	</div>
+
+{% endblock %}
