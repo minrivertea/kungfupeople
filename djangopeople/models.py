@@ -210,11 +210,9 @@ class DiaryEntry(models.Model):
 
 class Photo(models.Model):
     user = models.ForeignKey(User)
-    diary_entry = models.ForeignKey(DiaryEntry)
- 
-    title = models.CharField(max_length=200)
+    diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
     description = models.TextField()
-    photo = models.ImageField(blank=True, upload_to='diary-photos')
+    photo = models.ImageField(blank=True, upload_to='photos')
     date_added = models.DateField('date added', default=datetime.now)
 
     # Location stuff - all location fields are required
@@ -241,7 +239,7 @@ class Photo(models.Model):
             return self.location_description
 
     def __unicode__(self):
-        return self.title
+        return self.photo
 
     class Meta:
         verbose_name_plural = "Photos"

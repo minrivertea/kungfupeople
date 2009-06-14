@@ -2,7 +2,7 @@ import re
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
-from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry
+from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry, Photo
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
 
@@ -150,6 +150,25 @@ class SignupForm(forms.Form):
 
 
 class PhotoUploadForm(forms.Form):
+    photo = forms.ImageField()
+    description = forms.CharField(widget = forms.Textarea)
+    diary_entry = forms.FloatField(required=False)
+
+    country = forms.ChoiceField(required=False, choices = [('', '')] + [
+        (c.iso_code, c.name) for c in Country.objects.all()
+    ])
+    latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
+    longitude = forms.FloatField(required=False, min_value=-180, max_value=180)
+    location_description = forms.CharField(required=False, max_length=50)
+    
+    region = GroupedChoiceField(required=False, choices=region_choices())
+
+class PhotoEditForm(forms.Form):
+    description = forms.CharField(widget = forms.Textarea)
+    diary_entry = forms.FloatField(required=False)
+
+
+class ProfilePhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
 class DiaryEntryForm(forms.Form):

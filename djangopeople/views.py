@@ -6,11 +6,10 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry
+from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry, Photo
 import utils
 from utils import unaccent_string
-from forms import SignupForm, PhotoUploadForm, \
-    LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm
+from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, PhotoEditForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
@@ -296,10 +295,122 @@ def derive_username(nickname):
     return nickname
 
 @must_be_owner
-def upload_profile_photo(request, username):
+def photo_upload(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = person.user
+            description = form.cleaned_data['description']
+            photo = form.cleaned_data['photo']
+            region = None
+            diary_entry = None
+            # Figure out what type of image it is
+            photo = request.FILES['photo']
+            image_content = photo.read()
+            format = Image.open(StringIO(image_content)).format
+            format = format.lower().replace('jpeg', 'jpg')
+            filename = md5.new(image_content).hexdigest() + '.' + format
+            # Save the image
+            path = os.path.join(settings.MEDIA_ROOT, 'photos', filename)
+            # check that the dir of the path exists
+            dirname = os.path.dirname(path)
+            if not os.path.isdir(dirname):
+                try:
+                    os.mkdir(dirname)
+                except IOError:
+                    raise IOError, "Unable to created the directory %s" % dirname
+            open(path, 'w').write(image_content)
+
+            if form.cleaned_data['diary_entry']:
+                diary_entry = form.cleaned_data['diary_entry']
+
+            if form.cleaned_data['region']:
+                region = Region.objects.get(
+                    country__iso_code = form.cleaned_data['country'],
+                    code = form.cleaned_data['region']
+                ) 
+
+            if form.cleaned_data['country']:
+                photo = Photo.objects.create(
+                    user=user,
+                    description=description,
+                    photo=photo,
+                    diary_entry = diary_entry,
+                    country=Country.objects.get(iso_code = form.cleaned_data['country']),
+                    latitude=form.cleaned_data['latitude'],
+                    longitude=form.cleaned_data['longitude'],
+                    location_description=form.cleaned_data['location_description'],
+                    region = region,
+                    )
+
+            else:
+                photo = Photo.objects.create(
+                    user=user,
+                    description=description,
+                    photo=photo,
+                    diary_entry = diary_entry,
+                    country=person.country,
+                    latitude=person.latitude,
+                    longitude=person.longitude,
+                    location_description=person.location_description,
+                    region=person.region,
+                )
+
+            return HttpResponseRedirect('/%s/upload/done/' % username)
+    else:
+        form = PhotoUploadForm()
+    return render(request, 'photo_upload_form.html', {
+        'form': form,
+        'person': person,
+    })
+
+
+@must_be_owner
+def photo_edit(request, username, photo_id):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    photo = get_object_or_404(Photo, pk=photo_id)
+    page_title = "Edit your photo"
+    button_value = "Save changes"
+
+    if request.method == 'POST':
+        form = PhotoEditForm(request.POST)
+        if form.is_valid():  
+            diary_entry = photo.diary_entry
+
+            if form.cleaned_data['diary_entry']:
+                diary_entry = form.cleaned_data['diary_entry']
+
+            photo.description = form.cleaned_data['description']
+            photo.diary_entry = diary_entry
+            photo.save()
+
+            return HttpResponseRedirect('/%s/upload/done/' % username)
+    else:
+        initial = {
+            'description': photo.description,
+            'photo': photo,
+            'diary_entry': photo.diary_entry,
+        }
+        form = PhotoEditForm(initial=initial)
+    return render(request, 'photo_upload_form.html', locals())
+
+@must_be_owner
+def photo_delete(request, username, photo_id):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    photo = get_object_or_404(Photo, pk=photo_id)
+    page_title = "Delete this photo"
+
+    photo.delete()
+
+    return HttpResponseRedirect('/%s/upload/done/' % username)
+
+
+@must_be_owner
+def upload_profile_photo(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    if request.method == 'POST':
+        form = ProfilePhotoUploadForm(request.POST, request.FILES)
         if form.is_valid():
             # Figure out what type of image it is
             photo = request.FILES['photo']
@@ -321,7 +432,7 @@ def upload_profile_photo(request, username):
             person.save()
             return HttpResponseRedirect('/%s/upload/done/' % username)
     else:
-        form = PhotoUploadForm()
+        form = ProfilePhotoUploadForm()
     return render(request, 'upload_profile_photo.html', {
         'form': form,
         'person': person,
@@ -368,6 +479,8 @@ def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
+    photos = Photo.objects.filter(user=person.user)
+    videos = Video.objects.filter(user=person.user)
     diary_entries_private = DiaryEntry.objects.filter(user=person.user)
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True)
     person.profile_views += 1 # Not bothering with transactions; only a stat
@@ -376,10 +489,21 @@ def profile(request, username):
     return render(request, 'profile.html', {
         'person': person,
         'styles': styles,
+        'photos': photos,
         'diary_entries_private': diary_entries_private,
         'diary_entries_public': diary_entries_public,
         'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
+        'is_owner': request.user.username == username,
+    })
+
+def photo(request, username, photo_id):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    photo = get_object_or_404(Photo, id=photo_id)
+
+    return render(request, 'photo.html', {
+        'person': person,
+        'photo': photo,
         'is_owner': request.user.username == username,
     })
 
@@ -480,10 +604,6 @@ def diary_entry_add(request, username):
                     location_description=person.location_description,
                     region=person.region,
                 )
-
-
-
-
 
             return HttpResponseRedirect('/%s/' % username)
 

@@ -33,16 +33,16 @@ body * {
 	min-width: 836px;
 	margin-left: 20px;
 	width: 95%;
-	height: 140px;
+	height: 110px;
 }
 
 #nav {
-	text-align: left;
+	text-align: right;
 	display: block;
-	float: left;
-	width: 100%;
+	float: right;
+	width: 40%;
 	height: 20px;
-	margin: 20px 20px 0 30px;
+	margin: 10px 20px 0 30px;
 }
 
 .logo {
@@ -53,7 +53,7 @@ body * {
 }
 
 #title {
-	margin: 40px 0 0 0px;
+	margin: 50px 0 0 0px;
 	display: block;
 	float: left;
 	height: 60px;
@@ -71,11 +71,10 @@ body * {
 	min-width: 200px;
 	width: 30%;
 	height: 35px;
-	margin-top: 30px;
-	margin-right: -1px;
-	padding: 10px;
-	padding-top: 25px;
-	background-color: #8CA93E;
+	margin: 10px -1px 0 0;
+	padding: 25px 10px 10px 10px;
+	border: 1px white solid;
+	background: #8CA93E url('/img/signup.png') no-repeat top left;
 -moz-border-radius-bottomleft:0px;
 -moz-border-radius-bottomright:0px;
 -moz-border-radius-topleft:10px;
@@ -93,15 +92,23 @@ body * {
 	min-width: 200px;
 	width: 30%;
 	height: 35px;
-	margin-top: 30px;
-	margin-right: -1px;
-	padding: 10px;
-	padding-top: 25px;
-	background-color: #a5c356;
+	margin: 10px -1px 0 0;
+	padding: 25px 10px 10px 10px;
+	z-index: -1;
+	background: #8CA93E url('/img/signup.png') no-repeat top-left;
 -moz-border-radius-bottomleft:0px;
 -moz-border-radius-bottomright:0px;
 -moz-border-radius-topleft:10px;
 -moz-border-radius-topright:10px;
+	filter:alpha(opacity=80);
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
+}
+
+#signup strong {
+	z-index: 1;
+	color: white;
 }
 
 
@@ -122,8 +129,8 @@ body * {
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:0px;
 -moz-border-radius-topright:0px;
-
 }
+
 
 .minor #gmap {
 	height: 7em;
@@ -387,7 +394,7 @@ ul.errorlist li {
 }
 
 .form-field-outer label {
-	width: 10em;
+	width: 100px;
 	clear: left;
 	float: left;
 	text-align: right;
@@ -656,7 +663,7 @@ p {
 }
 
 #floater img {
-	margin-left: -40px;
+	margin-left: -60px;
 	float: left;
 }
 
@@ -702,7 +709,7 @@ p {
 ul.latest-list {
     margin: 0px 0 0 10px;
     padding-top: 7px;
-    line-height: 1.2em;
+    line-height: 1.2sem;
 }
 
 li.latest-list {
@@ -802,7 +809,7 @@ li.latest-list {
 .form-field-outer {
 	display: block;
 	float: left;
-	width: 90%;
+	width: 100%;
 	height: auto;
 	margin-bottom: 5px;
 }

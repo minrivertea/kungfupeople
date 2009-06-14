@@ -2,7 +2,7 @@
 
 {% block title%}Upload a profile photo |{% endblock %}
 
-{% block js %}{% endblock %}
+{% block js %}{% load thumbnail %}{% endblock %}
 {% block map %}{% endblock %}
 
     {% block content %}
@@ -36,7 +36,14 @@
         </div>
 
 	<div class="form-container">
+	<h3>Your current photo</h3>
+	{% if person.photo %}
+		<img class="diagram-photo" src="{% thumbnail person.photo 100x100 crop %}">
+	{% else %}
+		<img class="diagram-photo" src="/img/upload-a-photo.png"/>
+	{% endif %}
 		<p>Photos will be resized and cropped to a 100x100 square; for the best results, make sure you are uploading a square image. </p> 
-		<img class="diagram-photo" src="/img/upload-a-photo.png"/><img src="/img/arrow-right.png"/>
+
+
 	</div>
     {% endblock %}

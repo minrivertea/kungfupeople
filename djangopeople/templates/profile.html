@@ -59,11 +59,12 @@ div.bio a.edit {
 		<div id="floater">
 		<img src="/img/edit.png">
 		<ul>
-		  <li class="small-text"><a href="/{{ person.user.username }}/upload/" class="meta" id="uploadNewPhoto">{% if person.photo %}Change your photo{% else %}Upload a photo{% endif %}</a></li>
-		  <li class="small-text"><a href="/{{user.username }}/videos/add/" class="meta">Add a video</a></li>
+		  <li class="small-text"><a href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">{% if person.photo %}Change your photo{% else %}Upload a photo{% endif %}</a></li>
+		  <li class="small-text"><a href="/{{user.username }}/videos/add/">Add a video</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/location/">Change your location</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/club/">Edit your clubs</a></li>
+		  <li class="small-text"><a href="/{{ user.username }}/photo/upload">Upload photos</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/diary/add">Add a diary entry</a></li>
 		</ul>
 		</div>
@@ -71,8 +72,7 @@ div.bio a.edit {
 		{% else%}
 		<div id="floater">
 		{% if person.what_is_kungfu %}<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>{% endif %}
-		<ul>
-		    <li class="small-text"><a href="/{{ person.user.username }}/videos/" class="meta" id="add_video">See {{ person.user.first_name }}'s videos</a></li>
+		{% if videos %}<ul><li class="small-text"><a href="/{{ person.user.username }}/videos/" id="add_video">See {{ person.user.first_name }}'s videos</a></li>{% endif %}
 		</ul>
 		</div>
 		{% endif %}
@@ -80,7 +80,7 @@ div.bio a.edit {
 		{% if person.photo %}
 		    <img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
 		{% else %}
-		    {% if is_owner %}<a href="/{{ person.user.username }}/upload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo-text.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
+		    {% if is_owner %}<a href="/{{ person.user.username }}/profileupload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo-text.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
 		{% endif %}
 
        		<h3>{{ person.user.get_full_name }}</h3>
@@ -99,7 +99,7 @@ div.bio a.edit {
 		{% endif %}
                
 		{% if clubs %}
-		<p class="small-text"><strong>Club{{ clubs.count|pluralize }}:</strong>
+		<p class="small-text"><strong>Clubs{{ clubs.count|pluralize }}:</strong>
 		  {% for club in clubs %}
 		    {% if club.url %} 
 		      <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
@@ -132,7 +132,7 @@ div.bio a.edit {
 
 		{% if diary_entries_private %}
 			<div class="diaries">
-			<h4>Kungfu Diary</h4>
+			<h4>Kungfu Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">Add</a>){% endif %}</h4>
 			{% if is_owner %}
 				{% for entry in diary_entries_private %}
 				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
@@ -147,11 +147,17 @@ div.bio a.edit {
 			</div>
 		{% endif %}
 
+
+		{% if photos %}
 		<div class="diaries">
 			<h4>Photos</h4>
-		
-
+			<ul>
+			{% for photo in photos %}
+			<li><a href="/{{ person.user.username}}/photo/{{ photo.id }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
+			{% endfor %}
+			</ul>
 		</div>
+		{% endif %}
        
 	</div>
 
