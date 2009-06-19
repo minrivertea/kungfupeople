@@ -1,7 +1,6 @@
 TODO LIST:
 
 * When you 'edit_club', the guess_club_name jQuery function doesn't work.
-* On the club add/edit form, there is a delete link, but this is not associated with a function. Ideally, it should delete the club membership without reloading the whole page (not delete the club!!)
 * Privacy policy needs writing
 * About us page needs writing
 * "tell your friends" email function needs doing
@@ -30,12 +29,12 @@ FEATURE LIST:
  * You can geo-tag your diary entry
  * You can add a video link (youtube.com or something) to your profile page
  * You can view other users in a particular country/region
+ * You can upload photos and geo-tag them, and add descriptions etc.
 
 
 
 DESIRED FEATURES:
  * See a dynamically changing list of clubs as you zoom in on a geographic area.
- * Upload kung fu photos and geotag them
  * The ability to "like" or "bookmark" other people's resources (eg. diary entries, photos etc.)
  * Ability to create kung fu events and geo-tag them. These could be in the future, or retrospective.
  * A newsletter emailed out to all users with hot monthly content

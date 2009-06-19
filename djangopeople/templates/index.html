@@ -17,11 +17,10 @@ var people = [
 {% endblock %}
 	
 	{% block signup %}
-	<a href="/signup/">
+
 	<div id="signup">
-	<p><strong>Signup today!!</strong></p>
+	<p><strong>A world-wide map of kung fu people! <a href="/signup/">Signup today.</a></strong></p>
 	</div>
-	</a>
 	{% endblock %}
 
 {% block count %}<p>The worldwide community of martial artists</p> {% endblock %}
@@ -35,28 +34,6 @@ var people = [
 
 {% block content %}
 
-	<div id="left-box">
-
-	<div class="intro-box-top">
-		<img class="list-photo" width="50" height="50" src="/static/img/arrow-up.png"/>
-		<p class="small-text"><strong>Showing the latest {{ total_people }} signups on kungfupeople!</strong></p>
-	</div>
-
-	<div class="intro-box">
-		<h3>What is kungfu people?</h3>
-		<p>Kungfu People lets martial artists place themselves on the global martial arts map. Create your profile, and find other fellow enthusiasts in your area.</p>
-	</div>
-
-        {% if definition %}
-	<div class="intro-box">
-		<strong>What is kung fu?</strong>
-                <p class="quotation">&ldquo;{{ definition.what_is_kungfu }}&rdquo;  <span class="small-text">(says <a href="/{{ definition.user }}/">{{ definition.user.get_full_name }}</a>)</span></p>
-	
-	</div>
-        {% endif %}
-
-
-	</div>
 
 
 	<div id="home-content-box">
@@ -64,7 +41,6 @@ var people = [
 		<h3>Kungfu People Alpha Test</h3>
 		<p>Welcome to the Kungfu People Alpha Test. This website has been launched recently, and still contains a number of bugs and is incomplete. You're welcome to play with the website, test it, try to break it - just make sure you tell us what's wrong by emailing us at: XXXXXXXXXXXX.</p>
 
-		<p class="highlight"><strong>What's an Alpha Test?</strong> In an Alpha Test, the website is intentionally incomplete and definitely contains bugs. Users should test the functionality, and report any problems to the site owners. Any data you add, profiles you create, images you upload etc. will be deleted.</p>
 	    
 	    
 		</div>
@@ -98,9 +74,15 @@ var people = [
 				</ul>
 
 			<h3>Latest clubs</h3>
-				<ul class="latest-list">
 					{% for club in clubs %}
-					<li><a href="/club/{{ club.slug }}/">{{ club }}</a></li>
+					<a href="/club/{{ club.slug }}/">{{ club }}</a>
+					{% if not forloop.last %} | {% endif %}
+					{% endfor %}
+
+			<h3>Latest photos</h3>
+				<ul class="thumbnail-list">
+					{% for photo in photos %}
+					<li><a href="/{{ photo.user.username }}/photo/{{ photo.id }}/"><img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}"></a></li>
 					{% endfor %}
 				</ul>
 		

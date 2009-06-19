@@ -53,123 +53,112 @@ div.bio a.edit {
 {% block content %}
 
 	<div id="content-box">
-		<div id="profile-head">
+	<div id="profile-head">
+
+		<div class="profile-photo">
+		{% if person.photo %}
+		    <img src="{% thumbnail person.photo 150x150 crop %}" alt="{{ person }}">
+		{% else %}
+		    {% if is_owner %}<a href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo.png" alt="blank image"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image">{% endif %}
+		{% endif %}
+
+
 
 		{% if is_owner %}
 		<div id="floater">
-		<img src="/img/edit.png">
 		<ul>
 		  <li class="small-text"><a href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">{% if person.photo %}Change your photo{% else %}Upload a photo{% endif %}</a></li>
-		  <li class="small-text"><a href="/{{user.username }}/videos/add/">Add a video</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/location/">Change your location</a></li>
+		  <li class="small-text"><a href="/{{user.username }}/videos/add/">Link to a video</a></li>
 		  <li class="small-text"><a href="/{{ user.username }}/profile/">Edit your profile</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/club/">Edit your clubs</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/photo/upload">Upload photos</a></li>
-		  <li class="small-text"><a href="/{{ user.username }}/diary/add">Add a diary entry</a></li>
-		</ul>
-		</div>
-
-		{% else%}
-		<div id="floater">
-		{% if person.what_is_kungfu %}<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>{% endif %}
-		{% if videos %}<ul><li class="small-text"><a href="/{{ person.user.username }}/videos/" id="add_video">See {{ person.user.first_name }}'s videos</a></li>{% endif %}
+		  {% if photos %}{% else %}<li class="small-text"><a href="/{{ user.username }}/photo/upload">Upload photos</a></li>
+		{% endif %}
+		{% if diary_entries_private %}{% else %}<li class="small-text"><a href="/{{ user.username }}/diary/add">Add a diary entry</a></li>{% endif %}
 		</ul>
 		</div>
 		{% endif %}
 
-		{% if person.photo %}
-		    <img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
-		{% else %}
-		    {% if is_owner %}<a href="/{{ person.user.username }}/profileupload/" class="profile-photo" id="uploadNewPhoto" title="Upload a photo for your profile!"><img src="/static/img/upload-a-photo-text.png" alt="blank image" class="profile-photo"></a>{% else %}<img src="/static/img/upload-a-photo.png" alt="blank image" class="profile-photo">{% endif %}
-		{% endif %}
+		</div>
 
+		<div class="profile-text">
        		<h3>{{ person.user.get_full_name }}</h3>
-        	
-		<p class="small-text">
-		<a href="/{{ person.country.iso_code|lower }}/" class="nobg">
-		<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name">
-		</a> 
+		<a href="/{{ person.country.iso_code|lower }}/" class="small-text">
+		<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name"></a>
 		<span class="region">{{ person.location_description }}</span>
-		</p>
 		{% if styles %}
-		<p class="small-text"><strong>Styles:</strong>
+		<p class="small-text"><strong>Styles{% if is_owner %}<a href="/{{ user.username }}/style/"> (edit)</a>{% endif %}: </strong>
 		{% for style in styles %} 
 		<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>{% if not forloop.last %}, {% endif %}
 		{% endfor %}
 		{% endif %}
                
 		{% if clubs %}
-		<p class="small-text"><strong>Clubs{{ clubs.count|pluralize }}:</strong>
-		  {% for club in clubs %}
-		    {% if club.url %} 
-		      <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
-		    {% else %}
-    		      {{ club.name }}{% if not forloop.last %}, {% endif %}
- 		    {% endif %}
-
-
-   		  {% endfor %}
-		</p>
+		    <p class="small-text"><strong>Club{{ clubs.count|pluralize }}{% if is_owner %}<a href="/{{ user.username }}/club/"> (edit)</a>{% endif %}:</strong>
+		    {% for club in clubs %}
+		        {% if club.url %} 
+		        <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
+		        {% else %}
+    		        {{ club.name }}{% if not forloop.last %}, {% endif %}
+ 		        {% endif %}
+   		    {% endfor %}
+		    </p>
 		{% endif %}
 
+
+		{% if person.bio %}
+              	    <p class="small-text"><strong>Bio:</strong> {% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
+		{% else %}
+		    {% if is_owner %}
+		    <p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
+		    {% else %}
+		    {% endif %}
+		{% endif %}
 
 		</div>
+	</div>
 
-		
-			<div class="profile-bio">
-			{% if person.bio %}
-				<h4>About {% if is_owner %}you{% else %}{{ person.user.first_name }}{% endif %}</h4>
-		           	<p class="profile-bio">{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}</p>
-			{% else %}
-				{% if is_owner %}
-				<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
-				{% else %}
-				{% endif %}
-			{% endif %}
-			</div>
+
+	<div id="main-content-area">
+
 			
 
-
-		{% if diary_entries_private %}
-			<div class="diaries">
-			<h4>Kungfu Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">Add</a>){% endif %}</h4>
-			{% if is_owner %}
-				{% for entry in diary_entries_private %}
-				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
-				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-				{% endfor %}		
-			{% else %}
-				{% for entry in diary_entries_public %}
-				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}
-				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-				{% endfor %}	
-			{% endif %}
-			</div>
-		{% endif %}
-
-
 		{% if photos %}
-		<div class="diaries">
-			<h4>Photos</h4>
-			<ul>
+		<div class="highlight">
+			<h4>{{ person.user.first_name }}'s photos {% if is_owner %}(<a href="/{{ user.username }}/photo/upload">add more photos</a>){% endif %}</h4>
+			<ul class="thumbnail-list">
 			{% for photo in photos %}
-			<li><a href="/{{ person.user.username}}/photo/{{ photo.id }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
+			<li class="thumbnail-list"><a href="/{{ person.user.username}}/photo/{{ photo.id }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
 			{% endfor %}
 			</ul>
 		</div>
 		{% endif %}
-       
-	</div>
 
-	<div id="right-column">
-
-	<div class="right-box-top">
-	<p class="small-text"><strong>Click anywhere on the map to see {% if is_owner %}your{% else %}{{ person.user.first_name }}'s{% endif %} location on a world map.</strong></p>
-
-	</div>
+		{% if diary_entries_private %}
+			<div class="highlight">
+			<h4>Kungfu Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">add another entry</a>){% endif %}</h4>
+			{% if is_owner %}
+				<ul>
+				{% for entry in diary_entries_private %}
+				<li class="diary-list">
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}<br/>
+				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+				</li>
+				{% endfor %}
+				</ul>		
+			{% else %}
+				<ul>
+				{% for entry in diary_entries_public %}
+				<li class="diary-list">
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}<br/>
+				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+				</li>
+				{% endfor %}
+				</ul>	
+			{% endif %}
+			</div>
+		{% endif %}
 
 	{% if is_owner%}
-	<div class="right-box">
+	<div class="highlight">
 		<p><strong>Your definition of kung fu:</strong></p>
                 {% if person.what_is_kungfu %}
 		<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>
@@ -181,28 +170,32 @@ div.bio a.edit {
 		
 	</div>
 	{% endif %}
-	
+       
+	</div>
+	</div>
 
-	
+	<div id="right-column">
 
-		
+	<div class="right-box-top">
+	<p class="small-text"><strong>Click on the map to see {% if is_owner %}your{% else %}{{ person.user.first_name }}'s{% endif %} location{% if is_owner %} <a href="/{{ user.username }}/location/">or click here to change your location.</a>{% else %}.{% endif %}</strong></p>
+
+	</div>
+	
 		{% if not others %}
 		{% else %}
 		<div class="right-box">
-		<h3>Other {{ person.style }} stylists</h3>
-		<ul class="latest-list">	        
+			<h3>Other {{ person.style }} stylists</h3>
+			<ul class="latest-list">	        
 			{% for person in others %}
-        	    			<li class="latest-list">
+        	    		<li class="latest-list">
+				<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
+				</div>
 
-        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-					</div>
-
- 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
-        	        		<span class="small-text">{{ person.style }}</span>              
- 					</li>
+ 			       	<a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
+				<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/><span class="small-text">{{ person.country }}</span>              
+ 				</li>
 			{% endfor %}
-		</ul>
+			</ul>
 		</div>
 		{% endif %}
 
@@ -219,7 +212,7 @@ div.bio a.edit {
 
  			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
 					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
-        	        		<span class="small-text">{{ person.style }}</span>              
+        	        		<span class="small-text">{{ person.country }}</span>              
  					</li>
         				{% endfor %}
 				</ul>

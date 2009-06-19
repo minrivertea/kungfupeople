@@ -44,12 +44,14 @@ def index(request):
     except KungfuPerson.DoesNotExist:
         definition = None
     clubs = Club.objects.all().order_by('-add_date')[:5]
+    photos = Photo.objects.all().order_by('-date_added')[:5]
     your_person = None
     if request.user and not request.user.is_anonymous():
         your_person = request.user.get_profile()
     return render(request, 'index.html', {
         'recent_people': recent_people,
         'your_person': your_person,
+        'photos': photos,
         'definition': definition,
         'clubs': clubs,
         'recent_people_limited': recent_people[:4],
@@ -370,6 +372,7 @@ def photo_upload(request, username):
 def photo_edit(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username = username)
     photo = get_object_or_404(Photo, pk=photo_id)
+    region = None
     page_title = "Edit your photo"
     button_value = "Save changes"
 
@@ -381,6 +384,19 @@ def photo_edit(request, username, photo_id):
             if form.cleaned_data['diary_entry']:
                 diary_entry = form.cleaned_data['diary_entry']
 
+            if form.cleaned_data['region']:
+                region = Region.objects.get(
+                    country__iso_code = form.cleaned_data['country'],
+                    code = form.cleaned_data['region']
+                ) 
+
+            photo.country = Country.objects.get(
+                iso_code = form.cleaned_data['country']
+            )
+            photo.region = region
+            photo.latitude = form.cleaned_data['latitude']
+            photo.longitude = form.cleaned_data['longitude']
+            photo.location_description = form.cleaned_data['location_description']
             photo.description = form.cleaned_data['description']
             photo.diary_entry = diary_entry
             photo.save()
@@ -815,8 +831,7 @@ def edit_location(request, username):
             person.region = region
             person.latitude = form.cleaned_data['latitude']
             person.longitude = form.cleaned_data['longitude']
-            person.location_description = \
-                form.cleaned_data['location_description']
+            person.location_description = form.cleaned_data['location_description']
             person.save()
             return HttpResponseRedirect('/%s/' % username)
     else:

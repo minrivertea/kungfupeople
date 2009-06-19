@@ -2,14 +2,24 @@
 
 {% block title%}{% if page_title %}{{ page_title }}{% else %}Upload a photo{% endif %} |{% endblock %}
 
-{% block js %}{% load thumbnail %}{% endblock %}
+
+{% block js %}
+{% load thumbnail %}
+<script type="text/javascript" src="/js/photo_add.js"></script>
+
+{% endblock %} 
+
 {% block map %}{% endblock %}
 
     {% block content %}
+    	<form enctype="multipart/form-data" method="post" action=".">
+
+	<div class="mapContainer minor" id="mapWrapper">
+	    <div id="gmap">&nbsp;</div>
+	</div>
+
         <div class="form-container-wide">
             <h2>{% if page_title %}{{ page_title }}{% else %}Upload a new photo{% endif %}</h2>
-            <form enctype="multipart/form-data" method="post" action=".">
-
 
 	<fieldset>
 	{% if photo %}

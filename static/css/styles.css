@@ -10,39 +10,44 @@ body, textarea {
 	color: #000;
 	font-family: Helvetica,Arial,sans-serif;
 	line-height: 1.2em;
-	background: #ffe095 url('/img/body-background.png') no-repeat top left;
+	background: url('/static/img/bg.gif');
 }
 
 body * {
-	font-size: 1em;
+	font-size: 12px;
 }
 
-#body-container {
-	min-width: 900px;
+#main-div {
+	margin: 0 auto;
+	width: 85%;
+}
+
+#wrapper {
 	width: 100%;
+	background-color: white;
+	float: left;
 }
 
 #centre-content {
-	margin-left: 20px;
 	min-width: 900px;
 }
 
 #header {
 	display: block;
 	float: left;
-	min-width: 836px;
-	margin-left: 20px;
-	width: 95%;
-	height: 110px;
+	min-width: 800px;
+	width: 100%;
+	height: 100px;
+	background-color: #BD0505;
 }
 
 #nav {
-	text-align: right;
+	color: white;
 	display: block;
-	float: right;
-	width: 40%;
-	height: 20px;
-	margin: 10px 20px 0 30px;
+	min-width: 800px;
+	width: 100%;
+	height: 30px;
+	background-color: #e79090;
 }
 
 .logo {
@@ -53,7 +58,7 @@ body * {
 }
 
 #title {
-	margin: 50px 0 0 0px;
+	margin: 40px 0 0 0px;
 	display: block;
 	float: left;
 	height: 60px;
@@ -61,84 +66,46 @@ body * {
 }
 
 #signup {
-	font-family: Trebuchet, sans-serif;
-	font-weight: bold;
+	font-family: Helvetica, sans-serif;
 	font-size: 2em;
-	text-align: center;
-	letter-spacing: -2px;
-	color: white;
+	font-weight: bold;
+	text-align: left;
+	color: yellow;
 	float: right;
 	min-width: 200px;
 	width: 30%;
-	height: 35px;
-	margin: 10px -1px 0 0;
-	padding: 25px 10px 10px 10px;
-	border: 1px white solid;
-	background: #8CA93E url('/img/signup.png') no-repeat top left;
--moz-border-radius-bottomleft:0px;
--moz-border-radius-bottomright:0px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
+	height: 55px;
+	margin: 80px 10px 5px 0;
 }
 
-#signup:hover {
-	font-family: Trebuchet, sans-serif;
-	font-weight: bold;
-	font-size: 2em;
-	text-align: center;
-	letter-spacing: -2px;
-	color: white;
-	float: right;
-	min-width: 200px;
-	width: 30%;
-	height: 35px;
-	margin: 10px -1px 0 0;
-	padding: 25px 10px 10px 10px;
-	z-index: -1;
-	background: #8CA93E url('/img/signup.png') no-repeat top-left;
--moz-border-radius-bottomleft:0px;
--moz-border-radius-bottomright:0px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
-	filter:alpha(opacity=80);
-	-moz-opacity:0.8;
-	-khtml-opacity: 0.8;
-	opacity: 0.8;
+#signup a {
+	font-family: Helvetica, sans-serif;
+	color: yellow;
 }
-
-#signup strong {
-	z-index: 1;
-	color: white;
-}
-
 
 .mapContainer {
+	margin: 0 auto;
 	text-align: center;
+	width: 90%;
 }
 
 #gmap {
-	background-color: #99B3CC;
 	float: left;
-	min-width: 836px;
-	width: 95%;
-	margin: 0px 0 20px 0;
-/*	background-image: url(/static/img/map.png); */
-	background-position: top left;
-	border: 10px solid #8CA93E;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:0px;
--moz-border-radius-topright:0px;
+	min-width: 800px;
+	width: 100%;
+	border-bottom: 20px solid #ffdddd;
+	border-left: 5px solid #ffdddd;
+	border-right: 5px solid #ffdddd;
+	border-top: 5px solid #ffdddd;
 }
 
 
 .minor #gmap {
-	height: 7em;
+	height: 70px;
 }
 
 .major #gmap {
 	height: 25em;
-
 }
 
 #left-box {
@@ -158,7 +125,6 @@ body * {
     	display: block;
     	background-color: white;
 	margin-bottom: 40px;
-	margin-top: -20px;
 	padding: 17px;
     	border: 3px solid white;
 -moz-border-radius-bottomleft:10px;
@@ -170,15 +136,13 @@ body * {
 .intro-box-top {
     	font-size: 1em;
     	line-height: 1.8em;
-    	color: white;
+    	color: black;
 	height: auto;
     	float: left;
     	display: block;
-    	background-color: #8CA93E;
-	margin-bottom: 40px;
-	margin-top: -30px;
-	padding: 17px;
-    	border: 3px solid #8CA93E;
+    	background-color: #ffdddd;
+	margin: -30px 0 40px 0px;
+	padding: 10px;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:0px;
@@ -194,6 +158,7 @@ body * {
     	background-color: white;
     	padding: 10px;
     	border: 10px white solid;
+-moz-box-shadow: #666 5px 5px 6px;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:0px;
@@ -242,13 +207,13 @@ body * {
     	line-height: 1.8em;
     	color: black;
 	height: auto;
+	min-width: 100px;
+	width: 80%;
     	float: left;
     	display: block;
     	background-color: white;
-	margin-bottom: 20px;
-	margin-top: 0px;
-	padding: 17px;
-    	border: 3px solid white;
+	margin: 0px 0px 20px 0px;
+	padding: 20px;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
@@ -259,17 +224,15 @@ body * {
     	font-size: 1em;
     	color: white;
 	display: block;
+	min-width: 100px;
+	width: 80%;
 	height: auto;
     	float: left;
-    	background-color: #8CA93E;
+    	background-color: #e6e6e6;
 	margin-bottom: 20px;
-	margin-top: -20px;
+	margin-top: 0px;
 	padding: 17px;
-    	border: 3px solid #8CA93E;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:0px;
--moz-border-radius-topright:0px;
+	border-top: 5px solid #666;
 }
 
 
@@ -297,7 +260,7 @@ ul, li {
 
 h2 {
 	font-family: Helvetica, sans-serif;
-	margin: 0.8em 0 1em 0;
+	margin: 10px 0 15px 0;
 	font-size: 2em;
 	font-weight: bold;
 	line-height: 1em;
@@ -316,9 +279,8 @@ h4 {
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
 	font-weight: bold;
-	color: #8CA93E;
+	color: #bd0505;
 	margin-bottom: 10px;
-	border-bottom: 1px solid #666;
 }
 
 /* @end */
@@ -525,12 +487,10 @@ ul.split li {
 	border-style: solid;
 	border-width: 1px 0;
 	padding: 10px 1em 1em 1em;
-	margin: 1.45em 0 2em 0;
+	margin: 1.45em 20px 2em 20px;
 	color: #234F32;
-}
-
-div.highlight ul {
-	list-style-type: none;
+	float: left;	
+	width: 40%;
 }
 
 
@@ -548,10 +508,14 @@ div.highlight ul {
 
 #title h1 {
 	font-family: Helvetica, Arial, sans-serif;
-	margin-bottom: 0px;
+	margin: 0 0 0px 20px;
 	font-size: 5em;
 	font-weight: bold;
-	color: #BD0505;
+	color: white;
+	filter:alpha(opacity=100);
+	-moz-opacity:1.0;
+	-khtml-opacity: 1.0;
+	opacity: 1.0;
 }
 
 #search {
@@ -566,8 +530,6 @@ div.highlight ul {
 
 
 #nav ul {
-	margin: 0 auto;
-	padding: 0.5em 2% 0 0%;
 	list-style-type: none;
 	display: inline;
 }
@@ -576,8 +538,12 @@ div.highlight ul {
 	text-align: right;
 	float: left;
 	width: auto;
-	font-size: 0.8em;
-	margin-right: 30px;
+	margin: 5px 0 0 25px;
+}
+
+#nav a{
+	font-size: 10pt;
+	color: #9a0000;
 }
 
 /* @end */
@@ -654,17 +620,15 @@ p {
 }
 
 #floater {
-    float: right;
+    float: left;
     display: block;
     height: auto;
-    width: 20%;
     text-align: left;
-    padding-left: 60px;
 }
 
-#floater img {
-	margin-left: -60px;
-	float: left;
+#floater ul, li {
+	margin: 0px;
+	padding: 0px;
 }
 
 #right-box p {
@@ -740,7 +704,7 @@ li.latest-list {
 .meta {
     font-size: 0.8em;
     color: #666;
-    margin: -30px 0 20px 5px;
+    margin: 0px 0 20px 5px;
 }
 
 
@@ -776,8 +740,9 @@ li.latest-list {
 }
 
 #profile-head {
-	height: 110px;
-	margin: 15px 0 10px 20px;
+	width: 100%;
+	height: auto;
+	margin: 15px 0 20px 10px;
 }
 
 #profile-head h3, p {
@@ -785,15 +750,18 @@ li.latest-list {
 }
 
 .profile-photo {
-	height: 100px;
-	width: 100px;
-	margin: 0px 20px 10px 0px;
+	display: block;
+	height: 150px;
+	width: 150px;
+	margin: 0px 20px 20px 0px;
 	float: left;
 }
 
-.profile-bio {
-	margin-left: 20px;
-	padding-right: 250px;
+.profile-text {
+	float: left;
+	width: 70%;
+	margin-bottom: 10px;
+	
 }
 
 .diagram-photo {
@@ -876,7 +844,8 @@ a.diary-title {
 
 #main-content-area {
 	min-width: 400px;
-	width: 70%;
+	width: 100%;
+	padding: 0;
 	float: left;
 }
 
@@ -888,7 +857,31 @@ a.diary-title {
 	min-width: 160px;
 	width: 25%;
 	margin-right: 10px;
+	margin-left: 10px;
+	padding: 10px;
 	height: 400px;
 	float: right;
+	border: 1px #333 solid;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
 }
+
+
+.thumbnail-list li {
+	display: inline;
+	margin-right: 10px;
+}
+
+.thumbnail-list img {
+	border: 1px solid #CCCCCC;
+	background-color: white;
+	padding: 3px;
+}
+
+.diary-list {
+	list-style-type: square;
+}
+
 

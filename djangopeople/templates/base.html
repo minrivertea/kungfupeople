@@ -12,9 +12,8 @@
 </head>
 <body{% block bodymeta %}{% endblock %}>
 
-<div id="body-container">
-
-    <div id="header">
+<div id="main-div">
+<div id="wrapper">
 
 	<div id="nav">
 
@@ -38,6 +37,8 @@
 			{% endif %}
    	</div>
 
+	<div id="header">
+
 	<div id="logo">
 	</div>
 
@@ -50,17 +51,17 @@
 	{% endblock %}
 	{% endif %}
 
-
-
-    </div>
-	<div id="centre-content">
+	</div>
+	</div>
+	</div>
 
 {% block map %}{% endblock %}
 
-
+<div id="main-div">
+<div id="wrapper">
+	
         {% block content %}{% endblock %}
 
-	</div>
 
 	{% block extra %}{% endblock %}
 
@@ -84,6 +85,7 @@ var pageTracker = _gat._getTracker("{{ GOOGLE_ANALYTICS_TRACKER_ID }}");
 pageTracker._trackPageview();
 }catch(err){}</script>
 {% endif %}
+</div>
 </div>
 </body>
 </html>
