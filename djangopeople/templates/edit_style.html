@@ -6,22 +6,10 @@
 
 {% block content %}
 
-<div class="form-container">
-
-	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
-
-	<h2>Your current styles(s)</h2>
-	{% for style in styles %}
-	<p><a href="/style/{{ style.slug }}">{{ style|title }}</a><a class="small-text" href="/{{ person.user.username }}/style/delete/{{ style.slug }}/">(<img title="remove this style" class="small-icon" src="/img/delete.png">)</a>
-	</p>
-	{% endfor %}
-
-</div>
-
-<div class="form-container">
-
+<div id="content-box">
     <form method="post" action="/{{ person.user.username }}/style/">
     	<h2>Add a new style</h2>
+	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
 
     	<fieldset>
 
@@ -46,6 +34,16 @@
 	</fieldset>
 
     </form>
+
+</div>
+
+<div id="right-column">
+
+	<h3>Your current styles(s)</h3>
+	{% for style in styles %}
+	<p><a href="/style/{{ style.slug }}">{{ style|title }}</a><a class="small-text" href="/{{ person.user.username }}/style/delete/{{ style.slug }}/">(<img title="remove this style" class="small-icon" src="/img/delete.png">)</a>
+	</p>
+	{% endfor %}
 
 </div>
 

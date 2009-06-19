@@ -11,22 +11,12 @@
 
 {% block content %}
 
-<div class="form-container">
+<div id="content-box">
 
-	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
-
-	<h2>Your current club{{ clubs|pluralize }}</h2>
-	{% for club in clubs %}
-	<p><a href="/club/{{ club.slug }}">{{ club }}</a><a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/">(<img title="remove this club" class="small-icon" src="/img/delete.png">)</a>
-	</p>
-	{% endfor %}
-
-</div>
-
-<div class="form-container">
 
     <form method="post" action="/{{ person.user.username }}/club/">
     	<h2>Add a new club</h2>
+	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
 
     	<fieldset>
 
@@ -61,6 +51,16 @@
 	</fieldset>
 
     </form>
+
+</div>
+
+<div id="right-column">
+
+	<h3>Your current club{{ clubs|pluralize }}</h3>
+	{% for club in clubs %}
+	<p><a href="/club/{{ club.slug }}">{{ club }}</a><a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/">(<img title="remove this club" class="small-icon" src="/img/delete.png">)</a>
+	</p>
+	{% endfor %}
 
 </div>
 

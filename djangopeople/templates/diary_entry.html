@@ -45,8 +45,12 @@ var entry_longitude = {{ entry.longitude }};
 	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %}</p>
 
 	<div id="main-content-area">
-		<div class="content-photos">
+		<div class="inside-content-box">
+			<div class="inside-content-box-head">
 			<h4>Related Photos</h4>
+			</div>
+			<div class="inside-content-box-main">
+			</div>
 		</div>
 
 {{ entry.content|safe }}

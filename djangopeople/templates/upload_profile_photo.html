@@ -6,8 +6,9 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-        <div class="form-container">
-            <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
+        <div id="content-box">
+        <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
+	<p>Photos will be resized and cropped; for best results, upload a square image. </p> 
             <form enctype="multipart/form-data" method="post" action=".">
 
 
@@ -35,14 +36,15 @@
             </form>
         </div>
 
-	<div class="form-container">
+	<div id="right-column">
+	<div class="right-box">
 	<h3>Your current photo</h3>
 	{% if person.photo %}
 		<img class="diagram-photo" src="{% thumbnail person.photo 100x100 crop %}">
 	{% else %}
 		<img class="diagram-photo" src="/img/upload-a-photo.png"/>
 	{% endif %}
-		<p>Photos will be resized and cropped to a 100x100 square; for the best results, make sure you are uploading a square image. </p> 
+	</div>
 
 
 	</div>

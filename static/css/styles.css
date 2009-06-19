@@ -17,52 +17,40 @@ body * {
 	font-size: 12px;
 }
 
-#main-div {
+.main-div {
 	margin: 0 auto;
-	width: 85%;
+	width: 90%;
 }
 
-#wrapper {
+.wrapper {
+	min-width: 1000px;
 	width: 100%;
 	background-color: white;
 	float: left;
+	background: url('/static/img/bodyback.png') top left repeat-y;
 }
 
-#centre-content {
-	min-width: 900px;
-}
 
 #header {
-	display: block;
 	float: left;
-	min-width: 800px;
-	width: 100%;
+	width: 968px;
 	height: 100px;
 	background-color: #BD0505;
+	margin: 0px 30px 0px 16px;
 }
 
 #nav {
-	color: white;
-	display: block;
-	min-width: 800px;
-	width: 100%;
-	height: 30px;
-	background-color: #e79090;
-}
-
-.logo {
-	height: 100px;
-	width: 100px;
+	width: 968px;
 	float: left;
-	margin-right: 20px;
+	color: white;
+	height: 30px;
+	margin: 0px 30px 0px 16px;
+	background-color: #e79090;
 }
 
 #title {
 	margin: 40px 0 0 0px;
-	display: block;
-	float: left;
 	height: 60px;
-	color: #d07100;
 }
 
 #signup {
@@ -86,12 +74,12 @@ body * {
 .mapContainer {
 	margin: 0 auto;
 	text-align: center;
-	width: 90%;
+	width: 92%
 }
 
 #gmap {
 	float: left;
-	min-width: 800px;
+	min-width: 1000px;
 	width: 100%;
 	border-bottom: 20px solid #ffdddd;
 	border-left: 5px solid #ffdddd;
@@ -143,63 +131,26 @@ body * {
     	background-color: #ffdddd;
 	margin: -30px 0 40px 0px;
 	padding: 10px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:0px;
--moz-border-radius-topright:0px;
-}
 
-#home-content-box {
-	min-width: 500px;
-	width: 70%;
-	float: left;
-    	display: block;
-	margin-bottom: 30px;
-    	background-color: white;
-    	padding: 10px;
-    	border: 10px white solid;
--moz-box-shadow: #666 5px 5px 6px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:0px;
--moz-border-radius-topright:10px;
-}
-
-#inside-left {
-    	float: left;
-	min-width: 400px;
-    	width: 70%;
-    	margin-right: 20px;
-}
-
-#inside-right {
-	float: left;
-	min-width: 150px;
-	width: 25%;
 }
 
 #content-box {
-	min-width: 500px;
-	width: 70%;
+	width: 650px;
     	float: left;
-    	margin: 0 20px 50px 0px;
+	display: block;
+    	margin: 20px 0px 50px 40px;
+	padding-right: 20px;
     	display: block;
     	background-color: white;
-    	padding: 10px;
-    	border: 10px white solid;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
+	border-right: 3px solid #ffdddd;
 }
 
 #right-column {
-	min-width: 150px;
-	width: 20%;
-	float: left;
+	width: 250px;
+	float: right;
 	display: block;
-	height: auto;
-	margin: 0px 1px 0 0px;
+	height: 100%;
+	margin: 20px 40px 0 0px;
 }
 
 .right-box {
@@ -207,38 +158,12 @@ body * {
     	line-height: 1.8em;
     	color: black;
 	height: auto;
-	min-width: 100px;
-	width: 80%;
+	width: 100%;
     	float: left;
     	display: block;
-    	background-color: white;
+	padding: 10px;
 	margin: 0px 0px 20px 0px;
-	padding: 20px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
 }
-
-.right-box-top {
-    	font-size: 1em;
-    	color: white;
-	display: block;
-	min-width: 100px;
-	width: 80%;
-	height: auto;
-    	float: left;
-    	background-color: #e6e6e6;
-	margin-bottom: 20px;
-	margin-top: 0px;
-	padding: 17px;
-	border-top: 5px solid #666;
-}
-
-
-
-
-
 
 
 strong, 
@@ -260,18 +185,18 @@ ul, li {
 
 h2 {
 	font-family: Helvetica, sans-serif;
-	margin: 10px 0 15px 0;
-	font-size: 2em;
+	margin: 0px 0 5px 0;
+	font-size: 3em;
 	font-weight: bold;
 	line-height: 1em;
-	color: #bd0505;
+	color: #708e20;
 }
 
 h3 {
 	font-family: Helvetica, sans-serif;
 	font-size: 1.2em;
 	font-weight: bold;
-	color: #bd0505;
+	color: #708e20;
 	margin-bottom: 10px;
 }
 
@@ -298,14 +223,14 @@ a:visited,
 a:hover,
 a:active,
 a:focus {
-	color: #7e9f24;
+	color: #BD0505;
 	padding:2px;
 
 }
 a:hover,
 a:active,
 a:focus {
-	background-color: #7e9f24;
+	background-color: #BD0505;
 	padding:2px;
 	color: white;
 }
@@ -482,15 +407,28 @@ ul.split li {
 /* @end */
 
 .highlight {
-	background-color: #E0FFB8;
-	border-color: #94DA3A;
-	border-style: solid;
-	border-width: 1px 0;
-	padding: 10px 1em 1em 1em;
-	margin: 1.45em 20px 2em 20px;
-	color: #234F32;
+	padding: 0px 1em 0 1em;
+	margin: 0 20px 15px 0px;
 	float: left;	
-	width: 40%;
+	width: 620px;
+}
+
+.highlight-head {
+	background-color: #e79090;
+	height: 20px;
+	padding: 10px 0 10px 20px;
+	color: white;
+}
+
+.highlight-main {
+	padding: 10px;
+	height: auto;
+	background-color: #ffdddd;
+}
+
+.highlight h4 {
+	color: white;
+	font-size: 14px;
 }
 
 
@@ -543,8 +481,17 @@ ul.split li {
 
 #nav a{
 	font-size: 10pt;
-	color: #9a0000;
+	color: black;
 }
+
+#nav a:hover {
+	background-color: white;
+	color: #9a0000;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+
 
 /* @end */
 
@@ -614,7 +561,7 @@ p {
 }
 
 
-#content-box, #home-content-box p {
+#content-box p {
 	padding-bottom: 10px;
 	line-height: 1.5em;
 }
@@ -631,13 +578,8 @@ p {
 	padding: 0px;
 }
 
-#right-box p {
-	margin-bottom: 10px;
-}
-
 .form-container {
-    	min-width: 350px;
-	width: 40%;
+	width: 400px;
     	float: left;
     	min-height: 250px;
     	margin: 0 20px 15px 0px;
@@ -742,7 +684,7 @@ li.latest-list {
 #profile-head {
 	width: 100%;
 	height: auto;
-	margin: 15px 0 20px 10px;
+	margin: 0px 0 20px 0px;
 }
 
 #profile-head h3, p {
@@ -765,8 +707,8 @@ li.latest-list {
 }
 
 .diagram-photo {
-	margin-right: 60px;
-	float: left;
+	width: 100px;
+	margin: 0 auto;
 }
 
 .small-icon {
@@ -853,19 +795,24 @@ a.diary-title {
 	margin: 0 0 20px 10px;
 }
 
-.content-photos {
-	min-width: 160px;
-	width: 25%;
+.inside-content-box {
+	width: 180px;
 	margin-right: 10px;
 	margin-left: 10px;
-	padding: 10px;
-	height: 400px;
+	display: block;
 	float: right;
-	border: 1px #333 solid;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
+}
+
+.inside-content-box-head {
+	padding: 10px;
+	height: 20px;
+	background-color: #e79090;
+}
+
+.inside-content-box-main {
+	padding: 10px;
+	height: 170px;
+	background-color: #ffdddd;
 }
 
 
