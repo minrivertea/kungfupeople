@@ -186,6 +186,15 @@ class DiaryEntry(models.Model):
     longitude = models.FloatField()
     location_description = models.CharField(max_length=50)
 
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Entries"
+        
+    def get_absolute_url(self):
+        return '/%s/diary/%s/' % (self.user.username, self.slug)
+
     def location_description_html(self):
         region = ''
         if self.region:
@@ -202,11 +211,6 @@ class DiaryEntry(models.Model):
         else:
             return self.location_description
 
-    def __unicode__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = "Entries"
 
 class Photo(models.Model):
     user = models.ForeignKey(User)

@@ -47,6 +47,7 @@
 		</div>
 	</div>
 
+        {% if  form.diary_entry %}
 	<div class="form-field-outer">
 		<div class="form-field-left">
                     {{ form.diary_entry.errors }}
@@ -57,6 +58,7 @@
 			{{ form.diary_entry }}
 		</div>
 	</div>
+        {% endif %}
 
 
 	<div class="form-field-outer" id="location">
