@@ -90,8 +90,8 @@ div.bio a.edit {
 		<ul class="diary-list">
 		{% for entry in diaries %}
 		<li><a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
+		<p class="meta">{{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
 		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-		<p class="meta">Written by {{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
 		</li>
 		{% endfor %}
 		</ul>
