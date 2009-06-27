@@ -698,7 +698,7 @@ def diary_entry_add(request, username):
 @must_be_owner
 def diary_entry_edit(request, username, slug):
     person = get_object_or_404(KungfuPerson, user__username = username)
-    entry = get_object_or_404(DiaryEntry, slug=slug)
+    entry = get_object_or_404(DiaryEntry, slug=slug, user=person.user)
     page_title = "Edit a diary entry"
 
     if request.method == 'POST':
