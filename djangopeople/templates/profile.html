@@ -169,8 +169,9 @@ div.bio a.edit {
 
 	{% if diary_entries_private %}
 		<div class="highlight">
+
 		<div class="highlight-head">
-		<h4>Kungfu Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">add another entry</a>){% endif %}</h4>	
+		<h4>{{ PROJECT_MARTIAL_ART }} Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">add another entry</a>){% endif %}</h4>	
 		</div>
 		<div class="highlight-main">
 		{% if is_owner %}
