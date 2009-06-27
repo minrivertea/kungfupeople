@@ -218,6 +218,7 @@ class DiaryEntry(models.Model):
 class Photo(models.Model):
     user = models.ForeignKey(User)
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
+    slug = models.SlugField()
     description = models.TextField()
     photo = models.ImageField(blank=True, upload_to='photos')
     date_added = models.DateTimeField('date added', default=datetime.now)
