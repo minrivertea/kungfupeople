@@ -28,7 +28,7 @@ google.setOnLoadCallback(function() {
 
             $('#gmap').animate({
                 height: '7em',
-                opacity: 0.6
+                opacity: 1.0
             }, 500, 'swing', function() {
                 gmap.checkResize();
                 gmap.setCenter(point, 12);
@@ -63,11 +63,11 @@ google.setOnLoadCallback(function() {
     gmap = new google.maps.Map2(document.getElementById('gmap'));
     
     /* Map enlarges and becomes active when you click on it */
-    $('#gmap').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
+    $('#gmap').css({'cursor': 'pointer', 'opacity': 1.0}).attr(
         'title', 'Activate larger map'
     );
 
-    $('.right-box-top').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
+    $('.right-box-top').css({'cursor': 'pointer', 'opacity': 1.0}).attr(
         'title', 'Activate larger map'
     );
     gmap.disableDragging();

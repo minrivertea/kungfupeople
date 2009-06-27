@@ -39,17 +39,19 @@ var photo_longitude = {{ photo.longitude }};
 		{% endif %}
 
        		<h2>Photo</h2>
-		<p class="meta">{{ photo.date_added|date:"d M Y" }} | <a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a> |  {{ photo.location_description }} ({{ photo.country.iso_code }})  |  {% if is_owner %} <a href="edit">Edit</a>  |  <a href="delete">Delete</a> {% endif %}</p>
+		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  {% if is_owner %} <a href="edit">Edit</a>  |  <a href="delete">Delete</a> {% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}</p>
 	
 		<p><em>{{ photo.description }}</em></p>
 
+		<div class="large-photo-container">
 		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
+		</div>
 
 	</div>
 
 <div id="right-column">
 
-	<div class="right-box-top">
+	<div class="right-box">
 	<p>This item has been geo-tagged in <strong>{{ photo.location_description }} ({{ photo.country.iso_code }})</strong>! Click on the map to see other items related to this area.</p>
 	</div>
 

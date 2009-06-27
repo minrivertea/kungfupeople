@@ -9,21 +9,20 @@
 
 {% endblock %} 
 
-{% block map %}{% endblock %}
-
-    {% block content %}
-    	<form enctype="multipart/form-data" method="post" action=".">
-
-	<div class="mapContainer minor" id="mapWrapper">
+{% block map %}
+	<div class="mapContainer major" id="mapWrapper">
 	    <div id="gmap">&nbsp;</div>
 	</div>
+{% endblock %}
 
-        <div class="form-container-wide">
+    {% block content %}
+
+        <div id="content-box">
+    	<form enctype="multipart/form-data" method="post" action=".">
             <h2>{% if page_title %}{{ page_title }}{% else %}Upload a new photo{% endif %}</h2>
 
 	<fieldset>
 	{% if photo %}
-	<img src="{% thumbnail photo.photo 100x100 crop %}">
 	{% else %}
 	<div class="form-field-outer">
 		<div class="form-field-left">
@@ -122,4 +121,14 @@
             </form>
         </div>
 
+	<div id="right-column">
+		<div class="right-box">
+		<p>Geo-tag your resource and let other users see where you took this photo!</p>
+		</div>
+		{% if photo %}
+		<div class="right-box">
+		<p>You are currently editing this photo:</p>
+		<img src="{% thumbnail photo.photo 100x100 crop %}">
+		</div>
+		{% endif %}
     {% endblock %}

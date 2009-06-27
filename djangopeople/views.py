@@ -45,6 +45,7 @@ def index(request):
         definition = None
     clubs = Club.objects.all().order_by('-add_date')[:5]
     photos = Photo.objects.all().order_by('-date_added')[:5]
+    styles = Style.objects.all().order_by('-add_date')[:5]
     your_person = None
     if request.user and not request.user.is_anonymous():
         your_person = request.user.get_profile()
@@ -52,6 +53,7 @@ def index(request):
         'recent_people': recent_people,
         'your_person': your_person,
         'photos': photos,
+        'styles': styles,
         'definition': definition,
         'clubs': clubs,
         'recent_people_limited': recent_people[:4],
@@ -245,7 +247,12 @@ def diary_entry(request, username, slug):
     if not entry.is_public and not user == person.user:
         raise Http404("You're not authorised to view this page")
 
-    return render(request, 'diary_entry.html', locals())
+    return render(request, 'diary_entry.html', {        
+        'is_owner': request.user.username == username,
+        'person': person,
+        'entry': entry,
+        'user': user,
+    })
     
 
 def _get_or_create_club(url, name):
@@ -407,6 +414,11 @@ def photo_edit(request, username, photo_id):
             'description': photo.description,
             'photo': photo,
             'diary_entry': photo.diary_entry,
+            'country': photo.country.iso_code,
+            'region': photo.region,
+            'longitude': photo.longitude,
+            'latitude': photo.latitude,
+            'location_description': photo.location_description,
         }
         form = PhotoEditForm(initial=initial)
     return render(request, 'photo_upload_form.html', locals())
@@ -532,8 +544,9 @@ def club(request, name):
 
 def style(request, name):
     style = get_object_or_404(Style, slug=name)
-    stylists = KungfuPerson.objects.filter(styles=style)
-    count = stylists.count()
+    people = KungfuPerson.objects.filter(styles=style)
+    diaries = DiaryEntry.objects.filter(user__in=[x.id for x in people]).order_by('-date_added')
+    count = people.count()
 
     return render(request, 'style.html', locals())
 
