@@ -125,7 +125,7 @@ div.bio a.edit {
 		    <span class="small-text"><strong>Club{{ clubs.count|pluralize }}:</strong>
 		    {% for club in clubs %}
 		        {% if club.url %} 
-		        <a href="/club/{{ club.slug }}/" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
+		        <a href="{{ club.get_absolute_url }}" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
 		        {% else %}
     		        {{ club.name }}{% if not forloop.last %}, {% endif %}
  		        {% endif %}
@@ -160,7 +160,7 @@ div.bio a.edit {
 			<div class="highlight-main">
 			<ul class="thumbnail-list">
 			{% for photo in photos %}
-			<li class="thumbnail-list"><a href="/{{ person.user.username}}/photo/{{ photo.id }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
+			<li class="thumbnail-list"><a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
 			{% endfor %}
 			</ul>
 			</div>

@@ -104,6 +104,8 @@ INSTALLED_APPS = (
     'djangopeople',
     'sorl.thumbnail',
     'django_static',
+    'django.contrib.sitemaps',
+                  
 )
 
 

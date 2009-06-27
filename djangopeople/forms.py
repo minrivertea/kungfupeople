@@ -151,8 +151,10 @@ class SignupForm(forms.Form):
 
 class PhotoUploadForm(forms.Form):
     photo = forms.ImageField()
-    description = forms.CharField(widget = forms.Textarea)
-    diary_entry = forms.FloatField(required=False)
+    description = forms.CharField(widget=forms.Textarea, required=False)
+    diary_entry = forms.IntegerField(required=False,
+                                     widget=forms.widgets.Select()
+                                    )
 
     country = forms.ChoiceField(required=False, choices = [('', '')] + [
         (c.iso_code, c.name) for c in Country.objects.all()
@@ -162,6 +164,17 @@ class PhotoUploadForm(forms.Form):
     location_description = forms.CharField(required=False, max_length=50)
     
     region = GroupedChoiceField(required=False, choices=region_choices())
+    
+    def clear_diary_entry(self):
+        if self.cleaned_data['diary_entry']:
+            # check that it's valid
+            try:
+                DiaryEntry.objects.get(id=self.cleaned_data['diary_entry'])
+            except DiaryEntry.DoesNotExist:
+                raise forms.ValidationError("Invalid diary entry")
+            # but we can't check who it belongs to :(
+        self.cleaned_data['diary_entry']
+            
 
 class PhotoEditForm(forms.Form):
     description = forms.CharField(widget = forms.Textarea)
@@ -181,7 +194,7 @@ class ProfilePhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
 class DiaryEntryForm(forms.Form):
-    title = forms.CharField()
+    title = forms.CharField(max_length=200)
     content = forms.CharField(widget = forms.Textarea)
     is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
     country = forms.ChoiceField(required=False, choices = [('', '')] + [

@@ -48,6 +48,26 @@ var entry_longitude = {{ entry.longitude }};
 			<h4>Related Photos</h4>
 			</div>
 			<div class="inside-content-box-main">
+                        
+                        {% if photos %}
+                            <ul class="thumbnail-list">
+			    {% for photo in photos %}
+			    <li class="thumbnail-list"><a href="/{{ person.user.username}}/photo/{{ photo.id }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
+			    {% endfor %}
+			    </ul>
+                            
+                            {% if is_owner %}
+                            <p class="meta" style="margin-top:40px"><a href="../../photo/upload?diary={{ entry.id }}">Add more photos</a></p>
+                            {% endif %}
+                            
+                        {% else %}
+                        
+                            {% if is_owner %}
+                            <p class="meta" style="margin-top:60px"><a href="../../photo/upload?diary={{ entry.id }}">Add photos related to this entry</a></p>
+                            {% endif %}
+                            
+                        {% endif %}
+                        
 			</div>
 		</div>
 

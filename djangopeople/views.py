@@ -246,10 +246,13 @@ def diary_entry(request, username, slug):
     user = request.user
     if not entry.is_public and not user == person.user:
         raise Http404("You're not authorised to view this page")
+    
+    photos = Photo.objects.filter(diary_entry=entry).order_by('-date_added')
 
     return render(request, 'diary_entry.html', {        
         'is_owner': request.user.username == username,
         'person': person,
+        'photos': photos,
         'entry': entry,
         'user': user,
     })
@@ -333,6 +336,12 @@ def photo_upload(request, username):
 
             if form.cleaned_data['diary_entry']:
                 diary_entry = form.cleaned_data['diary_entry']
+                if isinstance(diary_entry, int):
+                    diary_entry = get_object_or_404(DiaryEntry, id=diary_entry)
+                    if diary_entry.user != person.user:
+                        # crazy paranoia
+                        from django.forms import ValidationError
+                        raise ValidationError("Not your entry")
 
             if form.cleaned_data['region']:
                 region = Region.objects.get(
@@ -345,7 +354,7 @@ def photo_upload(request, username):
                     user=user,
                     description=description,
                     photo=photo,
-                    diary_entry = diary_entry,
+                    diary_entry=diary_entry,
                     country=Country.objects.get(iso_code = form.cleaned_data['country']),
                     latitude=form.cleaned_data['latitude'],
                     longitude=form.cleaned_data['longitude'],
@@ -358,17 +367,41 @@ def photo_upload(request, username):
                     user=user,
                     description=description,
                     photo=photo,
-                    diary_entry = diary_entry,
+                    diary_entry=diary_entry,
                     country=person.country,
                     latitude=person.latitude,
                     longitude=person.longitude,
                     location_description=person.location_description,
                     region=person.region,
                 )
-
-            return HttpResponseRedirect('/%s/upload/done/' % username)
+            
+            if diary_entry:
+                url = diary_entry.get_absolute_url()
+            else:
+                url = '/%s/upload/done/' % username
+            return HttpResponseRedirect(url)
     else:
-        form = PhotoUploadForm()
+        
+        initial = {'location_description': person.location_description,
+                   'country': person.country.iso_code,
+                   'latitude': person.latitude,
+                   'longitude': person.longitude,
+                  }
+        form = PhotoUploadForm(initial=initial)
+        
+        diary_entries = []
+        for entry in DiaryEntry.objects.filter(user=person.user
+                                              ).order_by('-date_added')[:100]:
+            title = entry.title
+            if len(title) > 40:
+                title = title[:40] + '...'
+            title += entry.date_added.strftime(' (%d %b %Y)')
+            diary_entries.append((entry.id, title))
+        if diary_entries:
+            form.fields['diary_entry'].widget.choices.extend(diary_entries)
+        else:
+            del form.fields['diary_entry']
+            
     return render(request, 'photo_upload_form.html', {
         'form': form,
         'person': person,
@@ -597,7 +630,7 @@ def diary_entry_add(request, username):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             is_public = form.cleaned_data['is_public']
-            slug = slugify(unaccent_string(title))  
+            slug = slugify(unaccent_string(title)[:50])
             region = None
 
             if form.cleaned_data['region']:
@@ -634,10 +667,31 @@ def diary_entry_add(request, username):
                     region=person.region,
                 )
 
-            return HttpResponseRedirect('/%s/' % username)
+            
+            return HttpResponseRedirect(entry.get_absolute_url())
 
     else:
-        form = DiaryEntryForm()
+        # figure out the initial location and country
+        
+        # by default, assume that the entry should be public
+        is_public = True
+        # look at the past ones
+        count_public = count_not_public = 0
+        for each in DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:10]:
+            if each.is_public:
+                count_public += 1
+            else:
+                count_not_public += 1
+        if count_not_public > count_public:
+            is_public = False
+        
+        initial = {'location_description': person.location_description,
+                   'country': person.country.iso_code,
+                   'latitude': person.latitude,
+                   'longitude': person.longitude,
+                   'is_public': is_public,
+                  }
+        form = DiaryEntryForm(initial=initial)
     return render(request, 'diary_entry_add.html', locals())
 
 
@@ -655,12 +709,17 @@ def diary_entry_edit(request, username, slug):
             entry.is_public = form.cleaned_data['is_public']
             entry.slug = entry.title.strip().replace(' ', '-').lower()
             entry.save()
-            return HttpResponseRedirect('/%s/diary/%s/' % (username, entry.slug))
+            #return HttpResponseRedirect('/%s/diary/%s/' % (username, entry.slug))
+            return HttpResponseRedirect(entry.get_absolute_url())
     else:
         initial = {
             'title': entry.title,
             'content': entry.content,
             'is_public': entry.is_public,
+            'location_description': person.location_description,
+            'country': person.country.iso_code,
+            'latitude': person.latitude,
+            'longitude': person.longitude,
         }
         form = DiaryEntryForm(initial=initial)
     return render(request, 'diary_entry_add.html', locals())
