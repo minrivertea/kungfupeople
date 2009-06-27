@@ -9,14 +9,14 @@
         <div id="content-box">
             <h2>Congratulations!</h2>
 
-	    <p><strong>You've successfully created a profile on KungfuPeople.com!</strong> You might be wondering what comes next? Well, first you might want to add a little more to your profile: <em>(or just <a href="/{{ person.user.username }}/">click here to view your profile)</a></em></p>
+	    <p><strong>You've successfully created a profile on {{ PROJECT_NAME }}!</strong> You might be wondering what comes next? Well, first you might want to add a little more to your profile: <em>(or just <a href="/{{ person.user.username }}/">click here to view your profile)</a></em></p>
 
 		<p> </p>
 
 		<ul>
 		<li><a href="/{{ person.user.username }}/profile/">Write a short introduction to yourself</a></li>
 		<li><a href="/{{ person.user.username }}/club/">Add your club and style information</a></li>
-		<li><a href="/{{ person.user.username }}/diary/add">Write your first kungfu diary entry</a></li>
+		<li><a href="/{{ person.user.username }}/diary/add">Write your first {{ PROJECT_MARTIAL_ART|lower }} diary entry</a></li>
 
 		</ul>
 
