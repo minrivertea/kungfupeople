@@ -624,7 +624,27 @@ def diary_entry_add(request, username):
             return HttpResponseRedirect('/%s/' % username)
 
     else:
-        form = DiaryEntryForm()
+        # figure out the initial location and country
+        
+        # by default, assume that the entry should be public
+        is_public = True
+        # look at the past ones
+        count_public = count_not_public = 0
+        for each in DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:10]:
+            if each.is_public:
+                count_public += 1
+            else:
+                count_not_public += 1
+        if count_not_public > count_public:
+            is_public = False
+        
+        initial = {'location_description': person.location_description,
+                   'country': person.country.iso_code,
+                   'latitude': person.latitude,
+                   'longitude': person.longitude,
+                   'is_public': is_public,
+                  }
+        form = DiaryEntryForm(initial=initial)
     return render(request, 'diary_entry_add.html', locals())
 
 
