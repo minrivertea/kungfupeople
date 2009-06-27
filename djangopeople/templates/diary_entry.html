@@ -37,12 +37,10 @@ var entry_longitude = {{ entry.longitude }};
 
 {% block content %}
 
-<div id="flatpage">
+<div id="content-box">
 
 	<h2>{{ entry.title }}</h2>
-	<p class="meta">{{ entry.date_added|date:"d M Y" }} | <a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a> |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
-
-	{% if is_owner %}<p><a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit this entry)</a>{% endif %}</p>
+	<p class="meta">{% if is_owner %}<a href="edit">Edit this entry</a>{% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}  |  {{ entry.date_added|date:"d M Y" }} |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
 
 	<div id="main-content-area">
 		<div class="inside-content-box">
@@ -63,7 +61,7 @@ var entry_longitude = {{ entry.longitude }};
 
 <div id="right-column">
 
-	<div class="right-box-top">
+	<div class="right-box">
 	<p>This item has been geo-tagged in <strong>{{ entry.location_description }} ({{ entry.country.iso_code }})</strong>! Click on the map to see other items related to this area.</p>
 	</div>
 

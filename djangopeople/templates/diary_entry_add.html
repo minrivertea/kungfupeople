@@ -25,19 +25,23 @@ div.video { margin-bottom:20px; }
 {% block js %}
 <script type="text/javascript" src="/js/diary_add.js"></script>
 
-{% endblock %}  
+{% endblock %} 
+
+{% block map %}
+<div class="mapContainer major" id="mapWrapper">
+    <div id="gmap">&nbsp;</div>
+</div>
+{% endblock %}
 
 {% block content %}
 
 
-    <form method="post" action=".">
 
 
-<div class="mapContainer major" id="mapWrapper">
-    <div id="gmap">&nbsp;</div>
-</div>
+
 
 <div id="content-box">
+    <form method="post" action=".">
     	<h2>{{ page_title }}</h2>
     <fieldset>
 
@@ -139,7 +143,7 @@ div.video { margin-bottom:20px; }
 
 {% if entries %}
 <div id="right-column">
-<div class="right-box-top">
+<div class="right-box">
 <p>To geo-tag this item, click anywhere on the map and move the pin (by default it will be set to {{ person.location_description }})</p>
 </div>
 <div class="right-box">

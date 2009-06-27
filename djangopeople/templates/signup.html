@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/css/flags.css" type="text/css"/>
 <style type="text/css">
 #id_location_description {
-    width: 24em;
+    width: 18em;
 }
 </style>
 {% endblock %}
@@ -22,11 +22,15 @@
 <h1>Sign up as a Kung Fu Person</h1>
 {% endblock %}
 
+{% block map %}
 
-{% block map %}{% endblock %}
+	<div class="mapContainer major">
+        		<div id="gmap">&nbsp;</div>
+	</div>
+{% endblock %}
 
 {% block content %}
-	<div class="form-container">
+	<div id="content-box">
     		<form method="post" action="/signup/">
     		<h2>1. Create your account</h2> 
 
@@ -92,84 +96,6 @@
 		</div>
 	</div>
 	</fieldset>
-	</div>
-
-
-	<div class="form-container">
-
-    	<h2>2. Where do you train?</h2>
-    	<p><strong>Click on the map below.</strong> Drag the marker to your location on the map - it can be your private address or the place where you train, whatever you feel comfortable with. This information will be publically viewable from this website.</p>
-
-	</div>
-
-
-
-
-	<div class="mapContainer major">
-        		<div id="gmap">&nbsp;</div>
-	</div>
-
-
-
-
-	<div class="form-container-wide">
-    <fieldset>
-
-	<div class="form-field-outer" id="location">
-		<div class="form-field-left">
-            		<label for="id_location_description">Location *</label>
-            		{{ form.location_description.errors }}
-		</div>
-		<div class="form-field-right">
-			{{ form.location_description }}  <br/><span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
-		</div>
-	</div>
-
-	<div class="form-field-outer" id="country">
-		<div class="form-field-left">
-            		{{ form.country.errors }}
-            		<label for="id_country">Country</label>
-		</div>
-		<div class="form-field-right">
-			{{ form.country }}
-		</div>
-	</div>
-
-	<div class="form-field-outer" style="display: none;">
-		<div class="form-field-left">
-            		{{ form.latitude.errors }}
-            		<label for="id_latitude">Latitude</label>
-		</div>
-		<div class="form-field-right">
-			{{ form.latitude }}
-		</div>
-	</div>
-
-	<div class="form-field-outer" style="display: none;">
-		<div class="form-field-left">
-            		{{ form.longitude.errors }}
-            		<label for="id_longitude">Longitude</label>
-		</div>
-		<div class="form-field-right">
-			{{ form.longitude }}
-		</div>
-	</div>
-
-	<div class="form-field-outer" style="display: none;">
-		<div class="form-field-left">
-            		{{ form.region.errors }}
-            		<label for="id_region">Region</label>
-		</div>
-		<div class="form-field-right">
-			{{ form.region }}
-		</div>
-	</div>
-
-    </fieldset>
-
-    </div>
-
-    <div class="form-container">
     
     <h2>3. Tell us about yourself</h2>
 
@@ -216,9 +142,8 @@
 
     </fieldset> 
 	   
-	</div>
 
-	<div class="form-container">
+
 
 	    <h2>4. Finish!</h2>
 
@@ -231,7 +156,62 @@
     			</div>
 			</p>
 
+
+	</div>
+
+	<div id="right-column">
+	<div class="right-box">
+	    	<h3>2. Where do you train?</h3>
+	    	<p><strong>Click on the map above.</strong> Drag the marker to your location on the map - it can be your private address or the place where you train, whatever you feel comfortable with. This information will be publically viewable from this website.</p>
+    <fieldset>
+
+	<div id="location">
+            	<label for="id_location_description">Location *</label>
+            	{{ form.location_description.errors }}
+		<br/>
+		{{ form.location_description }}  <br/><span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
+	</div>
+
+	<div id="country">
+            	<label for="id_country">Country</label>
+            	{{ form.country.errors }}
+		<br/>
+		{{ form.country }}
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.latitude.errors }}
+            		<label for="id_latitude">Latitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.latitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.longitude.errors }}
+            		<label for="id_longitude">Longitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.longitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.region.errors }}
+            		<label for="id_region">Region</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.region }}
+		</div>
+	</div>
+
+    </fieldset>
     </form>
+	</div>
 	</div>
 </div>
 {% endblock %}

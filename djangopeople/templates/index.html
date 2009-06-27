@@ -37,12 +37,14 @@ var people = [
 
 
 	<div id="content-box">
+		<img src="/static/img/leader.jpg"/>
 		<h2>Kungfu People Alpha Test</h2>
 		<p>Welcome to the Kungfu People Alpha Test. This website has been launched recently, and still contains a number of bugs and is incomplete. You're welcome to play with the website, test it, try to break it - just make sure you tell us what's wrong by emailing us at: XXXXXXXXXXXX.</p>
 
 	</div>
 		
 	<div id="right-column">
+		<div class="right-box">
 			<h3>Latest members</h3>
 				<ul class="latest-list">
 			        	{% for person in recent_people_limited %}
@@ -69,20 +71,36 @@ var people = [
  					</li>
         				{% endfor %}
 				</ul>
+			</div>
 
-			<h3>Latest clubs</h3>
-					{% for club in clubs %}
-					<a href="/club/{{ club.slug }}/">{{ club }}</a>
-					{% if not forloop.last %} | {% endif %}
-					{% endfor %}
 
-			<h3>Latest photos</h3>
+			<div class="right-box">
+				<h3>Latest clubs</h3>
+				{% for club in clubs %}
+				<a href="/club/{{ club.slug }}/">{{ club }}</a>
+				{% if not forloop.last %} | {% endif %}
+				{% endfor %}
+			</div>
+
+			<div class="right-box">
+				<h3>Latest styles</h3>
+				{% for style in styles %}
+				<a href="/style/{{ style.slug }}/">{{ style|title }}</a>
+				{% if not forloop.last %} | {% endif %}
+				{% endfor %}
+			</div>
+
+
+
+			<div class="right-box">
+				<h3>Latest photos</h3>
 				<ul class="thumbnail-list">
-					{% for photo in photos %}
-					<li><a href="/{{ photo.user.username }}/photo/{{ photo.id }}/"><img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}"></a></li>
-					{% endfor %}
+				{% for photo in photos %}
+				<li><a href="/{{ photo.user.username }}/photo/{{ photo.id }}/"><img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}"></a></li>
+				{% endfor %}
 				</ul>
-		
+			</div>
+
 
 		</div>
 

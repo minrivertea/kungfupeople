@@ -54,19 +54,20 @@ div.bio a.edit {
 		{% else %}
 		{% endif %}
 
-       		<h3>{{ style.name }}</h3>
+       		<h2>{{ style.name }}</h2>
 
-		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in stylists %}<a href="/{{ stylist.country.iso_code|lower }}/">{{ stylist.country }}</a>, {% endfor %}
+		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in people %}<a href="/{{ stylist.country.iso_code|lower }}/">{{ stylist.country }}</a>, {% endfor %}
 
 		</div>
 
-
+		{% if people %}
 		<div class="highlight">
-		
-		{% if stylists %}
-		    <strong>Stylists</strong>
+		<div class="highlight-head">
+		    <strong>Other people who do {{ style }}</strong>
+		</div>
+		<div class="highlight-main">
 		    <ul class="latest-list">
-		{% for stylist in stylists %}
+		{% for stylist in people %}
    			<li class="latest-list">
 			<div class="list-photo"><img src="{% if stylist.photo %}{% thumbnail stylist.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
 			</div>
@@ -76,10 +77,29 @@ div.bio a.edit {
  			</li>
 		{% endfor %}
 		    </ul>
-		{% endif %}
 		</div>
+		</div>
+		{% endif %}
 
+		{% if diaries %}
+		<div class="highlight">
+		<div class="highlight-head">
+		<strong>Posts written by {{ style }} stylists</strong>
+		</div>
+		<div class="highlight-main">
+		<ul class="diary-list">
+		{% for entry in diaries %}
+		<li><a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
+		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+		<p class="meta">Written by {{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
+		</li>
+		{% endfor %}
+		</ul>
+
+		</div>
+		{% endif %}
        
+	</div>
 	</div>
 	
 	<div id="right-column">

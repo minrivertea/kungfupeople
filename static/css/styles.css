@@ -19,37 +19,49 @@ body * {
 
 .main-div {
 	margin: 0 auto;
-	width: 90%;
+	width: 85%;
 }
 
 .wrapper {
-	min-width: 1000px;
+	min-width: 860px;
 	width: 100%;
 	background-color: white;
 	float: left;
-	background: url('/static/img/bodyback.png') top left repeat-y;
+	/* background: url('/static/img/bodyback.png') top left repeat-y; */
 }
 
 
 #header {
 	float: left;
-	width: 968px;
-	height: 100px;
+	width: 100%;
+	height: 80px;
 	background-color: #BD0505;
-	margin: 0px 30px 0px 16px;
+	margin: 0px 0px 0px 0px;
 }
 
 #nav {
-	width: 968px;
+	width: 100%;
 	float: left;
 	color: white;
-	height: 30px;
-	margin: 0px 30px 0px 16px;
+	height: 20px;
+	font-size: 8pt;
+	margin: 0px 0px 0px 0px;
 	background-color: #e79090;
 }
 
+
+/* 
+#logo {
+	background: url('/static/img/logo5.png');
+	height: 106px;
+	width: 150px;
+	float: left;
+}
+
+*/
+
 #title {
-	margin: 40px 0 0 0px;
+	margin: 30px 0 0 0px;
 	height: 60px;
 }
 
@@ -60,7 +72,6 @@ body * {
 	text-align: left;
 	color: yellow;
 	float: right;
-	min-width: 200px;
 	width: 30%;
 	height: 55px;
 	margin: 80px 10px 5px 0;
@@ -93,7 +104,7 @@ body * {
 }
 
 .major #gmap {
-	height: 25em;
+	height: 23em;
 }
 
 #left-box {
@@ -138,7 +149,7 @@ body * {
 	width: 650px;
     	float: left;
 	display: block;
-    	margin: 20px 0px 50px 40px;
+    	margin: 20px 0px 50px 20px;
 	padding-right: 20px;
     	display: block;
     	background-color: white;
@@ -146,11 +157,11 @@ body * {
 }
 
 #right-column {
-	width: 250px;
-	float: right;
+	width: 200px;
+	float: left;
 	display: block;
 	height: 100%;
-	margin: 20px 40px 0 0px;
+	margin: 20px 40px 0 10px;
 }
 
 .right-box {
@@ -158,11 +169,11 @@ body * {
     	line-height: 1.8em;
     	color: black;
 	height: auto;
-	width: 100%;
+	width: 90%;
     	float: left;
     	display: block;
 	padding: 10px;
-	margin: 0px 0px 20px 0px;
+	margin: 0px 0px 0px 0px;
 }
 
 
@@ -245,6 +256,7 @@ a:active {
 label {
 	cursor: pointer;
 	margin-bottom: -10px;
+	font-weight: bold;
 }
 th { 
 	text-align: left;
@@ -476,11 +488,11 @@ ul.split li {
 	text-align: right;
 	float: left;
 	width: auto;
-	margin: 5px 0 0 25px;
+	margin: 0px 0 0 25px;
 }
 
 #nav a{
-	font-size: 10pt;
+	font-size: 8pt;
 	color: black;
 }
 
@@ -562,7 +574,6 @@ p {
 
 
 #content-box p {
-	padding-bottom: 10px;
 	line-height: 1.5em;
 }
 
@@ -613,15 +624,15 @@ p {
 }
 
 ul.latest-list {
-    margin: 0px 0 0 10px;
+    margin: 0px 0 0 0px;
     padding-top: 7px;
-    line-height: 1.2sem;
+    line-height: 1.2em;
 }
 
 li.latest-list {
 	list-style-type:none;
-	margin-bottom: 10px;
-	height: 45px;
+	margin-bottom: 5px;
+	height: 40px;
 }
 
 .small-text {
@@ -646,7 +657,6 @@ li.latest-list {
 .meta {
     font-size: 0.8em;
     color: #666;
-    margin: 0px 0 20px 5px;
 }
 
 
@@ -663,7 +673,7 @@ li.latest-list {
 
 .list-photo {
 	float: left;
-	margin-right: 10px;
+	margin-right: 5px;
 }
 
 .list-text {
@@ -695,7 +705,7 @@ li.latest-list {
 	display: block;
 	height: 150px;
 	width: 150px;
-	margin: 0px 20px 20px 0px;
+	margin: 20px 20px 20px 0px;
 	float: left;
 }
 
@@ -703,6 +713,7 @@ li.latest-list {
 	float: left;
 	width: 70%;
 	margin-bottom: 10px;
+	margin-top: 20px;
 	
 }
 
@@ -778,21 +789,16 @@ diaries ul {
 a.diary-title {
 	margin-left: -3px;
 }
-
-.diary-summary-text {
-	line-height: 1.2em;
-	font-size: 0.8em;
-}
-
 #main-content-area {
 	min-width: 400px;
 	width: 100%;
 	padding: 0;
+	margin-top: 20px;
 	float: left;
 }
 
 #main-content-area p {
-	margin: 0 0 20px 10px;
+	margin: 0 0 10px 10px;
 }
 
 .inside-content-box {
@@ -818,7 +824,6 @@ a.diary-title {
 
 .thumbnail-list li {
 	display: inline;
-	margin-right: 10px;
 }
 
 .thumbnail-list img {
@@ -827,8 +832,25 @@ a.diary-title {
 	padding: 3px;
 }
 
-.diary-list {
-	list-style-type: square;
+.diary-list ul {
+	list-style-type: none;
+}
+
+.diary-list li {
+	margin-bottom: 15px;
+}
+
+.large-photo-container {
+	text-align: center;
+}
+
+.diary-summary-text {
+	line-height: 1.2em;
+	font-size: 0.8em;
+}
+
+.diary-summary-text p {
+	margin-bottom: 0px;
 }
 
 
