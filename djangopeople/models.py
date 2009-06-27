@@ -152,6 +152,9 @@ class Club(models.Model):
 
     class Meta:
         verbose_name_plural = "Clubs"
+        
+    def get_absolute_url(self):
+        return "/club/%s/" % self.slug
 
 
 class Style(models.Model):
@@ -217,7 +220,7 @@ class Photo(models.Model):
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
     description = models.TextField()
     photo = models.ImageField(blank=True, upload_to='photos')
-    date_added = models.DateField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
 
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
@@ -226,6 +229,16 @@ class Photo(models.Model):
     longitude = models.FloatField()
     location_description = models.CharField(max_length=50)
 
+
+    def __unicode__(self):
+        return self.photo
+
+    class Meta:
+        verbose_name_plural = "Photos"
+
+    def get_absolute_url(self):
+        return "/%s/photo/%s/" % (self.user.username, self.id)
+        
     def location_description_html(self):
         region = ''
         if self.region:
@@ -241,12 +254,6 @@ class Photo(models.Model):
             return mark_safe(', '.join(bits))
         else:
             return self.location_description
-
-    def __unicode__(self):
-        return self.photo
-
-    class Meta:
-        verbose_name_plural = "Photos"
 
     
 class Video(models.Model):

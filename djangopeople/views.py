@@ -392,7 +392,11 @@ def photo_upload(request, username):
         diary_entries = []
         for entry in DiaryEntry.objects.filter(user=person.user
                                               ).order_by('-date_added')[:100]:
-            diary_entries.append((entry.id, entry.title))
+            title = entry.title
+            if len(title) > 40:
+                title = title[:40] + '...'
+            title += entry.date_added.strftime(' (%d %b %Y)')
+            diary_entries.append((entry.id, title))
         if diary_entries:
             form.fields['diary_entry'].widget.choices.extend(diary_entries)
         else:
@@ -626,7 +630,7 @@ def diary_entry_add(request, username):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             is_public = form.cleaned_data['is_public']
-            slug = slugify(unaccent_string(title))  
+            slug = slugify(unaccent_string(title)[:50])
             region = None
 
             if form.cleaned_data['region']:

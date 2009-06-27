@@ -151,7 +151,7 @@ class SignupForm(forms.Form):
 
 class PhotoUploadForm(forms.Form):
     photo = forms.ImageField()
-    description = forms.CharField(widget = forms.Textarea)
+    description = forms.CharField(widget=forms.Textarea, required=False)
     diary_entry = forms.IntegerField(required=False,
                                      widget=forms.widgets.Select()
                                     )
@@ -194,7 +194,7 @@ class ProfilePhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
 class DiaryEntryForm(forms.Form):
-    title = forms.CharField()
+    title = forms.CharField(max_length=200)
     content = forms.CharField(widget = forms.Textarea)
     is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
     country = forms.ChoiceField(required=False, choices = [('', '')] + [
