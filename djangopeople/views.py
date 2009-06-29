@@ -206,7 +206,7 @@ def signup(request):
             name = form.cleaned_data['club_name']
             slug = slugify(unaccent_string(name))
             #slug = name.strip().replace(' ', '-').lower()
-            if url or name:
+            if url and name:
                 club = _get_or_create_club(url, name)
                 club.slug = slug
                 club.save()
@@ -276,7 +276,12 @@ def _get_or_create_club(url, name):
             pass
     
     # still here?!
-    return Club.objects.create(url=url, name=name)
+    if name:
+        slug = slugify(unaccent_string(name))
+    else:
+        slug = ''
+    return Club.objects.create(url=url, name=name,
+                               slug=slug)
 
 def _get_or_create_style(name):
     if name:
