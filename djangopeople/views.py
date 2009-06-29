@@ -546,6 +546,25 @@ def profile(request, username):
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True)
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
+    
+    
+    meta_description = "%s %s, %s %s" % (person.user.first_name,
+                                   person.user.last_name,
+                                   person.location_description,
+                                   person.country.name
+                                  )
+    
+    if person.bio:
+        meta_description += ", " + person.bio
+        
+    meta_keywords = []
+    meta_keywords.append("%s %s" % (person.user.first_name, person.user.last_name))
+    meta_keywords.append(person.location_description)
+    meta_keywords.append(person.country.name)
+    for club in person.club_membership.all():
+        meta_keywords.append(club.name)
+    for style in person.styles.all():
+        meta_keywords.append(style.name)
    
     return render(request, 'profile.html', {
         'person': person,
@@ -556,6 +575,8 @@ def profile(request, username):
         'clubs': clubs,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'is_owner': request.user.username == username,
+        'meta_description': meta_description,
+        'meta_keywords': ','.join(meta_keywords),
     })
 
 def photo(request, username, photo_id):

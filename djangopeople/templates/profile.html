@@ -2,6 +2,9 @@
 
 {% block title%}{{ person }} |{% endblock %}
 
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% block meta_keywords %}{{ meta_keywords }}{% endblock %}
+
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
 {% block js %}{% load thumbnail %}
