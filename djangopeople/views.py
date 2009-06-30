@@ -19,6 +19,18 @@ from cStringIO import StringIO
 from django.utils import simplejson
 from urllib2 import HTTPError, URLError
 
+def set_cookie(response, key, value, expire=None):
+    # http://www.djangosnippets.org/snippets/40/
+    if expire is None:
+        max_age = 365*24*60*60  #one year
+    else:
+        max_age = expire
+    expires = datetime.datetime.strftime(datetime.datetime.utcnow() + \
+      datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+    response.set_cookie(key, value, max_age=max_age, expires=expires,
+                        domain=settings.SESSION_COOKIE_DOMAIN,
+                        secure=settings.SESSION_COOKIE_SECURE or None)
+
 def render(request, template, context_dict=None):
     return render_to_response(
         template, context_dict or {}, context_instance=RequestContext(request)
@@ -402,8 +414,10 @@ def photo_upload(request, username):
                 title = title[:40] + '...'
             title += entry.date_added.strftime(' (%d %b %Y)')
             diary_entries.append((entry.id, title))
+            
         if diary_entries:
-            form.fields['diary_entry'].widget.choices.extend(diary_entries)
+            diary_entries.insert(0, ('', ''))
+            form.fields['diary_entry'].widget.choices = tuple(diary_entries)
         else:
             del form.fields['diary_entry']
             
@@ -552,7 +566,42 @@ def profile(request, username):
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
     
+    is_owner = request.user.username == username
     
+    if is_owner:
+        # First assume that we don't have to pester the poor user
+        # to upload a photo
+        pester_first_photo = False
+        if not person.photo:
+            if request.GET.get('close_tip_first_photo'):
+                if request.is_ajax():
+                    response = HttpResponse('Hidden!')
+                else:
+                    response = HttpResponseRedirect(person.get_absolute_url())
+                set_cookie(response, 'close_tip_photo', '1',
+                           expire=60*60*24*3)
+                return response
+                           
+            elif not request.COOKIES.get('close_tip_photo'):
+                pester_first_photo = True
+                
+        # Same thing for the first diary entry
+        pester_first_diary_entry = False
+        if not diary_entries_private:
+            if request.GET.get('close_tip_first_diary_entry'):
+                if request.is_ajax():
+                    response = HttpResponse('Hidden!')
+                else:
+                    response = HttpResponseRedirect(person.get_absolute_url())
+                set_cookie(response, 'close_tip_diary_entry', '1',
+                           expire=60*60*24*30)
+                return response
+                
+            if not request.COOKIES.get('close_tip_diary_entry'):
+                pester_first_diary_entry = True
+            
+        
+    # Prep some SEO meta tags stuff
     meta_description = "%s %s, %s %s" % (person.user.first_name,
                                    person.user.last_name,
                                    person.location_description,
@@ -570,19 +619,9 @@ def profile(request, username):
         meta_keywords.append(club.name)
     for style in person.styles.all():
         meta_keywords.append(style.name)
+    meta_keywords = ','.join(meta_keywords)
    
-    return render(request, 'profile.html', {
-        'person': person,
-        'styles': styles,
-        'photos': photos,
-        'diary_entries_private': diary_entries_private,
-        'diary_entries_public': diary_entries_public,
-        'clubs': clubs,
-        'api_key': settings.GOOGLE_MAPS_API_KEY,
-        'is_owner': request.user.username == username,
-        'meta_description': meta_description,
-        'meta_keywords': ','.join(meta_keywords),
-    })
+    return render(request, 'profile.html', locals())
 
 def photo(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username = username)
