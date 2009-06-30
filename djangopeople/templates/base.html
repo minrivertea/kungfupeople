@@ -12,8 +12,6 @@
 </head>
 <body{% block bodymeta %}{% endblock %}>
 
-<div class="main-div">
-<div class="wrapper">
 
 	<div id="nav">
 
@@ -43,7 +41,7 @@
 	</div>
 
 	<div id="title">
-		<h1>{{ PROJECT_NAME }}</h1>
+		<h1>{{ PROJECT_NAME|lower }}</h1>
 	</div>
 
 	{% if not user.is_authenticated %}
@@ -52,8 +50,7 @@
 	{% endif %}
 
 	</div>
-	</div>
-	</div>
+
 
 {% block map %}{% endblock %}
 

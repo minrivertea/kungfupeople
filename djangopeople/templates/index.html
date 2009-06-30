@@ -34,78 +34,72 @@ var people = [
 
 {% block content %}
 
+	<div id="horizontal-image-listing">
+		<ul class="latest-list-home">
+		{% for person in recent_people_limited %}
+        	<li class="latest-list-home">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
 
 
-	<div id="content-box">
-		<img src="/static/img/leader.jpg"/>
-		<h2>{{ PROJECT_NAME }} Alpha Test</h2>
-		<p>Welcome to the {{ PROJECT_NAME }} Alpha Test. This website has been launched recently, and still contains a number of bugs and is incomplete. You're welcome to play with the website, test it, try to break it - just make sure you tell us what's wrong by emailing us at: XXXXXXXXXXXX.</p>
+
+	</div>
+
+
+
+	<div id="home-content-box">
+
+		<h2>add yourself to the martial arts map</h2>
+		<p>Add yourself to the global map and join the {{ PROJECT_NAME }} community.</p>
+		
+		<h2>publish photos, blogs and videos</h2>
+		<p>Use {{ PROJECT_NAME }} to publish your martial arts photos, record your training experiences and let others know about important martial arts events and activities. </p>
+
+
+		<h2>connect with other stylists</h2>
+		<p>Find out about other clubs and stylists in your area.</p>
+
 
 	</div>
 		
 	<div id="right-column">
+	
 		<div class="right-box">
-			<h3>Latest members</h3>
-				<ul class="latest-list">
-			        	{% for person in recent_people_limited %}
-        	    			<li class="latest-list">
-
-        	        		<div class="list-photo">
-                                           {% if your_person %}
-					   {% ifequal person your_person %}
-                                             <a href="{{ person.get_absolute_url }}upload/"
-                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
-                                           {% else %}
-                                              <a href="{{ person.get_absolute_url }}"
-                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
-                                           {% endifequal %}
-                                           {% else %}
-					   <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40">
-                                           {% endif %}
-					
-					</div>
-
- 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/><span class="small-text">{{ person.country }}</span>
-        	        		<span class="small-text">{{ person.style }}</span>              
- 					</li>
-        				{% endfor %}
-				</ul>
-			</div>
-
-
-			<div class="right-box">
-				<h3>Latest clubs</h3>
-				{% for club in clubs %}
-				<a href="/club/{{ club.slug }}/">{{ club }}</a>
-				{% if not forloop.last %} | {% endif %}
-				{% endfor %}
-			</div>
-
-			<div class="right-box">
-				<h3>Latest styles</h3>
-				{% for style in styles %}
-				<a href="/style/{{ style.slug }}/">{{ style|title }}</a>
-				{% if not forloop.last %} | {% endif %}
-				{% endfor %}
-			</div>
-
-
-
-			<div class="right-box">
-				<h3>Latest photos</h3>
-				<ul class="thumbnail-list">
-				{% for photo in photos %}
-				<li><a href="/{{ photo.user.username }}/photo/{{ photo.id }}/"><img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}"></a></li>
-				{% endfor %}
-				</ul>
-			</div>
-
-
+		<h3>clubs ({{ clubs.count }})</h3>
+		{% for club in clubs %}
+		<a href="/club/{{ club.slug }}/">{{ club|lower }}</a>{% if not forloop.last %}, {% endif %}
+		{% endfor %}
 		</div>
 
+		<div class="right-box">
+		<h3>styles ({{ styles.count }})</h3>
+		{% for style in styles %}
+		<a href="/style/{{ style.slug }}/">{{ style|lower }}</a>{% if not forloop.last %}, {% endif %}
+		{% endfor %}
+		</div>
+
+		{% if photos %}
+		<div class="right-box">
+		<h3>photos ({{ photos.count }})</h3>
+		<ul class="thumbnail-list">
+		{% for photo in photos %}
+		<li>
+		<a href="/{{ photo.user.username }}/photo/{{ photo.id }}/">
+		<img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}">
+		</a>
+		</li>
+		{% endfor %}
+		</ul>
+		</div>
+		{% endif %}
 
 
+	</div>
 	</div>
 
 

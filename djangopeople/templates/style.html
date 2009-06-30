@@ -44,6 +44,21 @@ div.bio a.edit {
 
 {% block content %}
 
+	<div id="horizontal-image-listing">
+		<ul class="latest-list-home">
+		{% for person in people %}
+        	<li class="latest-list-home">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
+
+
+	</div>
+
 	<div id="content-box">
 
 		<div id="profile-head">
@@ -60,38 +75,16 @@ div.bio a.edit {
 
 		</div>
 
-		{% if people %}
-		<div class="highlight">
-		<div class="highlight-head">
-		    <strong>Other people who do {{ style }}</strong>
-		</div>
-		<div class="highlight-main">
-		    <ul class="latest-list">
-		{% for stylist in people %}
-   			<li class="latest-list">
-			<div class="list-photo"><img src="{% if stylist.photo %}{% thumbnail stylist.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-			</div>
-			<a class="list-item-title" href="{{ stylist.get_absolute_url }}">{{ stylist.user.get_full_name }}</a><br/>
-			<img class="list-map-image" src="{% if stylist.country.iso_code %}/img/flags/{{ stylist.country.iso_code|lower }}.gif{% else %}/{{ stylist.country.flag }}{% endif %}" alt="{{ stylist.country }}"/>
-        	        <span class="small-text">{{ stylist.location_description }}</span>              
- 			</li>
-		{% endfor %}
-		    </ul>
-		</div>
-		</div>
-		{% endif %}
-
 		{% if diaries %}
-		<div class="highlight">
-		<div class="highlight-head">
-		<strong>Posts written by {{ style }} stylists</strong>
-		</div>
-		<div class="highlight-main">
+		<div class="highlight-profile">
+		<h4>Posts written by {{ style }} stylists</h4>
 		<ul class="diary-list">
 		{% for entry in diaries %}
-		<li><a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
-		<p class="meta">{{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
+		<li class="diary-list">
+		<a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
+		<br/>
 		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+		<p class="meta">{{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
 		</li>
 		{% endfor %}
 		</ul>
@@ -100,7 +93,7 @@ div.bio a.edit {
 		{% endif %}
        
 	</div>
-	</div>
+
 	
 	<div id="right-column">
 

@@ -38,14 +38,11 @@ def must_be_owner(view):
     return inner
 
 def index(request):
-    recent_people = list(KungfuPerson.objects.all().select_related().order_by('-id')[:100])
-    try:
-        definition = KungfuPerson.objects.exclude(what_is_kungfu='').order_by('?')[:1].get()
-    except KungfuPerson.DoesNotExist:
-        definition = None
+    recent_people = KungfuPerson.objects.all().select_related().order_by('-id')
     clubs = Club.objects.all().order_by('-add_date')[:5]
     photos = Photo.objects.all().order_by('-date_added')[:5]
     styles = Style.objects.all().order_by('-add_date')[:5]
+    diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     your_person = None
     if request.user and not request.user.is_anonymous():
         your_person = request.user.get_profile()
@@ -54,7 +51,7 @@ def index(request):
         'your_person': your_person,
         'photos': photos,
         'styles': styles,
-        'definition': definition,
+        'diaries': diaries,
         'clubs': clubs,
         'recent_people_limited': recent_people[:4],
         'total_people': KungfuPerson.objects.count(),

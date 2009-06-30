@@ -150,30 +150,13 @@ div.bio a.edit {
 
 	<div id="main-content-area">
 
-			
-
-		{% if photos %}
-		<div class="highlight">
-			<div class="highlight-head">
-			<h4>{{ person.user.first_name }}'s photos {% if is_owner %}(<a href="/{{ user.username }}/photo/upload">add more photos</a>){% endif %}</h4>
-			</div>
-			<div class="highlight-main">
-			<ul class="thumbnail-list">
-			{% for photo in photos %}
-			<li class="thumbnail-list"><a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a></li>
-			{% endfor %}
-			</ul>
-			</div>
-		</div>
-		{% endif %}
 
 	{% if diary_entries_private %}
-		<div class="highlight">
-
-		<div class="highlight-head">
-		<h4>{{ PROJECT_MARTIAL_ART }} Diary {% if is_owner %}(<a href="/{{ user.username }}/diary/add">add another entry</a>){% endif %}</h4>	
-		</div>
-		<div class="highlight-main">
+		<div class="highlight-profile">
+		<h4>{{ PROJECT_MARTIAL_ART|title }} diary 
+		{% if is_owner %}(<a href="/{{ user.username }}/diary/add">add another entry</a>)
+		{% endif %}
+		</h4>	
 		{% if is_owner %}
 			<ul class="diary-list">
 			{% for entry in diary_entries_private %}
@@ -206,74 +189,32 @@ div.bio a.edit {
 				{% endfor %}
 				</ul>	
 			{% endif %}
-			</div>
 		</div>
 		{% endif %}
 
+			
 
-	{% if not is_owner%}
-	<div class="highlight">
-		<p><strong>Your definition of kung fu:</strong></p>
-                {% if person.what_is_kungfu %}
-		<p class="quotation">&ldquo;{{ person.what_is_kungfu }}&rdquo;</p>
-		<p class="small-text"><a href="/{{ person.user.username }}/profile/">(edit this quote)</a></p>
-                {% else %}
-                <p><em>You have not entered one yet</em></p>
-		<p class="small-text"><a href="/{{ person.user.username }}/profile/">(add your own quote)</a></p>
-                {% endif %}
-		
-	</div>
-	{% endif %}
+		{% if photos %}
+		<div class="highlight-profile">
+		<h4>{{ person.user.first_name }}'s photos 
+		{% if is_owner %}(<a href="/{{ user.username }}/photo/upload">add more photos</a>)
+		{% endif %}
+		</h4>
+		<ul class="thumbnail-list">
+		{% for photo in photos %}
+		<li class="thumbnail-list">
+		<a href="{{ photo.get_absolute_url }}">
+		<img src="{% thumbnail photo.photo 60x60 crop %}">
+		</a>
+		</li>
+		{% endfor %}
+		</ul>
+		</div>
+		{% endif %}
        
 	</div>
 	</div>
 
-	<div id="right-column">
 
-	<div class="right-box">
-	<p class="small-text"><strong>Click on the map to see {% if is_owner %}your{% else %}{{ person.user.first_name }}'s{% endif %} location{% if is_owner %} <a href="/{{ user.username }}/location/">or click here to change your location.</a>{% else %}.{% endif %}</strong></p>
-
-	</div>
-	
-		{% if not others %}
-		{% else %}
-		<div class="right-box">
-			<h3>Other {{ person.style }} stylists</h3>
-			<ul class="latest-list">	        
-			{% for person in others %}
-        	    		<li class="latest-list">
-				<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-				</div>
-
- 			       	<a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-				<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/><span class="small-text">{{ person.country }}</span>              
- 				</li>
-			{% endfor %}
-			</ul>
-		</div>
-		{% endif %}
-
-   		{% with person.get_nearest as people %}
-    		{% if people %}
-		<div class="right-box">
-   		<h3>People near {% if is_owner %}you{% else %}{{ person.user.first_name }}{% endif %}</h3>
-				<ul class="latest-list">
-			        	{% for person in people %}
-        	    			<li class="latest-list">
-
-        	        		<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-					</div>
-
- 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
-        	        		<span class="small-text">{{ person.country }}</span>              
- 					</li>
-        				{% endfor %}
-				</ul>
-		</div>
-   		{% endif %}
-   		{% endwith %}
-
-	</div>
 
 {% endblock %}
