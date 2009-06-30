@@ -33,6 +33,24 @@ div.bio a.edit {
 {% endblock %}
 
 {% block content %}
+<div class="wrapper">
+
+	{% if members %}
+	<div id="horizontal-image-listing">
+		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>, {% endfor %}</div>
+		<ul class="horizontal-image-list">
+		{% for person in members %}
+        	<li class="horizontal-image-list">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+
 
 	<div id="content-box">
 
@@ -44,48 +62,13 @@ div.bio a.edit {
 		{% else %}
 		{% endif %}
 
-       		<h3>{{ club.name }}</h3>
+       		<h2>{{ club.name }}</h2>
 
-		<p class="small-text">{{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>, {% endfor %}
+
 
 		<p><a href="{{ club.url }}">Visit {{ club }}'s website</a></p>
         	
 		</div>
-
-
-		<div class="highlight">
-		
-		{% if members %}
-			<h3>Latest members</h3>
-				<ul class="latest-list">
-			        	{% for person in members %}
-        	    			<li class="latest-list">
-
-        	        		<div class="list-photo">
-                                           {% if your_person %}
-					   {% ifequal person your_person %}
-                                             <a href="{{ person.get_absolute_url }}upload/"
-                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
-                                           {% else %}
-                                              <a href="{{ person.get_absolute_url }}"
-                                               ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40"></a>
-                                           {% endifequal %}
-                                           {% else %}
-					   <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40">
-                                           {% endif %}
-					
-					</div>
-
- 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/><span class="small-text">{{ person.country }}</span>
-        	        		<span class="small-text">{{ person.style }}</span>              
- 					</li>
-        				{% endfor %}
-				</ul>
-		{% endif %}
-		</div>
-		
-
        
 	</div>
 

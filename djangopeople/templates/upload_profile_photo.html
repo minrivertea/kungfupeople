@@ -6,7 +6,8 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-        <div id="content-box">
+	<div class="no-map-wrapper">
+	<div id="no-map-content-box">
         <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
 	<p>Photos will be resized and cropped; for best results, upload a square image. </p> 
             <form enctype="multipart/form-data" method="post" action=".">

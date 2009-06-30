@@ -32,13 +32,37 @@ body * {
 	/* background: url('/static/img/bodyback.png') top left repeat-y; */
 }
 
+.no-map-wrapper {
+	min-width: 900px;
+	width: 100%;
+	background-color: white;
+	float: left;
+	border-bottom: 20px solid #F3CF1A;
+	border-left: 5px solid #F3CF1A;
+	border-right: 5px solid #F3CF1A;
+	border-top: 5px solid #F3CF1A;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:5px;
+-moz-border-radius-topright:5px;
+}
+
+#no-map-content-box {
+	width: 650px;
+    	float: left;
+	display: block;
+    	margin: 0px 0px 50px 0px;
+	padding: 40px;
+    	display: block;
+    	background-color: white;
+}
 
 #header {
 	float: left;
 	width: 100%;
 	height: 140px;
 	margin: 0px 0px -90px 0px;
-	border-bottom: 15px solid #9E1414;
+	border-bottom: 15px solid #DA5858;
 	background-color: #7C0909;
 }
 
@@ -154,9 +178,13 @@ body * {
 #horizontal-image-listing {
 	min-width: 1000px;
 	width: 100%;
-	height: 60px;
-	margin-bottom: 15px;
+	height: auto;
+	margin-bottom: 0px;
 	float: left;
+}
+
+#horizontal-image-listing a:link, #horizontal-image-listing a:visited {
+	font-size: 1em;
 }
 
 #horizontal-image-listing a:hover {
@@ -166,6 +194,7 @@ body * {
 	opacity: 0.6;
 	text-decoration: none;
 	background-color: white;
+	color: black;
 }
 
 #home-content-box {
@@ -502,7 +531,7 @@ ul.split li {
 
 #title h1 {
 	font-family: Helvetica, Arial, sans-serif;
-	margin: -40px 0 0px 30px;
+	margin: -10px 0 0px 30px;
 	font-size: 2.5em;
 	font-weight: bold;
 	color: white;
@@ -692,6 +721,25 @@ li.latest-list-home {
 	margin: 0 10px 10px 0;
 	height: 60px;
 	width: 60px;
+}
+
+ul.horizontal-image-list {
+    margin: 10px 0 20px 0px;
+}
+
+li.horizontal-image-list {
+	list-style-type:none;
+	float: left;
+	display: inline;
+	margin: 0 10px 10px 0;
+	height: 60px;
+	width: 60px;
+}
+
+.horizontal-image-list-text {
+	margin-bottom: -5px;
+	font-size: 0.7em;
+	color: #666;
 }
 
 

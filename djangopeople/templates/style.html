@@ -43,11 +43,13 @@ div.bio a.edit {
 {% endblock %}
 
 {% block content %}
+<div class="wrapper">
 
 	<div id="horizontal-image-listing">
-		<ul class="latest-list-home">
+		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+		<ul class="horizontal-image-list">
 		{% for person in people %}
-        	<li class="latest-list-home">
+        	<li class="horizontal-image-list">
        	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
                 <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
@@ -55,8 +57,6 @@ div.bio a.edit {
 		</li>
         	{% endfor %}
 		</ul>
-
-
 	</div>
 
 	<div id="content-box">

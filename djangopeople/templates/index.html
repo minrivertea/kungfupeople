@@ -33,11 +33,13 @@ var people = [
 {% endblock %}
 
 {% block content %}
+<div class="wrapper">
 
 	<div id="horizontal-image-listing">
-		<ul class="latest-list-home">
+	<div class="horizontal-image-list-text">Showing {{ recent_people.count }} {% ifequal recent_people.count 1 %}person{% else %}people{% endifequal %} located in: {% for person in recent_people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+		<ul class="horizontal-image-list">
 		{% for person in recent_people_limited %}
-        	<li class="latest-list-home">
+        	<li class="horizontal-image-list">
        	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
                 <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">

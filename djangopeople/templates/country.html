@@ -33,38 +33,28 @@ var bbox_east = {{ country.bbox_east }};
 {% endblock %}
 
     {% block content %}
+<div class="wrapper">
+
+
+	{% if people %}
+	<div id="horizontal-image-listing">
+	<div class="horizontal-image-list-text">Showing {{ people.count }} {% ifequal people.count 1 %}person{% else %}people{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+	<ul class="horizontal-image-list">
+	{% for person in people %}
+        <li class="horizontal-image-list">
+       	<div class="list-photo">
+        <a href="{{ person.get_absolute_url }}">
+        <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+	</a>
+	</li>
+        {% endfor %}
+	</ul>
+	</div>
+	{% endif %}
+
 
 	<div id="content-box">
 
-	<h3>{{ PROJECT_MARTIAL_ART }} People in {{ country }}</h3>
-    {% with country.countrysite_set.all as sites %}
-    {% if sites %}
-    <div class="highlight">
-        <h2>{{ PROJECT_MARTIAL_ART }} community sites in {{ country }}</h2>
-        <ul>
-        {% for site in sites %}
-            <li><a href="{{ site.url }}" class="ext">{{ site.title }}</a></li>
-        {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
-
-{% if people %}
-<ul class="latest-list">
-{% for person in people %}
-<li>
-
-<div class="list-photo"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/upload-a-photo-40.png{% endif %}" alt="{{ person }}" width="40" height="40" class="xxxlatest">
-					</div>
-
- 			       	        <a class="list-item-title" href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a><br/>
-					<img class="list-map-image" src="{% if person.country.iso_code %}/img/flags/{{ person.country.iso_code|lower }}.gif{% else %}/{{ person.country.flag }}{% endif %}" alt="{{ person.country }}"/>
-        	        		<span class="small-text">{{ person.style }}</span>              
-
-</li>
-{% endfor %}
-{% endif %}
 
 	</div>
     {% endblock %}
