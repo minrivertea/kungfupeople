@@ -2,6 +2,9 @@
 
 {% block title%}{{ person }} |{% endblock %}
 
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% block meta_keywords %}{{ meta_keywords }}{% endblock %}
+
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
 {% block js %}{% load thumbnail %}
@@ -18,6 +21,21 @@ var person_latitude = {{ person.latitude }};
 var person_longitude = {{ person.longitude }};
 </script>
 <script type="text/javascript" src="/js/profile.js"></script>
+{% if pester_first_photo or pester_first_diary_entry %}
+<script type="text/javascript">
+$(function() {
+  $('a.close_tip').click(function() {
+    $(this).parents('div.no-photo-box').remove();
+    var params = {};
+    //params[$(this).attr('href').split('?')[1].split('=')[0]] = $(this).attr('href').split('?')[1].split('=')[1];
+    //$.load(document.location.href, params);
+    $.get(document.location.href + $(this).attr('href'));
+    return false;
+  });
+});
+</script>
+
+{% endif %}
 <style type="text/css">
 #id_skills {
     width: 80%;
@@ -75,30 +93,32 @@ div.bio a.edit {
 
 
 	{% if is_owner %}
-		{% if not person.photo %}
+   
+		{% if pester_first_photo %}
 		<br/>
 		<div class="no-photo-box">
 		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
 		<div class="no-photo-box-main">
-		<div class="no-photo-box-close"><span class="meta">close</span></div>
+		<div class="no-photo-box-close"><a href="?close_tip_first_photo=1" class="meta close_tip" id="close_tip_first_photo">close</a></div>
 		<p>*Why hide behind an icon - show the world your real face!</p>
 		<a class="major-notice" href="profileupload/">Upload a profile photo now!</a>
 		</div>
 		</div>
 		{% endif %}
 
-		{% if not diary_entries_private %}
-		<br/>
+		{% if pester_first_diary_entry %}
 		<div class="no-photo-box">
+		<br/>
 		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
 		<div class="no-photo-box-main">
-		<div class="no-photo-box-close"><span class="meta">close</span></div>
+		<div class="no-photo-box-close"><a href="?close_tip_first_diary_entry=1" class="meta close_tip" id="close_tip_first_diary">close</a></div>
 		<p>*Use the site to keep a record of your training experiences.</p>
 		<a class="major-notice" href="diary/add/">Write your first diary entry</a>
 		</div>
 		</div>
 		<br/>
 		{% endif %}
+                                
 	{% endif %}
 
 	{% if person.photo %}

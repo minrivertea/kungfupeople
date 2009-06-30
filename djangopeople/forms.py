@@ -194,7 +194,7 @@ class ProfilePhotoUploadForm(forms.Form):
     photo = forms.ImageField()
 
 class DiaryEntryForm(forms.Form):
-    title = forms.CharField(max_length=200)
+    title = forms.CharField(max_length=200, widget=forms.widgets.TextInput(attrs=dict(size=40)))
     content = forms.CharField(widget = forms.Textarea)
     is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
     country = forms.ChoiceField(required=False, choices = [('', '')] + [

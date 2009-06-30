@@ -154,7 +154,10 @@ class Club(models.Model):
         verbose_name_plural = "Clubs"
         
     def get_absolute_url(self):
-        return "/club/%s/" % self.slug
+        if self.slug:
+            return "/club/%s/" % self.slug
+        else:
+            return "/club/%s/" % self.id
 
 
 class Style(models.Model):
