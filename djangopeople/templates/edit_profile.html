@@ -29,7 +29,7 @@
 	</fieldset>
 	
 
-    	<h2>2. Edit your profile information</h2>
+    	<h2>2. Edit your personal introduction</h2>
     
 	<fieldset>
 	<div class="form-field-outer">
@@ -40,21 +40,6 @@
 
 		<div class="form-field-right">
     	        {{ form.bio }}
-		</div>
-	</div>
-	</fieldset>
-
-	<fieldset>
-	<div class="form-field-outer">
-		<div class="form-field-left">
-        	{{ form.what_is_kungfu.errors }}
-        	<label for="id_what_is_kungfu">What is kungfu?</label>
-		</div>
-		<div class="form-field-right">
-    	        {{ form.what_is_kungfu }} 
-            	{% if example %} 
-                <br/><span class="form-hint">(144 characters to write your personal definition of "What is kungfu?")</span>
-            	{% endif %}
 		</div>
 	</div>
 	</fieldset>
