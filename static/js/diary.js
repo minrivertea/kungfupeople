@@ -3,7 +3,7 @@ google.load('maps', '2',{'other_params':'sensor=false'});
 var gmap; 
 
 google.setOnLoadCallback(function() {
-   
+   if (OFFLINE_MODE) return;
    
     function ShrinkControl() {}
     ShrinkControl.prototype = new GControl();

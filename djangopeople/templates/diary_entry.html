@@ -22,6 +22,10 @@ var nearby_people = [
 
 var entry_latitude = {{ entry.latitude }};
 var entry_longitude = {{ entry.longitude }};
+
+{% if OFFLINE_MODE %}
+var OFFLINE_MODE=true;
+{% endif %}
 </script>
 
 
@@ -31,7 +35,11 @@ var entry_longitude = {{ entry.longitude }};
 
 {% block map %}
     <div class="mapContainer minor">
-        <div id="gmap">&nbsp;</div>
+        <div id="gmap">&nbsp;
+        {% if OFFLINE_MODE %}
+        <img src="/static/img/map-short-placeholder.png" />
+        {% endif %}
+        </div>
     </div>
 {% endblock %}
 
