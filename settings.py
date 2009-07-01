@@ -120,6 +120,8 @@ INSTALLED_APPS = (
 
 GOOGLE_ANALYTICS_TRACKER_ID = "" # set to something when you have set up an account
 
+OFFLINE_MODE = True
+
 try:
     from local_settings import *
 except ImportError:

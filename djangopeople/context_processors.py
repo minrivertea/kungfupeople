@@ -5,7 +5,7 @@ def context(request):
     data = {'TEMPLATE_DEBUG': settings.TEMPLATE_DEBUG,
             'DEBUG': settings.DEBUG,
             'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
-            #'OFFLINE': settings.OFFLINE,
+            'OFFLINE_MODE': settings.OFFLINE_MODE,
             'base_template': "base.html",
             'mobile_version': False,
             'mobile_user_agent': False,

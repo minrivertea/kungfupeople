@@ -1,3 +1,4 @@
+var OFFLINE_MODE=false;
 
 function makeWindow(name, username, location, photo, iso_code, lat, lon) {
     var html =  '<ul class="detailsList">' + 

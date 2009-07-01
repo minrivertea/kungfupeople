@@ -19,7 +19,11 @@ var nearby_people = [
 
 var person_latitude = {{ person.latitude }};
 var person_longitude = {{ person.longitude }};
+{% if OFFLINE_MODE %}
+var OFFLINE_MODE=true;
+{% endif %}
 </script>
+
 <script type="text/javascript" src="/js/profile.js"></script>
 {% if pester_first_photo or pester_first_diary_entry %}
 <script type="text/javascript">
@@ -62,9 +66,14 @@ div.bio a.edit {
 	{% endblock %}
 
 
+
 {% block map %}
     <div class="mapContainer minor">
-        <div id="gmap">&nbsp;</div>
+        <div id="gmap">&nbsp;
+        {% if OFFLINE_MODE %}
+        <img src="/static/img/map-short-placeholder.png" />
+        {% endif %}
+        </div>
     </div>
 {% endblock %}
 
