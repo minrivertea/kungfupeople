@@ -214,6 +214,10 @@ body * {
 	margin-left: 5px;
 }
 
+.large p {
+	font-size: 1.3em;
+}
+
 #content-box {
 	width: 650px;
     	float: left;
