@@ -126,6 +126,10 @@ div.bio a.edit {
 		<div class="profile-photo">
 		<img src="{% thumbnail person.photo 150x150 crop %}" alt="{{ person }}">
 		</div>
+	{% else %}
+		<div class="profile-photo">
+		<a href="profileupload/"><img src="/static/img/upload-a-photo.png" alt="upload a photo!"></a>
+		</div>
 	{% endif %}
 
 		<div class="profile-text">

@@ -6,21 +6,36 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-        <div id="content-box">
+	<div class="no-map-wrapper">
+        <div id="no-map-content-box">
             <h2>Congratulations!</h2>
 
 	    <p><strong>You've successfully created a profile on {{ PROJECT_NAME }}!</strong> You might be wondering what comes next? Well, first you might want to add a little more to your profile: <em>(or just <a href="/{{ person.user.username }}/">click here to view your profile)</a></em></p>
 
-		<p> </p>
 
-		<ul>
-		<li><a href="/{{ person.user.username }}/profile/">Write a short introduction to yourself</a></li>
-		<li><a href="/{{ person.user.username }}/club/">Add your club and style information</a></li>
-		<li><a href="/{{ person.user.username }}/diary/add">Write your first {{ PROJECT_MARTIAL_ART|lower }} diary entry</a></li>
+		<br/>
+		<div class="no-photo-box">
+		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
+		<div class="no-photo-box-main">
 
-		</ul>
+		<p>*Why hide behind an icon - show the world your real face!</p>
+		<a class="major-notice" href="/{{ person.user.username }}/profileupload/">Upload a profile photo now!</a>
+		</div>
+		</div>
 
 
+		<div class="no-photo-box">
+		<br/>
+		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
+		<div class="no-photo-box-main">
 
+		<p>*Let everyone else know who you are and what you do!</p>
+		<a class="major-notice" href="/{{ person.user.username }}/profile/">Write a personal introduction</a>
+		</div>
+		</div>
+		<br/>
+
+
+	</div>
 	</div>
     {% endblock %}
