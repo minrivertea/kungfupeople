@@ -265,6 +265,19 @@ h2 {
 	color: #95CFD1;
 }
 
+a:link.h2-link, a:visited.h2-link {
+	font-size: 1em;
+	font-weight: normal;
+	color: #95CFD1;
+}
+
+a:hover.h2-link {
+	font-size: 1em;
+	font-weight: normal;
+	color: white;
+	background-color: #95CFD1;
+}
+
 h3 {
 	font-family: Helvetica, sans-serif;
 	font-size: 1.4em;
@@ -1028,7 +1041,7 @@ img.tick {
 	float: left;
 	height: 48px;
 	width: 48px;
-	margin: -4px 20px 0 -40px;
+	margin: -5px 10px 0 0px;
 }
 
 

@@ -65,7 +65,7 @@ def index(request):
         'styles': styles,
         'diaries': diaries,
         'clubs': clubs,
-        'recent_people_limited': recent_people[:10],
+        'recent_people_limited': recent_people[:50],
         'total_people': KungfuPerson.objects.count(),
         'total_videos': Video.objects.filter(approved=True).count(),
         'total_chris': User.objects.filter(first_name__startswith='Chris').count(),

@@ -55,53 +55,14 @@ var people = [
 
 
 	<div id="home-content-box">
-
-		<h2>add yourself to the martial arts map</h2>
+		<img class="tick" src="/static/img/add.png">
+		<h2><a class="h2-link" href="/signup/">add yourself to the martial arts map</a></h2>
 		<p>Add yourself to the global map and join the {{ PROJECT_NAME }} community.</p>
-		
-		<h2>publish photos, blogs and videos</h2>
-		<p>Use {{ PROJECT_NAME }} to publish your martial arts photos, record your training experiences and let others know about important martial arts events and activities. </p>
-
-
-		<h2>connect with other stylists</h2>
-		<p>Find out about other clubs and stylists in your area.</p>
-
-
 	</div>
+
+
 		
-	<div id="right-column">
-	
-		<div class="right-box">
-		<h3>clubs ({{ clubs.count }})</h3>
-		{% for club in clubs %}
-		<a href="/club/{{ club.slug }}/">{{ club|lower }}</a>{% if not forloop.last %}, {% endif %}
-		{% endfor %}
-		</div>
 
-		<div class="right-box">
-		<h3>styles ({{ styles.count }})</h3>
-		{% for style in styles %}
-		<a href="/style/{{ style.slug }}/">{{ style|lower }}</a>{% if not forloop.last %}, {% endif %}
-		{% endfor %}
-		</div>
-
-		{% if photos %}
-		<div class="right-box">
-		<h3>photos ({{ photos.count }})</h3>
-		<ul class="thumbnail-list">
-		{% for photo in photos %}
-		<li>
-		<a href="/{{ photo.user.username }}/photo/{{ photo.id }}/">
-		<img height="40" width="40" src="{% thumbnail photo.photo 40x40 crop %}">
-		</a>
-		</li>
-		{% endfor %}
-		</ul>
-		</div>
-		{% endif %}
-
-
-	</div>
 	</div>
 
 
