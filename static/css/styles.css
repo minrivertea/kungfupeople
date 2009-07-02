@@ -79,10 +79,10 @@ body * {
 
 #logo {
 	background: url('/static/img/logo.png') no-repeat;
-	height: 46px;
-	width: 486px;
+	height: 55px;
+	width: 508px;
 	float: left;
-	margin: 39px 0 0 90px;
+	margin: 17px 0 0 90px;
 }
 
 #logo:hover {
