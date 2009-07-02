@@ -68,7 +68,7 @@
 
 	<h3>Your current club{{ clubs|pluralize }}</h3>
 	{% for club in clubs %}
-	<p><a href="/club/{{ club.slug }}">{{ club }}</a><a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/">(<img title="remove this club" class="small-icon" src="/img/delete.png">)</a>
+	<p>(<a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/"><img title="remove this club" class="small-icon" src="/img/delete.png"></a>)<a href="/club/{{ club.slug }}">{{ club }}</a>
 	</p>
 	{% endfor %}
 
