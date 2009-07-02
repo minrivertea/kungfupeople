@@ -795,7 +795,6 @@ def diary_entry_delete(request, username, slug):
     entry.delete()
 
     return HttpResponseRedirect('/%s/' % user.username)
-
     
 
 @must_be_owner
@@ -816,6 +815,11 @@ def edit_club(request, username):
                 person.club_membership.add(club)
                 person.save()
                 return HttpResponseRedirect('/%s/club/' % username)
+        else:
+            if form.non_field_errors():
+                non_field_errors = form.non_field_errors()
+            else:
+                errors = form.errors
     else:
         form = ClubForm()
     return render(request, 'edit_club.html', locals())
@@ -1024,6 +1028,8 @@ def search(request):
 
 def guess_club_name_json(request):
     club_url = request.GET.get('club_url')
+    partial = request.GET.get('partial')
+    
     if not club_url:
         return render_json(dict(error="no url"))
 
@@ -1035,9 +1041,26 @@ def guess_club_name_json(request):
     domain = urlparse(club_url)[1]
     data = {}
     
-    for club in Club.objects.filter(url__icontains=domain).order_by('-add_date'):
-        data = {'club_name': club.name, 'readonly': True}
-        # easy!
+    print "partial", repr(partial)
+    print "club_url", repr(club_url)
+    
+    if partial:
+        try:
+            club = Club.objects.get(url__istartswith=club_url)
+            data = {'club_name': club.name, 'readonly': True}
+        except Club.DoesNotExist:
+            pass
+        except Club.MultipleObjectsReturned:
+            pass
+        
+    else:
+        for club in Club.objects.filter(url__icontains=domain).order_by('-add_date'):
+            data = {'club_name': club.name, 'readonly': True}
+            # easy!
+            return render_json(data)
+        
+    if partial:
+        # don't go on the internet
         return render_json(data)
     
     # hmm, perhaps we need to download the HTML and scrape the <title> tag
