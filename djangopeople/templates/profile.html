@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title%}{{ person }} |{% endblock %}
 
@@ -17,33 +18,25 @@ var nearby_people = [
     {% endfor %}
 ];
 
-var person_latitude = {{ person.latitude }};
-var person_longitude = {{ person.longitude }};
-{% if OFFLINE_MODE %}
-var OFFLINE_MODE=true;
-{% endif %}
+var PAGE_LATITUDE = {{ person.latitude }};
+var PAGE_LONGITUDE = {{ person.longitude }};
 </script>
-
-<script type="text/javascript" src="/js/profile.js"></script>
+<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+<script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
 {% if pester_first_photo or pester_first_diary_entry %}
-<script type="text/javascript">
-$(function() {
-  $('a.close_tip').click(function() {
-    $(this).parents('div.no-photo-box').remove();
-    var params = {};
-    //params[$(this).attr('href').split('?')[1].split('=')[0]] = $(this).attr('href').split('?')[1].split('=')[1];
-    //$.load(document.location.href, params);
-    $.get(document.location.href + $(this).attr('href'));
-    return false;
+  <script type="text/javascript">
+  $(function() {
+    $('a.close_tip').click(function() {
+      $(this).parents('div.no-photo-box').remove();
+      var params = {};
+      $.get(document.location.href + $(this).attr('href'));
+      return false;
+    });
   });
-});
-</script>
-
+  </script>
 {% endif %}
+
 <style type="text/css">
-#id_skills {
-    width: 80%;
-}
 a.changeloc, h2 a.edit, div.bio a.edit {
     font-size: 0.5em;
     text-decoration: none;
