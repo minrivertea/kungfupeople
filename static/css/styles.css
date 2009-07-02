@@ -612,7 +612,7 @@ h1 {
 	color: white;
 }
 
-#nav a:hover {
+#nav a:hover, #nav a:focus {
 	background-color: #a30f01;
 	color: white;
 	padding-top: 20px;
