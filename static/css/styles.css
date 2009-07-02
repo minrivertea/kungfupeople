@@ -99,7 +99,7 @@ body * {
 	display: block;
 }
 
-#logo a:hover {
+#logo a:hover, #logo a:focus {
 	text-decoration: none;
 	cursor: pointer;
 	height: 46px;
