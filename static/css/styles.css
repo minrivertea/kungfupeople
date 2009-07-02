@@ -427,30 +427,32 @@ input.submit {
 }
 
 .button-outer {
-	padding: 5px;
-	border: 2px solid black;
-}
-
-.buttonContainer input{
-	background-color: #bd0505;
-	color: white;
-	padding: 5px 20px 5px 20px;
-	font-size: 0.9em;
-	border: none;
+	width: 150px;
+	padding: 3px;
+	border: 1px solid #999999;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
 -moz-border-radius-topright:10px;
 }
 
-.buttonContainer input:hover {
+.buttonContainer input{
+	background-color: #bd0505;
 	color: white;
-	cursor: pointer;
-	filter:alpha(opacity=60);
-	-moz-opacity:0.6;
-	-khtml-opacity: 0.6;
-	opacity: 0.6;
+	padding: 5px 20px 5px 20px;
+	font-size: 1.1em;
+	width: 100%;
+	border: none;
+-moz-border-radius-bottomleft:5px;
+-moz-border-radius-bottomright:5px;
+-moz-border-radius-topleft:5px;
+-moz-border-radius-topright:5px;
+}
 
+.buttonContainer input:hover {
+	color: #bd0505;
+	background-color: #F3CF1A;
+	cursor: pointer;
 }
 
 fieldset {
@@ -1083,6 +1085,12 @@ img.plus {
 	width: 53px;
 	margin: -3px 10px 0 0px;
 }
+
+img.delete {
+	position: relative;
+	top: 3px;
+}
+
 a:hover.title {
 	padding: none;
 	text-decoration: none;

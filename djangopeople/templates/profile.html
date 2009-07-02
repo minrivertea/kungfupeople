@@ -198,7 +198,7 @@ div.bio a.edit {
 			<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> 
 			{% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> 
 			<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/">
-			<img src="/static/img/delete.png">
+			<img class="delete" src="/static/img/delete.png">
 			</a>{% endif %}
 			<br/>
 			<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
