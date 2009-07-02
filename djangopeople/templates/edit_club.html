@@ -17,6 +17,14 @@
     <form method="post" action="/{{ person.user.username }}/club/">
     	<h2>Add a new club</h2>
 	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+        
+        {% if non_field_errors %}
+          {{ non_field_errors }}
+        {% else %}
+          {% if errors %}
+            {{ errors }}
+          {% endif %}
+        {% endif %}
 
     	<fieldset>
 

@@ -6,6 +6,7 @@ from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club
 from groupedselect import GroupedChoiceField
 from constants import SERVICES, IMPROVIDERS
 
+
 try:
     from BeautifulSoup import BeautifulSoup
 except ImportError:
@@ -267,8 +268,59 @@ class ProfileForm(forms.Form):
         return email
 
 class ClubForm(forms.Form):
-    club_name = forms.CharField(max_length=200)
+    club_name = forms.CharField(max_length=200, required=False)
     club_url = forms.URLField()
+    
+    def clean(self):
+        
+        name = self.cleaned_data['club_name']
+        url = self.cleaned_data['club_url']
+        if not url.count('://'):
+            url = 'http://' + url
+            self.cleaned_data['club_url'] = url
+            
+        if not name:
+            from urlparse import urlparse
+            from models import Club
+            try:
+                club = Club.objects.get(url__iexact=url)
+            except Club.DoesNotExist:
+                try:
+                    print repr('://'.join(urlparse(url)[:2]))
+                    club = Club.objects.get(url__istartswith=\
+                     '://'.join(urlparse(url)[0:2]))
+                except Club.MultipleObjectsReturned:
+                    raise forms.ValidationError(
+                      "Club name missing when there are multiple clubs with a similar URL")
+                except Club.DoesNotExist:
+                    raise forms.ValidationError("You need to add a club name")
+            self.cleaned_data['club_name'] = name
+
+        #print repr(name)
+        #print repr(url)
+        return self.cleaned_data
+        
+        
+        # If the club_name is blank and we can get it from the database,
+        # the it's ok. Otherwise not
+        if not self.cleaned_data['club_name']:
+            url = self.cleaned_data['club_url']
+            from urlparse import urlparse
+            from models import Club
+            if not url.count('://'):
+                url = 'http://' + url
+            try:
+                club = Club.objects.get(url__iexact=url)
+            except Club.DoesNotExist:
+                try:
+                    club = Club.objects.get(url__istarts=urlparse(url)[1])
+                except Club.DoesNotExist:
+                    raise forms.ValidationError("club_name missing")
+                                            
+
+        return self.cleaned_data['club_name']
+        
+        
 
 class StyleForm(forms.Form):
     style_name = forms.CharField(max_length=200)
