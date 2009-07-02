@@ -79,10 +79,10 @@ body * {
 
 #logo {
 	background: url('/static/img/logo.png') no-repeat;
-	height: 55px;
+	height: 66px;
 	width: 508px;
 	float: left;
-	margin: 31px 0 0 90px;
+	margin: 20px 0 0 90px;
 }
 
 #logo:hover {
@@ -425,19 +425,31 @@ input.submit {
 	color: #414F32;
 	padding: 2px 5px;
 }
+
+.button-outer {
+	padding: 5px;
+	border: 2px solid black;
+}
+
 .buttonContainer input{
 	background-color: #bd0505;
 	color: white;
 	padding: 5px 20px 5px 20px;
 	font-size: 0.9em;
 	border: none;
--moz-border-radius-bottomleft:20px;
--moz-border-radius-bottomright:20px;
--moz-border-radius-topleft:20px;
--moz-border-radius-topright:20px;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
 }
 
-.buttonContainer input:active {
+.buttonContainer input:hover {
+	color: white;
+	cursor: pointer;
+	filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	-khtml-opacity: 0.6;
+	opacity: 0.6;
 
 }
 
