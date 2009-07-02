@@ -199,7 +199,6 @@ body * {
 }
 
 #horizontal-image-listing {
-	min-width: 1000px;
 	width: 100%;
 	height: auto;
 	margin-bottom: 0px;
@@ -339,8 +338,24 @@ h4 {
 /* @group Links */
 
 a img {
+	height: auto;
+	width: auto;
 	border: none;
 	background-color: none;
+	padding: 0px;
+	text-decoration: none
+	cursor: pointer;
+}
+
+a:hover img {
+	height: auto;
+	width: auto;
+	border: none;
+	background-color: white;
+	padding: 0px;
+	margin: 0px;
+	text-decoration: none
+	cursor: pointer;
 }
 
 
@@ -356,7 +371,7 @@ a:focus {
 a:hover,
 a:active,
 a:focus {
-	background-color: #708e20;;
+	background-color: #708e20;
 	padding:2px;
 	color: white;
 }
