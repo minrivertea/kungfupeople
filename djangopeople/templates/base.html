@@ -17,8 +17,8 @@
 	<div id="nav">
 
 	        <ul>
-	            <li><a href="/">home</a></li>
 	            <li><a href="/about/">about</a></li>
+		    <li><a href="/contact/">contact</a></li>
 	            {% if not user.is_authenticated %}
 	            <!-- not logged in -->
 	            <li><a href="/signup/">sign up</a></li>
@@ -38,9 +38,12 @@
 
 	<div id="header">
 
-	<div id="logo">
 
+	<div id="logo">
+	<a class="title" href="/">
+	</a>
 	</div>
+
 
 
 	</div>

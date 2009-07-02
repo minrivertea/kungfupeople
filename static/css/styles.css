@@ -85,6 +85,29 @@ body * {
 	margin: 39px 0 0 90px;
 }
 
+#logo:hover {
+	filter:alpha(opacity=90);
+	-moz-opacity:0.9;
+	-khtml-opacity: 0.9;
+	opacity: 0.9;
+}
+
+#logo a:link, #logo a:visited {
+	text-decoration: none;
+	height: 46px;
+	width: 486px;
+	display: block;
+}
+
+#logo a:hover {
+	text-decoration: none;
+	cursor: pointer;
+	height: 46px;
+	width: 486px;
+	display: block;
+	background: none;
+}
+
 
 #title {
 	margin: 30px 0 0 0px;
@@ -289,6 +312,7 @@ h3 {
 	color: #60A8AA;
 	margin-bottom: 10px;
 }
+
 
 #right-column h3 {
 	margin: 0px;
@@ -583,13 +607,13 @@ h1 {
 	margin: 0px 0 0 25px;
 }
 
-#nav a{
+#nav a {
 	font-size: 1.1em;
 	color: white;
 }
 
 #nav a:hover {
-	background-color: white;
+	background-color: #a30f01;
 	color: white;
 	padding-top: 20px;
 	padding-bottom: 20px;
@@ -1046,6 +1070,11 @@ img.tick {
 	height: 48px;
 	width: 48px;
 	margin: -5px 10px 0 0px;
+}
+a:hover.title {
+	padding: none;
+	text-decoration: none;
+	background-color: none;
 }
 
 
