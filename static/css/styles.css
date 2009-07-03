@@ -237,7 +237,8 @@ body * {
 }
 
 p.large {
-	font-size: 1.3em;
+	margin: 20px 0 20px 0px;
+	font-size: 1.8em;
 }
 
 #content-box {
