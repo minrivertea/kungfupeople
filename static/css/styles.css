@@ -69,7 +69,7 @@ body * {
 #nav {
 	width: 100%;
 	float: right;
-	color: white;
+	color: #F3CF1A;
 	height: 20px;
 	margin: 0px 0px 0px 0px;
 	background-color: #5E0000;
@@ -638,11 +638,13 @@ h1 {
 
 #nav a {
 	font-size: 1.1em;
+	font-weight: bold;
 	color: white;
 }
 
 #nav a:hover, #nav a:focus {
 	background-color: #a30f01;
+	font-weight: bold;
 	color: white;
 	padding-top: 20px;
 	padding-bottom: 20px;
