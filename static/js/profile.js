@@ -64,11 +64,11 @@ google.setOnLoadCallback(function() {
     gmap = new google.maps.Map2(document.getElementById('gmap'));
     
     /* Map enlarges and becomes active when you click on it */
-    $('#gmap').css({'cursor': 'pointer', 'opacity': 1.0}).attr(
+    $('#gmap').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
         'title', 'Activate larger map'
     );
 
-    $('.right-box-top').css({'cursor': 'pointer', 'opacity': 1.0}).attr(
+    $('.right-box-top').css({'cursor': 'pointer', 'opacity': 0.6}).attr(
         'title', 'Activate larger map'
     );
     gmap.disableDragging();

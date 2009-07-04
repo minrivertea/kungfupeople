@@ -41,7 +41,7 @@
 
 <div id="right-column">
 
-	<h3>Your current styles(s)</h3>
+	<h3>Your current style(s)</h3>
 	{% for style in styles %}
 	<p><a href="/style/{{ style.slug }}">{{ style|title }}</a><a class="small-text" href="/{{ person.user.username }}/style/delete/{{ style.slug }}/">(<img title="remove this style" class="small-icon" src="/img/delete.png">)</a>
 	</p>
