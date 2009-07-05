@@ -128,12 +128,16 @@ body * {
 	margin: 20px 90px 0px 0px;
 }
 
+/*
 #signup p {
 	padding-top: 17px;
 	font-weight: bold;
 }
+*/
 
 #signup a {
+	padding-top: 17px;
+        padding-left: 44px;
 	display: block;
 	cursor: pointer;
 	height: 20px;
@@ -144,7 +148,6 @@ body * {
 }
 
 #signup:hover {
-	cursor: pointer;
 	filter:alpha(opacity=90);
 	-moz-opacity:0.9;
 	-khtml-opacity: 0.9;

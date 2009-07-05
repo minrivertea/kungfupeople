@@ -47,23 +47,22 @@
 	</a>
 	</div>
 
-	{% if not user.is_authenticated %}
-	<a class="signup" href="/signup/">
-	<div id="signup">
-	<p>Add yourself to the map now!</p>
-	</div>
-	</a>
-	{% else %}
-	<a class="signup" href="/new-features/">
-	<div id="notice">
-	<p><strong>Hey {{ user.first_name }}</strong>, check out the latest features here!</p>
-	</div>
-	</a>
-
-	{% endif %}
-
-
-
+        
+        {% if show_signup_notice %}
+	  <div id="signup">
+          <a class="signup" href="/signup/">
+          add yourself to the map now!
+	  </a>
+          </div>
+        {% else %}
+          {% if show_notice %}
+            <div id="notice">
+            <a class="signupxx" href="/new-features/">{% if show_notice.leadin %}<strong>{{ show_notice.leadin }}</strong>,{% endif %}
+            {{ show_notice.text }}
+	    </a>
+            </div>
+          {% endif %}
+        {% endif %}
 
 	</div>
 
