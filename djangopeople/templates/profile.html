@@ -243,5 +243,27 @@ div.bio a.edit {
 	</div>
 
 
+	<div id="right-column">
+            {% with person.get_nearest as people %}
+            {% if people %}
+            <h4>People near {{ person.user.first_name }}</h4>
+            
+	<div id="horizontal-image-listing">
+            <ul class="horizontal-image-list">
+                {% for person in people %}
+                <li class="horizontal-image-list">
+		<div class="list-photo">
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}"></a>
+		</div>
+                </li>
+                {% endfor %}
+            </ul>
+	</div>
+            {% endif %}
+            {% endwith %}
+	</div>
+	
+
+
 
 {% endblock %}
