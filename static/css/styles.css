@@ -116,19 +116,47 @@ body * {
 
 #signup {
 	font-family: Helvetica, sans-serif;
-	font-size: 2em;
+	font-size: 1em;
 	font-weight: bold;
-	text-align: left;
-	color: yellow;
+	background-color: #F3CF1A;
+	text-align: center;
+	color: #A30F01;
 	float: right;
-	width: 30%;
-	height: 55px;
-	margin: 60px 10px 5px 0;
+	width: 170px;
+	height: 20px;
+	padding: 5px;
+	margin: 54px 70px 0px 0px;
+	border-bottom: 1px solid #F3CF1A;
+-moz-border-radius-bottomleft:0px;
+-moz-border-radius-bottomright:0px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+	filter:alpha(opacity=80);
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
 }
 
 #signup a {
+	display: block;
+	cursor: pointer;
+	height: 20px;
+	width: 170px;
 	font-family: Helvetica, sans-serif;
-	color: yellow;
+	color: #A30F01;
+	font-weight: bold;
+}
+
+#signup:hover {
+	width: 170px;
+	height: 30px;
+	margin: 44px 70px 5px 0px;
+	text-decoration: none;
+	cursor: pointer;
+	filter:alpha(opacity=100);
+	-moz-opacity:1.0;
+	-khtml-opacity: 1.0;
+	opacity: 1.0;
 }
 
 .mapContainer {
@@ -372,12 +400,28 @@ a:focus {
 a:hover,
 a:active,
 a:focus {
-	background-color: #708e20;
+	background-color: none;
 	padding:2px;
 	color: white;
 }
 a:active {
 
+}
+
+#content-box a:hover,
+#content-box a:active,
+#content-box a:focus {
+	background-color: #708e20;
+	padding:2px;
+	color: white;
+}
+
+#no-map-content-box a:hover,
+#no-map-content-box a:active,
+#no-map-content-box a:focus {
+	background-color: #708e20;
+	padding:2px;
+	color: white;
 }
 
 
@@ -1099,8 +1143,8 @@ a.diary-title {
 
 img.plus {
 	float: left;
-	height: 53px;
-	width: 53px;
+	height: auto;
+	width: auto;
 	margin: -3px 10px 0 0px;
 }
 
@@ -1109,10 +1153,5 @@ img.delete {
 	top: 3px;
 }
 
-a:hover.title {
-	padding: none;
-	text-decoration: none;
-	background-color: none;
-}
 
 
