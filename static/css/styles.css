@@ -115,15 +115,16 @@ body * {
 }
 
 #signup {
+	position: relative;
+	z-index: 20;
 	background: url('/static/img/signup.png') no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
-	font-weight: bold;
 	text-align: center;
 	color: #A30F01;
 	float: right;
-	width: 265px;
-	height: 72px;
+	width: 401px;
+	height: 102px;
 	margin: 20px 90px 0px 0px;
 }
 
@@ -151,14 +152,16 @@ body * {
 }
 
 #notice {
+	position: relative;
+	z-index: 20;
 	background: url('/static/img/signup2.png') no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
 	text-align: center;
 	color: #A30F01;
 	float: right;
-	width: 330px;
-	height: 83px;
+	width: 401px;
+	height: 102px;
 	margin: 20px 90px 0px 0px;
 }
 
