@@ -47,12 +47,13 @@
 	</a>
 	</div>
 
-
+	{% if not user.is_authenticated %}
 	<a class="signup" href="/signup/">
 	<div id="signup">
 	<p>add yourself to the map now!</p>
 	</div>
 	</a>
+	{% endif %}
 
 
 
