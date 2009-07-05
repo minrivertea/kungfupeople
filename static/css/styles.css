@@ -120,33 +120,28 @@ body * {
 	background: url('/static/img/signup.png') no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
-	text-align: center;
+	text-align: left;
 	color: #A30F01;
-	float: right;
-	width: 401px;
+	float: left;
+	width: 400px;
 	height: 102px;
 	margin: 20px 90px 0px 0px;
 }
 
-#signup p {
-	padding-top: 17px;
-	font-weight: bold;
-}
-
-
 #signup a {
-	padding-top: 20px;
-        padding-left: 70px;
+	padding: 20px 0 0 30px;
 	display: block;
 	cursor: pointer;
-	height: 20px;
-	width: 170px;
+	height: 40px;
+	width: 310px;
 	font-family: Helvetica, sans-serif;
 	color: #A30F01;
 	font-weight: bold;
+	margin: 0px 90px 0px 35px;
 }
 
 #signup:hover {
+	cursor: pointer;
 	filter:alpha(opacity=90);
 	-moz-opacity:0.9;
 	-khtml-opacity: 0.9;
@@ -159,10 +154,10 @@ body * {
 	background: url('/static/img/signup2.png') no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
-	text-align: center;
+	text-align: left;
 	color: #A30F01;
-	float: right;
-	width: 401px;
+	float: left;
+	width: 400px;
 	height: 102px;
 	margin: 20px 90px 0px 0px;
 }
@@ -171,10 +166,12 @@ body * {
 	padding: 20px 0 0 30px;
 	display: block;
 	cursor: pointer;
-	height: 20px;
-	width: 300px;
+	height: 40px;
+	width: 310px;
 	font-family: Helvetica, sans-serif;
 	color: #A30F01;
+	font-weight: normal;
+	margin: 0px 90px 0px 35px;
 }
 
 #notice:hover {
