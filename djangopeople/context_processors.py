@@ -12,6 +12,18 @@ def context(request):
             'PROJECT_NAME': settings.PROJECT_NAME,
             'PROJECT_MARTIAL_ART': settings.PROJECT_MARTIAL_ART,
             }
+    
+    data['show_signup_notice'] = False
+    if request.user.is_authenticated():
+        data['show_notice'] = {'url': '/new-features/',
+                               'text': 'check out the latest features here!',
+                               'leadin': 'Hey %s' % request.user.first_name,
+                              }
+    else:
+        current_url = request.build_absolute_uri()
+        if '/signup' not in current_url:
+            data['show_signup_notice'] = True
+    
 
     return data
 

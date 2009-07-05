@@ -1,11 +1,26 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title %}Log in |{% endblock %}
 
 {% block nav_li_class_login %} class="current"{% endblock %}>
 
+{% block extracss %}
+<style type="text/css">
+p.invalid {
+    padding: 0.5em 0.3em 0.3em 0.5em;
+    margin: 1em 0;
+}
+input.openid {
+  background: url(/img/openid-14x14.png) no-repeat; 
+  background-position: 0 50%;
+  padding-left: 16px;
+}
+</style>
+{% endblock %}
+
 {% block js %}
-<script type="text/javascript" src="/js/jquery.color.js"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.color.js" %}"></script>
 <script type="text/javascript">
 jQuery(function($) {
     $('p.invalid').css({
@@ -25,22 +40,8 @@ jQuery(function($) {
     {% endif %}
 });
 </script>
-<style type="text/css">
-p.invalid {
-    padding: 0.5em 0.3em 0.3em 0.5em;
-    margin: 1em 0;
-}
-input.openid {
-  background: url(/img/openid-14x14.png) no-repeat; 
-  background-position: 0 50%;
-  padding-left: 16px;
-}
-</style>
 {% endblock %}
 
-{% block header%}
-<h1>Log in</h1>
-{% endblock %}
 
 {% block content %}
 	<div class="no-map-wrapper">
