@@ -115,26 +115,21 @@ body * {
 }
 
 #signup {
+	background: url('/static/img/signup.png') no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
 	font-weight: bold;
-	background-color: #F3CF1A;
 	text-align: center;
 	color: #A30F01;
 	float: right;
-	width: 170px;
-	height: 20px;
-	padding: 5px;
-	margin: 54px 70px 0px 0px;
-	border-bottom: 1px solid #F3CF1A;
--moz-border-radius-bottomleft:0px;
--moz-border-radius-bottomright:0px;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
-	filter:alpha(opacity=80);
-	-moz-opacity:0.8;
-	-khtml-opacity: 0.8;
-	opacity: 0.8;
+	width: 265px;
+	height: 72px;
+	margin: 20px 90px 0px 0px;
+}
+
+#signup p {
+	padding-top: 17px;
+	font-weight: bold;
 }
 
 #signup a {
@@ -148,15 +143,11 @@ body * {
 }
 
 #signup:hover {
-	width: 170px;
-	height: 30px;
-	margin: 44px 70px 5px 0px;
-	text-decoration: none;
 	cursor: pointer;
-	filter:alpha(opacity=100);
-	-moz-opacity:1.0;
-	-khtml-opacity: 1.0;
-	opacity: 1.0;
+	filter:alpha(opacity=90);
+	-moz-opacity:0.9;
+	-khtml-opacity: 0.9;
+	opacity: 0.9;
 }
 
 .mapContainer {
