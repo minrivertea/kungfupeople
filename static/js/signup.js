@@ -143,31 +143,7 @@ google.setOnLoadCallback(function() {
     gmap.addControl(new google.maps.MapTypeControl());    
     
     
-   /*
-    google.maps.Event.addListener(gmap, "move", function() {
-        window.center = gmap.getCenter();
-        if (lookupTimer) {
-            clearTimeout(lookupTimer);
-        }
-        lookupTimer = setTimeout(reverseGeocode, 1200);
-        $('#id_latitude').val(center.lat());
-        $('#id_longitude').val(center.lng());
-    });
-    */
-   
-   /*
-    google.maps.Event.addDomListener(document.getElementById('crosshair'),
-        'dblclick', function() {
-            gmap.zoomIn();
-        }
-    );
-    */
-    
-    /* The first time the map is hovered, scroll the page */
-   //GEvent.addListener(gmap,"click", function(overlay, latlng) {
-   //   point = latlng;
-   //});
-		      
+   /* OLD WAY
     $('#gmap').one('click', function(event) {
        $('html,body').animate({scrollTop: $('#gmap').offset().top}, 500);
        if (!marker) {
@@ -177,6 +153,8 @@ google.setOnLoadCallback(function() {
 	  marker.openInfoWindowHtml("Drag the marker to your location on the map");
        }
     });
+    */
+   
    
     // If latitude and longitude are populated, center there 
     if ($('#id_latitude').val() && $('#id_longitude').val()) {
@@ -193,6 +171,17 @@ google.setOnLoadCallback(function() {
     }
    
    gmap.setCenter(point, zoom_level);
+   
+   
+   if (!marker) {
+      $('html,body').animate({scrollTop: $('#gmap').offset().top}, 500);
+      if (!point)
+	point = gmap.getCenter();
+      __create_marker(point);
+      marker.openInfoWindowHtml("Drag the marker to your location on the map");
+   }   
+   
+   
    
    // When you fill in the club_url, prefill the club name if possible
    $('#id_club_url').change(function() {
