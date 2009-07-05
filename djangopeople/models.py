@@ -232,6 +232,9 @@ class DiaryEntry(models.Model):
             return mark_safe(', '.join(bits))
         else:
             return self.location_description
+        
+    def get_photos(self):
+        return Photo.objects.filter(diary_entry=self).order_by('-date_added')
 
 
 class Photo(models.Model):
@@ -343,7 +346,6 @@ class DistanceManager(models.Manager):
             ;
         """ % (extra_where_sql, distance_clause))
         sql_string = sql.substitute(locals())
-        print sql_string
         cursor.execute(sql_string)
         nearbys = cursor.fetchall()
         # get a list of primary keys of the nearby model objects

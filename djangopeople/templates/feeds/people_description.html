@@ -1,6 +1,6 @@
 {% load thumbnail %}
 {% if obj.photo  %}
-<a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 %}" alt="photo"/></a>
+<a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 %}" alt="photo"/></a><br/>
 {% endif %}
 
 {{ obj.location_description }}, <a href="http://{{ site.domain }}/{{ obj.country.iso_code|lower }}/">{{ obj.country.name }}</a>

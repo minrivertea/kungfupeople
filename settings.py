@@ -122,6 +122,12 @@ GOOGLE_ANALYTICS_TRACKER_ID = "" # set to something when you have set up an acco
 
 OFFLINE_MODE = False
 
+# Putting these here will not suffice but for now, by putting it here it will work.
+# It will work in context_processors.py for the templates but also accessible
+# for the feeds.py
+PROJECT_NAME = u"Kung Fu People"
+PROJECT_MARTIAL_ART = u"Kung Fu"
+
 try:
     from local_settings import *
 except ImportError:

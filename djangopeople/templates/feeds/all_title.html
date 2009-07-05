@@ -1,0 +1,13 @@
+{% load feed_extras %}
+{% load thumbnail %}
+{% ifequal obj|item_module_name 'kungfuperson' %}
+  (New sign-up) {{ obj.user.first_name }} {{ obj.user.last_name }}, {{ obj.country.name }}
+{% else %}
+{% ifequal obj|item_module_name 'diaryentry' %}
+  Diary entry by {{ obj.user.first_name }} {{ obj.user.last_name }}: {{ obj.title }}
+{% else %}
+{% ifequal obj|item_module_name 'photo' %}
+  Photo uploaded by {{ obj.user.first_name }} {{ obj.user.last_name }}
+{% endifequal %}
+{% endifequal %}
+{% endifequal %}

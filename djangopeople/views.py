@@ -58,7 +58,10 @@ def index(request):
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     your_person = None
     if request.user and not request.user.is_anonymous():
-        your_person = request.user.get_profile()
+        try:
+            your_person = request.user.get_profile()
+        except KungfuPerson.DoesNotExist:
+            pass
     return render(request, 'index.html', {
         'recent_people': recent_people,
         'your_person': your_person,
