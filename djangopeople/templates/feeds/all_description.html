@@ -1,0 +1,40 @@
+{% load feed_extras %}
+{% load thumbnail %}
+
+{% ifequal obj|item_module_name 'kungfuperson' %}
+  {% if obj.photo  %}
+  <a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 %}" alt="photo"/></a><br/>
+  {% endif %}
+
+  {{ obj.user.first_name }} {{ obj.user.last_name }}
+  
+  {% for club in obj.get_clubs %}
+    {% if forloop.first %}<br/>Club: {% endif %}
+    <a href="http://{{ site.domain }}{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+
+  {% for style in obj.get_style %}
+    {% if forloop.first %}<br/>Style: {% endif %}
+    <a href="http://{{ site.domain }}{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+
+{% else %}
+{% ifequal obj|item_module_name 'diaryentry' %}
+  <em>{{ obj.content|html2plaintext|linebreaks }}</em>
+  {% for photo in obj.get_photos %}
+    {% if forloop.first %}<br/>Related photos: {% endif %}
+  <a href="http://{{ site.domain }}{{ photo.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail photo.photo 40x40 %}" alt="photo"/></a>
+  {% endfor %}
+  
+{% else %}
+{% ifequal obj|item_module_name 'photo' %}
+  <a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 150x150 %}" alt="photo"/></a><br/>
+  {{ obj.description }}
+{% endifequal %}
+{% endifequal %}
+{% endifequal %}
+
+{% if obj.location_description %}
+<br/>{{ obj.location_description }}, <a href="http://{{ site.domain }}/{{ obj.country.iso_code|lower }}/">{{ obj.country.name }}</a><br/>
+{% endif %}
+

@@ -3,11 +3,11 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from djangopeople import views
 from djangopeople.models import KungfuPerson
-from djangopeople.feeds import LatestPeople
+from djangopeople.feeds import LatestAll, LatestPeople
 
 feeds = {
     'people': LatestPeople,
-#    'all': LatestAllStuff,
+    'all': LatestAll,
 }
 
 urlpatterns = patterns('',

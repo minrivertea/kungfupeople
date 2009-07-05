@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load misc_extras %}
 
 {% block nav_li_class_home %} class="current"{% endblock %}>
 
@@ -36,7 +37,15 @@ var people = [
 <div class="wrapper">
 
 	<div id="horizontal-image-listing">
-	<div class="horizontal-image-list-text">Showing {{ recent_people.count }} {% ifequal recent_people.count 1 %}person{% else %}people{% endifequal %} located in: {% for person in recent_people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+	<div class="horizontal-image-list-text">
+	  Showing {{ recent_people.count }} 
+	  {% ifequal recent_people.count 1 %}person{% else %}people{% endifequal %} 
+	  located in: 
+	  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/"
+	    >{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
+	  {% endfor %}
+	</div>
+	  
 		<ul class="horizontal-image-list">
 		{% for person in recent_people_limited %}
         	<li class="horizontal-image-list">

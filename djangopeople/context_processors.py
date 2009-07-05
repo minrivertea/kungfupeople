@@ -9,8 +9,8 @@ def context(request):
             'base_template': "base.html",
             'mobile_version': False,
             'mobile_user_agent': False,
-            'PROJECT_NAME': u"Kung Fu People",
-            'PROJECT_MARTIAL_ART': u"Kung Fu",
+            'PROJECT_NAME': settings.PROJECT_NAME,
+            'PROJECT_MARTIAL_ART': settings.PROJECT_MARTIAL_ART,
             }
 
     return data
