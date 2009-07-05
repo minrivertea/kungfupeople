@@ -3,6 +3,7 @@
 <html lang="en">{% load thumbnail %}
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="verify-v1" content="kTC2jSk8/sKWcKX5RYUpCi6b1SIwy+4YeT+QIyNIwLA=">
     <title>{% block title %}{% endblock %} {{ PROJECT_NAME }}</title>
     <link rel="stylesheet" href="{% slimfile "/css/styles.css" %}" type="text/css" media="all" charset="utf-8">
     <meta name="description" content="{% block meta_description %}{% endblock %}">
@@ -30,7 +31,7 @@
 	        </ul>
 			{% if not user.is_authenticated %}
 			<div id="hiddenLogin" style="display: none">
-			    <form action="/login/" method="POST"><p><label for="id_usernameH">Username </label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password </label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
+			    <form action="/login/" method="post"><p><label for="id_usernameH">Username </label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password </label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
 			    </form>
 			</div>
 			{% endif %}

@@ -81,18 +81,34 @@ class Country(models.Model):
         # Returns populated regions in order of population
         from django.db import connection
         cursor = connection.cursor()
+        ## mysql
+        #cursor.execute("""
+        #    SELECT
+        #        djangopeople_region.id, count(*) AS peoplecount
+        #    FROM
+        #        djangopeople_kungfuperson, djangopeople_region
+        #    WHERE
+        #        djangopeople_region.id = djangopeople_kungfuperson.region_id
+        #    AND
+        #        djangopeople_region.country_id = %d
+        #    GROUP BY djangopeople_kungfuperson.region_id
+        #    ORDER BY peoplecount DESC
+        #""" % self.id)
+        
+        ## postgresql
         cursor.execute("""
             SELECT
                 djangopeople_region.id, count(*) AS peoplecount
             FROM
-                djangopeople_kungfuperson, djangopeople_region
+                djangopeople_region
             WHERE
-                djangopeople_region.id = djangopeople_kungfuperson.region_id
-            AND
+            --    djangopeople_region.id = djangopeople_kungfuperson.region_id
+            -- AND
                 djangopeople_region.country_id = %d
-            GROUP BY djangopeople_kungfuperson.region_id
+            GROUP BY djangopeople_region.id
             ORDER BY peoplecount DESC
         """ % self.id)
+        
         rows = cursor.fetchall()
         found = Region.objects.in_bulk([r[0] for r in rows])
         regions = []

@@ -527,7 +527,6 @@ def country(request, country_code):
     return render(request, 'country.html', {
         'country': country,
         'people': people,
-
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'regions': country.top_regions(),
     })
