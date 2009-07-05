@@ -128,16 +128,15 @@ body * {
 	margin: 20px 90px 0px 0px;
 }
 
-/*
 #signup p {
 	padding-top: 17px;
 	font-weight: bold;
 }
-*/
+
 
 #signup a {
-	padding-top: 17px;
-        padding-left: 44px;
+	padding-top: 20px;
+        padding-left: 70px;
 	display: block;
 	cursor: pointer;
 	height: 20px;
@@ -168,18 +167,14 @@ body * {
 	margin: 20px 90px 0px 0px;
 }
 
-#notice p {
-	padding-top: 20px;
-}
-
 #notice a {
+	padding: 20px 0 0 30px;
 	display: block;
 	cursor: pointer;
 	height: 20px;
-	width: 170px;
+	width: 300px;
 	font-family: Helvetica, sans-serif;
 	color: #A30F01;
-	font-weight: bold;
 }
 
 #notice:hover {
