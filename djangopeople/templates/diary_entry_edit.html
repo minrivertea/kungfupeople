@@ -1,12 +1,11 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title %}{{ entry.title }} |{% endblock %}
 
 
-{% block extrajs %} 
-
-<script type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
-
+{% block js %}
+<script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce.js" %}"></script>
 <script type="text/javascript">
 tinyMCE.init({
 	theme : "advanced",

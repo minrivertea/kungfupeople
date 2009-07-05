@@ -1,0 +1,22 @@
+{% load thumbnail %}
+{% if obj.photo  %}
+<a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 %}" alt="photo"/></a>
+{% endif %}
+
+{{ obj.location_description }}, <a href="http://{{ site.domain }}/{{ obj.country.iso_code|lower }}/">{{ obj.country.name }}</a>
+
+  {% for club in obj.get_clubs %}
+    {% if forloop.first %}<br/>Club: {% endif %}
+    <a href="http://{{ site.domain }}{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+  
+  
+  {% for style in obj.get_style %}
+    {% if forloop.first %}<br/>Style: {% endif %}
+    <a href="http://{{ site.domain }}{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+
+{% if obj.bio %}
+<br/><br/>
+{{ obj.bio }}
+{% endif %}

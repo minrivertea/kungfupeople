@@ -1,3 +1,6 @@
+<<<<<<< HEAD:static/js/profile.js
+$(function() {
+=======
 google.load('maps', '2',{'other_params':'sensor=false'});
 
 var gmap; 
@@ -111,6 +114,7 @@ google.setOnLoadCallback(function() {
             return false;
         }
     );
+>>>>>>> 206f62dbac8ff23b310490ffc1066352582724ee:static/js/profile.js
     
     if ($('#uploadNewPhoto').length && $('div.header img.main').length) {
         var href = $('a#uploadNewPhoto').attr('href');
@@ -140,65 +144,4 @@ google.setOnLoadCallback(function() {
             upload.css('visibility', 'hidden');
         });
     }
-    /*    
-    // Hide changeloc link too
-    if ($('a.changeloc').length) {
-        $('a.changeloc').css('visibility', 'hidden');
-        $('a.changeloc').parent().mouseover(function() {
-            $('a.changeloc').css('visibility', 'visible');
-        });
-        $('a.changeloc').parent().mouseout(function() {
-            $('a.changeloc').css('visibility', 'hidden');
-        });
-        $('a.changeloc').mouseover(function() {
-            $('a.changeloc').css('visibility', 'visible');
-        });
-    }
-    
-    // And tags edit
-    if ($('ul.tags li.edit').length) {
-        var a = $('ul.tags li.edit a').css('text-decoration', 'none');
-        a.css('visibility', 'hidden');
-        a.parent().parent().mouseover(function() {
-            a.css('visibility', 'visible');
-        });
-        a.parent().parent().mouseout(function() {
-            a.css('visibility', 'hidden');
-        });
-        a.mouseover(function() {
-            a.css('visibility', 'visible');
-        });
-    }
-    
-    // And the edit links in the h2s
-    $('h2 a.edit').each(function() {
-        var $this = $(this);
-        $this.css('visibility', 'hidden');
-        $this.parent().mouseover(function() {
-            $this.css('visibility', 'visible');
-        });
-        $this.parent().mouseout(function() {
-            $this.css('visibility', 'hidden');
-        });
-        $this.mouseover(function() {
-            $this.css('visibility', 'visible');
-        });
-    });
-    
-    // And the edit bio link
-    if ($('div.bio a.edit').length) {
-        $div = $('div.bio');
-        $a = $('div.bio a.edit');
-        $a.css('visibility', 'hidden');
-        $div.mouseover(function() {
-            $a.css('visibility', 'visible');
-        });
-        $div.mouseout(function() {
-            $a.css('visibility', 'hidden');
-        });
-        $a.mouseover(function() {
-            $a.css('visibility', 'visible');
-        });
-    }
-    */    
 });

@@ -1,17 +1,18 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title %}{{ page_title }} |{% endblock %}
 
-{% block extrajs %} 
-
-<script type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
-
+{% block js %}
+<script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce.js" %}"></script>
 <script type="text/javascript">
 tinyMCE.init({
 	theme : "advanced",
 	mode : "textareas",
 });
 </script>
+<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+<script type="text/javascript" src="{% slimfile "/js/diary_add.js" %}"></script>
 
 {% endblock %}
 
@@ -23,10 +24,6 @@ div.video { margin-bottom:20px; }
 {% endblock %}
 
 
-{% block js %}
-<script type="text/javascript" src="/js/diary_add.js"></script>
-
-{% endblock %} 
 
 {% block map %}
 <div class="mapContainer major" id="mapWrapper">

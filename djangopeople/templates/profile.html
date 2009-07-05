@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title%}{{ person }} |{% endblock %}
 
@@ -10,40 +11,32 @@
 {% block js %}{% load thumbnail %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
+// latitude, longitude, name, username, location description, flag, isocode
 var nearby_people = [
-    // latitude, longitude, name, username, location description, flag, isocode
     {% for p in person.get_nearest %}
     [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
 
-var person_latitude = {{ person.latitude }};
-var person_longitude = {{ person.longitude }};
-{% if OFFLINE_MODE %}
-var OFFLINE_MODE=true;
-{% endif %}
+var PAGE_LATITUDE = {{ person.latitude }};
+var PAGE_LONGITUDE = {{ person.longitude }};
 </script>
-
-<script type="text/javascript" src="/js/profile.js"></script>
+<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+<script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
 {% if pester_first_photo or pester_first_diary_entry %}
-<script type="text/javascript">
-$(function() {
-  $('a.close_tip').click(function() {
-    $(this).parents('div.no-photo-box').remove();
-    var params = {};
-    //params[$(this).attr('href').split('?')[1].split('=')[0]] = $(this).attr('href').split('?')[1].split('=')[1];
-    //$.load(document.location.href, params);
-    $.get(document.location.href + $(this).attr('href'));
-    return false;
+  <script type="text/javascript">
+  $(function() {
+    $('a.close_tip').click(function() {
+      $(this).parents('div.no-photo-box').remove();
+      var params = {};
+      $.get(document.location.href + $(this).attr('href'));
+      return false;
+    });
   });
-});
-</script>
-
+  </script>
 {% endif %}
+
 <style type="text/css">
-#id_skills {
-    width: 80%;
-}
 a.changeloc, h2 a.edit, div.bio a.edit {
     font-size: 0.5em;
     text-decoration: none;
@@ -143,7 +136,7 @@ div.bio a.edit {
 
 		<div class="profile-text">
 		<a href="/{{ person.country.iso_code|lower }}/" class="small-text">
-		<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" class="flag country-name"></a>
+		<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 		<span class="region">{{ person.location_description }}</span><br/>
 
 	{% if styles %}

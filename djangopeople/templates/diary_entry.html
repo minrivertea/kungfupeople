@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title %}{{ entry.title }} | Diary |{% endblock %}
 
@@ -11,8 +12,8 @@ div.video { margin-bottom:20px; }
 
 {% block js %}{% load thumbnail %}
 {% if entry.latitude and entry.longitude %}
-<script type="text/javascript" src="/js/diary.js"></script>
 <script type="text/javascript">
+// XXX ARE WE NEEDING THIS?
 var nearby_people = [
     // latitude, longitude, name, username, location description, flag, isocode
     {% for e in entry.get_nearest %}
@@ -20,14 +21,11 @@ var nearby_people = [
     {% endfor %}
 ];
 
-var entry_latitude = {{ entry.latitude }};
-var entry_longitude = {{ entry.longitude }};
-
-{% if OFFLINE_MODE %}
-var OFFLINE_MODE=true;
-{% endif %}
+var PAGE_LATITUDE = {{ entry.latitude }};
+var PAGE_LONGITUDE = {{ entry.longitude }};
 </script>
-
+<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+{# <script type="text/javascript" src="{% slimfile "/js/diary.js" %}"></script> #}
 
 {% endif %}
 
@@ -37,7 +35,7 @@ var OFFLINE_MODE=true;
     <div class="mapContainer minor">
         <div id="gmap">&nbsp;
         {% if OFFLINE_MODE %}
-        <img src="/static/img/map-short-placeholder.png" />
+        <img src="{% staticfile "/static/img/map-short-placeholder.png" %}" />
         {% endif %}
         </div>
     </div>

@@ -31,9 +31,10 @@ def set_cookie(response, key, value, expire=None):
                         domain=settings.SESSION_COOKIE_DOMAIN,
                         secure=settings.SESSION_COOKIE_SECURE or None)
 
-def render(request, template, context_dict=None):
+def render(request, template, context_dict=None, **kwargs):
     return render_to_response(
-        template, context_dict or {}, context_instance=RequestContext(request)
+        template, context_dict or {}, context_instance=RequestContext(request),
+                              **kwargs
     )
 
 def render_json(data):
@@ -527,7 +528,6 @@ def country(request, country_code):
     return render(request, 'country.html', {
         'country': country,
         'people': people,
-
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'regions': country.top_regions(),
     })
@@ -1143,4 +1143,10 @@ def guess_username_json(request):
         count += 1
         
     return render_json(dict(username=username))
-   
+ 
+# Commented out in favor of letting nginx serve this file directly.
+#def robots_txt(request):
+#    # The best place to learn how to generate a robots.txt file
+#    # is the Google webmaster tools:
+#    # https://www.google.com/webmasters/tools/crawl-access?hl=en&siteUrl=http%3A%2F%2Fkungfupeople.com%2F&tid=generator
+#    return render(request, 'robots.txt', mimetype="text/plain")

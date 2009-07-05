@@ -1,5 +1,12 @@
 var OFFLINE_MODE=false;
 
+// shortcut
+function L(x) {
+   if (window.console && window.console.log)
+     window.console.log(x);
+}
+
+
 function makeWindow(name, username, location, photo, iso_code, lat, lon) {
     var html =  '<ul class="detailsList">' + 
         '<li>' + 

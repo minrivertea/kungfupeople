@@ -3,7 +3,12 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from djangopeople import views
 from djangopeople.models import KungfuPerson
+from djangopeople.feeds import LatestPeople
 
+feeds = {
+    'people': LatestPeople,
+#    'all': LatestAllStuff,
+}
 
 urlpatterns = patterns('',
     (r'^$', views.index),
@@ -21,6 +26,9 @@ urlpatterns = patterns('',
     (r'^guess-username.json$', views.guess_username_json),
 
     (r'^search/$', views.search),
+                       
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
+        {'feed_dict': feeds}),
                        
     (r'^([a-z]{2})/$', views.country),
     (r'^([a-z]{2})/sites/$', views.country_sites),

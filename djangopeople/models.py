@@ -81,18 +81,34 @@ class Country(models.Model):
         # Returns populated regions in order of population
         from django.db import connection
         cursor = connection.cursor()
+        ## mysql
+        #cursor.execute("""
+        #    SELECT
+        #        djangopeople_region.id, count(*) AS peoplecount
+        #    FROM
+        #        djangopeople_kungfuperson, djangopeople_region
+        #    WHERE
+        #        djangopeople_region.id = djangopeople_kungfuperson.region_id
+        #    AND
+        #        djangopeople_region.country_id = %d
+        #    GROUP BY djangopeople_kungfuperson.region_id
+        #    ORDER BY peoplecount DESC
+        #""" % self.id)
+        
+        ## postgresql
         cursor.execute("""
             SELECT
                 djangopeople_region.id, count(*) AS peoplecount
             FROM
-                djangopeople_kungfuperson, djangopeople_region
+                djangopeople_region
             WHERE
-                djangopeople_region.id = djangopeople_kungfuperson.region_id
-            AND
+            --    djangopeople_region.id = djangopeople_kungfuperson.region_id
+            -- AND
                 djangopeople_region.country_id = %d
-            GROUP BY djangopeople_kungfuperson.region_id
+            GROUP BY djangopeople_region.id
             ORDER BY peoplecount DESC
         """ % self.id)
+        
         rows = cursor.fetchall()
         found = Region.objects.in_bulk([r[0] for r in rows])
         regions = []
@@ -374,7 +390,14 @@ class KungfuPerson(models.Model):
     
     
     objects = DistanceManager()
-     
+
+    class Meta:
+        verbose_name_plural = 'Kung fu people'
+
+    class Admin:
+        list_display = ('user', 'profile_views')
+
+
     def get_nearest(self, num=5):
         "Returns the nearest X people, but only within the same continent"
         # TODO: Add caching
@@ -427,13 +450,13 @@ class KungfuPerson(models.Model):
         if self.region:
             self.region.num_people = self.region.kungfuperson_set.count()
             self.region.save()
+            
+    def get_clubs(self):
+        return self.club_membership.all()
     
-    class Meta:
-        verbose_name_plural = 'Kung fu people'
-
-    class Admin:
-        list_display = ('user', 'profile_views')
-
+    def get_styles(self):
+        return self.styles.all()
+    
 
 class CountrySite(models.Model):
     "Community sites for various countries"
