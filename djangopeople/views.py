@@ -1143,9 +1143,10 @@ def guess_username_json(request):
         count += 1
         
     return render_json(dict(username=username))
-   
-def robots_txt(request):
-    # The best place to learn how to generate a robots.txt file
-    # is the Google webmaster tools:
-    # https://www.google.com/webmasters/tools/crawl-access?hl=en&siteUrl=http%3A%2F%2Fkungfupeople.com%2F&tid=generator
-    return render(request, 'robots.txt', mimetype="text/plain")
+ 
+# Commented out in favor of letting nginx serve this file directly.
+#def robots_txt(request):
+#    # The best place to learn how to generate a robots.txt file
+#    # is the Google webmaster tools:
+#    # https://www.google.com/webmasters/tools/crawl-access?hl=en&siteUrl=http%3A%2F%2Fkungfupeople.com%2F&tid=generator
+#    return render(request, 'robots.txt', mimetype="text/plain")
