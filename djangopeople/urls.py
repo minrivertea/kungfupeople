@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^guess-username.json$', views.guess_username_json),
 
     (r'^search/$', views.search),
+    (r'^robots\.txt$', views.robots_txt),
                        
     (r'^([a-z]{2})/$', views.country),
     (r'^([a-z]{2})/sites/$', views.country_sites),
