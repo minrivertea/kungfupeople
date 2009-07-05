@@ -390,7 +390,14 @@ class KungfuPerson(models.Model):
     
     
     objects = DistanceManager()
-     
+
+    class Meta:
+        verbose_name_plural = 'Kung fu people'
+
+    class Admin:
+        list_display = ('user', 'profile_views')
+
+
     def get_nearest(self, num=5):
         "Returns the nearest X people, but only within the same continent"
         # TODO: Add caching
@@ -443,13 +450,13 @@ class KungfuPerson(models.Model):
         if self.region:
             self.region.num_people = self.region.kungfuperson_set.count()
             self.region.save()
+            
+    def get_clubs(self):
+        return self.club_membership.all()
     
-    class Meta:
-        verbose_name_plural = 'Kung fu people'
-
-    class Admin:
-        list_display = ('user', 'profile_views')
-
+    def get_styles(self):
+        return self.styles.all()
+    
 
 class CountrySite(models.Model):
     "Community sites for various countries"
