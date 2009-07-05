@@ -150,6 +150,40 @@ body * {
 	opacity: 0.9;
 }
 
+#notice {
+	background: url('/static/img/signup2.png') no-repeat;
+	font-family: Helvetica, sans-serif;
+	font-size: 1em;
+	text-align: center;
+	color: #A30F01;
+	float: right;
+	width: 330px;
+	height: 83px;
+	margin: 20px 90px 0px 0px;
+}
+
+#notice p {
+	padding-top: 20px;
+}
+
+#notice a {
+	display: block;
+	cursor: pointer;
+	height: 20px;
+	width: 170px;
+	font-family: Helvetica, sans-serif;
+	color: #A30F01;
+	font-weight: bold;
+}
+
+#notice:hover {
+	cursor: pointer;
+	filter:alpha(opacity=90);
+	-moz-opacity:0.9;
+	-khtml-opacity: 0.9;
+	opacity: 0.9;
+}
+
 .mapContainer {
 	margin: 0 auto;
 	text-align: center;

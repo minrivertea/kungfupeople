@@ -53,6 +53,13 @@
 	<p>add yourself to the map now!</p>
 	</div>
 	</a>
+	{% else %}
+	<a class="signup" href="/new-features/">
+	<div id="notice">
+	<p><strong>Hey {{ user.first_name }}</strong>, check out the latest features here!</p>
+	</div>
+	</a>
+
 	{% endif %}
 
 
