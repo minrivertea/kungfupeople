@@ -192,6 +192,9 @@ class Style(models.Model):
         return "/style/%s/" % self.slug
 
 class DiaryEntry(models.Model):
+    class Meta:
+        verbose_name_plural = "Diary entries"
+        
     user = models.ForeignKey(User)
     
     title = models.CharField(max_length=200)
@@ -211,8 +214,6 @@ class DiaryEntry(models.Model):
     def __unicode__(self):
         return self.title
 
-    class Meta:
-        verbose_name_plural = "Entries"
         
     def get_absolute_url(self):
         return '/%s/diary/%s/' % (self.user.username, self.slug)
