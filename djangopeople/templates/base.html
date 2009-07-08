@@ -57,8 +57,8 @@
         {% else %}
           {% if show_notice %}
             <div id="notice">
-            <a class="signupxx" href="/new-features/">{% if show_notice.leadin %}<strong>{{ show_notice.leadin }}</strong>,{% endif %}
-            {{ show_notice.text }}
+            <a href="{{ show_notice.url }}">{% if show_notice.leadin %}<strong>{{ show_notice.leadin }}</strong>,{% endif %}
+            {{ show_notice.text|safe }}
 	    </a>
             </div>
           {% endif %}
@@ -76,12 +76,17 @@
 
 	{% block extra %}{% endblock %}
 
-    <script src="http://www.google.com/jsapi?key={{ GOOGLE_MAPS_API_KEY }}" type="text/javascript"></script>
-    <script type="text/javascript">
-    google.load("jquery", "1",{"other_params":"sensor=false"});
-    </script>
+    {% if OFFLINE_MODE %}
+      <script type="text/javascript" src="{% staticfile "/js/jquery-1.3.2.min.js" %}"></script>
+      <script type="text/javascript">var OFFLINE_MODE=true</script>
+    {% else %}
+      <script type="text/javascript">var OFFLINE_MODE=false</script>
+      <script src="http://www.google.com/jsapi?key={{ GOOGLE_MAPS_API_KEY }}" type="text/javascript"></script>
+      <script type="text/javascript">
+      google.load("jquery", "1",{"other_params":"sensor=false"});
+      </script>
+    {% endif %}
     <script type="text/javascript" src="{% slimfile "/js/common.js" %}"></script>
-    {% if OFFLINE_MODE %}<script type="text/javascript">var OFFLINE_MODE=true</script>{% endif %}
 
     {% block js %}{% endblock %}
 

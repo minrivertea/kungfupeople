@@ -21,7 +21,9 @@ var nearby_people = [
 var PAGE_LATITUDE = {{ person.latitude }};
 var PAGE_LONGITUDE = {{ person.longitude }};
 </script>
+{% if not OFFLINE_MODE %}
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+{% endif %}
 <script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
 {% if pester_first_photo or pester_first_diary_entry %}
   <script type="text/javascript">

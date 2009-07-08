@@ -256,6 +256,9 @@ class Photo(models.Model):
 
     def __unicode__(self):
         return self.photo
+    
+    def __repr__(self):
+        return '<%s: %s %r>' % (self.__class__.__name__, self.photo.name, self.slug)
 
     class Meta:
         verbose_name_plural = "Photos"

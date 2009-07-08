@@ -5,6 +5,7 @@
 
 {% block js %}
 {% load thumbnail %}
+{% if OFFLINE_MODE %}<script type="text/javascript">alert("DOESN'T WORK IN OFFLINE MODE");</script>{% endif %}
 <script type="text/javascript" src="/js/photo_add.js"></script>
 
 {% endblock %} 

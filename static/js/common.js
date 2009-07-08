@@ -1,5 +1,3 @@
-var OFFLINE_MODE=false;
-
 // shortcut
 function L(x) {
    if (window.console && window.console.log)

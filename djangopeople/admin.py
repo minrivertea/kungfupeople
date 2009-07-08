@@ -6,6 +6,10 @@ from django.contrib import admin
 from django.utils.translation import get_date_formats
 from django.utils import dateformat
 
+from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
+from sorl.thumbnail.processors import dynamic_import, get_valid_options
+thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
+
 # app
 from models import KungfuPerson, Club, DiaryEntry, Style, Photo
 
@@ -37,7 +41,6 @@ class KungfuPersonAdmin(admin.ModelAdmin):
                                     processors=thumbnail_processors, 
                                     **{})
             thumbnail_url = thumbnail.absolute_url
-            print thumbnail_url
         except:
             logging.error('grr', exc_info=True)
             return 'error'
@@ -62,9 +65,6 @@ class DiaryEntryAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'date_added')
     ordering = ('-date_added',)
 
-from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
-from sorl.thumbnail.processors import dynamic_import, get_valid_options
-thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 
 class PhotoAdmin(admin.ModelAdmin):
     list_display = ('thumbnail', 'user', 'date_added',)
