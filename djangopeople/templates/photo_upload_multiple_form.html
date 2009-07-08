@@ -1,0 +1,159 @@
+{% extends "profile.html" %}
+{% load django_static %}
+
+
+{% block title%}{% if page_title %}{{ page_title }}{% else %}Upload photos{% endif %} |{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% staticfile "/css/uploadify.css" %}" type="text/css" media="all" charset="utf-8">
+{% endblock %}
+
+{% block js %}
+{% load thumbnail %}
+{% if OFFLINE_MODE %}<script type="text/javascript">alert("DOESN'T WORK IN OFFLINE MODE");</script>{% endif %}
+<script type="text/javascript" src="/js/photo_add.js"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.uploadify.js" %}"></script>
+<script type="text/javascript">
+$(function() {
+  $('#id_photo').fileUpload ({
+    'uploader'  : '{% staticfile "/static/js/uploader.swf" %}',
+    'script'    : 'pre/',
+    'cancelImg' : '{% staticfile "/static/img/cancel.png" %}',
+    'auto'      : true,
+    'folder'    : '/{{ person.id }}',
+    'multi'     : true,
+    'fileDesc'  : "Images",
+    'fileExt'   : "*.jpg;*.png;*.gif;*.jpeg"
+  });
+});
+</script>
+
+{% endblock %} 
+
+{% block map %}
+	<div class="mapContainer major" id="mapWrapper">
+	    <div id="gmap">&nbsp;</div>
+	</div>
+{% endblock %}
+
+    {% block content %}
+
+        <div id="content-box">
+    	<form enctype="multipart/form-data" method="post" action=".">
+            <h2>{% if page_title %}{{ page_title }}{% else %}Upload a new photo{% endif %}</h2>
+
+	<fieldset>
+	{% if photo %}
+	{% else %}
+	<div class="form-field-outer">
+		<div class="form-field-left">
+                    {{ form.photo.errors }}
+                    <label for="id_photo">Photo</label>
+		</div>
+
+		<div class="form-field-right">
+			{{ form.photo }}
+		</div>
+	</div>
+	{% endif %}
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+                    {{ form.description.errors }}
+                    <label for="id_description">Description</label>
+		</div>
+
+		<div class="form-field-right">
+			{{ form.description }}
+		</div>
+	</div>
+
+        {% if  form.diary_entry %}
+	<div class="form-field-outer">
+		<div class="form-field-left">
+                    {{ form.diary_entry.errors }}
+                    <label for="id_diary_entry">Diary Entry</label>
+		</div>
+
+		<div class="form-field-right">
+			{{ form.diary_entry }}
+		</div>
+	</div>
+        {% endif %}
+
+
+	<div class="form-field-outer" id="location">
+		<div class="form-field-left">
+            		{{ form.location_description.errors }}
+            		<label for="id_location_description">Location *</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.location_description }}  <br/><span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
+		</div>
+	</div>
+
+	<div class="form-field-outer" id="country">
+		<div class="form-field-left">
+            		{{ form.country.errors }}
+            		<label for="id_country">Country</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.country }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.latitude.errors }}
+            		<label for="id_latitude">Latitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.latitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.longitude.errors }}
+            		<label for="id_longitude">Longitude</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.longitude }}
+		</div>
+	</div>
+
+	<div class="form-field-outer" style="display: none;">
+		<div class="form-field-left">
+            		{{ form.region.errors }}
+            		<label for="id_region">Region</label>
+		</div>
+		<div class="form-field-right">
+			{{ form.region }}
+		</div>
+	</div>
+
+	<div class="form-field-submit">
+		<div class="button-outer">
+    		<div class="buttonContainer">
+    		<input type="submit" value="{% if button_value %}{{ button_value }}{% else %}Upload{% endif %}">
+    		</div>
+		</div>
+	
+	</div>
+	</fieldset>
+
+
+            </form>
+        </div>
+
+	<div id="right-column">
+		<div class="right-box">
+		<p>Geo-tag your resource and let other users see where you took this photo!</p>
+		</div>
+		{% if photo %}
+		<div class="right-box">
+		<p>You are currently editing this photo:</p>
+		<img src="{% thumbnail photo.photo 100x100 crop %}">
+		</div>
+		{% endif %}
+    {% endblock %}
