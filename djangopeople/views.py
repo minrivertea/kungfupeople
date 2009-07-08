@@ -428,6 +428,192 @@ def photo_upload(request, username):
     })
 
 
+class UploadError(Exception):
+    pass
+
+def _get_person_upload_folder(person):
+    
+    try:
+        temporary_upload_folder_base = settings.TEMPORARY_UPLOAD_FOLDER
+    except AttributeError:
+        from tempfile import gettempdir
+        temporary_upload_folder_base = gettempdir()
+        
+    today = datetime.datetime.now()
+    return os.path.join(temporary_upload_folder_base,
+                        today.strftime('%Y'),
+                        today.strftime('%b'),
+                        person.user.username,
+                        datetime.datetime.now().strftime('%d')
+                       )
+    
+    
+
+#@must_be_owner # causes a 403! that's why it's commented out
+def photo_upload_multiple_pre(request, username):
+    """ upload a SINGLE photo """
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    
+    # uploadify sends a POST but puts ?folder=xxx on the URL
+    folder = request.GET.get('folder')
+        
+    if not request.method == 'POST':
+        raise UploadError("Must be post")
+    
+    filename = request.POST['Filename']
+    filedata = request.FILES['Filedata']
+    
+    upload_folder = _get_person_upload_folder(person)
+    
+    def _mkdir(newdir):
+        """works the way a good mkdir should :)
+            - already exists, silently complete
+            - regular file in the way, raise an exception
+            - parent directory(ies) does not exist, make them as well
+        """
+        if os.path.isdir(newdir):
+            pass
+        elif os.path.isfile(newdir):
+            raise OSError("a file with the same name as the desired " \
+                        "dir, '%s', already exists." % newdir)
+        else:
+            head, tail = os.path.split(newdir)
+            if head and not os.path.isdir(head):
+                _mkdir(head)
+            if tail:
+                os.mkdir(newdir)
+                
+    _mkdir(upload_folder)
+    
+    image_content = filedata.read()
+    format = Image.open(StringIO(image_content)).format
+    format = format.lower().replace('jpeg', 'jpg')
+    filename = md5.new(image_content).hexdigest() + '.' + format
+    # Save the image
+    path = os.path.join(upload_folder, filename)
+    open(path, 'w').write(image_content)
+    
+    return HttpResponse('1')
+
+@must_be_owner
+def photo_upload_multiple(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    if request.method == 'POST':
+        upload_folder = _get_person_upload_folder(person)
+        filenames = []
+        for f in os.listdir(upload_folder):
+            if os.path.splitext(f.lower())[-1] in ('.jpg', '.gif', '.png'):
+                filenames.append(os.path.join(upload_folder, f))
+                
+        form = PhotoUploadForm(request.POST)
+        del form.fields['photo'] # not needed in multi-upload
+        
+        if form.is_valid():
+            user = person.user
+            description = form.cleaned_data['description']
+            region = None
+            diary_entry = None
+            upload_folder = None
+            for filepath in filenames:
+                filename = os.path.basename(filepath)
+                upload_folder = os.path.dirname(filepath)
+                # Save the image
+                path = os.path.join(settings.MEDIA_ROOT, 'photos', filename)
+                # check that the dir of the path exists
+                dirname = os.path.dirname(path)
+                if not os.path.isdir(dirname):
+                    try:
+                        os.mkdir(dirname)
+                    except IOError:
+                        raise IOError, "Unable to created the directory %s" % dirname
+                #open(path, 'w').write(image_content)
+                os.rename(filepath, path)
+                
+    
+                if form.cleaned_data['diary_entry']:
+                    diary_entry = form.cleaned_data['diary_entry']
+                    if isinstance(diary_entry, int):
+                        diary_entry = get_object_or_404(DiaryEntry, id=diary_entry)
+                        if diary_entry.user != person.user:
+                            # crazy paranoia
+                            from django.forms import ValidationError
+                            raise ValidationError("Not your entry")
+    
+                if form.cleaned_data['region']:
+                    region = Region.objects.get(
+                        country__iso_code = form.cleaned_data['country'],
+                        code = form.cleaned_data['region']
+                    ) 
+    
+                if form.cleaned_data['country']:
+                    from django.core.files import File
+                    photo = Photo.objects.create(
+                        user=user,
+                        description=description,
+                        photo=File(open(path, 'rb')),
+                        diary_entry=diary_entry,
+                        country=Country.objects.get(iso_code = form.cleaned_data['country']),
+                        latitude=form.cleaned_data['latitude'],
+                        longitude=form.cleaned_data['longitude'],
+                        location_description=form.cleaned_data['location_description'],
+                        region = region,
+                        )
+    
+                else:
+                    photo = Photo.objects.create(
+                        user=user,
+                        description=description,
+                        photo=photo,
+                        diary_entry=diary_entry,
+                        country=person.country,
+                        latitude=person.latitude,
+                        longitude=person.longitude,
+                        location_description=person.location_description,
+                        region=person.region,
+                    )
+                    
+            if upload_folder:
+                if not os.listdir(upload_folder):
+                    os.rmdir(upload_folder)
+                
+            if diary_entry:
+                url = diary_entry.get_absolute_url()
+            else:
+                url = '/%s/upload/done/' % username
+            return HttpResponseRedirect(url)
+    else:
+        
+        initial = {'location_description': person.location_description,
+                   'country': person.country.iso_code,
+                   'latitude': person.latitude,
+                   'longitude': person.longitude,
+                  }
+        form = PhotoUploadForm(initial=initial)
+        
+        diary_entries = []
+        for entry in DiaryEntry.objects.filter(user=person.user
+                                              ).order_by('-date_added')[:100]:
+            title = entry.title
+            if len(title) > 40:
+                title = title[:40] + '...'
+            title += entry.date_added.strftime(' (%d %b %Y)')
+            diary_entries.append((entry.id, title))
+            
+        if diary_entries:
+            diary_entries.insert(0, ('', ''))
+            form.fields['diary_entry'].widget.choices = tuple(diary_entries)
+        else:
+            del form.fields['diary_entry']
+            
+    return render(request, 'photo_upload_multiple_form.html', {
+        'form': form,
+        'person': person,
+    })
+
+
+
+
+
 @must_be_owner
 def photo_edit(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username = username)

@@ -51,6 +51,8 @@ urlpatterns = patterns('',
     (r'^([a-z0-9]{3,})/photo/([0-9])/edit/$', views.photo_edit),
     (r'^([a-z0-9]{3,})/photo/([0-9])/$', views.photo),
     url(r'^([a-z0-9]{3,})/photo/upload/$', views.photo_upload),
+    url(r'^([a-z0-9]{3,})/photo/upload-multiple/$', views.photo_upload_multiple),
+    url(r'^([a-z0-9]{3,})/photo/upload-multiple/pre/$', views.photo_upload_multiple_pre),
 
     (r'^([a-z0-9]{3,})/profile/$', views.edit_profile),
     (r'^([a-z0-9]{3,})/location/$', views.edit_location),

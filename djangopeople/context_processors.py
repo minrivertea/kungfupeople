@@ -100,6 +100,6 @@ def context(request):
         if '/signup' not in current_url:
             data['show_signup_notice'] = True
     
-    print "noticed_recent_stuff", repr(request.session.get('noticed_recent_stuff'))
+    #print "noticed_recent_stuff", repr(request.session.get('noticed_recent_stuff'))
     return data
 
