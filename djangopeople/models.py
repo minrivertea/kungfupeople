@@ -169,6 +169,7 @@ class Club(models.Model):
     class Meta:
         verbose_name_plural = "Clubs"
         
+    @models.permalink
     def get_absolute_url(self):
         if not self.slug:
             # TODO: This is slow and shouldn't happen but will happen
@@ -178,7 +179,7 @@ class Club(models.Model):
             self.slug = slugify(unaccent_string(self.name))
             self.save()
             
-        return "/club/%s/" % self.slug
+        return ("club.view", (self.slug,))
 
 class Style(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -201,7 +202,7 @@ class Style(models.Model):
             from utils import unaccent_string
             self.slug = slugify(unaccent_string(self.name))
             self.save()
-        return ("style", self.slug)
+        return ("style.view", (self.slug,))
 
 class DiaryEntry(models.Model):
     class Meta:
@@ -226,10 +227,10 @@ class DiaryEntry(models.Model):
     def __unicode__(self):
         return self.title
 
-        
+    @models.permalink
     def get_absolute_url(self):
-        return '/%s/diary/%s/' % (self.user.username, self.slug)
-
+        return ("diaryentry.view", (self.user.username, self.slug))
+        
     def location_description_html(self):
         region = ''
         if self.region:
@@ -275,8 +276,9 @@ class Photo(models.Model):
     class Meta:
         verbose_name_plural = "Photos"
 
+    @models.permalink
     def get_absolute_url(self):
-        return "/%s/photo/%s/" % (self.user.username, self.id)
+        return ("photo.view", (self.user.username, self.id))
         
     def location_description_html(self):
         region = ''
@@ -479,8 +481,9 @@ class KungfuPerson(models.Model):
     def __unicode__(self):
         return unicode(self.user.get_full_name())
     
+    @models.permalink
     def get_absolute_url(self):
-        return '/%s/' % self.user.username
+        return ("person.view", (self.user.username,))
     
     def save(self, force_insert=False, force_update=False): # TODO: Put in transaction
         # Update country and region counters
