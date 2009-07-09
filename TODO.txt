@@ -1,6 +1,6 @@
 TODO LIST:
 
-* (PB) Play with uploadify as alternative to /<username>/photo/upload/
+* (PB) Fix get_absolute_url for style
 * (PB) Sort out diary_add.js so it does not Repeat itself
 * When you 'edit_club', the guess_club_name jQuery function doesn't work.
 * Privacy policy needs writing

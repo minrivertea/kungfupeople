@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load django_static %}
+{% load misc_extras %}
 
 {% block title%}{{ person }} |{% endblock %}
 
@@ -11,11 +12,10 @@
 {% block js %}{% load thumbnail %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
-// latitude, longitude, name, username, location description, flag, isocode
 var nearby_people = [
-    {% for p in person.get_nearest %}
-    [{{ p.latitude }}, {{ p.longitude }}, "{{ p|escapejs }}", "{{ p.user.username|escapejs }}", "{{ p.location_description|escapejs }}", "{% if p.photo %}{% thumbnail p.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ p.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
-    {% endfor %}
+{% for p in person.get_nearest %}
+  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
+{% endfor %}
 ];
 
 var PAGE_LATITUDE = {{ person.latitude }};
@@ -143,7 +143,7 @@ div.bio a.edit {
 
 	{% if styles %}
 		<span class="small-text"><strong>Styles: </strong>
-		{% for style in styles %} 
+		{% for style in styles %} {{ style.get_absolute_url }}
 		<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>{% if not forloop.last %}, {% endif %}
 		{% endfor %}
 		</span><br/>
@@ -253,9 +253,10 @@ div.bio a.edit {
 	<div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
                 {% for person in people %}
+                
                 <li class="horizontal-image-list">
 		<div class="list-photo">
-                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/static/img/person_small_blank.png{% endif %}" alt="{{ person }}"></a>
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
 		</div>
                 </li>
                 {% endfor %}

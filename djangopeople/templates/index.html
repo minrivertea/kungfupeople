@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load misc_extras %}
+{% load django_static %}
 
 {% block nav_li_class_home %} class="current"{% endblock %}>
 
@@ -9,11 +10,11 @@
 var people = [
     // latitude, longitude, name, username, location description
     {% for person in recent_people %}
-    [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}static/img/upload-a-photo-60.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+      {{ person|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
 </script>
-<script type="text/javascript" src="/js/index.js"></script>
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 
 {% endblock %}
 	
@@ -51,7 +52,7 @@ var people = [
         	<li class="horizontal-image-list">
        	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
-                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
 		</a>
 		</li>
         	{% endfor %}

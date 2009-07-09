@@ -1,13 +1,25 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
+{% load misc_extras %}
+{% load thumbnail %}
 
-{% block title%} {{ club }} |{% endblock %}
+{% block title%}{{ club }} |{% endblock %}
 
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
-{% block js %}{% load thumbnail %}
-{% if person.latitude and person.longitude %}
+{% block js %}
+<script type="text/javascript">
+var people = [
+    // latitude, longitude, name, username, location description, flag, isocode
+    {% for p in people %}
+      {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+</script>
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
+{% endblock %}
 
-<script type="text/javascript" src="/js/common.js"></script>
+{% block css %}
 <style type="text/css">
 #id_skills {
     width: 80%;
@@ -21,13 +33,12 @@ div.bio a.edit {
     font-size: 0.8em;
 }
 </style>
-{% endif %}
 
 {% endblock %}  
 
 
 {% block map %}
-    <div class="mapContainer minor">
+    <div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
     </div>
 {% endblock %}

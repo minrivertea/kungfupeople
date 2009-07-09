@@ -1,21 +1,21 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
+{% load misc_extras %}
+{% load thumbnail %}
 
 {% block title %}Search{% if q %}: {{ q }}{% endif %} |{% endblock %}
 
 {% block nav_li_class_search %} class="current"{% endblock %}
 
-{% block js %}{% load thumbnail %}
-{% if results %}
+{% block js %}
 <script type="text/javascript">
 var people = [
-    // latitude, longitude, name, username, location description
     {% for person in results %}
-    [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
+      {{ person|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
 </script>
-<script type="text/javascript" src="/js/search.js"></script>
-{% endif %}
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 {% endblock %}
 
 {% block header %}{% load thumbnail %}
@@ -29,21 +29,34 @@ var people = [
 {% endblock %}
 
 {% block map %}
-{% if results %}
     <div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
     </div>
-{% endif %}
 {% endblock %}
 
+
 {% block content %}
+<div class="wrapper">
+
+	<div id="content-box">
+
 {% if q and not results %}
 <p>No users found. This tool searches by username, first name and last name.</p>
 {% endif %}
+
+
+{% if results %}
+
+        
+		<p>Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</p>
+                
 {% if results %}
         <ul class="detailsList split">
             {% load person_list_items %}{% person_list_items results %}
         </ul>
 {% endif %}
-{% endblock %}
+{% endif %}        
 
+	
+
+{% endblock %}

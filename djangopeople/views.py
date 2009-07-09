@@ -821,7 +821,7 @@ def photo(request, username, photo_id):
 
 def club(request, name):
     club = get_object_or_404(Club, slug=name)
-    members = KungfuPerson.objects.filter(club_membership=club)
+    people = members = KungfuPerson.objects.filter(club_membership=club)
     count = members.count()
 
     return render(request, 'club.html', locals())

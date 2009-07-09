@@ -8,18 +8,10 @@
 {% block js %}{% load thumbnail %}
 {% if photo.latitude and photo.longitude %}
 <script type="text/javascript">
-var nearby_people = [
-    // latitude, longitude, name, username, location description, flag, isocode
-    {% for e in photo.get_nearest %}
-    [{{ e.latitude }}, {{ e.longitude }}, "{{ e|escapejs }}", "{{ e.user.username|escapejs }}", "{{ e.location_description|escapejs }}", "{% if e.photo %}{% thumbnail e.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ e.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-
 var PAGE_LATITUDE = {{ photo.latitude }};
 var PAGE_LONGITUDE = {{ photo.longitude }};
 </script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
-{#<script type="text/javascript" src="{% slimfile "/js/photo.js" %}"></script>#}
 {% endif %}
 
 {% endblock %}  

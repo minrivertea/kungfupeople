@@ -27,25 +27,26 @@ function hideNearbyPeople(gmap) {
     gmap.clearOverlays();
 }
 function showNearbyPeople(gmap) {
-    $.each(nearby_people, function() {
-        var lat = this[0];
-        var lon = this[1];
-        var name = this[2];
-        var username = this[3];
-        var location_description = this[4];
-        var photo = this[5];
-        var iso_code = this[6];
-        var point = new google.maps.LatLng(lat, lon);
-        var marker = new google.maps.Marker(point, getMarkerOpts());
-        gmap.addOverlay(marker);
-        // Hook up the marker click event
-        google.maps.Event.addListener(marker, 'click', function() {
-            marker.openInfoWindow(makeWindow(
-                name, username, location_description, photo, iso_code, 
-                lat, lon
-            ));
-        });
-    });
+   if (typeof nearby_people != "undefined")
+   $.each(nearby_people, function() {
+      var lat = this[0];
+      var lon = this[1];
+      var name = this[2];
+      var username = this[3];
+      var location_description = this[4];
+      var photo = this[5];
+      var iso_code = this[6];
+      var point = new google.maps.LatLng(lat, lon);
+      var marker = new google.maps.Marker(point, getMarkerOpts());
+      gmap.addOverlay(marker);
+      // Hook up the marker click event
+      google.maps.Event.addListener(marker, 'click', function() {
+	 marker.openInfoWindow(makeWindow(
+					  name, username, location_description, photo, iso_code, 
+					  lat, lon
+					  ));
+      });
+   });
 };
 
 function getMarkerOpts() {

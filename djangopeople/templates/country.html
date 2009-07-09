@@ -1,14 +1,15 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load misc_extras %}
+{% load django_static %}
 
 {% block title %}{{ country }} |{% endblock %}
 
 {% block js %}{% load thumbnail %}
 <script type="text/javascript">
 var people = [
-    // latitude, longitude, name, username, location description
-    {% for person in country.kungfuperson_set.all %}
-    [{{ person.latitude }}, {{ person.longitude }}, "{{ person|escapejs }}", "{{ person.user.username|escapejs }}", "{{ person.location_description|escapejs }}", "{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}/img/person_small_blank.png{% endif %}", "{{ person.country.iso_code|lower }}"]{% if not forloop.last %},{% endif %}
-    {% endfor %}
+{% for p in country.kungfuperson_set.all %}
+  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
+{% endfor %}
 ];
 var bbox_north = {{ country.bbox_north }};
 var bbox_west = {{ country.bbox_west }};
@@ -16,15 +17,10 @@ var bbox_south = {{ country.bbox_south }};
 var bbox_east = {{ country.bbox_east }};
 
 </script>
-<script src="/js/country.js" type="text/javascript"></script>
+<script src="{% slimfile "/js/country.js" %}" type="text/javascript"></script>
 
 {% endblock %}
 
-{% block header %}{% load thumbnail %}
-        {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}/img/flags/{{ country.iso_code|lower }}.gif{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
-        <h1>{{ country }}</h1>
-        <p class="meta">{% if country.country %}<a href="/{{ country.country.iso_code|lower }}/" class="nobg"><img src="/img/flags/{{ country.country.iso_code|lower }}.gif" title="{{ country.country }}" alt="{{ country.country }}" class="flag"></a> {% endif %}{{ country.kungfuperson_set.count }} {{ PROJECT_MARTIAL_ART }} {% ifequal country.kungfuperson_set.count 1 %}person{% else %}people{% endifequal %}</p>
-{% endblock %}
 
 {% block map %}
     <div class="mapContainer major">
@@ -35,6 +31,14 @@ var bbox_east = {{ country.bbox_east }};
     {% block content %}
 <div class="wrapper">
 
+{% block header %}{% load thumbnail %}
+        
+        <h1>{{ country }}
+        {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
+        </h1>
+        <p class="meta">{% if country.country %}<a href="/{{ country.country.iso_code|lower }}/" class="nobg"><img src="{{ country.country.iso_code|lower }}" title="{{ country.country }}" alt="{{ country.country }}" class="flag"></a> {% endif %}{{ country.kungfuperson_set.count }} {{ PROJECT_MARTIAL_ART }} {% ifequal country.kungfuperson_set.count 1 %}person{% else %}people{% endifequal %}</p>
+        {% endblock %}
+
 
 	{% if people %}
 	<div id="horizontal-image-listing">
@@ -44,7 +48,7 @@ var bbox_east = {{ country.bbox_east }};
         <li class="horizontal-image-list">
        	<div class="list-photo">
         <a href="{{ person.get_absolute_url }}">
-        <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+        <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
 	</a>
 	</li>
         {% endfor %}

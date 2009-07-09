@@ -170,11 +170,15 @@ class Club(models.Model):
         verbose_name_plural = "Clubs"
         
     def get_absolute_url(self):
-        if self.slug:
-            return "/club/%s/" % self.slug
-        else:
-            return "/club/%s/" % self.id
-
+        if not self.slug:
+            # TODO: This is slow and shouldn't happen but will happen
+            # in the alpha phase till we sort out the club add stuff.
+            from django.template.defaultfilters import slugify
+            from utils import unaccent_string
+            self.slug = slugify(unaccent_string(self.name))
+            self.save()
+            
+        return "/club/%s/" % self.slug
 
 class Style(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -188,8 +192,16 @@ class Style(models.Model):
     class Meta:
         verbose_name_plural = "Styles"
         
+    @models.permalink 
     def get_absolute_url(self):
-        return "/style/%s/" % self.slug
+        if not self.slug:
+            # TODO: This is slow and shouldn't happen but will happen
+            # in the alpha phase till we sort out the club add stuff.
+            from django.template.defaultfilters import slugify
+            from utils import unaccent_string
+            self.slug = slugify(unaccent_string(self.name))
+            self.save()
+        return ("style", self.slug)
 
 class DiaryEntry(models.Model):
     class Meta:
@@ -405,7 +417,29 @@ class KungfuPerson(models.Model):
 
 
     def get_nearest(self, num=5):
+        #from time import time
+        #t0=time()
+        #r = self._get_nearest(num=num)
+        #t1=time()
+        #print "RESULT", (t1-t0)
+        #
+        #print r
+        #t0=time()
+        r = [p for (p, d) 
+             in KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
+                                                number=num,
+                                                extra_where_sql='id<>%s' % self.id)]
+        #t1=time()
+        #print "RESULT 2", (t1-t0)
+        #print r
+        #     
+        #print "\n"
+        
+        return r
+    
+    def _get_nearest(self, num=5):
         "Returns the nearest X people, but only within the same continent"
+        raise DeprecatedError, " use KungfuPerson.objects.nearest_to() instead"
         # TODO: Add caching
         
         people = list(self.country.kungfuperson_set.select_related().exclude(pk=self.id))

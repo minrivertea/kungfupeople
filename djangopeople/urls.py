@@ -12,8 +12,8 @@ feeds = {
 
 urlpatterns = patterns('',
     (r'^$', views.index),
-    (r'^club/([A-Za-z0-9-:]{3,})/$', views.club),
-    (r'^style/([A-Za-z0-9-:]{3,})/$', views.style),
+    url(r'^club/([A-Za-z0-9-:]{3,})/$', views.club),
+    url(r'^style/([A-Za-z0-9-:]{3,})/$', views.style, name="style"),
     (r'^login/$', views.login),
     (r'^logout/$', views.logout),
     (r'^recent/$', views.recent),

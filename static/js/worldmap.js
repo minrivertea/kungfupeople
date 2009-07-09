@@ -1,6 +1,3 @@
-DEPRECATED IN FAVOR OF WORLDMAP.JS
-
-
 google.load('maps', '2',{'other_params':'sensor=false'});
 
 var gmap;
