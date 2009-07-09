@@ -2,6 +2,7 @@ TODO LIST:
 
 * (PB) Fix get_absolute_url for style
 * (PB) Sort out diary_add.js so it does not Repeat itself
+* Ability to search! /search?q=peter works but there is no search form
 * When you 'edit_club', the guess_club_name jQuery function doesn't work.
 * Privacy policy needs writing
 * About us page needs writing
