@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'django_static',
     'django.contrib.sitemaps',
+    'newsletter',
                   
 )
 
@@ -130,6 +131,9 @@ OFFLINE_MODE = False
 # for the feeds.py
 PROJECT_NAME = u"Kung Fu People"
 PROJECT_MARTIAL_ART = u"Kung Fu"
+
+# Who sends the newsletter?
+NEWSLETTER_SENDER = "PROJECT_NAME <noreply@kungfupeople.com>"
 
 try:
     from local_settings import *

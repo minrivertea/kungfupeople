@@ -1230,9 +1230,6 @@ def guess_club_name_json(request):
     domain = urlparse(club_url)[1]
     data = {}
     
-    print "partial", repr(partial)
-    print "club_url", repr(club_url)
-    
     if partial:
         try:
             club = Club.objects.get(url__istartswith=club_url)

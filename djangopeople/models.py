@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from django.contrib import admin
 from django.db import models
@@ -387,6 +388,35 @@ class DistanceManager(models.Manager):
         return zip(order_by(places, ids, 'id'), dists)
 
     
+class AutoLoginKey(models.Model):
+    """AutoLoginKey objects makes it possible for a user to log in
+    automatically without supplying a password as long as they
+    supply a valid uuid.
+    
+    See the middleware for how this is being used
+    """
+    user = models.ForeignKey(User)
+    uuid = models.CharField(max_length=128, db_index=True)
+    add_date = models.DateTimeField('date added', default=datetime.now)
+    
+    def __unicode__(self):
+        return "%s (%s)" % (self.uuid, self.user.username)
+    
+    @classmethod
+    def get_or_create(self, user):
+        try:
+            return AutoLoginKey.objects.get(user=user)
+        except AutoLoginKey.DoesNotExist:
+            return AutoLoginKey.objects.create(user=user,
+                                               uuid=str(uuid.uuid4()))
+        
+    @classmethod
+    def find_user_by_uuid(self, uuid):
+        try:
+            return AutoLoginKey.objects.get(uuid=uuid).user
+        except AutoLoginKey.DoesNotExist:
+            return None
+    
     
 class KungfuPerson(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -404,6 +434,9 @@ class KungfuPerson(models.Model):
     
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')
+    
+    # default is on, they can override that later if they want to unsubscribe
+    newsletter = models.BooleanField(default=True)
 
     # Stats
     profile_views = models.IntegerField(default=0)
