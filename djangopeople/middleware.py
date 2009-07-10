@@ -1,6 +1,9 @@
 from django.http import HttpResponseRedirect, get_host, HttpResponsePermanentRedirect
 import re
 
+from django.conf import settings
+from djangopeople.models import AutoLoginKey
+
 multislash_re = re.compile('/{2,}')
 
 class NoDoubleSlashes:
@@ -26,3 +29,21 @@ class RemoveWWW(object):
         else:
             return None
 
+class AutoLogin(object):
+    def process_request(self, request):
+        if request.GET.get('alu'):
+            uuid = request.GET.get('alu')
+            user = AutoLoginKey.find_user_by_uuid(uuid)
+            if user:
+                # "forcibly" log in as this user
+                from django.contrib.auth import load_backend, login
+                for backend in settings.AUTHENTICATION_BACKENDS:
+                    if user == load_backend(backend).get_user(user.pk):
+                        user.backend = backend
+                if hasattr(user, 'backend'):
+                    login(request, user)
+            new_full_path = request.get_full_path().replace('alu=%s' % uuid, '')
+            new_full_path = new_full_path.replace('?&','?').replace('&&','&')
+            return HttpResponsePermanentRedirect(new_full_path)
+                
+        return None
