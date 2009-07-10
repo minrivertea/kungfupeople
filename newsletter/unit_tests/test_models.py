@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.core import mail
 
 from djangopeople.models import KungfuPerson, Country, AutoLoginKey
-from newsletter.models import Newsletter, SentLog
+from newsletter.models import Newsletter, SentLog, NewsletterTemplateError
 
 class ModelTestCase(TestCase):
     
@@ -111,3 +111,79 @@ class ModelTestCase(TestCase):
         self.assertEqual(user,
                          AutoLoginKey.find_user_by_uuid(uuids[0]))
         
+    def test_send_newsletter_creation_without_text(self):
+        """shouldn't be able to send a Newsletter without text_template or 
+        html_text_template"""
+        # Create a KungfuPerson so it can send to someone
+        user, person = self._create_person('bob', 'bob@example.com',
+                                           first_name="Bob",
+                                           last_name="Sponge")
+    
+        subject_template = "Newsletter no {{ newsletter_issue_no }}"
+        n = Newsletter.objects.create(subject_template=subject_template)
+        
+        self.assertRaises(NewsletterTemplateError, n.send)
+        
+    def test_sending_in_batches(self):
+        """create 100 users, send the newsletter but only to 10 people at a 
+        time.
+        """
+        
+        # create 100 people
+        from string import lowercase, uppercase
+        for i in range(100):
+            username = "bob%s" % i
+            email = "%s@example.com"
+            first_name = lowercase[i%25]
+            last_name = uppercase[i%25]            
+            user, person = self._create_person(username, email,
+                                               first_name=first_name,
+                                               last_name=last_name)
+            
+        # create a simple newsletter
+        text_template = "Profile URL: {{ profile_url }}"
+        subject_template = "Newsletter no {{ newsletter_issue_no }}"
+        n = Newsletter.objects.create(text_template=text_template,
+                                      subject_template=subject_template)
+        n.send(max_sendouts=10)
+        self.assertFalse(bool(n.send_date))
+        self.assertEqual(len(mail.outbox), 10)
+        
+        # and it should have created 10 SentLog items
+        self.assertEqual(SentLog.objects.count(), 10)
+        
+        # send another 20
+        n.send(max_sendouts=20)
+        self.assertFalse(bool(n.send_date))
+        self.assertEqual(len(mail.outbox), 30)
+        self.assertEqual(SentLog.objects.count(), 30)
+        
+        # send the rest
+        n.send(max_sendouts=9999)
+        self.assertTrue(bool(n.send_date))
+        self.assertEqual(len(mail.outbox), 100)
+        self.assertEqual(SentLog.objects.count(), 100)
+        
+        
+    def test_send_newsletter_in_html(self):
+        """ create a newsletter, set a template text and render it """
+        # Create a KungfuPerson so it can send to someone
+        user, person = self._create_person('bob', 'bob@example.com',
+                                           first_name="Bob",
+                                           last_name="Sponge")
+    
+        text_template = "" # note! Blank
+        html_text_template = "Hi, <strong>{{ first_name }}</strong>\n"\
+                             'Visit <a href="{{ site_url }}">us</a>'
+        
+        subject_template = "Newsletter no {{ newsletter_issue_no }}"
+        n = Newsletter.objects.create(html_text_template=html_text_template,
+                                      subject_template=subject_template)
+        
+        n.send()
+        sent_email = mail.outbox[0]
+        
+        # this email should now be a multipart email with a
+        # plaintext part and a HTML part
+        self.assertTrue(sent_email.message().is_multipart())
+        #print dir(sent_email.message())

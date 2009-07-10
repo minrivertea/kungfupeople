@@ -135,6 +135,7 @@ PROJECT_MARTIAL_ART = u"Kung Fu"
 
 # Who sends the newsletter?
 NEWSLETTER_SENDER = "PROJECT_NAME <noreply@kungfupeople.com>"
+NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
 try:
     from local_settings import *

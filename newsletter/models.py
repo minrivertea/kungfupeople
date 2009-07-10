@@ -9,11 +9,13 @@ from django.db import models
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.conf import settings
 
 from djangopeople.models import AutoLoginKey
+from djangopeople.html2plaintext import html2plaintext
 
+from newsletter.premailer import Premailer
 
     
 # settings.py
@@ -48,11 +50,20 @@ def _get_context_for_all(last_send_date=None):
         context['site_url'] = get_url('/')
 
     return context
-    
+
+
+class NewsletterTemplateError(Exception):
+    pass
+
 
 class Newsletter(models.Model):
     subject_template = models.CharField(max_length=100)
-    text_template = models.TextField()
+    
+    # articially, you can't have a Newsletter with either text_template
+    # nor html_text_template but allowing null on either solves the 
+    # intermediate problem
+    text_template = models.TextField(null=True, blank=True)
+    html_text_template = models.TextField(null=True, blank=True)
     
     send_date = models.DateTimeField(null=True, blank=True)
     
@@ -63,19 +74,25 @@ class Newsletter(models.Model):
         return self.send_date.strftime('%A %b %Y')
 
     def _render_text(self, context):
-        _before = settings.TEMPLATE_STRING_IF_INVALID
-        settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
-        assert settings.TEMPLATE_DEBUG
-        template = Template(self.text_template)
-        rendered = template.render(context)
-        settings.TEMPLATE_STRING_IF_INVALID = _before
-        return rendered
+        return self._render_template(context, self.text_template)
+
+    def _render_html_text(self, context):
+        return self._render_template(context, self.html_text_template)
 
     def _render_subject(self, context):
+        return self._render_template(context, self.subject_template)
+    
+    def _wrap_html_template(self, body_content, template_path):
+        template = get_template(template_path)
+        context = Context(dict(body_content=body_content))
+        return template.render(context)
+        #return self._render_template(context, template)
+    
+    def _render_template(self, context, template_as_string):
         _before = settings.TEMPLATE_STRING_IF_INVALID
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
         assert settings.TEMPLATE_DEBUG
-        template = Template(self.subject_template)
+        template = Template(template_as_string)
         rendered = template.render(context)
         settings.TEMPLATE_STRING_IF_INVALID = _before
         return rendered
@@ -126,18 +143,38 @@ class Newsletter(models.Model):
                 url += '?alu=%s' % alu.uuid
             context[key] = url
         
-    def send(self):
-        from djangopeople.models import KungfuPerson
+    def send(self, max_sendouts=100):
+        if not self.text_template and not self.html_text_template:
+            raise NewsletterTemplateError(
+              "Must have text_template or html_text_template")
         
-        people = KungfuPerson.objects.filter(user__is_active=True, 
-                                             newsletter=True).select_related()
+        from djangopeople.models import KungfuPerson
+
+        people = KungfuPerson.objects.\
+          filter(user__is_active=True, newsletter=True)
+        
+        # possible recipients due to the 'max_sendouts'. Therefore, it's quite
+        # possible that that a newsletter has been sent to 10 out of 100 
+        # possible people and it's not until it's been sent to all 100 that this
+        # newsletter gets the 'send_date' set to todays date.
+        # Exclude the people who've already been emailed.
+        sent_to_user_ids = [x.user.id for x 
+                            in SentLog.objects.filter(newsletter=self)]
+        if sent_to_user_ids:
+            people = people.exclude(user__id__in=sent_to_user_ids)
+        
+        possible_sendouts = people.count()
+        
         extra_context = _get_context_for_all()
-        for person in people:
+        for person in people.select_related()[:max_sendouts]:
             self._send_newsletter_to_person(person,
                                             extra_context=extra_context)
             
-        self.send_date = datetime.datetime.now()
-        self.save()
+        if max_sendouts > possible_sendouts:
+            self.send_date = datetime.datetime.now()
+            self.save()
+        #else:
+        #    print "needs to send more later"
             
     def _send_newsletter_to_person(self, person, fail_silently=False,
                                    extra_context={}):
@@ -148,17 +185,45 @@ class Newsletter(models.Model):
         context = Context(extra_context)
         
         subject = self._render_subject(context)
-        text = self._render_text(context)
-        
-        num_sent = send_mail(subject, text, settings.NEWSLETTER_SENDER,
-                             [person.user.email],
-                             fail_silently=fail_silently)
-        
+        html = None
+        if self.text_template and self.html_text_template:
+            text = self._render_text(context)
+            html = self._render_html_text(context)
+        elif self.text_template:
+            text = self._render_text(context)
+            html = None
+        else:
+            html = self._render_html_text(context)
+            text = html2plaintext(html, encoding='utf-8')
+            
+        if html:
+            # now wrap this in the header and footer
+            html = self._wrap_html_template(html,
+                                     settings.NEWSLETTER_HTML_TEMPLATE_BASE)
+            
+            html = Premailer(html).transform()
+            
+            ## XXX: Consider looking into http://www.campaignmonitor.com/testing/
+            ## and what it can offer us
+            
+            from multipart_email import send_multipart_mail
+            num_sent = send_multipart_mail(text, html, subject,
+                                           [person.user.email],
+                                           fail_silently=fail_silently,
+                                           sender=settings.NEWSLETTER_SENDER
+                                           )
+
+        else:
+            num_sent = send_mail(subject, text, settings.NEWSLETTER_SENDER,
+                                [person.user.email],
+                                fail_silently=fail_silently)
+            
         # Assume that this method is called in non-transactional mode
         # so if the sending fails, we know to set sent=False
         
         sent = bool(num_sent)
-        SentLog.objects.create(user=person.user,
+        SentLog.objects.create(newsletter=self,
+                               user=person.user,
                                subject=subject,
                                text=text,
                                send_date=datetime.datetime.now(),
@@ -166,9 +231,6 @@ class Newsletter(models.Model):
                                to=person.user.email)
         
         
-        
-        
-                  
         
         
 class SentLog(models.Model):
@@ -190,4 +252,3 @@ def _set_to_on_save(sender, instance, created, **__):
         instance.to = user.email
         
 post_save.connect(_set_to_on_save, sender=SentLog)
-        
