@@ -31,8 +31,9 @@ class ModelTestCase(TestCase):
                                              country=country,
                                              region=region,
                                              latitude=latitude,
-                                             longitude=longitude)
-        
+                                             longitude=longitude,
+                                             newsletter='html')
+
         return user, person
 
     
@@ -49,10 +50,10 @@ class ModelTestCase(TestCase):
         n = Newsletter.objects.create(text_template=text_template,
                                       subject_template=subject_template)
         
-        self.assertFalse(bool(n.send_date))
+        self.assertFalse(n.sent)
         n.send()
-        self.assertTrue(bool(n.send_date))
-        self.assertEqual(n.send_date.strftime('%Y%m%d%H%M'),
+        self.assertTrue(n.sent)
+        self.assertEqual(n.sent_date.strftime('%Y%m%d%H%M'),
                          datetime.datetime.now().strftime('%Y%m%d%H%M'))
         
         # it should now have sent an email to bob@example.com
@@ -90,7 +91,7 @@ class ModelTestCase(TestCase):
         n = Newsletter.objects.create(text_template=text_template,
                                       subject_template=subject_template)
         
-        self.assertFalse(bool(n.send_date))
+        self.assertFalse(n.sent)
         n.send()
         
         sent_email = mail.outbox[0]
@@ -146,7 +147,8 @@ class ModelTestCase(TestCase):
         n = Newsletter.objects.create(text_template=text_template,
                                       subject_template=subject_template)
         n.send(max_sendouts=10)
-        self.assertFalse(bool(n.send_date))
+        self.assertFalse(bool(n.sent_date))
+        self.assertFalse(n.sent)
         self.assertEqual(len(mail.outbox), 10)
         
         # and it should have created 10 SentLog items
@@ -154,13 +156,13 @@ class ModelTestCase(TestCase):
         
         # send another 20
         n.send(max_sendouts=20)
-        self.assertFalse(bool(n.send_date))
+        self.assertFalse(n.sent)
         self.assertEqual(len(mail.outbox), 30)
         self.assertEqual(SentLog.objects.count(), 30)
         
         # send the rest
         n.send(max_sendouts=9999)
-        self.assertTrue(bool(n.send_date))
+        self.assertTrue(n.sent)
         self.assertEqual(len(mail.outbox), 100)
         self.assertEqual(SentLog.objects.count(), 100)
         

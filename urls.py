@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
                       
     (r'', include('djangopeople.urls')),
+    (r'^newsletters/', include('newsletter.urls')),
                        
     (r'^sitemap.xml$', sitemap,
      {'sitemaps': sitemaps}),

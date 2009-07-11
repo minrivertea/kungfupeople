@@ -10,7 +10,7 @@ except ImportError:
     warnings.warn("lxml not installed! Can't use premailer")
     etree = None
 
-__version__='0'
+__version__='1'
 
 class PremailerError(Exception):
     pass
@@ -56,6 +56,11 @@ class Premailer(object):
             print repr(self.html)
             raise PremailerError("Could not parse the html")
         assert page is not None
+        
+        ##
+        ## style selectors
+        ##
+        
         rules = {}
         
         for style in CSSSelector('style')(page):
@@ -72,7 +77,35 @@ class Premailer(object):
                 if old_style:
                     old_style += ';'
                 item.attrib['style'] = old_style + style
+                if 'class' in item.attrib:
+                    del item.attrib['class']
+                    
+        ##
+        ## URLs
+        ##
+        
+        if self.base_url:
             
+            def make_full_url(rel_url):
+                if rel_url.startswith('/'):
+                    if self.base_url.endswith('/'):
+                        return self.base_url + rel_url[1:]
+                    else:
+                        return self.base_url + rel_url
+                else:
+                    # e.g. rel_url = "page.html"
+                    if self.base_url.endswith('/'):
+                        return self.base_url + rel_url
+                    else:
+                        return self.base_url + '/' + rel_url
+                    
+            for attr in ('href', 'src'):
+                for item in page.xpath("//@%s" % attr):
+                    parent = item.getparent()
+                    if '://' not in parent.attrib[attr]:
+                        parent.attrib[attr] = make_full_url(parent.attrib[attr])
+                        
+        
         return etree.tostring(page, pretty_print=pretty_print)
             
                     
@@ -88,11 +121,13 @@ if __name__=='__main__':
         strong { 
           text-decoration:none
           }
+        p.footer { font-size: 1px}
         </style>
         </head>
         <body>
         <h1>Hi!</h1>
         <p><strong>Yes!</strong></p>
+        <p class="footer">Feetnuts</p>
         </body>
         </html>"""
     p = Premailer(html)

@@ -134,7 +134,7 @@ PROJECT_NAME = u"Kung Fu People"
 PROJECT_MARTIAL_ART = u"Kung Fu"
 
 # Who sends the newsletter?
-NEWSLETTER_SENDER = "PROJECT_NAME <noreply@kungfupeople.com>"
+NEWSLETTER_SENDER = "%s <noreply@kungfupeople.com>" % PROJECT_NAME
 NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
 try:

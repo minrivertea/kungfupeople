@@ -83,6 +83,7 @@ class Command(BaseCommand):
         
     def _populate_random_person(self):
         username, first_name, last_name, email = random.choice(self.random_people)
+        username = username.replace(' ','')
         print username, first_name, last_name, email
         longitude, latitude, country_name, place_name, country_code = random.choice(self.random_places)
         print longitude, latitude, country_name, place_name, country_code

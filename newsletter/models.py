@@ -42,8 +42,14 @@ def _get_context_for_all(last_send_date=None):
     context = {}
     
     # newsletter_issue_no is an integer number. It's basically a count
-    # of which newsletter this is
-    past_newsletters = Newsletter.objects.filter(send_date__lte=datetime.datetime.now())
+    # of which newsletter this is.
+    # Because send_date attribute defaults to datetime.datetime.now()
+    # what can happen here is that 
+    # datetime.datetime.now()=xxxx-xx-xx xx:xx:xx.330104 and
+    # the recently created has a send_date=xxxx-xx-xx xx:xx:xx.325818
+    # In other words they're less than a second apart but still older
+    _since = datetime.datetime.now() - datetime.timedelta(seconds=1)
+    past_newsletters = Newsletter.objects.filter(send_date__lt=_since)
     context['newsletter_issue_no'] = past_newsletters.count() + 1
 
     if Site._meta.installed:
@@ -72,10 +78,15 @@ def _get_context_for_all(last_send_date=None):
         new_styles = new_styles.filter(add_date__gt=last_send_date)
         
     context['new_photos'] = new_photos
+    context['new_photos_count'] = new_photos.count()
     context['new_diary_entries'] = new_diary_entries
+    context['new_diary_entries_count'] = new_diary_entries.count()
     context['new_people'] = new_people
+    context['new_people_count'] = new_people.count()
     context['new_clubs'] = new_clubs
+    context['new_clubs_count'] = new_clubs.count()
     context['new_style'] = new_style
+    context['new_style_count'] = new_style.count()
 
     
     return context
@@ -83,9 +94,15 @@ def _get_context_for_all(last_send_date=None):
 
 class NewsletterTemplateError(Exception):
     pass
+class NewsletterSendError(Exception):
+    pass
 
 
 class Newsletter(models.Model):
+    
+    LANGUAGE_CHOICES = (('en', u"English"),
+                        )
+    
     subject_template = models.CharField(max_length=100)
     
     # articially, you can't have a Newsletter with either text_template
@@ -94,13 +111,25 @@ class Newsletter(models.Model):
     text_template = models.TextField(null=True, blank=True)
     html_text_template = models.TextField(null=True, blank=True)
     
-    send_date = models.DateTimeField(null=True, blank=True)
+    send_date = models.DateTimeField(default=datetime.datetime.now)
     
+    language = models.CharField(max_length=5, default='en', 
+                                choices=LANGUAGE_CHOICES)
+
+    sent_date = models.DateTimeField(null=True, blank=True)
+    author = models.ForeignKey(User, null=True, blank=True)
     add_date = models.DateTimeField('date added', default=datetime.datetime.now)
     modify_date = models.DateTimeField('date modified', auto_now=True)
     
     def __unicode__(self):
-        return self.send_date.strftime('%A %b %Y')
+        if self.sent_date:
+            return u"sent " + self.sent_date.strftime('%A %b %Y')
+        else:
+            return u"send on " + self.send_date.strftime('%A %b %Y')
+            
+    @property
+    def sent(self):
+        return bool(self.sent_date)
 
     def _render_text(self, context):
         return self._render_template(context, self.text_template)
@@ -120,10 +149,12 @@ class Newsletter(models.Model):
     def _render_template(self, context, template_as_string):
         _before = settings.TEMPLATE_STRING_IF_INVALID
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
-        assert settings.TEMPLATE_DEBUG
-        template = Template(template_as_string)
-        rendered = template.render(context)
-        settings.TEMPLATE_STRING_IF_INVALID = _before
+        try:
+            assert settings.TEMPLATE_DEBUG
+            template = Template(template_as_string)
+            rendered = template.render(context)
+        finally:
+            settings.TEMPLATE_STRING_IF_INVALID = _before
         return rendered
     
     
@@ -147,6 +178,9 @@ class Newsletter(models.Model):
             def get_url(path):
                 return 'http://%s%s' % (domain, path)
             context['profile_url'] = get_url(person.get_absolute_url())
+            context['opt_out_url'] = get_url(person.get_absolute_url() + 'opt-out/')
+            
+            
         
         return context
     
@@ -178,6 +212,9 @@ class Newsletter(models.Model):
             raise NewsletterTemplateError(
               "Must have text_template or html_text_template")
         
+        if self.sent_date:
+            raise NewsletterSendError("Newsletter already sent")
+        
         people = KungfuPerson.objects.\
           filter(user__is_active=True, 
                  newsletter__in=[c[0] for c 
@@ -200,19 +237,23 @@ class Newsletter(models.Model):
         last_send_date = None
         for newsletter in Newsletter.objects.\
           filter(send_date__lt=datetime.datetime.now()).order_by('send_date'):
-            last_send_date = newsletter.send_date
+            last_send_date = newsletter.sent_date
         
         extra_context = _get_context_for_all(last_send_date=last_send_date)
+        no_sent = 0
         for person in people.select_related()[:max_sendouts]:
             self._send_newsletter_to_person(person,
                                             extra_context=extra_context)
+            no_sent += 1
             
         if max_sendouts > possible_sendouts:
-            self.send_date = datetime.datetime.now()
+            self.sent_date = datetime.datetime.now()
             self.save()
+            return no_sent, 0
         else:
             if not settings.DEBUG:
                 logging.info("%s sendouts left" % (possible_sendouts - max_sendouts))
+            return no_sent, possible_sendouts - no_sent
             
     def _send_newsletter_to_person(self, person, fail_silently=False,
                                    extra_context={}):
@@ -224,7 +265,7 @@ class Newsletter(models.Model):
         
         subject = self._render_subject(context)
         html = None
-        if self.text_template and self.html_text_template:
+        if self.text_template and self.html_text_template and person.newsletter == 'html':
             text = self._render_text(context)
             html = self._render_html_text(context)
         elif self.text_template:
@@ -233,13 +274,20 @@ class Newsletter(models.Model):
         else:
             html = self._render_html_text(context)
             text = html2plaintext(html, encoding='utf-8')
+            if person.newsletter != 'html':
+                html = None
             
         if html:
             # now wrap this in the header and footer
             html = self._wrap_html_template(html,
                                      settings.NEWSLETTER_HTML_TEMPLATE_BASE)
             
-            html = Premailer(html).transform()
+            base_url = None
+            if Site._meta.installed:
+                domain = Site.objects.get_current().domain
+                base_url = 'http://%s' % domain
+                    
+            html = Premailer(html, base_url=base_url).transform()
             
             ## XXX: Consider looking into http://www.campaignmonitor.com/testing/
             ## and what it can offer us

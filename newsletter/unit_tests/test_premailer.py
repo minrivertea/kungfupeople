@@ -73,5 +73,50 @@ class PremailerTest(TestCase):
         self.assertEqual(rules['ul li'], 'list-style:2px')
         
         
+    def test_base_url_fixer(self):
+        """if you leave some URLS as /foo and set base_url to 
+        'http://www.google.com' the URLS become 'http://www.google.com/foo'
+        """
+        if not etree:
+            # can't test it
+            return
+        
+        html = """<html>
+        <head>
+        <title>Title</title>
+        </head>
+        <body>
+        <img src="/images/foo.jpg"/>
+        <img src="/images/bar.gif"/>
+        <img src="http://www.googe.com/photos/foo.jpg">
+        <a href="/home">Home</a>
+        <a href="http://www.peterbe.com">External</a>
+        <a href="subpage">Subpage</a>
+        </body>
+        </html>"""
+        
+        expect_html = """<html>
+        <head>
+        <title>Title</title>
+        </head>
+        <body>
+        <img src="http://kungfupeople.com/images/foo.jpg"/>
+        <img src="http://kungfupeople.com/images/bar.gif"/>
+        <img src="http://www.googe.com/photos/foo.jpg"/>
+        <a href="http://kungfupeople.com/home">Home</a>
+        <a href="http://www.peterbe.com">External</a>
+        <a href="http://kungfupeople.com/subpage">Subpage</a>
+        </body>
+        </html>"""
+        
+        p = Premailer(html, base_url='http://kungfupeople.com')
+        result_html = p.transform()
+        
+        whitespace_between_tags = re.compile('>\s*<',)
+        
+        expect_html = whitespace_between_tags.sub('><', expect_html).strip()
+        result_html = whitespace_between_tags.sub('><', result_html).strip()
+        
+        self.assertEqual(expect_html, result_html)
         
         
