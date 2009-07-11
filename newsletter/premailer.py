@@ -1,3 +1,4 @@
+# http://www.peterbe.com/plog/premailer.py
 import re
 from cStringIO import StringIO
 try:
@@ -8,7 +9,9 @@ except ImportError:
     import warnings
     warnings.warn("lxml not installed! Can't use premailer")
     etree = None
-    
+
+__version__='0'
+
 class PremailerError(Exception):
     pass
 
@@ -79,6 +82,7 @@ class Premailer(object):
 if __name__=='__main__':
     html = """<html>
         <head>
+        <title>Test</title>
         <style>
         h1, h2 { color:red; }
         strong { 

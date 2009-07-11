@@ -1,5 +1,6 @@
 # python
 import datetime
+import logging
 
 # django
 from django.template import RequestContext, Context
@@ -12,7 +13,9 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.conf import settings
 
-from djangopeople.models import AutoLoginKey
+from djangopeople.models import AutoLoginKey, Photo, DiaryEntry, KungfuPerson,\
+  Club, Style
+
 from djangopeople.html2plaintext import html2plaintext
 
 from newsletter.premailer import Premailer
@@ -48,7 +51,33 @@ def _get_context_for_all(last_send_date=None):
         def get_url(path):
             return 'http://%s%s' % (domain, path)
         context['site_url'] = get_url('/')
+        
+    context['PROJECT_NAME'] = settings.PROJECT_NAME
+    context['PROJECT_MARTIAL_ART'] = settings.PROJECT_MARTIAL_ART
+    
+        
+    # No new photos since last time
+    new_photos = Photo.objects.all()
+    new_diary_entries = DiaryEntry.objects.all()
+    new_people = KungfuPerson.objects.all()
+    new_clubs = Club.objects.all()
+    new_style = Style.objects.all()
 
+    if last_send_date:
+        context['last_send_date'] = last_send_date
+        new_photos = new_photos.filter(date_added__gt=last_send_date)
+        new_diary_entries = new_diary_entries.filter(date_added__gt=last_send_date)
+        new_people = new_people.filter(user__date_joined__gt=last_send_date)
+        new_clubs = new_clubs.filter(add_date__gt=last_send_date)
+        new_styles = new_styles.filter(add_date__gt=last_send_date)
+        
+    context['new_photos'] = new_photos
+    context['new_diary_entries'] = new_diary_entries
+    context['new_people'] = new_people
+    context['new_clubs'] = new_clubs
+    context['new_style'] = new_style
+
+    
     return context
 
 
@@ -110,6 +139,7 @@ class Newsletter(models.Model):
         context['last_name'] = person.user.last_name
         context['email'] = person.user.email
         context['username'] = person.user.username
+        context['profile_views'] = person.profile_views
         
         if Site._meta.installed:
             current_site = Site.objects.get_current()
@@ -148,10 +178,11 @@ class Newsletter(models.Model):
             raise NewsletterTemplateError(
               "Must have text_template or html_text_template")
         
-        from djangopeople.models import KungfuPerson
-
         people = KungfuPerson.objects.\
-          filter(user__is_active=True, newsletter=True)
+          filter(user__is_active=True, 
+                 newsletter__in=[c[0] for c 
+                                 in KungfuPerson.NEWSLETTER_CHOICES
+                                 if c[0]])
         
         # possible recipients due to the 'max_sendouts'. Therefore, it's quite
         # possible that that a newsletter has been sent to 10 out of 100 
@@ -165,7 +196,13 @@ class Newsletter(models.Model):
         
         possible_sendouts = people.count()
         
-        extra_context = _get_context_for_all()
+        # Figure out when the last newsletter was sent
+        last_send_date = None
+        for newsletter in Newsletter.objects.\
+          filter(send_date__lt=datetime.datetime.now()).order_by('send_date'):
+            last_send_date = newsletter.send_date
+        
+        extra_context = _get_context_for_all(last_send_date=last_send_date)
         for person in people.select_related()[:max_sendouts]:
             self._send_newsletter_to_person(person,
                                             extra_context=extra_context)
@@ -173,8 +210,9 @@ class Newsletter(models.Model):
         if max_sendouts > possible_sendouts:
             self.send_date = datetime.datetime.now()
             self.save()
-        #else:
-        #    print "needs to send more later"
+        else:
+            if not settings.DEBUG:
+                logging.info("%s sendouts left" % (possible_sendouts - max_sendouts))
             
     def _send_newsletter_to_person(self, person, fail_silently=False,
                                    extra_context={}):

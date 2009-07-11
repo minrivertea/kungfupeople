@@ -419,6 +419,12 @@ class AutoLoginKey(models.Model):
     
     
 class KungfuPerson(models.Model):
+    
+    NEWSLETTER_CHOICES = (('', 'Opt out'),
+                          ('plain', 'Plain text'),
+                          ('html', 'HTML'),
+                          )
+    
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
     styles = models.ManyToManyField(Style)
@@ -435,8 +441,10 @@ class KungfuPerson(models.Model):
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')
     
-    # default is on, they can override that later if they want to unsubscribe
-    newsletter = models.BooleanField(default=True)
+    # default is 'html;, they can override that later if they want to unsubscribe
+    # (possible values are ('', 'plain', 'html')
+    newsletter = models.CharField(max_length=5, default='html',
+                                  choices=NEWSLETTER_CHOICES)
 
     # Stats
     profile_views = models.IntegerField(default=0)
