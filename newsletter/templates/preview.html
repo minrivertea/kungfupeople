@@ -1,0 +1,38 @@
+{% extends "newsletter_base.html" %}
+
+{% block extracss %}
+<style type="text/css">
+div.pre {
+  background-color:#efefef;
+  width:700px;
+  font-size:80%; 
+  font-family:'Courier New', Courier, monospace; 
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h2>To:</h2>
+<p>
+  {{ person.user.first_name }}
+  {{ person.user.last_name }}
+</p>
+
+<h2>Plain text part</h2>
+<div class="pre">
+{{ text|linebreaksbr }}
+</div>
+
+{% if html %}
+<h2>HTML part</h2>
+<div class="pre">
+{{ html|linebreaksbr }}
+</div>
+
+<h2>HTML part in iframe</h2>
+<iframe src="iframe/" width="700" height="500"></iframe>
+
+{% endif %}
+
+{% endblock %}

@@ -21,11 +21,16 @@ class NewsletterAdmin(admin.ModelAdmin):
         obj.modify_date = datetime.datetime.now()
         obj.save()
         
-    list_display = ('send_date_plus', 'subject_template', 'author', 'modify_date',
+    list_display = ('send_date_plus', 'sent', 'subject_template', 'author', 'modify_date',
                     'send_count',)
     list_filter = ('language',)
     ordering = ('send_date',)
     exclude = ('add_date', 'modify_date', 'author', 'sent_date')
+    
+    def sent(self, obj):
+        return obj.sent_date is not None
+    sent.short_description = "Sent"
+    sent.boolean = True
     
     def send_date_plus(self, obj):
         if obj.send_date > datetime.datetime.now():

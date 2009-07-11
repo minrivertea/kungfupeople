@@ -1,5 +1,6 @@
 # http://www.peterbe.com/plog/premailer.py
 import re
+from collections import defaultdict
 from cStringIO import StringIO
 try:
     import lxml.html
@@ -15,6 +16,33 @@ __version__='1'
 class PremailerError(Exception):
     pass
 
+def _merge_styles(old, new):
+    """
+    if ::
+      old = 'font-size:1px; color: red'
+    and ::
+      new = 'font-size:2px; font-weight: bold'
+    then ::
+      return 'color: red; font-size:2px; font-weight: bold'
+      
+    In other words, the new style bits replace the old ones
+    """
+    news = {}
+    for k, v in [x.strip().split(':') for x in new.split(';') if x.strip()]:
+        news[k.strip()] = v.strip()
+
+    olds = {}
+    for k, v in [x.strip().split(':') for x in old.split(';') if x.strip()]:
+        olds[k.strip()] = v.strip()
+        
+    merged = news
+    for k, v in olds.items():
+        if k not in merged:
+            merged[k] = v
+        
+    return '; '.join(['%s:%s' % (k, v) for (k, v) in merged.items()])
+    
+
 class Premailer(object):
     
     def __init__(self, html, base_url=None):
@@ -22,7 +50,7 @@ class Premailer(object):
         self.base_url = base_url
         
     def _parse_style_rules(self, css_body):
-        rules = {}
+        rules = []
         css_comments = re.compile(r'/\*.*?\*/', re.MULTILINE|re.DOTALL)
         css_body = css_comments.sub('', css_body)
         
@@ -37,8 +65,8 @@ class Premailer(object):
             if bulk.endswith(';'):
                 bulk = bulk[:-1]
             for selector in [x.strip() for x in selectors.split(',') if x.strip()]:
-                rules[selector] = bulk
-            
+                rules.append((selector, bulk))
+
         return rules
         
     def transform(self, pretty_print=True):
@@ -61,24 +89,27 @@ class Premailer(object):
         ## style selectors
         ##
         
-        rules = {}
+        rules = []
         
         for style in CSSSelector('style')(page):
             css_body = etree.tostring(style)
             css_body = css_body.split('>')[1].split('</')[0]
-            rules.update(self._parse_style_rules(css_body))
+            rules.extend(self._parse_style_rules(css_body))
             parent_of_style = style.getparent()
             parent_of_style.remove(style)
             
-        for selector, style in rules.items():
+        for selector, style in rules:
             sel = CSSSelector(selector)
             for item in sel(page):
                 old_style = item.attrib.get('style','')
-                if old_style:
-                    old_style += ';'
-                item.attrib['style'] = old_style + style
-                if 'class' in item.attrib:
-                    del item.attrib['class']
+                new_style = _merge_styles(old_style, style)
+                item.attrib['style'] = new_style
+                
+        # now we can delete all 'class' attributes
+        for item in page.xpath('//@class'):
+            parent = item.getparent()
+            del parent.attrib['class']
+            
                     
         ##
         ## URLs
@@ -113,6 +144,7 @@ class Premailer(object):
         
         
 if __name__=='__main__':
+    
     html = """<html>
         <head>
         <title>Test</title>
@@ -121,13 +153,14 @@ if __name__=='__main__':
         strong { 
           text-decoration:none
           }
+        p { font-size:2px }
         p.footer { font-size: 1px}
         </style>
         </head>
         <body>
         <h1>Hi!</h1>
         <p><strong>Yes!</strong></p>
-        <p class="footer">Feetnuts</p>
+        <p class="footer" style="color:red">Feetnuts</p>
         </body>
         </html>"""
     p = Premailer(html)

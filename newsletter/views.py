@@ -3,11 +3,19 @@ import datetime
 
 # django
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render_to_response
 from django.db import transaction
+from django.template import RequestContext
 
 # app
 from models import Newsletter
+from forms import PreviewNewsletterForm
+
+def render(request, template, context_dict=None, **kwargs):
+    return render_to_response(
+        template, context_dict or {}, context_instance=RequestContext(request),
+                              **kwargs
+    )
 
 
 @transaction.commit_on_success # ONLY WHEN DEBUGGING
@@ -46,4 +54,34 @@ def send_unsent(request, newsletter_id=None):
     
     return HttpResponse(response)
     
+    
+def preview(request, newsletter_id):
+    newsletter = get_object_or_404(Newsletter, id=newsletter_id)
+    person_id = request.GET.get('person')
+    
+    if person_id:
+        form = PreviewNewsletterForm(request.GET)
+        if form.is_valid():
+            person = form.cleaned_data['person']
+            data = {'person': person}
+            data.update(newsletter.preview(person))
+            
+            if data.get('html'):
+                # special lazy trick
+                request.session['html_preview'] = data['html']
+                
+            return render(request, 'preview.html', data)
+        else:
+            return HttpResponse(str(form.errors))
+    else:
+        form = PreviewNewsletterForm()
+        return render(request, 'choose_person.html', {'form':form})
+    
+def iframe_preview(request, newsletter_id):
+    
+    html = request.session.get('html_preview')
+    if not html:
+        return HttpResponse('No HTML prepared for preview :(')
+    else:
+        return HttpResponse(html)
     

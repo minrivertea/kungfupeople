@@ -254,9 +254,25 @@ class Newsletter(models.Model):
             if not settings.DEBUG:
                 logging.info("%s sendouts left" % (possible_sendouts - max_sendouts))
             return no_sent, possible_sendouts - no_sent
+        
+        
+    def preview(self, person):
+        last_send_date = None
+        for newsletter in Newsletter.objects.\
+          filter(send_date__lt=datetime.datetime.now()).order_by('send_date'):
+            last_send_date = newsletter.sent_date
+            
+        extra_context = _get_context_for_all(last_send_date=last_send_date)
+        text, html = self._send_newsletter_to_person(person, 
+                                                     extra_context=extra_context,
+                                                     dry_run=True)
+        
+        
+        return dict(text=text, html=html)
             
     def _send_newsletter_to_person(self, person, fail_silently=False,
-                                   extra_context={}):
+                                   extra_context={},
+                                   dry_run=False):
         # notice the order, this means that the context is overwritten by the 
         # person context if applicable
         extra_context.update(self._get_context_for_person(person))
@@ -289,6 +305,9 @@ class Newsletter(models.Model):
                     
             html = Premailer(html, base_url=base_url).transform()
             
+            if dry_run:
+                return text, html
+            
             ## XXX: Consider looking into http://www.campaignmonitor.com/testing/
             ## and what it can offer us
             
@@ -300,6 +319,9 @@ class Newsletter(models.Model):
                                            )
 
         else:
+            if dry_run:
+                return text, None
+            
             num_sent = send_mail(subject, text, settings.NEWSLETTER_SENDER,
                                 [person.user.email],
                                 fail_silently=fail_silently)

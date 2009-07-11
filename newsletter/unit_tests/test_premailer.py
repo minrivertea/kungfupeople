@@ -1,9 +1,17 @@
 import re
 from unittest import TestCase
 
-from newsletter.premailer import Premailer, etree
+from newsletter.premailer import Premailer, etree, _merge_styles
 
 class PremailerTest(TestCase):
+    
+    def test_merge_styles(self):
+        old = 'font-size:1px; color: red'
+        new = 'font-size:2px; font-weight: bold'
+        expect = 'color:red;', 'font-size:2px;', 'font-weight:bold'
+        result = _merge_styles(old, new)
+        for each in expect:
+            self.assertTrue(each in result)
     
     def test_basic_html(self):
         """test the simplest case"""
@@ -62,15 +70,26 @@ class PremailerTest(TestCase):
         ul li {  list-style: 2px; }
         """)
         
-        self.assertTrue('h1' in rules)
-        self.assertTrue('h2' in rules)
-        self.assertTrue('strong' in rules)
-        self.assertTrue('ul li' in rules)
+        # 'rules' is a list, turn it into a dict for 
+        # easier testing
+        rules_dict = {}
+        for k, v in rules:
+            rules_dict[k] = v
+
+        self.assertTrue('h1' in rules_dict)
+        self.assertTrue('h2' in rules_dict)
+        self.assertTrue('strong' in rules_dict)
+        self.assertTrue('ul li' in rules_dict)
         
-        self.assertEqual(rules['h1'], 'color:red')
-        self.assertEqual(rules['h2'], 'color:red')
-        self.assertEqual(rules['strong'], 'text-decoration:none')
-        self.assertEqual(rules['ul li'], 'list-style:2px')
+        # order is important
+        rules_keys = [x[0] for x in rules]
+        self.assertTrue(rules_keys.index('h1') < rules_keys.index('h2'))
+        self.assertTrue(rules_keys.index('strong') < rules_keys.index('ul li'))
+        
+        self.assertEqual(rules_dict['h1'], 'color:red')
+        self.assertEqual(rules_dict['h2'], 'color:red')
+        self.assertEqual(rules_dict['strong'], 'text-decoration:none')
+        self.assertEqual(rules_dict['ul li'], 'list-style:2px')
         
         
     def test_base_url_fixer(self):
