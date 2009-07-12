@@ -9,34 +9,9 @@ from django.core import mail
 from djangopeople.models import KungfuPerson, Country, AutoLoginKey
 from newsletter.models import Newsletter, SentLog, NewsletterTemplateError
 
+from testbase import TestCase
+
 class ModelTestCase(TestCase):
-    
-    def _create_person(self, username, email, password="secret", 
-                       first_name="", last_name="",
-                       country="United Kingdom",
-                       region=None,
-                       latitude=51.532601866,
-                       longitude=-0.108382701874):
-        
-        user = User.objects.create_user(username=username,
-                                        email=email,
-                                        password=password)
-        if first_name or last_name:
-            user.first_name = first_name
-            user.last_name = last_name
-            user.save()
-            
-        country = Country.objects.get(name=country)
-        person = KungfuPerson.objects.create(user=user,
-                                             country=country,
-                                             region=region,
-                                             latitude=latitude,
-                                             longitude=longitude,
-                                             newsletter='html')
-
-        return user, person
-
-    
     
     def test_send_newsletter_basic(self):
         """ create a newsletter, set a template text and render it """
@@ -189,3 +164,34 @@ class ModelTestCase(TestCase):
         # plaintext part and a HTML part
         self.assertTrue(sent_email.message().is_multipart())
         #print dir(sent_email.message())
+        
+    def test__get_context_for_person(self):
+        """ test the context that it generated for a person in a newsletter.
+        
+        To test, check the private method:
+          _get_context_for_person(person, last_send_date=None)
+          
+        """
+        
+        user, person = self._create_person('bob', 'bob@example.com',
+                                           first_name="Bob",
+                                           last_name="Sponge")
+    
+        text_template = "Bla bla"
+        subject_template = "Newsletter no {{ newsletter_issue_no }}"
+        n = Newsletter.objects.create(text_template=text_template,
+                                      subject_template=subject_template)
+        
+        context = n._get_context_for_person(person)
+        
+        self.assertEqual(context['first_name'], u"Bob")
+        self.assertEqual(context['last_name'], u"Sponge")
+        self.assertEqual(context['email'], "bob@example.com")
+        self.assertEqual(context['username'], "bob")
+        self.assertEqual(context['profile_views'], 0)
+        self.assertNotEqual(context['profile_url'], person.get_absolute_url())
+        # but...
+        self.assertTrue(context['profile_url'].endswith(person.get_absolute_url()))
+        self.assertTrue(context['opt_out_url'].endswith(person.get_absolute_url()+'opt-out/'))
+        
+        

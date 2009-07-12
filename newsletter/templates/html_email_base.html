@@ -7,9 +7,6 @@ body {
 	font-family: Helvetica,Arial,sans-serif;
 	line-height: 1.2em;
 }
-body * {
-	font-size: 12px;
-}
 
 
 h2 {
@@ -42,7 +39,7 @@ p.footer {
 </head>
 <body>
 
-{{ body_content }}
+{{ body_content|safe }}
 
 </body>
 </html>

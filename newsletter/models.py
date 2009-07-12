@@ -52,11 +52,10 @@ def _get_context_for_all(last_send_date=None):
     past_newsletters = Newsletter.objects.filter(send_date__lt=_since)
     context['newsletter_issue_no'] = past_newsletters.count() + 1
 
-    if Site._meta.installed:
-        domain = Site.objects.get_current().domain
-        def get_url(path):
-            return 'http://%s%s' % (domain, path)
-        context['site_url'] = get_url('/')
+    domain = Site.objects.get_current().domain
+    def get_url(path):
+        return 'http://%s%s' % (domain, path)
+    context['site_url'] = get_url('/')
         
     context['PROJECT_NAME'] = settings.PROJECT_NAME
     context['PROJECT_MARTIAL_ART'] = settings.PROJECT_MARTIAL_ART
@@ -67,7 +66,7 @@ def _get_context_for_all(last_send_date=None):
     new_diary_entries = DiaryEntry.objects.all()
     new_people = KungfuPerson.objects.all()
     new_clubs = Club.objects.all()
-    new_style = Style.objects.all()
+    new_styles = Style.objects.all()
 
     if last_send_date:
         context['last_send_date'] = last_send_date
@@ -85,8 +84,8 @@ def _get_context_for_all(last_send_date=None):
     context['new_people_count'] = new_people.count()
     context['new_clubs'] = new_clubs
     context['new_clubs_count'] = new_clubs.count()
-    context['new_style'] = new_style
-    context['new_style_count'] = new_style.count()
+    context['new_styles'] = new_styles
+    context['new_styles_count'] = new_styles.count()
 
     
     return context
@@ -135,7 +134,11 @@ class Newsletter(models.Model):
         return self._render_template(context, self.text_template)
 
     def _render_html_text(self, context):
-        return self._render_template(context, self.html_text_template)
+        
+        html = self._render_template(context, self.html_text_template)
+        # when rendering the html it put \r\n for newlines, not good.
+        html = html.replace('\r\n', '\n')
+        return html
 
     def _render_subject(self, context):
         return self._render_template(context, self.subject_template)
@@ -172,14 +175,13 @@ class Newsletter(models.Model):
         context['username'] = person.user.username
         context['profile_views'] = person.profile_views
         
-        if Site._meta.installed:
-            current_site = Site.objects.get_current()
-            domain = current_site.domain
-            def get_url(path):
-                return 'http://%s%s' % (domain, path)
-            context['profile_url'] = get_url(person.get_absolute_url())
-            context['opt_out_url'] = get_url(person.get_absolute_url() + 'opt-out/')
-            
+        current_site = Site.objects.get_current()
+        domain = current_site.domain
+        def get_url(path):
+            return 'http://%s%s' % (domain, path)
+        context['profile_url'] = get_url(person.get_absolute_url())
+        context['opt_out_url'] = get_url(person.get_absolute_url() + 'opt-out/')
+        
             
         
         return context
@@ -256,23 +258,30 @@ class Newsletter(models.Model):
             return no_sent, possible_sendouts - no_sent
         
         
-    def preview(self, person):
+    def preview(self, person, wrap_html=True):
         last_send_date = None
         for newsletter in Newsletter.objects.\
           filter(send_date__lt=datetime.datetime.now()).order_by('send_date'):
             last_send_date = newsletter.sent_date
             
         extra_context = _get_context_for_all(last_send_date=last_send_date)
-        text, html = self._send_newsletter_to_person(person, 
-                                                     extra_context=extra_context,
-                                                     dry_run=True)
+        subject, text, html = self._send_newsletter_to_person(person, 
+                                                              extra_context=extra_context,
+                                                              wrap_html=wrap_html,
+                                                              dry_run=True)
         
         
-        return dict(text=text, html=html)
+        
+        return dict(text=text, html=html, subject=subject)
             
     def _send_newsletter_to_person(self, person, fail_silently=False,
                                    extra_context={},
-                                   dry_run=False):
+                                   dry_run=False,
+                                   wrap_html=True):
+        """Return tuple of (text, html)
+        
+        if @wrap_html is False, don't wrap the HTML but return it pure
+        """
         # notice the order, this means that the context is overwritten by the 
         # person context if applicable
         extra_context.update(self._get_context_for_person(person))
@@ -292,21 +301,21 @@ class Newsletter(models.Model):
             text = html2plaintext(html, encoding='utf-8')
             if person.newsletter != 'html':
                 html = None
-            
+                
         if html:
             # now wrap this in the header and footer
-            html = self._wrap_html_template(html,
-                                     settings.NEWSLETTER_HTML_TEMPLATE_BASE)
-            
-            base_url = None
-            if Site._meta.installed:
+            if wrap_html:
+                html = self._wrap_html_template(html,
+                                                settings.NEWSLETTER_HTML_TEMPLATE_BASE)
+                
+                base_url = None
                 domain = Site.objects.get_current().domain
                 base_url = 'http://%s' % domain
-                    
-            html = Premailer(html, base_url=base_url).transform()
-            
+                                
+                html = Premailer(html, base_url=base_url).transform()
+                
             if dry_run:
-                return text, html
+                return subject, text, html
             
             ## XXX: Consider looking into http://www.campaignmonitor.com/testing/
             ## and what it can offer us
@@ -320,7 +329,7 @@ class Newsletter(models.Model):
 
         else:
             if dry_run:
-                return text, None
+                return subject, text, None
             
             num_sent = send_mail(subject, text, settings.NEWSLETTER_SENDER,
                                 [person.user.email],

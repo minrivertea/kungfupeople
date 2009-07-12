@@ -1,14 +1,13 @@
 import re
 from urlparse import urlparse
-from django.http import Http404, HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry, Photo
 import utils
-from utils import unaccent_string
+from utils import unaccent_string, must_be_owner
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, PhotoEditForm
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
@@ -41,14 +40,6 @@ def render_json(data):
     return HttpResponse(simplejson.dumps(data),
                         mimetype='application/javascript')
     
-@utils.simple_decorator
-def must_be_owner(view):
-    def inner(request, *args, **kwargs):
-        if not request.user or request.user.is_anonymous() \
-            or request.user.username != args[0]:
-            return HttpResponseForbidden('Not allowed')
-        return view(request, *args, **kwargs)
-    return inner
 
 def index(request):
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')
@@ -103,7 +94,10 @@ def login(request):
         })
     username = request.POST.get('username')
     password = request.POST.get('password')
+    print "username", repr(username)
+    print "password", repr(password)
     user = auth.authenticate(username=username, password=password)
+    
     if user is not None and user.is_active:
         auth.login(request, user)
         return HttpResponseRedirect(

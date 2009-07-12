@@ -6,10 +6,13 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.db import transaction
 from django.template import RequestContext
+from django.http import HttpResponseForbidden
 
 # app
-from models import Newsletter
+from models import Newsletter, SentLog
 from forms import PreviewNewsletterForm
+from djangopeople.utils import must_be_owner
+from djangopeople.models import KungfuPerson
 
 def render(request, template, context_dict=None, **kwargs):
     return render_to_response(
@@ -46,7 +49,6 @@ def send_unsent(request, newsletter_id=None):
     
         
     no_sent, left_to_send = newsletter.send(max_sendouts)
-    print no_sent, left_to_send
         
     response = "Sent %s" % no_sent
     if left_to_send:
@@ -85,3 +87,21 @@ def iframe_preview(request, newsletter_id):
     else:
         return HttpResponse(html)
     
+    
+@must_be_owner
+def person_newsletter(request, username, newsletter_id):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    newsletter = get_object_or_404(Newsletter, id=newsletter_id)
+    
+    # allow it only if the newsletter has been sent to you
+    if not SentLog.objects.filter(user=person.user, newsletter=newsletter).count():
+        return HttpResponseForbidden("Not a newsletter for you. Yet?")
+    
+    data = newsletter.preview(person, wrap_html=False)
+    html = data['html']
+    test = data['text']
+    subject = data['subject']
+    
+    return render(request, 'person_newsletter.html', locals())
+    
+

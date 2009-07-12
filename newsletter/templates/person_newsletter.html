@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title%}{{ subject  }} - {{ block.super }}{% endblock %}
+
+
+
+
+{% block content %}
+
+<div class="no-map-wrapper">
+<div id="no-map-content-box">
+
+<h2>{{ subject }}</h2>
+
+{% if html %}
+  <div id="newletterhtml">
+    {{ html|safe }}
+  </div>
+{% else %}
+  <div id="newslettertext">
+    {{ text|linebreaksbr }}
+  </div>
+{% endif %}
+
+
+	<div id="right-column">
+
+
+	</div>
+
+</div>
+</div>
+{% endblock %}
+
