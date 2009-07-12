@@ -11,6 +11,10 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 try:
     from django_static import slimfile, staticfile
 except ImportError:
+    import django_static
+    import logging
+    logging.info(dir(django_static))
+    logging.info(django_static.__file__)
     from django_static.templatetags.django_static import slimfile, staticfile
 
 register = template.Library()
