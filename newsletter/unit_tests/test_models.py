@@ -44,7 +44,6 @@ class ModelTestCase(TestCase):
         
         self.assertEqual(sent_log.user, user)
         self.assertEqual(sent_log.subject, u"Newsletter no 1")
-        self.assertEqual(sent_log.text, u"Hi, Bob")
         self.assertEqual(sent_log.send_date.strftime('%H%M'),
                          datetime.datetime.now().strftime('%H%M'))
         self.assertEqual(sent_log.to, "bob@example.com")

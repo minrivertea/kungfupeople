@@ -342,7 +342,6 @@ class Newsletter(models.Model):
         SentLog.objects.create(newsletter=self,
                                user=person.user,
                                subject=subject,
-                               text=text,
                                send_date=datetime.datetime.now(),
                                sent=sent,
                                to=person.user.email)
@@ -354,7 +353,6 @@ class SentLog(models.Model):
     user = models.ForeignKey(User)
     newsletter = models.ForeignKey(Newsletter, null=True) # for auditing
     subject = models.CharField(max_length=100)
-    text = models.TextField()
     send_date = models.DateTimeField()
     # useful to log additionally in case the user changes her email address
     to = models.EmailField(null=True, blank=True)
