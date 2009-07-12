@@ -8,7 +8,10 @@ from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
 from sorl.thumbnail.processors import dynamic_import, get_valid_options
 thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 
-from django_static import slimfile, staticfile
+try:
+    from django_static import slimfile, staticfile
+except ImportError:
+    from django_static.templatetags.django_static import slimfile, staticfile
 
 register = template.Library()
 
