@@ -9,3 +9,8 @@ sorl
 _thumbs
 tags
 static/photos/*
+.refresh.log
+mtimer.py
+rerun.py
+rerun_tests.py
+sleeptime.conf
