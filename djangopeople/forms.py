@@ -74,7 +74,6 @@ class SignupForm(forms.Form):
         self.fields['country'].choices = [('', '')] + [
           (c.iso_code, c.name) for c in Country.objects.all()]
         self.fields['region'].choices = region_choices()
-
     
     # Upload a photo is a separate page, because if validation fails we 
     # don't want to tell them to upload it all over again
@@ -162,14 +161,18 @@ class PhotoUploadForm(forms.Form):
                                      widget=forms.widgets.Select()
                                     )
 
-    country = forms.ChoiceField(required=False)#, choices = [('', '')] + [
-#        (c.iso_code, c.name) for c in Country.objects.all()
-#    ])
+    country = forms.ChoiceField(required=False)
     latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
     longitude = forms.FloatField(required=False, min_value=-180, max_value=180)
     location_description = forms.CharField(required=False, max_length=50)
+    region = GroupedChoiceField(required=False)
     
-    region = GroupedChoiceField(required=False)#, choices=region_choices())
+    def __init__(self, *args, **kwargs):
+        super(PhotoUploadForm, self).__init__(*args, **kwargs)
+        self.fields['country'].choices = [('', '')] + [
+          (c.iso_code, c.name) for c in Country.objects.all()]
+        self.fields['region'].choices = region_choices()
+    
     
     def clear_diary_entry(self):
         if self.cleaned_data['diary_entry']:
@@ -186,14 +189,18 @@ class PhotoEditForm(forms.Form):
     description = forms.CharField(widget = forms.Textarea)
     diary_entry = forms.FloatField(required=False)
 
-    country = forms.ChoiceField(required=False)#, choices = [('', '')] + [
-#        (c.iso_code, c.name) for c in Country.objects.all()
-#    ])
+    country = forms.ChoiceField(required=False)
     latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
     longitude = forms.FloatField(required=False, min_value=-180, max_value=180)
     location_description = forms.CharField(required=False, max_length=50)
     
-    region = GroupedChoiceField(required=False)#, choices=region_choices())
+    region = GroupedChoiceField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PhotoEditForm, self).__init__(*args, **kwargs)
+        self.fields['country'].choices = [('', '')] + [
+          (c.iso_code, c.name) for c in Country.objects.all()]
+        self.fields['region'].choices = region_choices()
 
 
 class ProfilePhotoUploadForm(forms.Form):
@@ -203,14 +210,17 @@ class DiaryEntryForm(forms.Form):
     title = forms.CharField(max_length=200, widget=forms.widgets.TextInput(attrs=dict(size=40)))
     content = forms.CharField(widget = forms.Textarea)
     is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
-    country = forms.ChoiceField(required=False)#, choices = [('', '')] + [
-#        (c.iso_code, c.name) for c in Country.objects.all()
-#    ])
+    country = forms.ChoiceField(required=False)
     latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
     longitude = forms.FloatField(required=False, min_value=-180, max_value=180)
     location_description = forms.CharField(required=False, max_length=50)
-    
-    region = GroupedChoiceField(required=False)#, choices=region_choices())
+    region = GroupedChoiceField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(DiaryEntryForm, self).__init__(*args, **kwargs)
+        self.fields['country'].choices = [('', '')] + [
+          (c.iso_code, c.name) for c in Country.objects.all()]
+        self.fields['region'].choices = region_choices()
 
     def clean_region(self):
         # If a region is selected, ensure it matches the selected country
@@ -234,7 +244,7 @@ class LocationForm(forms.Form):
     longitude = forms.FloatField(min_value=-180, max_value=180)
     location_description = forms.CharField(max_length=50)
     
-    region = GroupedChoiceField(required=False)#, choices=region_choices())
+    region = GroupedChoiceField(required=False)#, choices=region_choices())    
     
     def __init__(self, *args, **kwargs):
         super(LocationForm, self).__init__(*args, **kwargs)
