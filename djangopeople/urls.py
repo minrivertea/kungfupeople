@@ -59,4 +59,6 @@ urlpatterns = patterns('',
     url(r'^([a-z0-9]{3,})/profileupload/$', views.upload_profile_photo, name="upload_profile_photo"),
     (r'^([a-z0-9]{3,})/upload/done/$', views.upload_done),
     (r'^([a-z0-9]{3,})/whatnext/$', views.whatnext),
+    url(r'^([a-z0-9]{3,})/newsletter/options/$', views.newsletter_options, 
+       name="newsletter.options"),
 )

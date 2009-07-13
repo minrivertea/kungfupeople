@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 {% load django_static %}
 
 {% block title %}Log in |{% endblock %}
@@ -44,8 +44,6 @@ jQuery(function($) {
 
 
 {% block content %}
-	<div class="no-map-wrapper">
-	<div id="no-map-content-box">
 	<h2>login</h2>
 	<p>If you haven't already created an account, <a href="/signup/">signup now!</a></p>
     	<form method="post" action="/login/">
@@ -94,8 +92,6 @@ jQuery(function($) {
 
 
     	</form>
-	</div>
-	</div>
 
        
 

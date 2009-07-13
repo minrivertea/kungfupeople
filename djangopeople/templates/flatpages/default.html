@@ -1,27 +1,17 @@
-{% extends "base.html" %}
+{% extends "base_no_map.html" %}
 
 {% block title%}{{ flatpage.title }} - {{ block.super }}{% endblock %}
 
 
-{% block header %}
-<h1>{{ flatpage.title }}</h1>
-{% endblock %}
 
 
 {% block content %}
 
-<div class="no-map-wrapper">
-<div id="no-map-content-box">
+{% block header %}
+<h2>{{ flatpage.title }}</h2>
+{% endblock %}
 
-		{{ flatpage.content }}
+{{ flatpage.content }}
 	
-
-	<div id="right-column">
-
-
-	</div>
-
-</div>
-</div>
 {% endblock %}
 

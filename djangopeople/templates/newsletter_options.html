@@ -1,0 +1,29 @@
+{% extends "base_no_map.html" %}
+
+{% block title%}{{ flatpage.title }} - {{ block.super }}{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+$(function() {
+  
+  $('input[name="newsletter"]').bind('change', function() {
+    $(this).parents('form')[0].submit();
+  });
+  
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+{% block header %}
+<h2>Newsletter options</h2>
+{% endblock %}
+
+<form action="." method="post">
+{{ form.newsletter.errors }}
+{{ form.newsletter }}
+</form>
+	
+{% endblock %}

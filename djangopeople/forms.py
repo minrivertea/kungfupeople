@@ -355,3 +355,11 @@ def make_validator(key, form):
             raise forms.ValidationError, 'You need to provide a URL'
         return form.cleaned_data.get(key)
     return check
+
+
+class NewsletterOptionsForm(forms.Form):
+    
+    newsletter = forms.CharField(max_length=5, required=False,
+                                widget=forms.widgets.RadioSelect(choices=KungfuPerson.NEWSLETTER_CHOICES))
+    
+    

@@ -1,22 +1,30 @@
+# python
+import os, md5, datetime
 import re
 from urlparse import urlparse
+from PIL import Image
+from cStringIO import StringIO
+from urllib2 import HTTPError, URLError
+
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from models import KungfuPerson, Country, User, Region, Club, Video, Style, DiaryEntry, Photo
-import utils
-from utils import unaccent_string, must_be_owner
-from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, PhotoEditForm
-from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 from django.conf import settings
 from django.db import transaction
-import os, md5, datetime
-from PIL import Image
-from cStringIO import StringIO
 from django.utils import simplejson
-from urllib2 import HTTPError, URLError
+
+# app
+from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
+  DiaryEntry, Photo
+import utils
+from utils import unaccent_string, must_be_owner
+from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
+  StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
+  PhotoEditForm, NewsletterOptionsForm
+
+from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 
 def set_cookie(response, key, value, expire=None):
     # http://www.djangosnippets.org/snippets/40/
@@ -242,7 +250,7 @@ def signup(request):
     })
 
 def whatnext(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
 
     return render(request, 'whatnext.html', locals())
 
@@ -1330,3 +1338,21 @@ def guess_username_json(request):
 #    # is the Google webmaster tools:
 #    # https://www.google.com/webmasters/tools/crawl-access?hl=en&siteUrl=http%3A%2F%2Fkungfupeople.com%2F&tid=generator
 #    return render(request, 'robots.txt', mimetype="text/plain")
+
+
+@must_be_owner
+def newsletter_options(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    
+    if request.method == "POST":
+        form = NewsletterOptionsForm(request.POST)
+        if form.is_valid():
+            newsletter = form.cleaned_data['newsletter']
+            person.newsletter = newsletter
+            person.save()
+            return HttpResponseRedirect(person.get_absolute_url())
+    else:
+        form = NewsletterOptionsForm(initial=dict(newsletter=person.newsletter))
+
+    return render(request, 'newsletter_options.html', locals())
+        

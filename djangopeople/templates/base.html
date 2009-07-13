@@ -70,8 +70,12 @@
 {% block map %}{% endblock %}
 
 <div class="main-div">
+         
+        {% block content_outer %}
 	
         {% block content %}{% endblock %}
+        
+        {% endblock %}
 
 
 	{% block extra %}{% endblock %}

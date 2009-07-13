@@ -180,7 +180,7 @@ class Newsletter(models.Model):
         def get_url(path):
             return 'http://%s%s' % (domain, path)
         context['profile_url'] = get_url(person.get_absolute_url())
-        context['opt_out_url'] = get_url(person.get_absolute_url() + 'opt-out/')
+        context['opt_out_url'] = get_url(person.get_absolute_url() + 'newsletter/options/')
         
             
         

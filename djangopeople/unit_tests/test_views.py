@@ -9,7 +9,7 @@ from djangopeople.models import KungfuPerson, Club
 
 from djangopeople import views
 
-class SimpleTest(TestCase):
+class ViewsTestCase(TestCase):
     def test_guess_club_name(self):
         """Test signup"""
         
