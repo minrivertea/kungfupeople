@@ -330,6 +330,10 @@ class DistanceManager(models.Manager):
         if not isinstance(point, tuple):
             raise TypeError
         
+        # this manager hack only works in mysql or postgres
+        if settings.DATABASE_ENGINE == 'sqlite3':
+            return []
+        
         cursor = connection.cursor()
         x, y = point
         table = self.model._meta.db_table

@@ -143,7 +143,7 @@ div.bio a.edit {
 
 	{% if styles %}
 		<span class="small-text"><strong>Styles: </strong>
-		{% for style in styles %} {{ style.get_absolute_url }}
+		{% for style in styles %}
 		<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>{% if not forloop.last %}, {% endif %}
 		{% endfor %}
 		</span><br/>

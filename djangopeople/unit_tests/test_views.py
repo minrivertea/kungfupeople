@@ -4,10 +4,11 @@ testing views
 import os
 from django.utils import simplejson
 
-from django.test import TestCase
-from djangopeople.models import KungfuPerson, Club
+from djangopeople.models import KungfuPerson, Club, Country
 
 from djangopeople import views
+from testbase import TestCase
+
 
 class ViewsTestCase(TestCase):
     def test_guess_club_name(self):
@@ -98,10 +99,55 @@ class ViewsTestCase(TestCase):
         
         
     
-    #def test_signup(self):
-    #    """test posting to signup"""
-    #    
-    #    assert False, "Work harder!"
+    def test_signup_basic(self):
+        """test posting to signup"""
+        # load from fixtures
+        example_country = Country.objects.all().order_by('?')[0]
+        
+        response = self.client.post('/signup/', 
+                                    dict(username='bob',
+                                         email='bob@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        
+        self.assertEqual(KungfuPerson.objects.\
+           filter(user__username="bob").count(), 1)
+        
+        
+    def test_newsletter_options(self):
+        """test changing your newsletter options"""
+        
+        user, person = self._create_person('bob', 'bob@example.com',
+                                           )
+        
+        default = person.newsletter
+        
+        # change it to plain
+        response = self.client.post('/bob/newsletter/options/',
+                                    dict(newsletter='plain'))
+        self.assertEqual(response.status_code, 403) # forbidden
+        
+        self.client.login(username="bob", password="secret")
+        
+        response = self.client.post('/bob/newsletter/options/',
+                                    dict(newsletter='plain'))
+        # THIS DOES NOT WORK!!!
+        # WHY IS THE LOGIN NOT TAKING EFFECT?????
+        self.assertEqual(response.status_code, 302) # redirect
+
+        
+        
+        
+        
         
         
         

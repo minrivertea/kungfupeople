@@ -191,6 +191,7 @@ class ModelTestCase(TestCase):
         self.assertNotEqual(context['profile_url'], person.get_absolute_url())
         # but...
         self.assertTrue(context['profile_url'].endswith(person.get_absolute_url()))
-        self.assertTrue(context['opt_out_url'].endswith(person.get_absolute_url()+'opt-out/'))
+        self.assertTrue(context['opt_out_url'].\
+          endswith(person.get_absolute_url()+'newsletter/options/'))
         
         
