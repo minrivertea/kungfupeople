@@ -91,21 +91,6 @@ class ViewsTestCase(TestCase):
         assert response.status_code == 200
         self.assertEqual(response.content, 'No newsletter to send')
         
-
         
         
         
-        
-        
-
-        
-    
-        
-        
-        
-        
-        
-        
-        
-    
-    

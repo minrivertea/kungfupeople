@@ -103,5 +103,6 @@ def person_newsletter(request, username, newsletter_id):
     subject = data['subject']
     
     return render(request, 'person_newsletter.html', locals())
-    
+
+
 
