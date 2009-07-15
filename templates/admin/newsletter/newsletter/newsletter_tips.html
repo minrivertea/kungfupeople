@@ -1,0 +1,83 @@
+<h2>TIPS!</h2>
+
+{% comment %}
+Use {{ change }} if you need to know about creating or changing a newsletter.
+{% endcomment %}
+
+<div class="tipblock">
+<h4>Available global variables:</h4>
+
+<dl>
+  <dt>newsletter_issue_no</dt>
+  <dd>An whole number</dd>
+  
+  <dt>site_url</dt>
+  <dd>includes the <code>http://...</code></dd>
+  
+  <dt>PROJECT_NAME</dt>
+  <dd>{{ PROJECT_NAME }}</dd>
+  
+  <dt>PROJECT_MARTIAL_ART<dt>
+  <dd>{{ PROJECT_MARTIAL_ART }}</dd>
+  
+  <dt>new_photos</dt>
+  <!--<dt>new_photos_count</dt>-->
+  <dt>new_diary_entries</dt>
+  <!--<dt>new_diary_entries_count</dt>-->
+  <dt>new_people</dt>
+  <!--<dt>new_people_count</dt>-->
+  <dt>new_clubs</dt>
+  <!--<dt>new_clubs_count</dt>-->
+  <dt>new_styles</dt>
+  <!--<dt>new_styles_count</dt>-->
+  
+</dl>
+</div>
+
+
+<div class="tipblock">
+<h4>Available personal variables:</h4>
+
+<dl>
+  <dt>first_name</dt>
+  <dt>last_name</dt>
+  <dt>email</dt>
+  <dt>username</dt>
+  <dt>profile_views</dt>
+  <dt>profile_url</dt>
+  <dt>opt_out_url</dt>
+  <dt>newsletter_online_url</dt>
+
+</dl>
+</div>
+
+
+<div class="tipblock">
+<h4>General tips:</h4>
+
+{% if change %}
+<p><a href="{{ newsletter.get_absolute_url }}"><strong>Preview the newsletter!</strong></a></p>
+{% endif %}
+
+<p>For all variables ending in <code>_url</code> there is one that ends in <code>_url_alu</code>. E.g. <code>profile_url_alu</code>.</p>
+</div>
+
+{% if change %}
+<div class="tipblock">
+<h4>Stats:</h4>
+
+{% if newsletter.sent %}
+  <p><strong>NOTE!</strong> This newsletter was sent to {{ count_sent }} people{% if count_sent_failed %} (of which {{ count_sent_failed }} failed){% endif %}.</p>
+{% else %}
+  <p>
+  {% if count_sent %}
+  <strong>NOTE!</strong>
+  This newsletter has, so far, been sent to {{ count_sent }} people{% if count_sent_failed %} (of which {{ count_sent_failed }} failed){% endif %}.
+  {% else %}
+   This newsletter <strong>will be sent</strong> to <strong>{{ will_send_total }}</strong> people
+   ({{ will_send_html }} as HTML &amp; {{ will_send_plain }} as plain text).
+  {% endif %}
+  </p>
+{% endif %}
+</div>
+{% endif %}

@@ -47,9 +47,9 @@ urlpatterns = patterns('',
     url(r'^([a-z0-9]{3,})/diary/([a-z0-9-]{3,})/$', views.diary_entry, name="diaryentry.view"),
     (r'^([a-z0-9]{3,})/club/$', views.edit_club),     # is this used?
     (r'^([a-z0-9]{3,})/style/$', views.edit_style),   # is this used?
-    url(r'^([a-z0-9]{3,})/photo/([0-9])/delete/$', views.photo_delete, name="photo.delete"),
-    url(r'^([a-z0-9]{3,})/photo/([0-9])/edit/$', views.photo_edit, name="photo.edit"),
-    url(r'^([a-z0-9]{3,})/photo/([0-9])/$', views.photo, name="photo.view"),
+    url(r'^([a-z0-9]{3,})/photo/(\d+)/delete/$', views.photo_delete, name="photo.delete"),
+    url(r'^([a-z0-9]{3,})/photo/(\d+)/edit/$', views.photo_edit, name="photo.edit"),
+    url(r'^([a-z0-9]{3,})/photo/(\d+)/$', views.photo, name="photo.view"),
     url(r'^([a-z0-9]{3,})/photo/upload/$', views.photo_upload),
     url(r'^([a-z0-9]{3,})/photo/upload/multiple/$', views.photo_upload_multiple),
     url(r'^([a-z0-9]{3,})/photo/upload/multiple/pre/$', views.photo_upload_multiple_pre),
