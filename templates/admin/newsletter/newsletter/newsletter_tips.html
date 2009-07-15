@@ -57,6 +57,9 @@ Use {{ change }} if you need to know about creating or changing a newsletter.
 
 {% if change %}
 <p><a href="{{ newsletter.get_absolute_url }}"><strong>Preview the newsletter!</strong></a></p>
+{% else %}
+<p>Once you've created the newsletter and go to edit you can click to preview it and you'll see how
+many people it will be sent to.</p>
 {% endif %}
 
 <p>For all variables ending in <code>_url</code> there is one that ends in <code>_url_alu</code>. E.g. <code>profile_url_alu</code>.</p>
