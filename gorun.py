@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+#
+# Wrapper on pyinotify for running commands
+# (c) 2009 Peter Bengtsson, peter@fry-it.com
+# 
+# TODO: the lock file mechanism doesn't work! threading?
+#
+
+
+
 #--- Configure things
 
 DIRECTORIES = (
@@ -15,6 +25,12 @@ DIRECTORIES = (
                
    ('djangopeople/views.py',
     './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
+               
+   ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
+    './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
+
+   ('/home/peterbe/dev/DJANGO/django-static/django_static/tests.py',
+    './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
 
 )
 
@@ -42,6 +58,10 @@ for i, (path, cmd) in enumerate(DIRECTORIES):
         actual_directories.add(os.path.dirname(path)) 
         
     lookup[path] = cmd
+    
+# Prepare a lock file
+from tempfile import gettempdir
+LOCK_FILE = os.path.join(gettempdir(), 'gorunning.lock')
 
 from pyinotify import WatchManager, Notifier, ThreadedNotifier, ProcessEvent, EventsCodes
 
@@ -92,11 +112,19 @@ class PTmp(ProcessEvent):
         if _ignore_file(event.pathname):
             return
             
+        if os.path.isfile(LOCK_FILE):
+            # command is still running
+            return
+        
         print "Modifying:", event.pathname
         command = _find_command(event.pathname)
         if command:
+            open(LOCK_FILE, 'w').write("Running command\n\n%s\n" % command)
             os.system(command)
+            if os.path.isfile(LOCK_FILE):
+                os.remove(LOCK_FILE)
             print "Waiting for stuff to happen again..."
+            
         
 p = PTmp()
 notifier = Notifier(wm, p)

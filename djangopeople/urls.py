@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     (r'^([a-z0-9]{3,})/diary/add/$', views.diary_entry_add),
     (r'^([a-z0-9]{3,})/diary/([a-z0-9-]{3,})/delete/$', views.diary_entry_delete),
     (r'^([a-z0-9]{3,})/diary/([a-z0-9-]{3,})/edit/$', views.diary_entry_edit),
+    url(r'^([a-z0-9]{3,})/diary/([a-z0-9-]{3,})/location.json$', views.diary_entry_location_json),
     url(r'^([a-z0-9]{3,})/diary/([a-z0-9-]{3,})/$', views.diary_entry, name="diaryentry.view"),
     (r'^([a-z0-9]{3,})/club/$', views.edit_club),     # is this used?
     (r'^([a-z0-9]{3,})/style/$', views.edit_style),   # is this used?

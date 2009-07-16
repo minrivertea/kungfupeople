@@ -11,7 +11,7 @@ body, textarea {
 	font-family: Helvetica,Arial,sans-serif;
 	line-height: 1.2em;
 	
-	/* background: url('/static/img/bg.gif'); */
+	/* background: url('/img/bg.gif'); */
 }
 
 body * {
@@ -29,7 +29,7 @@ body * {
 	width: 100%;
 	background-color: white;
 	float: left;
-	/* background: url('/static/img/bodyback.png') top left repeat-y; */
+	/* background: url('/img/bodyback.png') top left repeat-y; */
 }
 
 .no-map-wrapper {
@@ -78,7 +78,7 @@ body * {
 
 
 #logo {
-	background: url('/static/img/logo.png') no-repeat;
+	background: url("/img/logo.png") no-repeat;
 	height: 66px;
 	width: 508px;
 	float: left;
@@ -117,7 +117,7 @@ body * {
 #signup {
 	position: relative;
 	z-index: 20;
-	background: url('/static/img/signup.png') no-repeat;
+	background: url("/img/signup.png") no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
 	text-align: left;
@@ -151,7 +151,7 @@ body * {
 #notice {
 	position: relative;
 	z-index: 20;
-	background: url('/static/img/signup2.png') no-repeat;
+	background: url("/img/signup2.png") no-repeat;
 	font-family: Helvetica, sans-serif;
 	font-size: 1em;
 	text-align: left;
@@ -770,7 +770,7 @@ div#crosshair {
     margin-top: -8px;
     margin-left: -8px;
     display: block;
-    background: url(/img/crosshair.gif);
+    background: url("/img/crosshair.gif");
     background-position: center center;
     background-repeat: no-repeat;
 }
@@ -1090,7 +1090,7 @@ diaries ul {
 }
 
 .diary-list li {
-	background: transparent url(/static/img/full_page.png) scroll no-repeat ;
+	background: transparent url("/img/full_page.png") scroll no-repeat ;
 	margin-bottom: 10px;
 	padding: 0 0 0 35px;
 }

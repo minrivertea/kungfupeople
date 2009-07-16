@@ -208,14 +208,16 @@ def signup(request):
             )
 
             # and then add the style if provided
-            name = form.cleaned_data['style']
-            slug = name.strip().replace(' ', '-').lower()
-            if name:
-                style = _get_or_create_style(name)
-                style.slug = slug
-                style.save()
-                person.styles.add(style)
-            
+            style_name = form.cleaned_data['style']
+            # in case they enter multiple styles
+            for name in [x.strip() for x in style_name.split(',') if x.strip()]:
+                slug = name.strip().replace(' ', '-').lower()
+                if name:
+                    style = _get_or_create_style(name)
+                    style.slug = slug
+                    style.save()
+                    person.styles.add(style)
+                
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
@@ -407,6 +409,20 @@ def photo_upload(request, username):
                    'latitude': person.latitude,
                    'longitude': person.longitude,
                   }
+        if request.GET.get('diary'):
+            try:
+                diary_entry = DiaryEntry.objects.get(id=request.GET.get('diary'))
+                if diary_entry.user != person.user:
+                    raise DiaryEntry.DoesNotExist
+                initial['diary_entry'] = diary_entry.id
+                initial['location_description'] = diary_entry.location_description
+                initial['country'] = diary_entry.country
+                initial['latitude'] = diary_entry.latitude
+                initial['longitude'] = diary_entry.longitude
+                print initial
+            except DiaryEntry.DoesNotExist:
+                pass
+                
         form = PhotoUploadForm(initial=initial)
         
         diary_entries = []
@@ -428,6 +444,19 @@ def photo_upload(request, username):
         'form': form,
         'person': person,
     })
+
+
+@must_be_owner
+def diary_entry_location_json(request, username, slug):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    diary_entry = get_object_or_404(DiaryEntry, slug=slug)
+    
+    data = {'country': diary_entry.country.iso_code,
+            'location_description': diary_entry.location_description,
+            'latitude': diary_entry.latitude,
+            'longitude': diary_entry.longitude
+            }
+    return render_json(data)
 
 
 class UploadError(Exception):
