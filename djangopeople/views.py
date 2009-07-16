@@ -990,6 +990,19 @@ def diary_entry_edit(request, username, slug):
             entry.content = form.cleaned_data['content']
             entry.is_public = form.cleaned_data['is_public']
             entry.slug = entry.title.strip().replace(' ', '-').lower()
+            if form.cleaned_data['region']:
+                region = Region.objects.get(
+                    country__iso_code = form.cleaned_data['country'],
+                    code = form.cleaned_data['region']
+                )
+                entry.region = region
+                
+            if form.cleaned_data['country']:
+                entry.country = Country.objects.get(iso_code=form.cleaned_data['country'])
+                entry.location_description = form.cleaned_data['location_description']
+                entry.latitude = form.cleaned_data['latitude']
+                entry.longitude = form.cleaned_data['longitude']
+
             entry.save()
             #return HttpResponseRedirect('/%s/diary/%s/' % (username, entry.slug))
             return HttpResponseRedirect(entry.get_absolute_url())
