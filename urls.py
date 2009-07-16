@@ -31,22 +31,27 @@ urlpatterns = patterns('',
                        
     (r'^sitemap.xml$', sitemap,
      {'sitemaps': sitemaps}),
-                       
-    
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': os.path.join(settings.OUR_ROOT, 'static')
-    }),
-
-    # CSS, Javascript and IMages
-    (r'^img/(?P<path>.*)$', django.views.static.serve,
-     {'document_root': settings.MEDIA_ROOT + '/img',
-       'show_indexes': False}),                       
-    (r'^css/(?P<path>.*)$', django.views.static.serve,
-      {'document_root': settings.MEDIA_ROOT + '/css',
-       'show_indexes': False}),
-    (r'^js/(?P<path>.*)$', django.views.static.serve,
-      {'document_root': settings.MEDIA_ROOT + '/js',
-       'show_indexes': False}),
-                       
+                                              
  
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns('', 
+                            
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': os.path.join(settings.OUR_ROOT, 'static')
+        }),
+                            
+        # CSS, Javascript and IMages
+        (r'^img/(?P<path>.*)$', django.views.static.serve,
+         {'document_root': settings.MEDIA_ROOT + '/img',
+           'show_indexes': False}),                       
+        (r'^css/(?P<path>.*)$', django.views.static.serve,
+          {'document_root': settings.MEDIA_ROOT + '/css',
+           'show_indexes': False}),
+        (r'^js/(?P<path>.*)$', django.views.static.serve,
+          {'document_root': settings.MEDIA_ROOT + '/js',
+           'show_indexes': False}),
+    
+    )
+                            
