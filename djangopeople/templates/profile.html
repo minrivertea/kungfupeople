@@ -1,6 +1,5 @@
 {% extends base_template %}
-{% load django_static %}
-{% load misc_extras %}
+{% load django_static thumbnail misc_extras %}
 
 {% block title%}{{ person }} |{% endblock %}
 
@@ -9,7 +8,7 @@
 
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
-{% block js %}{% load thumbnail %}
+{% block js %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
 var nearby_people = [
@@ -233,7 +232,7 @@ div.bio a.edit {
 		{% for photo in photos %}
 		<li class="thumbnail-list">
 		<a href="{{ photo.get_absolute_url }}">
-		<img src="{% thumbnail photo.photo 60x60 crop %}">
+		<img src="{% thumbnail photo.photo 60x60 %}">
 		</a>
 		</li>
 		{% endfor %}
@@ -256,7 +255,7 @@ div.bio a.edit {
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
-                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}/{% thumbnail person.photo 60x60 %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
 		</div>
                 </li>
                 {% endfor %}
