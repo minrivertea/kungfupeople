@@ -38,20 +38,16 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
 <div id="content-box">
 
 	<h2>{{ entry.title }}</h2>
-	<p class="meta">{% if is_owner %}<a href="edit">Edit this entry</a>{% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}  |  {{ entry.date_added|date:"d M Y" }} |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
+	<p class="meta">{% if is_owner %}<a href="../../photo/upload?diary={{ entry.id }}"><strong>Add photos to this entry</strong></a> | <a href="edit">Edit this entry</a>{% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}  |  {{ entry.date_added|date:"d M Y" }} |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
 
 		{% if photos %}
+		<div id="related-photos">
 		<div class="inside-content-box">
 			<div class="inside-content-box-head">
 			<h4>Related Photos</h4>
 			</div>
 
 			<div class="inside-content-box-main">
-			{% if is_owner %}
-			<p class="meta" style="margin-top:60px">
-			<a href="../../photo/upload?diary={{ entry.id }}">Add photos related to this entry</a>
-			</p>
-			{% endif %}
                         <ul class="thumbnail-list">
 			{% for photo in photos %}
 			<li class="thumbnail-list">
@@ -61,6 +57,7 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
 			</li>
 			{% endfor %}
 			</div>
+		</div>
 		</div>
                 {% endif %}
 

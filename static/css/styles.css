@@ -6,6 +6,10 @@
 	text-decoration: none;
 }
 
+a { 
+	text-decoration: none; 
+}
+
 body, textarea {
 	color: #000;
 	font-family: Helvetica,Arial,sans-serif;
@@ -349,7 +353,7 @@ a:link.h2-link, a:visited.h2-link {
 	color: #95CFD1;
 }
 
-a:hover.h2-link {
+.h2-link a:hover {
 	font-size: 1em;
 	font-weight: normal;
 	color: white;
@@ -385,11 +389,17 @@ h4 {
 	margin-bottom: 10px;
 }
 
+.inside-content-box h4 {
+	border-bottom: none;
+	font-weight: normal;
+}
+
 /* @end */
 
 /* @group Links */
 
-a img {
+a:link img,
+a:visited img {
 	height: auto;
 	width: auto;
 	border: none;
@@ -410,32 +420,10 @@ a:hover img {
 	cursor: pointer;
 }
 
-
-a:link,
-a:visited,
-a:hover,
-a:active,
-a:focus {
-	color: #708e20;
-	padding:2px;
-
-}
-a:hover,
-a:active,
-a:focus {
-	background-color: none;
-	padding:2px;
-	color: white;
-}
-a:active {
-
-}
-
 #content-box a:hover,
 #content-box a:active,
 #content-box a:focus {
 	background-color: #708e20;
-	padding:2px;
 	color: white;
 }
 
@@ -443,10 +431,49 @@ a:active {
 #no-map-content-box a:active,
 #no-map-content-box a:focus {
 	background-color: #708e20;
-	padding:2px;
 	color: white;
 }
 
+#right-column a:hover,
+#right-column a:active,
+#right-column a:focus {
+	background-color: #708e20;
+	color: white;
+}
+
+#related-photos a:link,
+#related-photos a:visited {
+	text-decoration: none;
+}
+
+#related-photos a:hover,
+#related-photos a:active,
+#related-photos a:focus {
+	filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	-khtml-opacity: 0.6;
+	opacity: 0.6;
+	text-decoration: none;
+}
+
+#gmap a:hover,
+#gmap a:active,
+#gmap a:focus {
+	background-color: #708e20;
+	color: white;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+	color: #708e20;
+}
+
+img a:hover {
+	background-color: red;
+}
 
 /* @end */
 
@@ -659,10 +686,6 @@ ul.split li {
 /* @group header */
 
 
-.header a {
-
-}
-
 .header p {
 	margin: 0px 0px 10px 40px;
 }
@@ -741,16 +764,6 @@ h1 {
 
 /* @end */
 
-/* @end */
-
-/* @group footer */
-
-
-
-/* @end */
-
-
-/* @group Overrides */
 
 /* @group Signup page */
 
@@ -1066,20 +1079,14 @@ diaries ul {
 }
 
 .inside-content-box-main {
-	padding: 10px;
+	padding: 15px;
 	height: 170px;
 	background-color: #ffdddd;
 }
 
-
 .thumbnail-list li {
 	display: inline;
-}
-
-.thumbnail-list img {
-	border: 1px solid #CCCCCC;
-	background-color: white;
-	padding: 3px;
+	margin-right: 5px;
 }
 
 .diary-list ul {
