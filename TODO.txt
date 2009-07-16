@@ -1,5 +1,7 @@
 TODO LIST:
 
+* (PB) Change location on photo upload with AJAX when you select a
+  diary entry.
 * (PB) Serve thumbnails from static.kungfupeople.com
 * (PB) Sort out diary_add.js so it does not Repeat itself
 * Ability to search! /search?q=peter works but there is no search form
