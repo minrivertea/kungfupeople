@@ -256,7 +256,7 @@ div.bio a.edit {
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
-                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}/{% thumbnail person.photo 60x60 %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
 		</div>
                 </li>
                 {% endfor %}
