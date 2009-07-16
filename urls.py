@@ -36,6 +36,11 @@ urlpatterns = patterns('',
 )
 
 if settings.DEBUG:
+    
+    # When not in debug mode (i.e. development mode)
+    # nothing django.views.static.serve should not be used at all.
+    # If it is used it means that nginx config isn't good enough.
+    
     urlpatterns += patterns('', 
                             
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {
