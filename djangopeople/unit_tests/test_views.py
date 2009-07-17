@@ -4,7 +4,8 @@ testing views
 import os
 from django.utils import simplejson
 
-from djangopeople.models import KungfuPerson, Club, Country
+from djangopeople.models import KungfuPerson, Club, Country, Style, DiaryEntry
+from django.utils import simplejson
 
 from djangopeople import views
 from testbase import TestCase
@@ -121,7 +122,39 @@ class ViewsTestCase(TestCase):
         
         self.assertEqual(KungfuPerson.objects.\
            filter(user__username="bob").count(), 1)
+
+
+    def test_signup_multiple_styles(self):
+        """test posting to signup and say that you have multiple styles
+        by entering it with a comma"""
+        # load from fixtures
+        example_country = Country.objects.all().order_by('?')[0]
         
+        response = self.client.post('/signup/', 
+                                    dict(username='bob',
+                                         email='bob@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                         style=u"Fat style, Chocolate rain"
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        
+        self.assertEqual(KungfuPerson.objects.\
+           filter(user__username="bob").count(), 1)
+        
+        # This should now have created 2 styles
+        self.assertEqual(Style.objects.all().count(), 2)
+        self.assertEqual(Style.objects.filter(name="Fat style").count(), 1)
+        self.assertEqual(Style.objects.filter(name="Chocolate rain").count(), 1)
+        
+
         
     def test_newsletter_options(self):
         """test changing your newsletter options"""
@@ -136,13 +169,57 @@ class ViewsTestCase(TestCase):
                                     dict(newsletter='plain'))
         self.assertEqual(response.status_code, 403) # forbidden
         
-        self.client.login(username="bob", password="secret")
+        #self.client.login(username="bob", password="secret")
+        self.client.post('/login/', dict(username="bob", password="secret"))
         
+        r=self.client.get('/')
+        print r.content
         response = self.client.post('/bob/newsletter/options/',
                                     dict(newsletter='plain'))
+        
         # THIS DOES NOT WORK!!!
         # WHY IS THE LOGIN NOT TAKING EFFECT?????
         self.assertEqual(response.status_code, 302) # redirect
+        
+    def test_diary_entry_location_json(self):
+        """test getting the json for a diary entry"""
+        
+        country = Country.objects.all().order_by('?')[0]
+
+        user, person = self._create_person('bob', 'bob@example.com',
+                                           password="secret")
+        # that person has to have a diary entry
+        entry = DiaryEntry.objects.create(user=user, title=u"Title",
+                                          slug="title",
+                                          content=u"Content",
+                                          is_public=True,
+                                          country=country,
+                                          latitude=2.2,
+                                          longitude=-1.1,
+                                          location_description=u"Hell")
+        
+        response = self.client.get(entry.get_absolute_url()+'location.json')
+        self.assertEqual(response.status_code, 403) # because you're not logged in
+        
+        # but if you log in it should be ok
+        self.client.login(username="bob", password="secret")
+        
+        response = self.client.get(entry.get_absolute_url()+'location.json')
+        self.assertEqual(response.status_code, 200)
+        
+        data = simplejson.loads(response.content)
+        self.assertEqual(data['latitude'], 2.2)
+        self.assertEqual(data['longitude'], -1.1)
+        self.assertEqual(data['country'], country.iso_code)
+        self.assertEqual(data['location_description'], u"Hell")        
+        
+        
+        
+        
+        
+        
+        
+    
 
         
         

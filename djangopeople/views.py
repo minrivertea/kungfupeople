@@ -1,4 +1,5 @@
 # python
+import logging
 import os, md5, datetime
 import re
 from urlparse import urlparse
@@ -102,8 +103,6 @@ def login(request):
         })
     username = request.POST.get('username')
     password = request.POST.get('password')
-    print "username", repr(username)
-    print "password", repr(password)
     user = auth.authenticate(username=username, password=password)
     
     if user is not None and user.is_active:
@@ -208,14 +207,16 @@ def signup(request):
             )
 
             # and then add the style if provided
-            name = form.cleaned_data['style']
-            slug = name.strip().replace(' ', '-').lower()
-            if name:
-                style = _get_or_create_style(name)
-                style.slug = slug
-                style.save()
-                person.styles.add(style)
-            
+            style_name = form.cleaned_data['style']
+            # in case they enter multiple styles
+            for name in [x.strip() for x in style_name.split(',') if x.strip()]:
+                slug = name.strip().replace(' ', '-').lower()
+                if name:
+                    style = _get_or_create_style(name)
+                    style.slug = slug
+                    style.save()
+                    person.styles.add(style)
+                
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
@@ -407,6 +408,20 @@ def photo_upload(request, username):
                    'latitude': person.latitude,
                    'longitude': person.longitude,
                   }
+        if request.GET.get('diary'):
+            try:
+                diary_entry = DiaryEntry.objects.get(id=request.GET.get('diary'))
+                if diary_entry.user != person.user:
+                    raise DiaryEntry.DoesNotExist
+                initial['diary_entry'] = diary_entry.id
+                initial['location_description'] = diary_entry.location_description
+                initial['country'] = diary_entry.country
+                initial['latitude'] = diary_entry.latitude
+                initial['longitude'] = diary_entry.longitude
+                print initial
+            except DiaryEntry.DoesNotExist:
+                pass
+                
         form = PhotoUploadForm(initial=initial)
         
         diary_entries = []
@@ -430,6 +445,19 @@ def photo_upload(request, username):
     })
 
 
+@must_be_owner
+def diary_entry_location_json(request, username, slug):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    diary_entry = get_object_or_404(DiaryEntry, slug=slug)
+    
+    data = {'country': diary_entry.country.iso_code,
+            'location_description': diary_entry.location_description,
+            'latitude': diary_entry.latitude,
+            'longitude': diary_entry.longitude
+            }
+    return render_json(data)
+
+
 class UploadError(Exception):
     pass
 
@@ -450,10 +478,27 @@ def _get_person_upload_folder(person):
                        )
     
     
+def upload_test(request):
+    if request.method == "POST":
+        logging.info("Filename=%s" % request.POST.get('Filename',''))
+        logging.info("Size = %s" % len(request.FILES['Filedata'].read()))
+        #r = photo_upload_multiple_pre(request, "julius")
+        #print r
+        return HttpResponse("1")
+    else:
+        return render(request, 'upload_test.html', {
+                                             })
+        
+        
 
 #@must_be_owner # causes a 403! that's why it's commented out
 def photo_upload_multiple_pre(request, username):
     """ upload a SINGLE photo """
+    print "PHOTO_UPLOAD_MULTIPLE_PRE!!"
+    
+    
+    logging.info('username=%r' % username)
+    print "username", repr(username)
     person = get_object_or_404(KungfuPerson, user__username=username)
     
     # uploadify sends a POST but puts ?folder=xxx on the URL
@@ -961,6 +1006,19 @@ def diary_entry_edit(request, username, slug):
             entry.content = form.cleaned_data['content']
             entry.is_public = form.cleaned_data['is_public']
             entry.slug = entry.title.strip().replace(' ', '-').lower()
+            if form.cleaned_data['region']:
+                region = Region.objects.get(
+                    country__iso_code = form.cleaned_data['country'],
+                    code = form.cleaned_data['region']
+                )
+                entry.region = region
+                
+            if form.cleaned_data['country']:
+                entry.country = Country.objects.get(iso_code=form.cleaned_data['country'])
+                entry.location_description = form.cleaned_data['location_description']
+                entry.latitude = form.cleaned_data['latitude']
+                entry.longitude = form.cleaned_data['longitude']
+
             entry.save()
             #return HttpResponseRedirect('/%s/diary/%s/' % (username, entry.slug))
             return HttpResponseRedirect(entry.get_absolute_url())

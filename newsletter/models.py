@@ -18,7 +18,10 @@ from djangopeople.models import AutoLoginKey, Photo, DiaryEntry, KungfuPerson,\
 
 from djangopeople.html2plaintext import html2plaintext
 
-from newsletter.premailer import Premailer
+try:
+    from premailer import Premailer
+except ImportError:
+    Premailer = None
 
     
 # settings.py
@@ -39,6 +42,8 @@ class InvalidVarException(object):
     
     
 def _get_context_for_all(last_send_date=None):
+    ## BE SURE to update newsletter_tips.html when you add new variables here!
+    
     context = {}
     
     # newsletter_issue_no is an integer number. It's basically a count
@@ -77,15 +82,15 @@ def _get_context_for_all(last_send_date=None):
         new_styles = new_styles.filter(add_date__gt=last_send_date)
         
     context['new_photos'] = new_photos
-    context['new_photos_count'] = new_photos.count()
+    #context['new_photos_count'] = new_photos.count()
     context['new_diary_entries'] = new_diary_entries
-    context['new_diary_entries_count'] = new_diary_entries.count()
+    #context['new_diary_entries_count'] = new_diary_entries.count()
     context['new_people'] = new_people
-    context['new_people_count'] = new_people.count()
+    #context['new_people_count'] = new_people.count()
     context['new_clubs'] = new_clubs
-    context['new_clubs_count'] = new_clubs.count()
+    #context['new_clubs_count'] = new_clubs.count()
     context['new_styles'] = new_styles
-    context['new_styles_count'] = new_styles.count()
+    #context['new_styles_count'] = new_styles.count()
 
     
     return context
@@ -125,6 +130,10 @@ class Newsletter(models.Model):
             return u"sent " + self.sent_date.strftime('%A %b %Y')
         else:
             return u"send on " + self.send_date.strftime('%A %b %Y')
+        
+    @models.permalink
+    def get_absolute_url(self):
+        return ("newsletter.preview", (), {'newsletter_id': self.id})
             
     @property
     def sent(self):
@@ -162,6 +171,8 @@ class Newsletter(models.Model):
     
     
     def _get_context_for_person(self, person, last_send_date=None):
+        ## BE SURE to update newsletter_tips.html when you add new variables here!
+        
         """return a dict of variables that can be used in the rendering 
         of the template.
         
@@ -181,6 +192,9 @@ class Newsletter(models.Model):
             return 'http://%s%s' % (domain, path)
         context['profile_url'] = get_url(person.get_absolute_url())
         context['opt_out_url'] = get_url(person.get_absolute_url() + 'newsletter/options/')
+        
+        context['newsletter_online_url'] = \
+          get_url('/newsletters/%s/%d/' % (person.user.username, self.id))
         
             
         
@@ -311,8 +325,12 @@ class Newsletter(models.Model):
                 base_url = None
                 domain = Site.objects.get_current().domain
                 base_url = 'http://%s' % domain
-                                
-                html = Premailer(html, base_url=base_url).transform()
+                       
+                if Premailer is None:
+                    import warnings
+                    warnings.warn("Premailer not installed (http://pypi.python.org/pypi/premailer")
+                else:
+                    html = Premailer(html, base_url=base_url).transform()
                 
             if dry_run:
                 return subject, text, html

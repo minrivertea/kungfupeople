@@ -78,8 +78,8 @@ from django.http import HttpResponseForbidden
 @simple_decorator
 def must_be_owner(view):
     def inner(request, *args, **kwargs):
-        if not request.user or request.user.is_anonymous() \
-            or request.user.username != args[0]:
+        #print "REQUEST.USER", request.user
+        if not request.user or request.user.is_anonymous() or request.user.username != args[0]:
             return HttpResponseForbidden('Not allowed')
         return view(request, *args, **kwargs)
     return inner

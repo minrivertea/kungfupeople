@@ -1,6 +1,5 @@
 {% extends base_template %}
-{% load django_static %}
-{% load misc_extras %}
+{% load django_static thumbnail misc_extras %}
 
 {% block title%}{{ person }} |{% endblock %}
 
@@ -9,7 +8,7 @@
 
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
-{% block js %}{% load thumbnail %}
+{% block js %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
 var nearby_people = [
@@ -249,6 +248,27 @@ div.bio a.edit {
 	{% endif %}
 
 
+<<<<<<< HEAD:djangopeople/templates/profile.html
+=======
+		{% if photos %}
+		<div class="highlight-profile">
+		<h4>{{ person.user.first_name }}'s photos 
+		{% if is_owner %}(<a href="/{{ user.username }}/photo/upload">add more photos</a>)
+		{% endif %}
+		</h4>
+		<ul class="thumbnail-list">
+		{% for photo in photos %}
+		<li class="thumbnail-list">
+		<a href="{{ photo.get_absolute_url }}">
+		<img src="{% thumbnail photo.photo 60x60 %}">
+		</a>
+		</li>
+		{% endfor %}
+		</ul>
+		</div>
+		{% endif %}
+       
+>>>>>>> 961853514b62ea7791c8ebb49f77c56005c5c300:djangopeople/templates/profile.html
 	</div>
 	</div>
 
@@ -265,7 +285,11 @@ div.bio a.edit {
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
+<<<<<<< HEAD:djangopeople/templates/profile.html
                     <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" title="{{ person }}"></a>
+=======
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
+>>>>>>> 961853514b62ea7791c8ebb49f77c56005c5c300:djangopeople/templates/profile.html
 		</div>
                 </li>
                 {% endfor %}

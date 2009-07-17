@@ -10,7 +10,7 @@ from sorl.thumbnail.processors import dynamic_import, get_valid_options
 thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 
 # app
-from models import KungfuPerson, Photo, DiaryEntry
+from djangopeople.models import KungfuPerson, Photo, DiaryEntry
 
 
 def context(request):
@@ -80,6 +80,8 @@ def context(request):
                 #thumbnail_url = thumbnail.absolute_url
                 #text = ('<img src="%s" alt="%s" border="0" class="thumbnail-in-notice"/> ' %\
                 #         (thumbnail_url, text)) + text
+                print "photo"
+                print repr(photo.get_absolute_url())
                 
                 data['show_notice'] = {'url': photo.get_absolute_url(),
                                        'leadin': "Snap!",

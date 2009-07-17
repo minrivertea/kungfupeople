@@ -359,7 +359,7 @@ class DistanceManager(models.Manager):
                   COS(RADIANS(gl.latitude - $y)))
                 ) * 6372.795 AS distance
             FROM 
-              djangopeople_kungfuperson gl
+              $table gl
             
               %s
               %s
