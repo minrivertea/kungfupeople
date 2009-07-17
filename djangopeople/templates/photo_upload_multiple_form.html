@@ -19,7 +19,7 @@ $(function() {
   $('#id_photo').fileUpload ({
     'uploader'  : '/uploadify/uploader.swf',
     'script'    : 'pre/',
-    'cancelImg' : '{% staticfile "/img/cancel.png" %}',
+    'cancelImg' : '/img/cancel.png',
     'auto'      : true,
     'folder'    : '/{{ person.id }}',
     'multi'     : true,
