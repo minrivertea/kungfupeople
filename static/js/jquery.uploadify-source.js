@@ -85,6 +85,7 @@ if (navigator.plugins != null && navigator.plugins.length > 0) {
 }
 */
 var flashVer = getFlashVersion();
+alert("Flash version: " + flashVer);
 flashVer = flashVer.split(",")[0];
 
 if(jQuery)(
