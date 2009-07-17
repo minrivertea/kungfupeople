@@ -6,12 +6,14 @@
 	text-decoration: none;
 }
 
+a { 
+	text-decoration: none; 
+}
+
 body, textarea {
 	color: #000;
 	font-family: Helvetica,Arial,sans-serif;
 	line-height: 1.2em;
-	
-	/* background: url('/img/bg.gif'); */
 }
 
 body * {
@@ -102,7 +104,7 @@ body * {
 #logo a:hover, #logo a:focus {
 	text-decoration: none;
 	cursor: pointer;
-	height: 46px;
+	height: 66px;
 	width: 486px;
 	display: block;
 	background: none;
@@ -349,7 +351,7 @@ a:link.h2-link, a:visited.h2-link {
 	color: #95CFD1;
 }
 
-a:hover.h2-link {
+.h2-link a:hover {
 	font-size: 1em;
 	font-weight: normal;
 	color: white;
@@ -385,11 +387,17 @@ h4 {
 	margin-bottom: 10px;
 }
 
+.inside-content-box h4 {
+	border-bottom: none;
+	font-weight: normal;
+}
+
 /* @end */
 
 /* @group Links */
 
-a img {
+a:link img,
+a:visited img {
 	height: auto;
 	width: auto;
 	border: none;
@@ -408,8 +416,41 @@ a:hover img {
 	margin: 0px;
 	text-decoration: none
 	cursor: pointer;
+	filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	-khtml-opacity: 0.6;
+	opacity: 0.6;
 }
 
+#content-box a:hover,
+#content-box a:active,
+#content-box a:focus {
+	color: #A30F01;
+}
+
+#no-map-content-box a:hover,
+#no-map-content-box a:active,
+#no-map-content-box a:focus {
+	color: #A30F01;
+}
+
+#right-column a:hover,
+#right-column a:active,
+#right-column a:focus {
+	color: #A30F01;
+}
+
+#related-photos a:link,
+#related-photos a:visited {
+	text-decoration: none;
+}
+
+#gmap a:hover,
+#gmap a:active,
+#gmap a:focus {
+	background-color: #708e20;
+	color: white;
+}
 
 a:link,
 a:visited,
@@ -417,36 +458,7 @@ a:hover,
 a:active,
 a:focus {
 	color: #708e20;
-	padding:2px;
-
 }
-a:hover,
-a:active,
-a:focus {
-	background-color: none;
-	padding:2px;
-	color: white;
-}
-a:active {
-
-}
-
-#content-box a:hover,
-#content-box a:active,
-#content-box a:focus {
-	background-color: #708e20;
-	padding:2px;
-	color: white;
-}
-
-#no-map-content-box a:hover,
-#no-map-content-box a:active,
-#no-map-content-box a:focus {
-	background-color: #708e20;
-	padding:2px;
-	color: white;
-}
-
 
 /* @end */
 
@@ -659,10 +671,6 @@ ul.split li {
 /* @group header */
 
 
-.header a {
-
-}
-
 .header p {
 	margin: 0px 0px 10px 40px;
 }
@@ -741,16 +749,6 @@ h1 {
 
 /* @end */
 
-/* @end */
-
-/* @group footer */
-
-
-
-/* @end */
-
-
-/* @group Overrides */
 
 /* @group Signup page */
 
@@ -962,16 +960,14 @@ li.horizontal-image-list {
 	display: block;
 	height: auto;
 	width: auto;
-	padding: 3px;
-	border: 1px solid #e6e6e6;
-	margin: 0px 5px 20px 3px;
+	margin: 0px 15px 10px 0px;
 	float: left;
 }
 
 .profile-text {
 	float: left;
 	width: 70%;
-	margin: 0 0 10px 10px;	
+	margin: 0 0 10px 0px;	
 }
 
 .diagram-photo {
@@ -1052,7 +1048,7 @@ diaries ul {
 }
 
 .inside-content-box {
-	width: 180px;
+	width: 160px;
 	margin-right: 10px;
 	margin-left: 10px;
 	display: block;
@@ -1066,21 +1062,24 @@ diaries ul {
 }
 
 .inside-content-box-main {
-	padding: 10px;
-	height: 170px;
+	padding: 15px;
+	min-height: 100px;
+	height: auto;
 	background-color: #ffdddd;
 }
 
+.thumbnail-list ul {
+	display: inline;
+	list-style-image: none;
+
+}
 
 .thumbnail-list li {
 	display: inline;
+	list-style-image: none;
+	margin-right: 5px;
 }
 
-.thumbnail-list img {
-	border: 1px solid #CCCCCC;
-	background-color: white;
-	padding: 3px;
-}
 
 .diary-list ul {
 	margin: 0 0 0 10px;
@@ -1088,6 +1087,7 @@ diaries ul {
 	list-style-image: none;
 	list-style-type: none;
 }
+
 
 .diary-list li {
 	background: transparent url("/img/full_page.png") scroll no-repeat ;
@@ -1174,6 +1174,10 @@ img.plus {
 img.delete {
 	position: relative;
 	top: 3px;
+}
+
+.related-diary-photos {
+	margin: -10px 0 10px 37px;
 }
 
 

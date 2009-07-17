@@ -10,7 +10,7 @@
         <div id="no-map-content-box">
             <h2>Congratulations!</h2>
 
-	    <p><strong>You've successfully created a profile on {{ PROJECT_NAME }}!</strong> You might be wondering what comes next? Well, first you might want to add a little more to your profile: <em>(or just <a href="/{{ person.user.username }}/">click here to view your profile)</a></em></p>
+	    <p><strong>You've successfully created a profile on {{ PROJECT_NAME }}!</strong></p>
 
 
 		<br/>
@@ -18,22 +18,16 @@
 		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
 		<div class="no-photo-box-main">
 
-		<p>*Why hide behind an icon - show the world your real face!</p>
+		<p>*Why hide behind an ugly icon - show the world your real face!</p>
 		<a class="major-notice" href="/{{ person.user.username }}/profileupload/">Upload a profile photo now!</a>
 		</div>
 		</div>
-
-
-		<div class="no-photo-box">
 		<br/>
-		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
-		<div class="no-photo-box-main">
 
-		<p>*Let everyone else know who you are and what you do!</p>
-		<a class="major-notice" href="/{{ person.user.username }}/profile/">Write a personal introduction</a>
-		</div>
-		</div>
-		<br/>
+
+<p><em><a href="/{{ person.user.username }}/">(or just click here to view your profile)</a></em></p>
+
+
 
 
 	</div>

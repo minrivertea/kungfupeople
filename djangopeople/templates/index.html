@@ -51,7 +51,7 @@ var people = [
         	<li class="horizontal-image-list">
        	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
-                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}">
 		</a>
 		</li>
         	{% endfor %}
