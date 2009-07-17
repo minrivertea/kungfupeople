@@ -15,21 +15,9 @@
 <script type="text/javascript" src="{% staticfile "/js/jquery.uploadify-source.js" %}"></script>
 <script type="text/javascript">
 $(function() {
-  /*
-  $('#id_photo').fileUpload ({
-    'uploader'  : '{% staticfile "/js/uploader.swf" %}',
-    'script'    : 'pre/',
-    'cancelImg' : '{% staticfile "/img/cancel.png" %}',
-    'auto'      : true,
-    'folder'    : '/{{ person.id }}',
-    'multi'     : true,
-    'fileDesc'  : "Images",
-    'fileExt'   : "*.jpg;*.png;*.gif;*.jpeg"
-  });
-  */
   
   $('#id_photo').fileUpload ({
-    'uploader'  : '/uploadify/uploader.swf',
+    'uploader'  : '/js/uploader.swf',
     'script'    : 'pre/',
     'cancelImg' : '{% staticfile "/img/cancel.png" %}',
     'auto'      : true,

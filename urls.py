@@ -32,9 +32,9 @@ urlpatterns = patterns('',
     (r'^sitemap.xml$', sitemap,
      {'sitemaps': sitemaps}),
                        
-    (r'^uploadify/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': os.path.join(settings.OUR_ROOT, 'static', 'js')
-    }),
+#    (r'^uploadify/(?P<path>.*)$', 'django.views.static.serve', {
+#            'document_root': os.path.join(settings.OUR_ROOT, 'static', 'js')
+#    }),
                        
                                               
  
