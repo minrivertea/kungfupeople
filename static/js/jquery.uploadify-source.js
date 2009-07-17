@@ -22,71 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 function getFlashVersion(){
-// ie
-try {
-try {
-// avoid fp6 minor version lookup issues
-// see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/
-var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
-try { axo.AllowScriptAccess = 'always'; }
-catch(e) { return '6,0,0'; }
-} catch(e) {}
-return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1];
-// other browsers
-} catch(e) {
-try {
-if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){
-return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1];
-}
-} catch(e) {}
-}
-return '0,0,0';
+   // ie
+   try {
+      try {
+         // avoid fp6 minor version lookup issues
+         // see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/
+         var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
+         try { axo.AllowScriptAccess = 'always'; }
+         catch(e) { return '6,0,0'; }
+      } catch(e) {}
+      return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1];
+      // other browsers
+   } catch(e) {
+      try {
+         if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){
+            return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1];
+         }
+      } catch(e) {}
+   }
+   return '0,0,0';
 } 
 
-/*
-var flashVer = -1;
-if (navigator.plugins != null && navigator.plugins.length > 0) {
-   alert("HERE")
-	if (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]) {
-		var swVer2 = navigator.plugins["Shockwave Flash 2.0"] ? " 2.0" : "";
-		var flashDescription = navigator.plugins["Shockwave Flash" + swVer2].description;
-		var descArray = flashDescription.split(" ");
-		var tempArrayMajor = descArray[2].split(".");			
-		var versionMajor = tempArrayMajor[0];
-		var versionMinor = tempArrayMajor[1];
-		var versionRevision = descArray[3];
-		if (versionRevision == "") {
-			versionRevision = descArray[4];
-		}
-		if (versionRevision[0] == "d") {
-			versionRevision = versionRevision.substring(1);
-		} else if (versionRevision[0] == "r") {
-			ersionRevision = versionRevision.substring(1);
-			if (versionRevision.indexOf("d") > 0) {
-				versionRevision = versionRevision.substring(0, versionRevision.indexOf("d"));
-			}
-		}
-		var flashVer = versionMajor + "." + versionMinor	 + "." + versionRevision;
-	}
-} else if ( $.browser.msie ) {
-	var version;
-	var axo;
-	var e;
-        alert('before');
-	try {
-		axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
-		version = axo.GetVariable("$version");
-	} catch (e) {
-	}	
-   alert('after');
-   alert(version);
-	flashVer = version.replace("WIN ","").replace(",",".");
-   alert('after 2 ' + flashVer);
-}
-*/
-var flashVer = getFlashVersion();
-alert("Flash version: " + flashVer);
-flashVer = flashVer.split(",")[0];
+var flashVer = getFlashVersion().split(",")[0];
 
 if(jQuery)(
 	function($){
