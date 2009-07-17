@@ -480,9 +480,11 @@ def _get_person_upload_folder(person):
     
 def upload_test(request):
     if request.method == "POST":
-        r = photo_upload_multiple_pre(request, "julius")
-        print r
-        return HttpResponse("Done!")
+        logging.info("Filename=%s" % request.POST.get('Filename',''))
+        logging.info("Size = %s" % len(request.FILES['Filedata'].read()))
+        #r = photo_upload_multiple_pre(request, "julius")
+        #print r
+        return HttpResponse("1")
     else:
         return render(request, 'upload_test.html', {
                                              })
