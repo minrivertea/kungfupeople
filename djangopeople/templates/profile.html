@@ -80,6 +80,15 @@ div.bio a.edit {
 	
 	<div id="profile-head">
 
+	{% if person.photo %}
+		<div class="profile-photo">
+		<img src="{% thumbnail person.photo 80x80 crop %}" alt="{{ person }}">
+		</div>
+	{% else %}
+		<div class="profile-photo">
+		<a href="profileupload/"><img src="/static/img/upload-a-photo.png" alt="upload a photo!"></a>
+		</div>
+	{% endif %}
 		<div id="profile-head-title">
        		<h2>{{ person.user.get_full_name|lower }}</h2>
 		</div>
@@ -126,15 +135,7 @@ div.bio a.edit {
                                 
 	{% endif %}
 
-	{% if person.photo %}
-		<div class="profile-photo">
-		<img src="{% thumbnail person.photo 150x150 crop %}" alt="{{ person }}">
-		</div>
-	{% else %}
-		<div class="profile-photo">
-		<a href="profileupload/"><img src="/static/img/upload-a-photo.png" alt="upload a photo!"></a>
-		</div>
-	{% endif %}
+
 
 		<div class="profile-text">
 		<a href="/{{ person.country.iso_code|lower }}/" class="small-text">
@@ -178,9 +179,9 @@ div.bio a.edit {
 	</div>
 	</div>
 
+
+
 	<div id="main-content-area">
-
-
 	{% if diary_entries_private %}
 		<div class="highlight-profile">
 		<h4>{{ PROJECT_MARTIAL_ART|title }} diary 
@@ -190,60 +191,67 @@ div.bio a.edit {
 		{% if is_owner %}
 			<ul class="diary-list">
 			{% for entry in diary_entries_private %}
-			<li class="diary-list">
-			<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> 
-			{% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> 
-			<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/">
-			<img class="delete" src="/static/img/delete.png">
-			</a>{% endif %}
-			<br/>
-			<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-			<p class="meta">{{ entry.date_added|date:"d M Y" }}  |</p>
-			{% if not forloop.last %}
-			<div class="line"></div>
-			{% endif %}
-			</li>
-			{% endfor %}
-			</ul>		
-	{% else %}
-			<ul class="diary-list">
-				{% for entry in diary_entries_public %}
 				<li class="diary-list">
-				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> {% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> <a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/"><img src="/static/img/delete.png"></a>{% endif %}<br/>
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> 
+				{% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> 
+				<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/">
+				<img class="delete" src="/static/img/delete.png">
+				</a>
+				{% endif %}
+				<br/>
 				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
 				<p class="meta">{{ entry.date_added|date:"d M Y" }}  |</p>
 				{% if not forloop.last %}
 				<div class="line"></div>
 				{% endif %}
 				</li>
+
+				{% for photo in entry.get_photos %}
+				{% if forloop.first %}<div class="related-diary-photos">{% endif %}
+				<a href="{{ photo.get_absolute_url }}">
+				<img src="{% thumbnail photo.photo 20x20 crop %}">
+				</a>
+				{% if forloop.last %}</div>{% endif %}
 				{% endfor %}
-				</ul>	
-			{% endif %}
-		</div>
-		{% endif %}
+				<div class="line"></div>
+			{% endfor %}
+			</ul>	
+		{% else %}
+			<ul class="diary-list">
+			{% for entry in diary_entries_public %}
+				<li class="diary-list">
+				<a class="diary-title" href="diary/{{ entry.slug }}/">{{ entry.title }}</a> 
+				{% if is_owner %}<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> 
+				<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/">
+				<img class="delete" src="/static/img/delete.png">
+				</a>
+				{% endif %}
+				<br/>
+				<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
+				<p class="meta">{{ entry.date_added|date:"d M Y" }}  |</p>
+				{% if not forloop.last %}
+				<div class="line"></div>
+				{% endif %}
+				</li>
 
-			
-
-		{% if photos %}
-		<div class="highlight-profile">
-		<h4>{{ person.user.first_name }}'s photos 
-		{% if is_owner %}(<a href="/{{ user.username }}/photo/upload">add more photos</a>)
+				{% for photo in entry.get_photos %}
+				{% if forloop.first %}<div class="related-diary-photos">{% endif %}
+				<a href="{{ photo.get_absolute_url }}">
+				<img src="{% thumbnail photo.photo 20x20 crop %}">
+				</a>
+				{% if forloop.last %}</div>{% endif %}
+				{% endfor %}
+				<div class="line"></div>
+			{% endfor %}
+			</ul>
 		{% endif %}
-		</h4>
-		<ul class="thumbnail-list">
-		{% for photo in photos %}
-		<li class="thumbnail-list">
-		<a href="{{ photo.get_absolute_url }}">
-		<img src="{% thumbnail photo.photo 60x60 crop %}">
-		</a>
-		</li>
-		{% endfor %}
-		</ul>
 		</div>
-		{% endif %}
-       
+	{% endif %}
+
+
 	</div>
 	</div>
+
 
 
 	<div id="right-column">
@@ -257,7 +265,7 @@ div.bio a.edit {
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
-                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
+                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" title="{{ person }}"></a>
 		</div>
                 </li>
                 {% endfor %}

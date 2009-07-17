@@ -31,34 +31,30 @@ var bbox_east = {{ country.bbox_east }};
     {% block content %}
 <div class="wrapper">
 
-{% block header %}{% load thumbnail %}
-        
-        <h1>{{ country }}
-        {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
-        </h1>
-        <p class="meta">{% if country.country %}<a href="/{{ country.country.iso_code|lower }}/" class="nobg"><img src="{{ country.country.iso_code|lower }}" title="{{ country.country }}" alt="{{ country.country }}" class="flag"></a> {% endif %}{{ country.kungfuperson_set.count }} {{ PROJECT_MARTIAL_ART }} {% ifequal country.kungfuperson_set.count 1 %}person{% else %}people{% endifequal %}</p>
-        {% endblock %}
-
-
-	{% if people %}
 	<div id="horizontal-image-listing">
-	<div class="horizontal-image-list-text">Showing {{ people.count }} {% ifequal people.count 1 %}person{% else %}people{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
-	<ul class="horizontal-image-list">
-	{% for person in people %}
-        <li class="horizontal-image-list">
-       	<div class="list-photo">
-        <a href="{{ person.get_absolute_url }}">
-        <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
-	</a>
-	</li>
-        {% endfor %}
-	</ul>
+		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+		<ul class="horizontal-image-list">
+		{% for person in people %}
+        	<li class="horizontal-image-list">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
 	</div>
-	{% endif %}
-
 
 	<div id="content-box">
 
+		<div id="profile-head">
 
-	</div>
+       		<h2>{{ country }}</h2>
+
+{% load thumbnail %}
+        
+
+        {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
+
+      		</div>
     {% endblock %}
