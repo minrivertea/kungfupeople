@@ -32,7 +32,7 @@ DIRECTORIES = (
    ('/home/peterbe/dev/DJANGO/django-static/django_static/tests.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
     
-   ('djangopeople/views.py', './run_djangopeople_fcgi.sh'),
+#   ('djangopeople/views.py', './run_djangopeople_fcgi.sh'),
 
 )
 

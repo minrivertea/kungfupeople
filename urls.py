@@ -32,9 +32,10 @@ urlpatterns = patterns('',
     (r'^sitemap.xml$', sitemap,
      {'sitemaps': sitemaps}),
 
-    (r'^uploadify/(?P<path>.*)$', 'django.views.static.serve', 
-     {'document_root': os.path.join(settings.OUR_ROOT, 'static', 'js')}),
-                       
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT,
+        'show_indexes': False
+    }),
                        
 )
 
@@ -45,10 +46,6 @@ if settings.DEBUG:
     # If it is used it means that nginx config isn't good enough.
     
     urlpatterns += patterns('', 
-                            
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': os.path.join(settings.OUR_ROOT, 'static')
-        }),
                             
         # CSS, Javascript and IMages
         (r'^img/(?P<path>.*)$', django.views.static.serve,
