@@ -12,19 +12,43 @@
 {% load thumbnail %}
 {% if OFFLINE_MODE %}<script type="text/javascript">alert("DOESN'T WORK IN OFFLINE MODE");</script>{% endif %}
 <script type="text/javascript" src="/js/photo_add.js"></script>
-<script type="text/javascript" src="{% staticfile "/js/jquery.uploadify.js" %}"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.uploadify-source.js" %}"></script>
 <script type="text/javascript">
 $(function() {
+  /*
   $('#id_photo').fileUpload ({
-    'uploader'  : '{% staticfile "/static/js/uploader.swf" %}',
+    'uploader'  : '{% staticfile "/js/uploader.swf" %}',
     'script'    : 'pre/',
-    'cancelImg' : '{% staticfile "/static/img/cancel.png" %}',
+    'cancelImg' : '{% staticfile "/img/cancel.png" %}',
     'auto'      : true,
     'folder'    : '/{{ person.id }}',
     'multi'     : true,
     'fileDesc'  : "Images",
     'fileExt'   : "*.jpg;*.png;*.gif;*.jpeg"
   });
+  */
+  
+  $('#id_photo').fileUpload ({
+    'uploader'  : '{% staticfile "/js/uploader.swf" %}',
+    'script'    : 'pre/',
+    'cancelImg' : '{% staticfile "/img/cancel.png" %}',
+    'auto'      : true,
+    'folder'    : '/{{ person.id }}',
+    'multi'     : true,
+    'fileDesc'  : "Images",
+    'fileExt'   : "*.jpg;*.png;*.gif;*.jpeg",
+    onError: function (a, b, c, d) {
+         if (d.status == 404)
+            alert('Could not find upload script.');
+         else if (d.type === "HTTP")
+            alert('error '+d.type+": "+d.status);
+         else if (d.type ==="File Size")
+            alert(c.name+' '+d.type+' Limit: '+Math.round(d.sizeLimit/1024)+'KB');
+         else
+            alert('error '+d.type+": "+d.text);
+            }
+  });
+  
 });
 </script>
 
@@ -36,7 +60,7 @@ $(function() {
 	</div>
 {% endblock %}
 
-    {% block content %}
+{% block content %}
 
         <div id="content-box">
     	<form enctype="multipart/form-data" method="post" action=".">
@@ -156,4 +180,9 @@ $(function() {
 		<img src="{% thumbnail photo.photo 100x100 crop %}">
 		</div>
 		{% endif %}
-    {% endblock %}
+
+<!--needed by IE7 for uploadify 
+http://www.uploadify.com/forum/viewtopic.php?f=4&t=27#p289 -->
+<div id="fileInputUploader" />
+
+{% endblock %}

@@ -25,12 +25,14 @@ DIRECTORIES = (
                
    ('djangopeople/views.py',
     './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
-               
+
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/tests.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
+    
+   ('djangopeople/views.py', './run_djangopeople_fcgi.sh'),
 
 )
 

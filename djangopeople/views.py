@@ -1,4 +1,5 @@
 # python
+import logging
 import os, md5, datetime
 import re
 from urlparse import urlparse
@@ -102,8 +103,6 @@ def login(request):
         })
     username = request.POST.get('username')
     password = request.POST.get('password')
-    print "username", repr(username)
-    print "password", repr(password)
     user = auth.authenticate(username=username, password=password)
     
     if user is not None and user.is_active:
@@ -479,10 +478,25 @@ def _get_person_upload_folder(person):
                        )
     
     
+def upload_test(request):
+    if request.method == "POST":
+        r = photo_upload_multiple_pre(request, "julius")
+        print r
+        return HttpResponse("Done!")
+    else:
+        return render(request, 'upload_test.html', {
+                                             })
+        
+        
 
 #@must_be_owner # causes a 403! that's why it's commented out
 def photo_upload_multiple_pre(request, username):
     """ upload a SINGLE photo """
+    print "PHOTO_UPLOAD_MULTIPLE_PRE!!"
+    
+    
+    logging.info('username=%r' % username)
+    print "username", repr(username)
     person = get_object_or_404(KungfuPerson, user__username=username)
     
     # uploadify sends a POST but puts ?folder=xxx on the URL

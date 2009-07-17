@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     (r'^recover/([a-z0-9]{3,})/([a-f0-9]+)/([a-f0-9]{32})/$',
         views.lost_password_recover),
     (r'^signup/$', views.signup),
+                       
+    url(r'^upload_test/$', views.upload_test),
 
     (r'^guess-club-name.json$', views.guess_club_name_json),
     (r'^guess-username.json$', views.guess_username_json),
