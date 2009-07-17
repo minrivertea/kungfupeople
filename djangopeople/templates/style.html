@@ -70,8 +70,6 @@ div.bio a.edit {
 
        		<h2>{{ style.name }}</h2>
 
-		<p class="small-text">{{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for stylist in people %}<a href="/{{ stylist.country.iso_code|lower }}/">{{ stylist.country }}</a>, {% endfor %}
-
 		</div>
 
 		{% if diaries %}
