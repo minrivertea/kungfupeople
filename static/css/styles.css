@@ -386,7 +386,6 @@ h4 {
 	font-size: 18px;
 	font-weight: bold;
 	color: #666;
-	border-bottom: 1px solid #e6e6e6;
 	margin-bottom: 15px;
 }
 
@@ -668,7 +667,13 @@ ul.split li {
 	background-color: white;
 }
 
-.highlight-profile h4 {
+.highlight-profile h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 15px;
 	margin-left: -120px;
 }
 
@@ -1216,14 +1221,5 @@ img.delete {
 	color: red;
 	font-weight: bold;
 }
-
-.video {
-	margin-left: 120px;
-}
-
-.video h4 {
-	border-bottom: 0px;
-}
-
 
 
