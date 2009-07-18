@@ -179,7 +179,7 @@ div.bio a.edit {
 	
 		{% if diary_entries_private %}
 		<div class="highlight-profile">
-		<h4>diary entries{% if is_owner %}<a href="/{{ user.username }}/diary/add">(add another entry)</a>{% endif %}</h4>	
+		<h4>diary entries{% if is_owner %} <span class="small-text"><a href="/{{ user.username }}/diary/add">(add another entry)</a>{% endif %}</span></h4>	
 		{% if is_owner %}
 			<ul class="diary-list">
 			{% for entry in diary_entries_private %}
