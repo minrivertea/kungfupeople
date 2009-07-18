@@ -934,6 +934,7 @@ li.horizontal-image-list {
 .list-photo {
 	float: left;
 	margin-right: 5px;
+	width: 80px;
 }
 
 .list-text {
