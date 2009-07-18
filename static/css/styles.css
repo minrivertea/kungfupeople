@@ -977,10 +977,17 @@ li.horizontal-image-list {
 
 .profile-photo {
 	display: block;
-	height: auto;
+	height: 120px;
 	width: auto;
-	margin: 0px 20px 10px 0px;
+	margin: 0px 20px 0px 0px;
 	float: left;
+}
+
+.change-photo {
+	margin-top: -5px;
+	text-align: center;
+	height: 10px;
+	width: 90px;
 }
 
 .profile-text {

@@ -82,7 +82,17 @@ div.bio a.edit {
 	{% if person.photo %}
 		<div class="profile-photo">
 		<img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}">
+		{% if is_owner %}
+		<div class="change-photo">
+		<a class="small-text" href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">
+		{% if person.photo %}Change your photo
+		{% else %}<strong>Upload a photo</strong>
+		{% endif %}
+		</a>
 		</div>
+		{% endif %}
+		</div>
+
 	{% else %}
 		<div class="profile-photo">
 		<a href="profileupload/"><img src="/static/img/upload-a-photo.png" alt="upload a photo!"></a>
@@ -94,7 +104,6 @@ div.bio a.edit {
 		{% if is_owner %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
-		<a href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">{% if person.photo %}Change your photo{% else %}<strong>Upload a photo</strong>{% endif %}</a>  |  
 		<a href="/{{user.username }}/videos/add/">Link to a video</a>  |  
 		<a href="/{{ user.username }}/profile/">Edit your profile</a>  
 		{% if photos %}{% else %}|  <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  
