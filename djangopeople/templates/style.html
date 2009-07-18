@@ -81,16 +81,10 @@ div.bio a.edit {
 		<a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
 		<br/>
 		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-		<p class="meta">{{ entry.user.get_full_name }}  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
+		<p class="meta"><a href="/{{ entry.user.username }}">{{ entry.user.get_full_name }}</a>  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
 		</li>
 		</ul>
-				{% for photo in entry.get_photos %}
-				{% if forloop.first %}<div class="related-diary-photos">{% endif %}
-				<a href="{{ photo.get_absolute_url }}">
-				<img src="{% thumbnail photo.photo 20x20 crop %}">
-				</a>
-				{% if forloop.last %}</div>{% endif %}
-				{% endfor %}
+
 		{% endfor %}
 
 		</div>

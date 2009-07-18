@@ -380,11 +380,11 @@ h3 {
 
 h4 {
 	font-family: Helvetica, sans-serif;
-	font-size: 1.2em;
+	font-size: 18px;
 	font-weight: bold;
-	color: #454545;
+	color: #666;
 	border-bottom: 1px solid #e6e6e6;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 }
 
 .inside-content-box h4 {
@@ -658,10 +658,15 @@ ul.split li {
 }
 
 .highlight-profile {
-	margin: 0 0px 15px 10px;
+	margin: 0 0px 15px 0px;
+	padding-left: 120px;
 	float: left;	
 	width: 580px;
 	background-color: white;
+}
+
+.highlight-profile h4 {
+	margin-left: -120px;
 }
 
 
@@ -902,8 +907,13 @@ li.horizontal-image-list {
 }
 
 .meta {
-    font-size: 0.7em;
-    color: #666;
+	margin: 0px;
+	font-size: 0.7em;
+	color: #666;
+}
+
+.meta a {
+	font-size: 10px;
 }
 
 
@@ -942,6 +952,7 @@ li.horizontal-image-list {
 	width: 100%;
 	height: auto;
 	float: left;
+	margin-bottom: 20px;
 }
 
 #profile-head-title {
@@ -960,13 +971,13 @@ li.horizontal-image-list {
 	display: block;
 	height: auto;
 	width: auto;
-	margin: 0px 15px 10px 0px;
+	margin: 0px 20px 10px 0px;
 	float: left;
 }
 
 .profile-text {
 	float: left;
-	width: 70%;
+	width: 80%;
 	margin: 0 0 10px 0px;	
 }
 
@@ -1082,7 +1093,7 @@ diaries ul {
 
 
 .diary-list ul {
-	margin: 0 0 0 10px;
+	margin: 0 0 0 0px;
 	padding: 0;
 	list-style-image: none;
 	list-style-type: none;
@@ -1090,9 +1101,9 @@ diaries ul {
 
 
 .diary-list li {
-	background: transparent url("/img/full_page.png") scroll no-repeat ;
 	margin-bottom: 10px;
-	padding: 0 0 0 35px;
+	padding: 0px;
+	line-height: 12px;
 }
 
 .large-photo-container {
@@ -1100,8 +1111,9 @@ diaries ul {
 }
 
 a.diary-title {
-	font-size: 1.2em;
+	font-size: 13px;
 	padding: 0px;
+	margin-bottom: -10px;
 }
 
 .diary-summary-text {
@@ -1164,6 +1176,10 @@ a.diary-title {
 	font-weight: normal;
 }
 
+.dark-grey {
+	color: #666;
+}
+
 img.plus {
 	float: left;
 	height: auto;
@@ -1178,6 +1194,25 @@ img.delete {
 
 .related-diary-photos {
 	margin: -10px 0 10px 37px;
+}
+
+.bio {
+	font-family: Georgia, serif;
+	font-size: 14px;
+	margin-bottom: -10px;
+	height: auto;
+	font-style: italic;
+}
+
+.region {
+	font-size: 10px;
+	height: auto;
+	margin-bottom: 5px;
+}
+
+.red {
+	color: red;
+	font-weight: bold;
 }
 
 
