@@ -217,7 +217,7 @@ div.bio a.edit {
 
 	{% if photos %}
 	<div class="highlight-profile">
-	<h3>photos</h3>
+	<h3>photos {% if is_owner %}<a href="/{{ user.username }}/photo/upload/">(add more photos)</a>{% endif %}</h3>
 	{% for photo in photos %}
 	<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
 	{% endfor %}
@@ -228,9 +228,8 @@ div.bio a.edit {
 	<div class="highlight-profile">
 	<h3>videos</h3>
 	{% for video in videos %}
-	<div class="video">
 	{{ video.embed_src|safe }}
-	</div>
+	<p>{{ video.description }}</p>
 	{% endfor %}
 	</div>
 	{% endif %}
