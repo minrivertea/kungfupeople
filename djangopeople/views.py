@@ -328,7 +328,7 @@ def derive_username(nickname):
     return nickname
 
 @must_be_owner
-def photo_upload(request, username):
+def XXX___deprecated____photo_upload(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES)
@@ -461,44 +461,66 @@ def diary_entry_location_json(request, username, slug):
 class UploadError(Exception):
     pass
 
-def _get_person_upload_folder(person):
     
-    try:
-        temporary_upload_folder_base = settings.TEMPORARY_UPLOAD_FOLDER
-    except AttributeError:
-        from tempfile import gettempdir
-        temporary_upload_folder_base = gettempdir()
-        
-    today = datetime.datetime.now()
-    return os.path.join(temporary_upload_folder_base,
-                        today.strftime('%Y'),
-                        today.strftime('%b'),
-                        person.user.username,
-                        datetime.datetime.now().strftime('%d')
-                       )
+
     
-    
-def upload_test(request):
+
+def swf_upload_test(request):
     if request.method == "POST":
-        logging.info("Filename=%s" % request.POST.get('Filename',''))
-        logging.info("Size = %s" % len(request.FILES['Filedata'].read()))
-        #r = photo_upload_multiple_pre(request, "julius")
-        #print r
-        return HttpResponse("1")
+        person = KungfuPerson.objects.all().order_by('?')[0]
+        
+        #print "POST.keys()", request.POST.keys()
+        #print "FILES.keys()", request.FILES.keys()
+        
+        filename = request.POST['Filename']
+        filedata = request.FILES['Filedata']
+        
+        upload_folder = person.get_person_upload_folder()
+        
+        def _mkdir(newdir):
+            """works the way a good mkdir should :)
+                - already exists, silently complete
+                - regular file in the way, raise an exception
+                - parent directory(ies) does not exist, make them as well
+            """
+            if os.path.isdir(newdir):
+                pass
+            elif os.path.isfile(newdir):
+                raise OSError("a file with the same name as the desired " \
+                            "dir, '%s', already exists." % newdir)
+            else:
+                head, tail = os.path.split(newdir)
+                if head and not os.path.isdir(head):
+                    _mkdir(head)
+                if tail:
+                    os.mkdir(newdir)
+                    
+        _mkdir(upload_folder)
+        
+        image_content = filedata.read()
+        image = Image.open(StringIO(image_content))
+        format = image.format
+        format = format.lower().replace('jpeg', 'jpg')
+        filename = md5.new(image_content).hexdigest() + '.' + format
+        # Save the image
+        path = os.path.join(upload_folder, filename)
+        open(path, 'w').write(image_content)
+        image.thumbnail((40, 40))
+        thumbnail_folder = _get_person_thumbnail_folder(person)
+        _mkdir(thumbnail_folder)
+        thumbnail_path = os.path.join(thumbnail_folder, filename)
+        image.save(thumbnail_path, image.format)
+        return HttpResponse(thumbnail_path.replace(settings.MEDIA_ROOT, '/static'))
     else:
-        return render(request, 'upload_test.html', {
-                                             })
+        return render(request, 'swf_upload_test.html', {})
+
+    
         
         
 
 #@must_be_owner # causes a 403! that's why it's commented out
 def photo_upload_multiple_pre(request, username):
-    """ upload a SINGLE photo """
-    print "PHOTO_UPLOAD_MULTIPLE_PRE!!"
-    
-    
-    logging.info('username=%r' % username)
-    print "username", repr(username)
+    """ used by the swfupload """
     person = get_object_or_404(KungfuPerson, user__username=username)
     
     # uploadify sends a POST but puts ?folder=xxx on the URL
@@ -510,8 +532,8 @@ def photo_upload_multiple_pre(request, username):
     filename = request.POST['Filename']
     filedata = request.FILES['Filedata']
     
-    upload_folder = _get_person_upload_folder(person)
-    
+    upload_folder = person.get_person_upload_folder()
+
     def _mkdir(newdir):
         """works the way a good mkdir should :)
             - already exists, silently complete
@@ -533,34 +555,79 @@ def photo_upload_multiple_pre(request, username):
     _mkdir(upload_folder)
     
     image_content = filedata.read()
-    format = Image.open(StringIO(image_content)).format
+    image = Image.open(StringIO(image_content))
+    format = image.format
     format = format.lower().replace('jpeg', 'jpg')
     filename = md5.new(image_content).hexdigest() + '.' + format
     # Save the image
     path = os.path.join(upload_folder, filename)
+    #print "Writing path", path
     open(path, 'w').write(image_content)
     
-    return HttpResponse('1')
+    image.thumbnail((60, 60))
+    thumbnail_folder = person.get_person_thumbnail_folder()
+    _mkdir(thumbnail_folder)
+    thumbnail_path = os.path.join(thumbnail_folder, filename)
+    image.save(thumbnail_path, image.format)
+    
+    return HttpResponse(thumbnail_path.replace(settings.MEDIA_ROOT, '/static'))
+
 
 @must_be_owner
-def photo_upload_multiple(request, username):
+def photo_upload(request, username, prefer='multiple'):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    if request.method == 'POST':
-        upload_folder = _get_person_upload_folder(person)
-        filenames = []
-        for f in os.listdir(upload_folder):
-            if os.path.splitext(f.lower())[-1] in ('.jpg', '.gif', '.png'):
-                filenames.append(os.path.join(upload_folder, f))
-                
-        form = PhotoUploadForm(request.POST)
-        del form.fields['photo'] # not needed in multi-upload
+    
+    save_preference = False
+    if request.method == "GET" and request.GET.get('prefer'):
+        prefer = request.GET.get('prefer')
+        if prefer not in ('single', 'multiple'):
+            raise Http404("must be 'single' or 'multiple'")
+        else:
+            save_preference = prefer
+    else:
+        prefer = request.COOKIES.get('photo_upload', prefer)        
         
+    upload_folder = person.get_person_upload_folder()
+    
+    if request.method == 'POST':
+        filenames = []
+        
+        if prefer == 'multiple':
+            form = PhotoUploadForm(request.POST)
+            del form.fields['photo'] # not needed in multi-upload
+
+            for f in os.listdir(upload_folder):
+                if os.path.splitext(f.lower())[-1] in ('.jpg', '.gif', '.png'):
+                    filenames.append(os.path.join(upload_folder, f))
+        else:
+            form = PhotoUploadForm(request.POST, request.FILES)
+
+
         if form.is_valid():
             user = person.user
             description = form.cleaned_data['description']
             region = None
             diary_entry = None
             upload_folder = None
+            if prefer == 'single':
+                photo = form.cleaned_data['photo']
+                
+                image_content = photo.read()
+                format = Image.open(StringIO(image_content)).format
+                format = format.lower().replace('jpeg', 'jpg')
+                filename = md5.new(image_content).hexdigest() + '.' + format
+                # Save the image
+                path = os.path.join(settings.MEDIA_ROOT, 'photos', filename)
+                # check that the dir of the path exists
+                dirname = os.path.dirname(path)
+                if not os.path.isdir(dirname):
+                    try:
+                        os.mkdir(dirname)
+                    except IOError:
+                        raise IOError, "Unable to created the directory %s" % dirname
+                open(path, 'w').write(image_content)
+                filenames = [path]
+                
             for filepath in filenames:
                 filename = os.path.basename(filepath)
                 upload_folder = os.path.dirname(filepath)
@@ -574,8 +641,7 @@ def photo_upload_multiple(request, username):
                     except IOError:
                         raise IOError, "Unable to created the directory %s" % dirname
                 #open(path, 'w').write(image_content)
-                os.rename(filepath, path)
-                
+                os.rename(filepath, path)    
     
                 if form.cleaned_data['diary_entry']:
                     diary_entry = form.cleaned_data['diary_entry']
@@ -591,33 +657,20 @@ def photo_upload_multiple(request, username):
                         country__iso_code = form.cleaned_data['country'],
                         code = form.cleaned_data['region']
                     ) 
-    
-                if form.cleaned_data['country']:
-                    from django.core.files import File
-                    photo = Photo.objects.create(
-                        user=user,
-                        description=description,
-                        photo=File(open(path, 'rb')),
-                        diary_entry=diary_entry,
-                        country=Country.objects.get(iso_code = form.cleaned_data['country']),
-                        latitude=form.cleaned_data['latitude'],
-                        longitude=form.cleaned_data['longitude'],
-                        location_description=form.cleaned_data['location_description'],
-                        region = region,
-                        )
-    
-                else:
-                    photo = Photo.objects.create(
-                        user=user,
-                        description=description,
-                        photo=photo,
-                        diary_entry=diary_entry,
-                        country=person.country,
-                        latitude=person.latitude,
-                        longitude=person.longitude,
-                        location_description=person.location_description,
-                        region=person.region,
+
+                from django.core.files import File
+                photo = Photo.objects.create(
+                    user=user,
+                    description=description,
+                    photo=File(open(path, 'rb')),
+                    diary_entry=diary_entry,
+                    country=Country.objects.get(iso_code = form.cleaned_data['country']),
+                    latitude=form.cleaned_data['latitude'],
+                    longitude=form.cleaned_data['longitude'],
+                    location_description=form.cleaned_data['location_description'],
+                    region = region,
                     )
+
                     
             if upload_folder:
                 if not os.listdir(upload_folder):
@@ -629,6 +682,12 @@ def photo_upload_multiple(request, username):
                 url = '/%s/upload/done/' % username
             return HttpResponseRedirect(url)
     else:
+        
+        # make sure all uploaded photos are first deleted
+        if os.path.isdir(upload_folder):
+            for filename in os.listdir(upload_folder):
+                if os.path.isfile(os.path.join(upload_folder, filename)):
+                    os.remove(os.path.join(upload_folder, filename))
         
         initial = {'location_description': person.location_description,
                    'country': person.country.iso_code,
@@ -652,13 +711,19 @@ def photo_upload_multiple(request, username):
         else:
             del form.fields['diary_entry']
             
-    return render(request, 'photo_upload_multiple_form.html', {
+    prefer_multiple = prefer == 'multiple'
+    
+    response = render(request, 'photo_upload_form.html', {
         'form': form,
         'person': person,
+        'prefer_multiple': prefer == 'multiple'
     })
-
-
-
+    
+    if save_preference:
+        set_cookie(response, 'photo_upload', save_preference,
+                   expire=60*60*24*60)
+        
+    return response
 
 
 @must_be_owner

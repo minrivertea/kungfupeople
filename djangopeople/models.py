@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 from django.contrib import admin
@@ -545,7 +546,29 @@ class KungfuPerson(models.Model):
     def get_styles(self):
         return self.styles.all()
     
-
+    def get_person_upload_folder(self):
+        
+        try:
+            temporary_upload_folder_base = settings.TEMPORARY_UPLOAD_FOLDER
+        except AttributeError:
+            from tempfile import gettempdir
+            temporary_upload_folder_base = gettempdir()
+            
+        today = datetime.now()
+        return os.path.join(temporary_upload_folder_base,
+                            today.strftime('%Y'),
+                            today.strftime('%b'),
+                            self.user.username,
+                            datetime.now().strftime('%d')
+                        )
+    
+    def get_person_thumbnail_folder(self):
+        return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails', 
+                            self.user.username)
+        
+        
+        
+    
 class CountrySite(models.Model):
     "Community sites for various countries"
     title = models.CharField(max_length = 100)
