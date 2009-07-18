@@ -933,10 +933,7 @@ li.horizontal-image-list {
 
 .list-photo {
 	float: left;
-	display: block;
 	margin-right: 5px;
-	width: 80px;
-	clear: right;
 }
 
 .list-text {
