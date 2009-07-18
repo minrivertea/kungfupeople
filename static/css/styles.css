@@ -1218,5 +1218,13 @@ img.delete {
 	font-weight: bold;
 }
 
+.video {
+	margin-left: 120px;
+}
+
+.video h4 {
+	border-bottom: 0px;
+}
+
 
 
