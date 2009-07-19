@@ -383,15 +383,10 @@ h3 {
 
 h4 {
 	font-family: Helvetica, sans-serif;
-	font-size: 18px;
+	font-size: 12px;
 	font-weight: bold;
-	color: #666;
+	color: black;
 	margin-bottom: 15px;
-}
-
-.inside-content-box h4 {
-	border-bottom: none;
-	font-weight: normal;
 }
 
 /* @end */
@@ -1084,14 +1079,24 @@ diaries ul {
 .inside-content-box-head {
 	padding: 10px;
 	height: 20px;
-	background-color: #e79090;
+	background-color: #A30F01;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+}
+
+.inside-content-box-head h4 {
+	color: white;
+	margin-left: -5px;
+	text-align: center;
 }
 
 .inside-content-box-main {
 	padding: 15px;
 	min-height: 100px;
 	height: auto;
-	background-color: #ffdddd;
+	background-color: white;
 }
 
 .thumbnail-list ul {
