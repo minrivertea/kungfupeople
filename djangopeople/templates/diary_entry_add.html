@@ -4,6 +4,9 @@
 {% block title %}{{ page_title }} |{% endblock %}
 
 {% block js %}
+<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+<script type="text/javascript" src="{% slimfile "/js/diary_add.js" %}"></script>
+
 <script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce.js" %}"></script>
 <script type="text/javascript">
 tinyMCE.init({
@@ -11,8 +14,6 @@ tinyMCE.init({
 	mode : "textareas",
 });
 </script>
-<script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
-<script type="text/javascript" src="{% slimfile "/js/diary_add.js" %}"></script>
 
 {% endblock %}
 

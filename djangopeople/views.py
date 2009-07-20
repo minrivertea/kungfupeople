@@ -52,9 +52,9 @@ def render_json(data):
 
 def index(request):
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')
-    clubs = Club.objects.all().order_by('-add_date')[:5]
+    clubs = Club.objects.all().order_by('-add_date')
     photos = Photo.objects.all().order_by('-date_added')[:5]
-    styles = Style.objects.all().order_by('-add_date')[:5]
+    styles = Style.objects.all().order_by('-add_date')
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     your_person = None
     if request.user and not request.user.is_anonymous():
@@ -859,9 +859,9 @@ def profile(request, username):
     clubs = person.club_membership.all()
     styles = person.styles.all()
     photos = Photo.objects.filter(user=person.user)
-    videos = Video.objects.filter(user=person.user)
-    diary_entries_private = DiaryEntry.objects.filter(user=person.user)
-    diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True)
+    videos = Video.objects.filter(user=person.user)[:1]
+    diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
+    diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
     person.profile_views += 1 # Not bothering with transactions; only a stat
     person.save()
     

@@ -46,3 +46,22 @@ DESIRED FEATURES:
  * promoted or featured content (eg. ads) placed in the border areas
 
 
+IDEAS
+We should get a bit more web 3.0 on their kung fu asses. Forget about the facebook-ey side of the equation. We should concentrate on the data effect and visualisation as a key goal of the site. 
+
+For example, add a huge number of clubs and then show those in relation to each other. Average distance between clubs, average number of members per club, popular styles in each country, links to resources on the web, styles people do, the linkage between clubs, people and instructors...
+
+The first thing is to concentrate on 3 elements - a large number of users (students of kung fu), a large number of clubs (teachers of kung fu) and a large number of styles.
+
+We can enter styles ourselves, and we can also enter clubs ourselves. So, I'm going to start with a big list of styles + trawl the web for a big number of clubs. We can enter these on, and then see the information and what comes out.
+
+What do I want to see? What kind of information would be useful or interesting? 
+
+   - The progression of kung fu across the world - how styles have progressed across the world. How a style has spread from place to place. Historically
+   - When a student becomes an instructor...
+   - When a new club starts
+   - Events across the world
+   - 
+
+
+
