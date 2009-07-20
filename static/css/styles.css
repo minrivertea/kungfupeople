@@ -50,7 +50,7 @@ body * {
 }
 
 #no-map-content-box {
-	width: 650px;
+	width: 600px;
     	float: left;
 	display: block;
     	margin: 0px 0px 50px 0px;
@@ -256,8 +256,18 @@ body * {
 #horizontal-image-listing {
 	width: 100%;
 	height: auto;
-	margin-bottom: 0px;
+	margin-bottom: 20px;
 	float: left;
+}
+
+#horizontal-image-listing h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin: 10px 0 0px 0px;
+	padding-bottom: 5px;
 }
 
 #horizontal-image-listing a:link, #horizontal-image-listing a:visited {
@@ -642,16 +652,12 @@ ul.split li {
 
 /* @end */
 
-.highlight {
-	margin: 0 0px 15px 30px;
+.highlight-home {
+	margin: 0 0px 30px 0px;
 	float: left;	
-	width: 580px;
+	min-width: 300px;
+	width: 33%;
 	background-color: white;
-	border: 5px solid #F3CF1A;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
 }
 
 .highlight-profile {
@@ -670,6 +676,17 @@ ul.split li {
 	border-bottom: 1px solid #e6e6e6;
 	margin-bottom: 15px;
 	margin-left: -120px;
+}
+
+.highlight-home h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 15px;
+	margin-left: 0px;
+	padding-bottom: 5px;
 }
 
 

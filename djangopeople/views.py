@@ -52,9 +52,9 @@ def render_json(data):
 
 def index(request):
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')
-    clubs = Club.objects.all().order_by('-add_date')
-    photos = Photo.objects.all().order_by('-date_added')[:5]
-    styles = Style.objects.all().order_by('-add_date')
+    clubs = Club.objects.all().order_by('-add_date')[:10]
+    photos = Photo.objects.all().order_by('-date_added')[:10]
+    styles = Style.objects.all().order_by('-add_date')[:10]
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     your_person = None
     if request.user and not request.user.is_anonymous():
