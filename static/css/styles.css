@@ -256,7 +256,7 @@ body * {
 #horizontal-image-listing {
 	width: 100%;
 	height: auto;
-	margin-bottom: 20px;
+	margin-bottom: 0px;
 	float: left;
 }
 
@@ -307,7 +307,7 @@ p.large {
 }
 
 #content-box {
-	width: 650px;
+	width: 630px;
     	float: left;
 	display: block;
     	margin: 20px 0px 50px 0px;
@@ -318,11 +318,17 @@ p.large {
 
 #right-column {
 	min-width: 230px;
-	width: 230px;
+	width: 260px;
 	float: left;
 	display: block;
 	height: 100%;
-	margin: 20px 40px 0 20px;
+	margin: 20px 0px 0 20px;
+	padding: 30px;
+	background-color: #F3CF1A;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
 }
 
 .right-box {
@@ -393,7 +399,7 @@ h3 {
 
 h4 {
 	font-family: Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 20px;
 	font-weight: bold;
 	color: black;
 	margin-bottom: 15px;
@@ -441,10 +447,15 @@ a:hover img {
 	color: #A30F01;
 }
 
+#right-column a:link,
+#right-column a:visited {
+	color: #A30F01;
+}
+
 #right-column a:hover,
 #right-column a:active,
 #right-column a:focus {
-	color: #A30F01;
+	color: #708e20;
 }
 
 #related-photos a:link,
@@ -653,7 +664,7 @@ ul.split li {
 /* @end */
 
 .highlight-home {
-	margin: 0 0px 30px 0px;
+	margin: 20px 0px 30px 0px;
 	float: left;	
 	min-width: 300px;
 	width: 33%;
@@ -1144,7 +1155,7 @@ diaries ul {
 }
 
 .large-photo-container {
-	text-align: center;
+	text-align: left;
 }
 
 a.diary-title {

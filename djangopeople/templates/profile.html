@@ -104,6 +104,7 @@ div.bio a.edit {
 		{% if is_owner %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
+		{% if not person.photo %}<a href="profileupload/"><strong>Upload a photo</strong></a>{% endif %}  |
 		<a href="/{{user.username }}/videos/add/">Link to a video</a>  |  
 		<a href="/{{ user.username }}/profile/">Edit your profile</a>  
 		{% if photos %}{% else %}|  <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  
@@ -246,6 +247,7 @@ div.bio a.edit {
 
 
 	<div id="right-column">
+
             {% with person.get_nearest as people %}
             {% if people %}
             <h4>People near {{ person.user.first_name }}</h4>
@@ -254,6 +256,7 @@ div.bio a.edit {
 			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 			{{ person.location_description }}
 			</div>
+
             
 	<div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
