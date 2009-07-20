@@ -1,14 +1,22 @@
+# python
 import os
 import uuid
 from datetime import datetime
+
+# django
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.contenttypes import generic
-from lib.geopy import distance
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
+from django.db.models.signals import post_save, pre_save
+from lib.geopy import distance
+from django.contrib.sites.models import Site
+
+from utils import prowlpy_wrapper as prowl
+
 
 RESERVED_USERNAMES = set((
     # Trailing spaces are essential in these strings, or split() will be buggy
@@ -253,6 +261,17 @@ class DiaryEntry(models.Model):
         return Photo.objects.filter(diary_entry=self).order_by('-date_added')
 
 
+def prowl_new_diary_entry(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Diary entry added",
+              description=description)
+        
+post_save.connect(prowl_new_diary_entry, sender=DiaryEntry)
+
+
 class Photo(models.Model):
     user = models.ForeignKey(User)
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
@@ -297,6 +316,16 @@ class Photo(models.Model):
             return mark_safe(', '.join(bits))
         else:
             return self.location_description
+
+def prowl_new_photo(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Photo added",
+              description=description)
+        
+post_save.connect(prowl_new_photo, sender=Photo)
 
     
 class Video(models.Model):
@@ -634,7 +663,17 @@ class KungfuPerson(models.Model):
         return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails', 
                             self.user.username)
         
+
+
+def prowl_new_person(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Kungfu Person created",
+              description=description)
         
+post_save.connect(prowl_new_person, sender=KungfuPerson)
         
     
 class CountrySite(models.Model):

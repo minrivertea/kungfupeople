@@ -137,6 +137,8 @@ PROJECT_MARTIAL_ART = u"Kung Fu"
 NEWSLETTER_SENDER = "%s <noreply@kungfupeople.com>" % PROJECT_NAME
 NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
+PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
+
 try:
     from local_settings import *
 except ImportError:

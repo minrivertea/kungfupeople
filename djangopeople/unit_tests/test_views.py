@@ -12,12 +12,16 @@ from djangopeople import views
 from testbase import TestCase
 
 _original_MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES
+_original_PROWL_API_KEY = settings.PROWL_API_KEY
 
 class ViewsTestCase(TestCase):
+    
+        
     
     def tearDown(self):
         # restore settings
         settings.MIDDLEWARE_CLASSES = _original_MIDDLEWARE_CLASSES
+              
         # delete any upload thumbnails
         thumbnails_root = os.path.join(settings.MEDIA_ROOT,
                                        'photos', 

@@ -1,5 +1,11 @@
+# python
+import logging
 import md5, datetime
+from time import time
+
+# django
 from django.conf import settings
+from django.core.cache import cache
 
 ORIGIN_DATE = datetime.date(2000, 1, 1)
 
@@ -78,8 +84,57 @@ from django.http import HttpResponseForbidden
 @simple_decorator
 def must_be_owner(view):
     def inner(request, *args, **kwargs):
-        #print "REQUEST.USER", request.user
         if not request.user or request.user.is_anonymous() or request.user.username != args[0]:
             return HttpResponseForbidden('Not allowed')
         return view(request, *args, **kwargs)
     return inner
+
+
+try:
+    from prowlpy import Prowl
+    if settings.PROWL_API_KEY:
+        prowl_api = Prowl(settings.PROWL_API_KEY)
+    else:
+        prowl_api = None
+except ImportError:
+    import warnings
+    warnings.warn("prowlpy no installed")
+    prowl_api = None
+        
+def prowlpy_wrapper(event, description="",
+                    application="KungfuPeople",
+                    priority=None):
+    if not prowl_api:
+        return
+    
+    params = dict(application=application,
+                  event=event,
+                  description=description
+                  )
+    
+    if priority is not None:
+        # An integer value ranging [-2, 2]: Very Low, Moderate, Normal, High, Emergency
+        priority = int(priority)
+        assert priority >= -2 and priority <= 2
+        params['priority'] = priority
+    
+    def params2cachekey(params):
+        s = []
+        for v in params.values():
+            if isinstance(v, basestring):
+                s.append(v.encode('utf8'))
+            else:
+                s.append(str(v))
+        return ''.join(s)[:256]
+    cache_key = params2cachekey(params)
+    
+    if not cache.get(cache_key):
+    
+        try:
+            prowl_api.post(**params)
+        except:
+            logging.error("Error sending event %r" % event, exc_info=True)
+            
+        cache.set(cache_key, time(), 10)
+                        
+                        
