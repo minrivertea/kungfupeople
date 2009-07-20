@@ -252,7 +252,7 @@ div.bio a.edit {
 			<div class="region">
 			<a href="/{{ person.country.iso_code|lower }}/">
 			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
-			<span class="small-text">{{ person.location_description }}</span>
+			{{ person.location_description }}
 			</div>
             
 	<div id="horizontal-image-listing">

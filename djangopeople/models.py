@@ -1,14 +1,22 @@
+# python
 import os
 import uuid
 from datetime import datetime
+
+# django
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.contenttypes import generic
-from lib.geopy import distance
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
+from django.db.models.signals import post_save, pre_save
+from lib.geopy import distance
+from django.contrib.sites.models import Site
+
+from utils import prowlpy_wrapper as prowl
+
 
 RESERVED_USERNAMES = set((
     # Trailing spaces are essential in these strings, or split() will be buggy
@@ -253,6 +261,17 @@ class DiaryEntry(models.Model):
         return Photo.objects.filter(diary_entry=self).order_by('-date_added')
 
 
+def prowl_new_diary_entry(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Diary entry added",
+              description=description)
+        
+post_save.connect(prowl_new_diary_entry, sender=DiaryEntry)
+
+
 class Photo(models.Model):
     user = models.ForeignKey(User)
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
@@ -298,6 +317,16 @@ class Photo(models.Model):
         else:
             return self.location_description
 
+def prowl_new_photo(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Photo added",
+              description=description)
+        
+post_save.connect(prowl_new_photo, sender=Photo)
+
     
 class Video(models.Model):
     user = models.ForeignKey(User)
@@ -313,85 +342,6 @@ class Video(models.Model):
         return self.description and self.description.replace('\n', ' ')\
           or self.embed_src[:40]
     
-from django.db import connection
-from string import Template
-    
-class DistanceManager(models.Manager):
-
-    
-    def nearest_to(self, point, number=20, within_range=None, offset=0,
-                   extra_where_sql=''):
-        """finds the model objects nearest to a given point
-        
-        `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
-        
-        returns a list of tuples, sorted by increasing distance from the given `point`. 
-        each tuple being (model_object, dist), where distance is in the units of the 
-        spatial ref sys given by `to_srid`"""
-        if not isinstance(point, tuple):
-            raise TypeError
-        
-        # this manager hack only works in mysql or postgres
-        if settings.DATABASE_ENGINE == 'sqlite3':
-            return []
-        
-        cursor = connection.cursor()
-        x, y = point
-        table = self.model._meta.db_table
-        distance_clause = ''
-        if within_range:
-            # Need to turn the select below into a subquery so I can do where distance <= X
-            raise NotImplementedError, "Not supported yet"
-        
-        if extra_where_sql or distance_clause:
-            extra_where_sql = 'WHERE\n\t' + extra_where_sql
-        sql = Template("""
-            SELECT 
-              gl.id,
-              ATAN2(
-                SQRT(
-                  POW(COS(RADIANS($x)) *
-                      SIN(RADIANS(gl.latitude - $y)), 2) + 
-                  POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
-                      SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                      COS(RADIANS(gl.latitude - $y)), 2)), 
-                 (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
-                  COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                  COS(RADIANS(gl.latitude - $y)))
-                ) * 6372.795 AS distance
-            FROM 
-              $table gl
-            
-              %s
-              %s
-            ORDER BY distance ASC
-            LIMIT $number
-            OFFSET $offset
-            ;
-        """ % (extra_where_sql, distance_clause))
-        sql_string = sql.substitute(locals())
-        cursor.execute(sql_string)
-        nearbys = cursor.fetchall()
-        # get a list of primary keys of the nearby model objects
-        ids = [p[0] for p in nearbys]
-        # get a list of distances from the model objects
-        dists = [p[1] for p in nearbys]
-        #print [p for p in nearbys]
-        places = self.filter(id__in=ids)
-        # the QuerySet comes back in an undefined order; let's
-        # order it by distance from the given point
-        def order_by(objects, listing, name):
-            """a convenience method that takes a list of objects,
-            and orders them by comparing an attribute given by `name`
-            to a sorted listing of values of the same length."""
-            sorted = []
-            for i in listing:
-                for obj in objects:
-                    if getattr(obj, name) == i:
-                        sorted.append(obj)
-            return sorted
-        return zip(order_by(places, ids, 'id'), dists)
-
     
 class AutoLoginKey(models.Model):
     """AutoLoginKey objects makes it possible for a user to log in
@@ -421,6 +371,152 @@ class AutoLoginKey(models.Model):
             return AutoLoginKey.objects.get(uuid=uuid).user
         except AutoLoginKey.DoesNotExist:
             return None
+    
+    
+    
+from django.db import connection
+from string import Template
+    
+class DistanceManager(models.Manager):
+
+    
+    def nearest_to(self, point, number=20, within_range=None, offset=0,
+                   extra_where_sql=''):
+        """finds the model objects nearest to a given point
+        
+        `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
+        
+        returns a list of tuples, sorted by increasing distance from the given `point`. 
+        each tuple being (model_object, dist), where distance is in the units of the 
+        spatial ref sys given by `to_srid`"""
+        if not isinstance(point, tuple):
+            raise TypeError
+        
+        # this manager hack only works in mysql or postgres since sqlite3 doesn't
+        # support the sqrt function.
+        if settings.DATABASE_ENGINE == 'sqlite3':
+            # but since running sqlite is so useful for running tests
+            # we use a hack
+            return self._manual_nearest_to(point, number=number, 
+                                           within_range=within_range,
+                                           offset=offset,
+                                           extra_where_sql=extra_where_sql)
+
+        cursor = connection.cursor()
+        x, y = point
+        table = self.model._meta.db_table
+        distance_clause = ''
+        #if within_range:
+        #    # Need to turn the select below into a subquery so I can do where distance <= X
+        #    raise NotImplementedError, "Not supported yet"
+        
+        if extra_where_sql or distance_clause:
+            extra_where_sql = 'WHERE\n\t' + extra_where_sql
+            
+        template = Template("""
+            SELECT 
+            gl.id,
+            ATAN2(
+                SQRT(
+                POW(COS(RADIANS($x)) *
+                    SIN(RADIANS(gl.latitude - $y)), 2) + 
+                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
+                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                    COS(RADIANS(gl.latitude - $y)), 2)), 
+                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
+                COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                COS(RADIANS(gl.latitude - $y)))
+                ) * 6372.795 AS distance
+            FROM 
+            $table gl
+            
+            %s
+            %s
+            ORDER BY distance ASC
+            LIMIT $number
+            OFFSET $offset
+            ;
+        """ % (extra_where_sql, distance_clause))
+        sql_string = template.substitute(locals())
+        
+        cursor.execute(sql_string)
+        nearbys = cursor.fetchall()
+        if within_range:
+            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
+        
+        # get a list of primary keys of the nearby model objects
+        ids = [p[0] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[1] for p in nearbys]
+        places = self.filter(id__in=ids)
+        # the QuerySet comes back in an undefined order; let's
+        # order it by distance from the given point
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        return zip(order_by(places, ids, 'id'), dists)
+    
+    
+    def _manual_nearest_to(self, point, number=20, within_range=None, offset=0,
+                           extra_where_sql=''):
+        cursor = connection.cursor()
+        # point -> (long, lat)
+        #x, y = point
+        table = self.model._meta.db_table
+        if extra_where_sql and not extra_where_sql.strip().lower().startswith('where'):
+            extra_where_sql = "WHERE %s" % extra_where_sql
+        template = Template("""
+            SELECT 
+            gl.id,
+            gl.latitude,
+            gl.longitude
+            FROM 
+            $table gl
+            
+            %s
+            ;
+        """ % (extra_where_sql,))
+        sql_string = template.substitute(locals())
+        cursor.execute(sql_string)
+        from math import sqrt 
+        from geopy import distance as geopy_distance
+        def distance(latitude, longitude):
+            return geopy_distance.distance((point[1], point[0]), (latitude, longitude)).miles
+
+        nearbys = []
+        
+        for id, latitude, longitude in cursor.fetchall():
+            d = distance(latitude, longitude)
+            if within_range:
+                if d <= within_range:
+                    nearbys.append([d, id])
+            else:
+                nearbys.append([d, id])
+                
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        ids = [p[1] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[0] for p in nearbys]
+        places = self.filter(id__in=ids)
+        return zip(order_by(places, ids, 'id'), dists)
+        
+
     
     
 class KungfuPerson(models.Model):
@@ -462,7 +558,16 @@ class KungfuPerson(models.Model):
 
     class Admin:
         list_display = ('user', 'profile_views')
-
+        
+    def __unicode__(self):
+        return unicode(self.user.get_full_name())
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("person.view", (self.user.username,))
+    
+    def __repr__(self):
+        return "<KungfuPerson: %r>" % self.user.username
 
     def get_nearest(self, num=5):
         #from time import time
@@ -524,12 +629,6 @@ class KungfuPerson(models.Model):
         else:
             return self.location_description
     
-    def __unicode__(self):
-        return unicode(self.user.get_full_name())
-    
-    @models.permalink
-    def get_absolute_url(self):
-        return ("person.view", (self.user.username,))
     
     def save(self, force_insert=False, force_update=False): # TODO: Put in transaction
         # Update country and region counters
@@ -566,7 +665,17 @@ class KungfuPerson(models.Model):
         return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails', 
                             self.user.username)
         
+
+
+def prowl_new_person(sender, instance, created, **__):
+    description = "%s %s" % (instance.user.first_name, instance.user.last_name)
+    site = Site.objects.get_current()
+    description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
+    if created:
+        prowl("Kungfu Person created",
+              description=description)
         
+post_save.connect(prowl_new_person, sender=KungfuPerson)
         
     
 class CountrySite(models.Model):

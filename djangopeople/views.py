@@ -210,7 +210,8 @@ def signup(request):
             style_name = form.cleaned_data['style']
             # in case they enter multiple styles
             for name in [x.strip() for x in style_name.split(',') if x.strip()]:
-                slug = name.strip().replace(' ', '-').lower()
+                slug = slugify(unaccent_string(name))
+                #slug = name.strip().replace(' ', '-').lower()
                 if name:
                     style = _get_or_create_style(name)
                     style.slug = slug
@@ -1472,3 +1473,52 @@ def newsletter_options(request, username):
 
     return render(request, 'newsletter_options.html', locals())
         
+        
+def _find_clubs_by_location(latitude, longitude,
+                            country=None, 
+                            location_description=None,
+                            within_range=10):
+    
+    extra_where_sql = []
+    
+    if country:
+        if isinstance(country, basestring):
+            if len(country) == 2:
+                try:
+                    country = Country.objects.get(iso_code=country.upper().strip())
+                except Country.DoesNotExist:
+                    pass
+            else:
+                try:
+                    country = Country.objects.get(name=country)
+                except Country.DoesNotExist:
+                    try:
+                        country = Country.objects.get(name__iexact=country.strip())
+                    except Country.DoesNotExist:
+                        pass
+        # else, expect country to be an object
+        extra_where_sql.append("country_id=%d" % country.id)
+        
+    if location_description:
+        location_description = location_description.replace("'", "").\
+          replace(";", "")
+        extra_where_sql.append("UPPER(location_description)='%s'" % \
+                               location_description.upper())
+        
+    # need to add extra where that checks if they are members of a club
+    # XXX
+
+
+    extra_where_sql = ' AND '.join(extra_where_sql)
+    
+    people_near = KungfuPerson.objects.nearest_to((longitude, latitude),
+                                                  extra_where_sql=extra_where_sql,
+                                                  within_range=within_range)
+    clubs = []
+
+    for (person, distance) in people_near:
+        for club in person.club_membership.all():
+            if club not in clubs:
+                clubs.append(club)
+
+    return clubs
