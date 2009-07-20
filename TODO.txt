@@ -55,5 +55,13 @@ The first thing is to concentrate on 3 elements - a large number of users (stude
 
 We can enter styles ourselves, and we can also enter clubs ourselves. So, I'm going to start with a big list of styles + trawl the web for a big number of clubs. We can enter these on, and then see the information and what comes out.
 
+What do I want to see? What kind of information would be useful or interesting? 
+
+   - The progression of kung fu across the world - how styles have progressed across the world. How a style has spread from place to place. Historically
+   - When a student becomes an instructor...
+   - When a new club starts
+   - Events across the world
+   - 
+
 
 
