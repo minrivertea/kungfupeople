@@ -50,11 +50,11 @@ body * {
 }
 
 #no-map-content-box {
-	width: 600px;
+	width: 570px;
     	float: left;
 	display: block;
     	margin: 0px 0px 50px 0px;
-	padding: 40px;
+	padding: 30px;
     	display: block;
     	background-color: white;
 }
