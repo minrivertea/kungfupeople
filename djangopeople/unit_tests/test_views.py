@@ -193,8 +193,16 @@ class ViewsTestCase(TestCase):
     def test_newsletter_options(self):
         """test changing your newsletter options"""
         
-        user, person = self._create_person('bob', 'bob@example.com',
-                                           )
+        # disable the CSRF middlware temporarily
+        mdc = list(settings.MIDDLEWARE_CLASSES)
+        try:
+            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
+            settings.MIDDLEWARE_CLASSES = tuple(mdc)
+        except ValueError:
+            # not there
+            pass
+        
+        user, person = self._create_person('bob', 'bob@example.com')
         
         default = person.newsletter
         
@@ -378,9 +386,82 @@ class ViewsTestCase(TestCase):
         redirected_to = response._headers['location'][1]
         self.assertTrue(redirected_to.endswith('/done/'))
         
-
+    def test_find_clubs_by_location(self):
+        """ by a lat,lng you should be able to find a list of possible clubs
+        """
+        # some examples to work with
+        # Place, Country, latitude, longitude
+        # Fuzhou, Fujian, 26.0740535325, 119.292297363
+        # Islington, England, 51.532601866, -0.108382701874 
+        # Euston, England,  51.527475885, -0.128552913666
+        # Geneva, Switzerland, 46.20217114444467, 6.142730712890625
+        # Saint-Genis-Pouilly, France, 46.244451065485094, 6.0225677490234375
+        
+        switzerland = Country.objects.get(name=u"Switzerland")
+        france = Country.objects.get(name=u"France")
+        uk = Country.objects.get(name=u"United Kingdom")
         
         
-                        
+        user1, person1 = self._create_person("user1", "user1@example.com",
+                                             country=switzerland.name,
+                                             latitude=46.20217114444467,
+                                             longitude=6.142730712890625,
+                                             location_description=u"Geneva")
+        doggy_style = self._create_club(u"Doggy Style")
+        person1.club_membership.add(doggy_style)
 
+        user2, person2 = self._create_person("user2", "user2@example.com",
+                                             country=france.name,
+                                             latitude=46.244451065485094,
+                                             longitude=6.0225677490234375,
+                                             location_description=u"Saint-Genis-Pouilly")
+        wing_chun = self._create_club(u"Wing Chun Club")
+        person2.club_membership.add(wing_chun)
+        
 
+        user3, person3 = self._create_person("user3", "user3@example.com",
+                                             country=uk.name,
+                                             latitude=51.532601866,
+                                             longitude=-0.108382701874,
+                                             location_description=u"Islington")
+
+        person3.club_membership.add(wing_chun)
+        white_crane = self._create_club(u"FWC White Crane")
+        person3.club_membership.add(white_crane)
+        
+        user4, person4 = self._create_person("user4", "user4@example.com",
+                                             country=uk.name,
+                                             latitude=51.527475885,
+                                             longitude=-0.128552913666,
+                                             location_description=u"Euston")
+        
+        person4.club_membership.add(white_crane)
+        
+        func = views._find_clubs_by_location
+        
+        # by distance, Saint-Genis-Pouilly is very close to Geneva, Switzerland
+        # first by searching really really close to Geneva to make sure the sorting
+        # is right
+        clubs = func(latitude=46.202, longitude=6.142, within_range=100)
+        self.assertEqual(clubs, [doggy_style, wing_chun])
+        
+        # but if you include the country it should only find the one in that country
+        clubs = func(latitude=46.202, longitude=6.142, country="switzerland")
+        self.assertEqual(clubs, [doggy_style])
+        
+        # Search in Kings cross which it between Euston and Islington
+        clubs = func(latitude=51.53079, longitude=-0.121021)
+        self.assertEqual(clubs, [wing_chun, white_crane])
+        # adding country wont help
+        clubs = func(latitude=51.53079, longitude=-0.121021, country="GB")
+        self.assertEqual(clubs, [wing_chun, white_crane])
+        
+        clubs = func(latitude=51.53079, longitude=-0.121021, country="GB", 
+                     location_description="islington")
+        self.assertEqual(clubs, [wing_chun])
+        
+        
+        
+        
+        
+        

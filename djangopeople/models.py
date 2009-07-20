@@ -331,47 +331,58 @@ class DistanceManager(models.Manager):
         if not isinstance(point, tuple):
             raise TypeError
         
-        # this manager hack only works in mysql or postgres
+        # this manager hack only works in mysql or postgres since sqlite3 doesn't
+        # support the sqrt function.
         if settings.DATABASE_ENGINE == 'sqlite3':
-            return []
-        
+            # but since running sqlite is so useful for running tests
+            # we use a hack
+            return self._manual_nearest_to(point, number=number, 
+                                           within_range=within_range,
+                                           offset=offset,
+                                           extra_where_sql=extra_where_sql)
+
         cursor = connection.cursor()
         x, y = point
         table = self.model._meta.db_table
         distance_clause = ''
-        if within_range:
-            # Need to turn the select below into a subquery so I can do where distance <= X
-            raise NotImplementedError, "Not supported yet"
+        #if within_range:
+        #    # Need to turn the select below into a subquery so I can do where distance <= X
+        #    raise NotImplementedError, "Not supported yet"
         
         if extra_where_sql or distance_clause:
             extra_where_sql = 'WHERE\n\t' + extra_where_sql
-        sql = Template("""
+            
+        template = Template("""
             SELECT 
-              gl.id,
-              ATAN2(
+            gl.id,
+            ATAN2(
                 SQRT(
-                  POW(COS(RADIANS($x)) *
-                      SIN(RADIANS(gl.latitude - $y)), 2) + 
-                  POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
-                      SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                      COS(RADIANS(gl.latitude - $y)), 2)), 
-                 (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
-                  COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                  COS(RADIANS(gl.latitude - $y)))
+                POW(COS(RADIANS($x)) *
+                    SIN(RADIANS(gl.latitude - $y)), 2) + 
+                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
+                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                    COS(RADIANS(gl.latitude - $y)), 2)), 
+                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
+                COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
+                COS(RADIANS(gl.latitude - $y)))
                 ) * 6372.795 AS distance
             FROM 
-              $table gl
+            $table gl
             
-              %s
-              %s
+            %s
+            %s
             ORDER BY distance ASC
             LIMIT $number
             OFFSET $offset
             ;
         """ % (extra_where_sql, distance_clause))
-        sql_string = sql.substitute(locals())
+        sql_string = template.substitute(locals())
+        
         cursor.execute(sql_string)
         nearbys = cursor.fetchall()
+        if within_range:
+            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
+        
         # get a list of primary keys of the nearby model objects
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
@@ -391,6 +402,63 @@ class DistanceManager(models.Manager):
                         sorted.append(obj)
             return sorted
         return zip(order_by(places, ids, 'id'), dists)
+    
+    
+    def _manual_nearest_to(self, point, number=20, within_range=None, offset=0,
+                           extra_where_sql=''):
+        cursor = connection.cursor()
+        # point -> (long, lat)
+        #x, y = point
+        table = self.model._meta.db_table
+        
+        template = Template("""
+            SELECT 
+            gl.id,
+            gl.latitude,
+            gl.longitude
+            FROM 
+            $table gl
+            
+            %s
+            LIMIT $number
+            ;
+        """ % (extra_where_sql,))
+        sql_string = template.substitute(locals())
+        cursor.execute(sql_string)
+        print sql_string
+        from math import sqrt 
+        
+        def distance(latitude, longitude):
+            return sqrt((latitude - point[1])**2 + (longitude - point[0])**2) \
+              * 6372.795
+
+        nearbys = []
+
+        for id, latitude, longitude in cursor.fetchall():
+            d = distance(latitude, longitude)
+            if within_range:
+                if d <= within_range:
+                    nearbys.append([d, id])
+            else:
+                nearbys.append([d, id])
+            
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        ids = [p[1] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[0] for p in nearbys]
+        #print [p for p in nearbys]
+        places = self.filter(id__in=ids)
+        return zip(order_by(places, ids, 'id'), dists)
+        
 
     
 class AutoLoginKey(models.Model):
