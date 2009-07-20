@@ -1,9 +1,14 @@
+# python
 import os
+
+# django
 from django.conf.urls.defaults import *
 from django.conf import settings
-from djangopeople import views
 from djangopeople.models import KungfuPerson
 from djangopeople.feeds import LatestAll, LatestPeople
+
+# app
+from djangopeople import views
 
 feeds = {
     'people': LatestPeople,
@@ -26,6 +31,7 @@ urlpatterns = patterns('',
 
     (r'^guess-club-name.json$', views.guess_club_name_json),
     (r'^guess-username.json$', views.guess_username_json),
+    url(r'^find-clubs-by-location.json$', views.find_clubs_by_location_json),
 
     (r'^search/$', views.search),
                        

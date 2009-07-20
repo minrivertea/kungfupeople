@@ -463,6 +463,29 @@ class ViewsTestCase(TestCase):
                      location_description="islington")
         self.assertEqual(clubs, [wing_chun])
         
+        # try the same searches but with the json interface
+        def func(latitude, longitude, country=None,
+                 location_description=None,
+                 within_range=None):
+            params = dict(latitude=latitude, longitude=longitude)
+            if country is not None:
+                params['country'] = country
+            if location_description is not None:
+                params['location_description'] = location_description
+            if within_range is not None:
+                params['within_range'] = within_range
+            
+            response = self.client.get('/find-clubs-by-location.json', params)
+            assert response.status_code == 200
+            return simplejson.loads(response.content)
+        
+        clubs = func(latitude=46.202, longitude=6.142, within_range=40)
+        self.assertEqual(len(clubs), 2)
+        self.assertEqual([x['name'] for x in clubs], 
+                          [u'Doggy Style', u'Wing Chun Club'])
+        
+        
+        
         
         
         
