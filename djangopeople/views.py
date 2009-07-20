@@ -1479,7 +1479,6 @@ def _find_clubs_by_location(latitude, longitude,
                             location_description=None,
                             within_range=10):
     
-    clubs = []
     extra_where_sql = []
     
     if country:
@@ -1504,7 +1503,7 @@ def _find_clubs_by_location(latitude, longitude,
         location_description = location_description.replace("'", "").\
           replace(";", "")
         extra_where_sql.append("UPPER(location_description)='%s'" % \
-                               location_description)
+                               location_description.upper())
         
     # need to add extra where that checks if they are members of a club
     # XXX
@@ -1512,10 +1511,12 @@ def _find_clubs_by_location(latitude, longitude,
 
     extra_where_sql = ' AND '.join(extra_where_sql)
     
-    print KungfuPerson.objects.all()[0:20].query.as_sql()
-    for (person, distance) in KungfuPerson.objects.nearest_to((longitude, latitude),
+    people_near = KungfuPerson.objects.nearest_to((longitude, latitude),
                                                   extra_where_sql=extra_where_sql,
-                                                  within_range=within_range):
+                                                  within_range=within_range)
+    clubs = []
+
+    for (person, distance) in people_near:
         for club in person.club_membership.all():
             if club not in clubs:
                 clubs.append(club)

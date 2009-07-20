@@ -431,7 +431,6 @@ class ViewsTestCase(TestCase):
 
         person3.club_membership.add(wing_chun)
         white_crane = self._create_club(u"FWC White Crane")
-        person3.club_membership.add(white_crane)
         
         user4, person4 = self._create_person("user4", "user4@example.com",
                                              country=uk.name,
@@ -446,9 +445,9 @@ class ViewsTestCase(TestCase):
         # by distance, Saint-Genis-Pouilly is very close to Geneva, Switzerland
         # first by searching really really close to Geneva to make sure the sorting
         # is right
-        clubs = func(latitude=46.202, longitude=6.142, within_range=100)
+        clubs = func(latitude=46.202, longitude=6.142, within_range=40)
         self.assertEqual(clubs, [doggy_style, wing_chun])
-        
+
         # but if you include the country it should only find the one in that country
         clubs = func(latitude=46.202, longitude=6.142, country="switzerland")
         self.assertEqual(clubs, [doggy_style])
@@ -463,6 +462,7 @@ class ViewsTestCase(TestCase):
         clubs = func(latitude=51.53079, longitude=-0.121021, country="GB", 
                      location_description="islington")
         self.assertEqual(clubs, [wing_chun])
+        
         
         
         

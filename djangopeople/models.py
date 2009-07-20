@@ -342,6 +342,38 @@ class Video(models.Model):
         return self.description and self.description.replace('\n', ' ')\
           or self.embed_src[:40]
     
+    
+class AutoLoginKey(models.Model):
+    """AutoLoginKey objects makes it possible for a user to log in
+    automatically without supplying a password as long as they
+    supply a valid uuid.
+    
+    See the middleware for how this is being used
+    """
+    user = models.ForeignKey(User)
+    uuid = models.CharField(max_length=128, db_index=True)
+    add_date = models.DateTimeField('date added', default=datetime.now)
+    
+    def __unicode__(self):
+        return "%s (%s)" % (self.uuid, self.user.username)
+    
+    @classmethod
+    def get_or_create(self, user):
+        try:
+            return AutoLoginKey.objects.get(user=user)
+        except AutoLoginKey.DoesNotExist:
+            return AutoLoginKey.objects.create(user=user,
+                                               uuid=str(uuid.uuid4()))
+        
+    @classmethod
+    def find_user_by_uuid(self, uuid):
+        try:
+            return AutoLoginKey.objects.get(uuid=uuid).user
+        except AutoLoginKey.DoesNotExist:
+            return None
+    
+    
+    
 from django.db import connection
 from string import Template
     
@@ -416,7 +448,6 @@ class DistanceManager(models.Manager):
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
         dists = [p[1] for p in nearbys]
-        #print [p for p in nearbys]
         places = self.filter(id__in=ids)
         # the QuerySet comes back in an undefined order; let's
         # order it by distance from the given point
@@ -439,7 +470,8 @@ class DistanceManager(models.Manager):
         # point -> (long, lat)
         #x, y = point
         table = self.model._meta.db_table
-        
+        if extra_where_sql and not extra_where_sql.strip().lower().startswith('where'):
+            extra_where_sql = "WHERE %s" % extra_where_sql
         template = Template("""
             SELECT 
             gl.id,
@@ -449,20 +481,17 @@ class DistanceManager(models.Manager):
             $table gl
             
             %s
-            LIMIT $number
             ;
         """ % (extra_where_sql,))
         sql_string = template.substitute(locals())
         cursor.execute(sql_string)
-        print sql_string
         from math import sqrt 
-        
+        from geopy import distance as geopy_distance
         def distance(latitude, longitude):
-            return sqrt((latitude - point[1])**2 + (longitude - point[0])**2) \
-              * 6372.795
+            return geopy_distance.distance((point[1], point[0]), (latitude, longitude)).miles
 
         nearbys = []
-
+        
         for id, latitude, longitude in cursor.fetchall():
             d = distance(latitude, longitude)
             if within_range:
@@ -470,7 +499,7 @@ class DistanceManager(models.Manager):
                     nearbys.append([d, id])
             else:
                 nearbys.append([d, id])
-            
+                
         def order_by(objects, listing, name):
             """a convenience method that takes a list of objects,
             and orders them by comparing an attribute given by `name`
@@ -484,40 +513,10 @@ class DistanceManager(models.Manager):
         ids = [p[1] for p in nearbys]
         # get a list of distances from the model objects
         dists = [p[0] for p in nearbys]
-        #print [p for p in nearbys]
         places = self.filter(id__in=ids)
         return zip(order_by(places, ids, 'id'), dists)
         
 
-    
-class AutoLoginKey(models.Model):
-    """AutoLoginKey objects makes it possible for a user to log in
-    automatically without supplying a password as long as they
-    supply a valid uuid.
-    
-    See the middleware for how this is being used
-    """
-    user = models.ForeignKey(User)
-    uuid = models.CharField(max_length=128, db_index=True)
-    add_date = models.DateTimeField('date added', default=datetime.now)
-    
-    def __unicode__(self):
-        return "%s (%s)" % (self.uuid, self.user.username)
-    
-    @classmethod
-    def get_or_create(self, user):
-        try:
-            return AutoLoginKey.objects.get(user=user)
-        except AutoLoginKey.DoesNotExist:
-            return AutoLoginKey.objects.create(user=user,
-                                               uuid=str(uuid.uuid4()))
-        
-    @classmethod
-    def find_user_by_uuid(self, uuid):
-        try:
-            return AutoLoginKey.objects.get(uuid=uuid).user
-        except AutoLoginKey.DoesNotExist:
-            return None
     
     
 class KungfuPerson(models.Model):
@@ -559,7 +558,16 @@ class KungfuPerson(models.Model):
 
     class Admin:
         list_display = ('user', 'profile_views')
-
+        
+    def __unicode__(self):
+        return unicode(self.user.get_full_name())
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("person.view", (self.user.username,))
+    
+    def __repr__(self):
+        return "<KungfuPerson: %r>" % self.user.username
 
     def get_nearest(self, num=5):
         #from time import time
@@ -621,12 +629,6 @@ class KungfuPerson(models.Model):
         else:
             return self.location_description
     
-    def __unicode__(self):
-        return unicode(self.user.get_full_name())
-    
-    @models.permalink
-    def get_absolute_url(self):
-        return ("person.view", (self.user.username,))
     
     def save(self, force_insert=False, force_update=False): # TODO: Put in transaction
         # Update country and region counters
