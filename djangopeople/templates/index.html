@@ -57,20 +57,7 @@ var people = [
 		</li>
         	{% endfor %}
 		</ul>
-
-
-
 	</div>
-
-
-	{% if not user.is_authenticated %}
-	<div id="home-content-box">
-		<img class="plus" src="/static/img/plus.png">
-		<h2><a class="h2-link" href="/signup/">add yourself to the martial arts map</a></h2>
-		<p>Add yourself to the global map and join the {{ PROJECT_NAME }} community.</p>
-	</div>
-
-	{% endif %}
 
 
 		<div class="highlight-home">
