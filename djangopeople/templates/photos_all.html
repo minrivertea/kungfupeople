@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load django_static thumbnail misc_extras %}
+
+{% block title %}{{ person.user.get_full_name }}'s photos |{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% slimfile "/js/edit_club.js" %}"></script>
+{% endblock %}
+
+
+
+{% block content %}
+	<div class="no-map-wrapper">
+	<div id="no-map-content-box">
+
+	<h2>{{ person.user.get_full_name }}'s photos</h2>
+
+	<ul class="horizontal-image-list">
+		{% for photo in photos %}
+		<li class="horizontal-image-list">
+       	        <div class="list-photo">
+                <a href="{{ photo.get_absolute_url }}">
+                <img src="{% thumbnail photo.photo 60x60 crop %}" alt="photo">
+		</a>
+		</li>
+        	{% endfor %}
+	</ul>
+	</div>
+
+
+{% endblock %}

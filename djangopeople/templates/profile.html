@@ -104,6 +104,7 @@ div.bio a.edit {
 		{% if is_owner %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
+		{% if not person.photo %}<a href="profileupload/"><strong>Upload a photo</strong></a>{% endif %}  |
 		<a href="/{{user.username }}/videos/add/">Link to a video</a>  |  
 		<a href="/{{ user.username }}/profile/">Edit your profile</a>  
 		{% if photos %}{% else %}|  <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  
@@ -111,38 +112,6 @@ div.bio a.edit {
 		<a href="/{{ user.username }}/style/">Edit styles</a></p>
 		</div>
 		{% endif %}
-
-
-
-	{% if is_owner %}
-   
-		{% if pester_first_photo %}
-		<br/>
-		<div class="no-photo-box">
-		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
-		<div class="no-photo-box-main">
-		<div class="no-photo-box-close"><a href="?close_tip_first_photo=1" class="meta close_tip" id="close_tip_first_photo">close</a></div>
-		<p>*Why hide behind an icon - show the world your real face!</p>
-		<a class="major-notice" href="profileupload/">Upload a profile photo now!</a>
-		</div>
-		</div>
-		{% endif %}
-
-		{% if pester_first_diary_entry %}
-		<div class="no-photo-box">
-		<br/>
-		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
-		<div class="no-photo-box-main">
-		<div class="no-photo-box-close"><a href="?close_tip_first_diary_entry=1" class="meta close_tip" id="close_tip_first_diary">close</a></div>
-		<p>*Use the site to keep a record of your training experiences.</p>
-		<a class="major-notice" href="diary/add/">Write your first diary entry</a>
-		</div>
-		</div>
-		<br/>
-		{% endif %}
-                                
-	{% endif %}
-
 
 
 		<div class="profile-text">
@@ -182,9 +151,38 @@ div.bio a.edit {
 			</div>
 
 		</div>
+
 	</div>
 
 	<div id="main-content-area">
+	{% if is_owner %}
+   
+		{% if pester_first_photo %}
+		<br/>
+		<div class="no-photo-box">
+		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
+		<div class="no-photo-box-main">
+		<div class="no-photo-box-close"><a href="?close_tip_first_photo=1" class="meta close_tip" id="close_tip_first_photo">close</a></div>
+		<p>*Why hide behind an icon - show the world your real face!</p>
+		<a class="major-notice" href="profileupload/">Upload a profile photo now!</a>
+		</div>
+		</div>
+		{% endif %}
+
+		{% if pester_first_diary_entry %}
+		<div class="no-photo-box">
+		<br/>
+		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
+		<div class="no-photo-box-main">
+		<div class="no-photo-box-close"><a href="?close_tip_first_diary_entry=1" class="meta close_tip" id="close_tip_first_diary">close</a></div>
+		<p>*Use the site to keep a record of your training experiences.</p>
+		<a class="major-notice" href="diary/add/">Write your first diary entry</a>
+		</div>
+		</div>
+		<br/>
+		{% endif %}
+                                
+	{% endif %}
 	
 		{% if diary_entries_private %}
 		<div class="highlight-profile">
@@ -226,7 +224,7 @@ div.bio a.edit {
 
 	{% if photos %}
 	<div class="highlight-profile">
-	<h3>photos {% if is_owner %}<a href="/{{ user.username }}/photo/upload/">(add more photos)</a>{% endif %}</h3>
+	<h3>photos {% if is_owner %}<a href="/{{ user.username }}/photo/upload/">(add more photos)</a>{% endif %}   <a href="viewallphotos/"> (view all)</a></h3>
 	{% for photo in photos %}
 	<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
 	{% endfor %}
@@ -249,6 +247,7 @@ div.bio a.edit {
 
 
 	<div id="right-column">
+
             {% with person.get_nearest as people %}
             {% if people %}
             <h4>People near {{ person.user.first_name }}</h4>
@@ -257,6 +256,7 @@ div.bio a.edit {
 			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 			{{ person.location_description }}
 			</div>
+
             
 	<div id="horizontal-image-listing">
             <ul class="horizontal-image-list">

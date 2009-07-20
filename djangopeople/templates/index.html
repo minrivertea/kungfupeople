@@ -37,6 +37,7 @@ var people = [
 <div class="wrapper">
 
 	<div id="horizontal-image-listing">
+		<h3>People recently added</h3>
 	<div class="horizontal-image-list-text">
 	  Showing {{ recent_people.count }} 
 	  {% ifequal recent_people.count 1 %}person{% else %}people{% endifequal %} 
@@ -56,40 +57,29 @@ var people = [
 		</li>
         	{% endfor %}
 		</ul>
-
-
-
 	</div>
 
 
-	{% if not user.is_authenticated %}
-	<div id="home-content-box">
-		<img class="plus" src="/static/img/plus.png">
-		<h2><a class="h2-link" href="/signup/">add yourself to the martial arts map</a></h2>
-		<p>Add yourself to the global map and join the {{ PROJECT_NAME }} community.</p>
-	</div>
-
-	{% endif %}
-
-	<div class="content-box">
-
-		<div class="highlight-profile">
+		<div class="highlight-home">
 		<h3>Styles recently added</h3>
 		{% for style in styles %}
 		<a href="{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}<br/>{% endif %}
 		{% endfor %}
 		</div>
 
-		<div class="highlight-profile">
+		<div class="highlight-home">
 		<h3>Clubs recently added</h3>
 		{% for club in clubs %}
 		<a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br/>{% endif %}
 		{% endfor %}
 		</div>
 
-	</div>
-
-	
+		<div class="highlight-home">
+		<h3>Photos recently added</h3>
+		{% for photo in photos %}
+			<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
+		{% endfor %}
+		</div>
 
 
 		

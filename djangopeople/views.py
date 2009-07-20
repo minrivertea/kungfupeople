@@ -52,9 +52,9 @@ def render_json(data):
 
 def index(request):
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')
-    clubs = Club.objects.all().order_by('-add_date')
-    photos = Photo.objects.all().order_by('-date_added')[:5]
-    styles = Style.objects.all().order_by('-add_date')
+    clubs = Club.objects.all().order_by('-add_date')[:10]
+    photos = Photo.objects.all().order_by('-date_added')[:10]
+    styles = Style.objects.all().order_by('-add_date')[:10]
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     your_person = None
     if request.user and not request.user.is_anonymous():
@@ -858,7 +858,7 @@ def profile(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
-    photos = Photo.objects.filter(user=person.user)
+    photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
     videos = Video.objects.filter(user=person.user)[:1]
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
@@ -929,6 +929,16 @@ def photo(request, username, photo_id):
     return render(request, 'photo.html', {
         'person': person,
         'photo': photo,
+        'is_owner': request.user.username == username,
+    })
+
+def viewallphotos(request, username):
+    person = get_object_or_404(KungfuPerson, user__username = username)
+    photos = Photo.objects.filter(user=person.user).order_by('-date_added')
+
+    return render(request, 'photos_all.html', {
+        'person': person,
+        'photos': photos,
         'is_owner': request.user.username == username,
     })
 

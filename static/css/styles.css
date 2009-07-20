@@ -50,11 +50,11 @@ body * {
 }
 
 #no-map-content-box {
-	width: 650px;
+	width: 570px;
     	float: left;
 	display: block;
     	margin: 0px 0px 50px 0px;
-	padding: 40px;
+	padding: 30px;
     	display: block;
     	background-color: white;
 }
@@ -260,6 +260,16 @@ body * {
 	float: left;
 }
 
+#horizontal-image-listing h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin: 10px 0 0px 0px;
+	padding-bottom: 5px;
+}
+
 #horizontal-image-listing a:link, #horizontal-image-listing a:visited {
 	font-size: 1em;
 }
@@ -297,7 +307,7 @@ p.large {
 }
 
 #content-box {
-	width: 650px;
+	width: 630px;
     	float: left;
 	display: block;
     	margin: 20px 0px 50px 0px;
@@ -308,11 +318,17 @@ p.large {
 
 #right-column {
 	min-width: 230px;
-	width: 230px;
+	width: 260px;
 	float: left;
 	display: block;
 	height: 100%;
-	margin: 20px 40px 0 20px;
+	margin: 20px 0px 0 20px;
+	padding: 30px;
+	background-color: #F3CF1A;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+-moz-border-radius-topleft:10px;
+-moz-border-radius-topright:10px;
 }
 
 .right-box {
@@ -383,7 +399,7 @@ h3 {
 
 h4 {
 	font-family: Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 20px;
 	font-weight: bold;
 	color: black;
 	margin-bottom: 15px;
@@ -431,10 +447,15 @@ a:hover img {
 	color: #A30F01;
 }
 
+#right-column a:link,
+#right-column a:visited {
+	color: #A30F01;
+}
+
 #right-column a:hover,
 #right-column a:active,
 #right-column a:focus {
-	color: #A30F01;
+	color: #708e20;
 }
 
 #related-photos a:link,
@@ -642,16 +663,12 @@ ul.split li {
 
 /* @end */
 
-.highlight {
-	margin: 0 0px 15px 30px;
+.highlight-home {
+	margin: 20px 0px 30px 0px;
 	float: left;	
-	width: 580px;
+	min-width: 300px;
+	width: 33%;
 	background-color: white;
-	border: 5px solid #F3CF1A;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
 }
 
 .highlight-profile {
@@ -670,6 +687,17 @@ ul.split li {
 	border-bottom: 1px solid #e6e6e6;
 	margin-bottom: 15px;
 	margin-left: -120px;
+}
+
+.highlight-home h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 15px;
+	margin-left: 0px;
+	padding-bottom: 5px;
 }
 
 
@@ -1127,7 +1155,7 @@ diaries ul {
 }
 
 .large-photo-container {
-	text-align: center;
+	text-align: left;
 }
 
 a.diary-title {
