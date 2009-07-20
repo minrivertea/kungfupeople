@@ -1523,8 +1523,6 @@ def find_clubs_by_location_json(request):
                 }
         data.append(item)
         
-    print "data", data
-    
     return render_json(data)
                 
             
@@ -1535,7 +1533,6 @@ def _find_clubs_by_location(latitude, longitude,
                             location_description=None,
                             within_range=10):
 
-    print locals()
     extra_where_sql = []
     
     if country:
@@ -1571,12 +1568,10 @@ def _find_clubs_by_location(latitude, longitude,
     people_near = KungfuPerson.objects.nearest_to((longitude, latitude),
                                                   extra_where_sql=extra_where_sql,
                                                   within_range=within_range)
-    print "PEOPLE_NAR", people_near
     clubs = []
 
     for (person, distance) in people_near:
         for club in person.club_membership.all():
             if club not in clubs:
                 clubs.append(club)
-                print "CLUBS", clubs
     return clubs
