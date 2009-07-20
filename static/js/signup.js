@@ -142,19 +142,6 @@ google.setOnLoadCallback(function() {
     gmap.addControl(new google.maps.LargeMapControl3D());
     gmap.addControl(new google.maps.MapTypeControl());    
     
-    
-   /* OLD WAY
-    $('#gmap').one('click', function(event) {
-       $('html,body').animate({scrollTop: $('#gmap').offset().top}, 500);
-       if (!marker) {
-	  if (!point)
-	    point = gmap.getCenter();
-	  __create_marker(point);
-	  marker.openInfoWindowHtml("Drag the marker to your location on the map");
-       }
-    });
-    */
-   
    
     // If latitude and longitude are populated, center there 
     if ($('#id_latitude').val() && $('#id_longitude').val()) {
@@ -178,7 +165,7 @@ google.setOnLoadCallback(function() {
       if (!point)
 	point = gmap.getCenter();
       __create_marker(point);
-      marker.openInfoWindowHtml("Drag the marker to your location on the map");
+      marker.openInfoWindowHtml("Drag the marker to where you train");
    }   
    
    
