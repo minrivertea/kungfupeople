@@ -93,6 +93,7 @@ MIDDLEWARE_CLASSES = (
     'djangopeople.middleware.NoDoubleSlashes',
     'djangopeople.middleware.AutoLogin',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'crashkit.CrashKitDjangoMiddleware',
 )
 
 ROOT_URLCONF = 'djangopeoplenet.urls'
@@ -138,6 +139,8 @@ NEWSLETTER_SENDER = "%s <noreply@kungfupeople.com>" % PROJECT_NAME
 NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
 PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
+
+CRASHKIT = None # enabled live
 
 try:
     from local_settings import *
