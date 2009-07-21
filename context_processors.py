@@ -101,6 +101,8 @@ def context(request):
         current_url = request.build_absolute_uri()
         if '/signup' not in current_url:
             data['show_signup_notice'] = True
+
+    data['NEARBY_PERSON_KEYS'] = settings.NEARBY_PERSON_KEYS
     
     #print "noticed_recent_stuff", repr(request.session.get('noticed_recent_stuff'))
     return data

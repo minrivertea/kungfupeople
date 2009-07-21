@@ -1,0 +1,48 @@
+{% load django_static thumbnail %}
+
+{% if clubs %}
+<div class="zoomed-content">
+<h3>Clubs</h3>
+{% for club in clubs %}
+<a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br/>{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% if styles %}
+<div class="zoomed-content">
+<h3>Styles</h3>
+{% for style in styles %}
+<a href="{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}<br/>{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+
+
+{% if people %}
+<div class="zoomed-content">
+<h3>People</h3>
+{% for person in people %}
+<a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}"></a>
+{% endfor %}
+</div>
+{% endif %}
+
+
+{% if photos %}
+<div class="zoomed-content">
+<h3>Photos</h3>
+{% for photo in photos %}
+<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if diary_entries %}
+<div class="zoomed-content">
+<h3>Diary entries</h3>
+{% for diary_entry in diary_entries %}
+<a href="{{ diary_entry.get_absolute_url }}">{{ diary_entry.title }}</a>{% if not forloop.last %}<br/>{% endif %}
+{% endfor %}
+</div>
+{% endif %}

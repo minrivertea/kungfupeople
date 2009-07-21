@@ -10,12 +10,12 @@ DIRECTORIES = (
 
 
    ('djangopeople/unit_tests/test_views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_find_clubs_by_location'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
                
    ('djangopeople/models.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_find_clubs_by_location'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
    ('djangopeople/views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),

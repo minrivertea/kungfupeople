@@ -26,6 +26,9 @@ urlpatterns = patterns('',
     (r'^recover/([a-z0-9]{3,})/([a-f0-9]+)/([a-f0-9]{32})/$',
         views.lost_password_recover),
     (r'^signup/$', views.signup),
+    url(r'^zoom/$', views.zoom, name="zoom"),
+    url(r'^zoom-content/$', views.zoom_content, name="zoom_content"),
+    url(r'^zoom-content.json$', views.zoom_content_json, name="zoom_content_json"),
                        
     url(r'^swf_upload_test/$', views.swf_upload_test),
 

@@ -5,17 +5,26 @@ function L(x) {
 }
 
 
-function makeWindow(name, username, location, photo, iso_code, lat, lon) {
+function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) {
+   console.log(arguments);
     var html =  '<ul class="detailsList">' + 
         '<li>' + 
         '<img src="' + photo + '" alt="' + name + '" class="main">' + 
-        '<h3><a href="/' + username + '/">' + name + '</a></h3>' + 
+        '<h3><a href="' + user_url + '">' + name + '</a></h3>' + 
         '<p class="meta"><a href="/' + iso_code + '/" class="nobg">' + 
         '<img src="/static/img/flags/' + iso_code + '.gif"></a> ' + 
         location + '</p>' + 
         '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>'
-        '</li>';
-    return html;
+        '</li></ul>';
+   if (clubs) {
+      html += "<p><strong>" + (clubs.length == 1) ? "Club:" : "Clubs:";
+      html += "</strong><br/>";
+      $.each(clubs, function(i, each) {
+         console.log(each.name);
+         html += '<a href="' + each.url + '">' + each.name + '</a><br/>';
+      });
+   }
+     return html;
 }
 
 function zoomOn(lat, lon) {
@@ -28,25 +37,31 @@ function hideNearbyPeople(gmap) {
 }
 function showNearbyPeople(gmap) {
    if (typeof nearby_people != "undefined")
-   $.each(nearby_people, function() {
-      var lat = this[0];
-      var lon = this[1];
-      var name = this[2];
-      var username = this[3];
-      var location_description = this[4];
-      var photo = this[5];
-      var iso_code = this[6];
-      var point = new google.maps.LatLng(lat, lon);
-      var marker = new google.maps.Marker(point, getMarkerOpts());
-      gmap.addOverlay(marker);
-      // Hook up the marker click event
-      google.maps.Event.addListener(marker, 'click', function() {
-	 marker.openInfoWindow(makeWindow(
-					  name, username, location_description, photo, iso_code, 
-					  lat, lon
-					  ));
-      });
-   });
+     $.each(nearby_people, function() {
+        var lat = this[NEARBY_PERSON_KEYS['latitude']];
+        var lon = this[NEARBY_PERSON_KEYS['longitude']];
+        var name = this[NEARBY_PERSON_KEYS['fullname']];
+        var user_url = this[NEARBY_PERSON_KEYS['user_url']];
+        var location_description = this[NEARBY_PERSON_KEYS['location_description']];
+        var photo = this[NEARBY_PERSON_KEYS['photo_thumbnail_url']];
+        var iso_code = this[NEARBY_PERSON_KEYS['country_iso_code']];
+        var clubs = this[NEARBY_PERSON_KEYS['clubs']];
+        var point = new google.maps.LatLng(lat, lon);
+        var marker = new google.maps.Marker(point, getMarkerOpts());
+        gmap.addOverlay(marker);
+        // Hook up the marker click event
+        google.maps.Event.addListener(marker, 'click', function() {
+           
+           try {
+              var window = makeWindow(name, user_url, location_description, photo, 
+                                      iso_code, lat, lon, clubs
+                                      );
+           } catch(ex) {
+              alert(ex);
+           }
+           marker.openInfoWindow(window);
+        });
+     });
 };
 
 function getMarkerOpts() {

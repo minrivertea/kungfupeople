@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 
 # app
-from djangopeople.models import KungfuPerson, Country, Club
+from djangopeople.models import KungfuPerson, Country, Club, Style, DiaryEntry
 from djangopeople.utils import unaccent_string
 
 _original_PROWL_API_KEY = settings.PROWL_API_KEY
@@ -63,5 +63,40 @@ class TestCase(DjangoTestCase):
         club.description = description
         club.save()
         return club
+
+    def _create_style(self, name, slug=None, url="", description=""):
+        if slug is None:
+            slug = slugify(unaccent_string(name))
+        try:
+            style = Style.objects.get(slug=slug)
+        except Style.DoesNotExist:
+            style = Style.objects.create(name=name, slug=slug)
+        style.url = url
+        style.description = description
+        style.save()
+        return style
+
+    def _create_diary_entry(self, user, title, content, slug=None, is_public=True,
+                            country="United Kingdom",
+                            region=None,
+                            latitude=51.532601866,
+                            longitude=-0.108382701874,
+                            location_description=u"Hell"):
+        if slug is None:
+            slug = slugify(unaccent_string(title))
+        try:
+            diary_entry = DiaryEntry.objects.get(slug=slug, user=user)
+        except DiaryEntry.DoesNotExist:
+            country = Country.objects.get(name=country)
+            diary_entry = DiaryEntry.objects.create(user=user, title=title, 
+                                                    content=content, slug=slug,
+                                                    country=country,
+                                                    region=region,
+                                                    latitude=latitude,
+                                                    longitude=longitude,
+                                                    location_description=location_description)
+        diary_entry.is_public = bool(is_public)
+        diary_entry.save()
+        return diary_entry
 
     

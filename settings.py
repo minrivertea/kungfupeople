@@ -142,6 +142,17 @@ PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
 
 CRASHKIT = None # enabled live
 
+NEARBY_PERSON_KEYS = {'fullname':'A',
+                      'latitude':'B',
+                      'longitude':'C',
+                      'username':'D',
+                      'location_description':'E',
+                      'country_iso_code':'F',
+                      'photo_thumbnail_url':'G',
+                      'user_url':'H',
+                      'clubs':'I',
+                      }
+
 try:
     from local_settings import *
 except ImportError:

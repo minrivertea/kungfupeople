@@ -2,8 +2,10 @@
 import os
 import uuid
 from datetime import datetime
+from string import Template
 
 # django
+from django.db import connection
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
@@ -33,6 +35,156 @@ RESERVED_USERNAMES = set((
     'group groups bulletin bulletins messages message newsfeed events company '
     'companies active'
 ).split())
+
+
+class DistanceManager(models.Manager):
+
+    
+    def nearest_to(self, point, number=20, within_range=None, offset=0,
+                   extra_where_sql=''):
+        """finds the model objects nearest to a given point
+        
+        `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
+        
+        returns a list of tuples, sorted by increasing distance from the given `point`. 
+        each tuple being (model_object, dist), where distance is in the units of the 
+        spatial ref sys given by `to_srid`"""
+        if not isinstance(point, tuple):
+            raise TypeError
+        
+        # this manager hack only works in mysql or postgres since sqlite3 doesn't
+        # support the sqrt function.
+        if settings.DATABASE_ENGINE == 'sqlite3':
+            # but since running sqlite is so useful for running tests
+            # we use a hack
+            return self._manual_nearest_to(point, number=number, 
+                                           within_range=within_range,
+                                           offset=offset,
+                                           extra_where_sql=extra_where_sql)
+
+        cursor = connection.cursor()
+        x, y = point
+        table = self.model._meta.db_table
+        distance_clause = ''
+        #if within_range:
+        #    # Need to turn the select below into a subquery so I can do where distance <= X
+        #    raise NotImplementedError, "Not supported yet"
+        
+        if extra_where_sql or distance_clause:
+            extra_where_sql = 'WHERE\n\t' + extra_where_sql
+            
+        template = Template("""
+            SELECT 
+            gl.id,
+            ATAN2(
+                SQRT(
+                POW(COS(RADIANS($y)) *
+                    SIN(RADIANS(gl.latitude - $x)), 2) +
+                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
+                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+                    COS(RADIANS(gl.latitude - $x)), 2)), 
+                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
+                COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+                COS(RADIANS(gl.latitude - $x)))
+                ) * 6372.795 AS distance
+            FROM 
+            $table gl
+            
+            %s
+            %s
+            ORDER BY distance ASC
+            LIMIT $number
+            OFFSET $offset
+            ;
+        """ % (extra_where_sql, distance_clause))
+        sql_string = template.substitute(locals())
+        
+        cursor.execute(sql_string)
+        nearbys = cursor.fetchall()
+        if within_range:
+            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
+        
+        # get a list of primary keys of the nearby model objects
+        ids = [p[0] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[1] for p in nearbys]
+        places = self.filter(id__in=ids)
+        # the QuerySet comes back in an undefined order; let's
+        # order it by distance from the given point
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        return zip(order_by(places, ids, 'id'), dists)
+    
+    
+    def _manual_nearest_to(self, point, number=20, within_range=None, offset=0,
+                           extra_where_sql=''):
+        cursor = connection.cursor()
+        # point -> (long, lat)
+        #x, y = point
+        table = self.model._meta.db_table
+        if extra_where_sql and not extra_where_sql.strip().lower().startswith('where'):
+            extra_where_sql = "WHERE %s" % extra_where_sql
+        template = Template("""
+            SELECT 
+            gl.id,
+            gl.latitude,
+            gl.longitude
+            FROM 
+            $table gl
+            
+            %s
+            ;
+        """ % (extra_where_sql,))
+        sql_string = template.substitute(locals())
+        cursor.execute(sql_string)
+        from math import sqrt 
+        from geopy import distance as geopy_distance
+        def distance(latitude, longitude):
+            return geopy_distance.distance((point[0], point[1]), (latitude, longitude)).miles
+
+        nearbys = []
+        
+        for id, latitude, longitude in cursor.fetchall():
+            d = distance(latitude, longitude)
+            if within_range:
+                if d <= within_range:
+                    nearbys.append([d, id])
+            else:
+                nearbys.append([d, id])
+                
+        def order_by(objects, listing, name):
+            """a convenience method that takes a list of objects,
+            and orders them by comparing an attribute given by `name`
+            to a sorted listing of values of the same length."""
+            sorted = []
+            for i in listing:
+                for obj in objects:
+                    if getattr(obj, name) == i:
+                        sorted.append(obj)
+            return sorted
+        ids = [p[1] for p in nearbys]
+        # get a list of distances from the model objects
+        dists = [p[0] for p in nearbys]
+        places = self.filter(id__in=ids)
+        return zip(order_by(places, ids, 'id'), dists)
+    
+    
+    def in_box(self, box):
+        """ box is (left, upper, right, lower) """
+        return self.filter(latitude__lt=box[0],
+                           latitude__gt=box[2],
+                           longitude__gt=box[1],
+                           longitude__lt=box[3])
+    
+
 
 class CountryManager(models.Manager):
     def top_countries(self):
@@ -233,6 +385,9 @@ class DiaryEntry(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     location_description = models.CharField(max_length=50)
+    
+    objects = DistanceManager()
+    
 
     def __unicode__(self):
         return self.title
@@ -286,6 +441,8 @@ class Photo(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     location_description = models.CharField(max_length=50)
+
+    objects = DistanceManager()
 
 
     def __unicode__(self):
@@ -374,149 +531,6 @@ class AutoLoginKey(models.Model):
     
     
     
-from django.db import connection
-from string import Template
-    
-class DistanceManager(models.Manager):
-
-    
-    def nearest_to(self, point, number=20, within_range=None, offset=0,
-                   extra_where_sql=''):
-        """finds the model objects nearest to a given point
-        
-        `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
-        
-        returns a list of tuples, sorted by increasing distance from the given `point`. 
-        each tuple being (model_object, dist), where distance is in the units of the 
-        spatial ref sys given by `to_srid`"""
-        if not isinstance(point, tuple):
-            raise TypeError
-        
-        # this manager hack only works in mysql or postgres since sqlite3 doesn't
-        # support the sqrt function.
-        if settings.DATABASE_ENGINE == 'sqlite3':
-            # but since running sqlite is so useful for running tests
-            # we use a hack
-            return self._manual_nearest_to(point, number=number, 
-                                           within_range=within_range,
-                                           offset=offset,
-                                           extra_where_sql=extra_where_sql)
-
-        cursor = connection.cursor()
-        x, y = point
-        table = self.model._meta.db_table
-        distance_clause = ''
-        #if within_range:
-        #    # Need to turn the select below into a subquery so I can do where distance <= X
-        #    raise NotImplementedError, "Not supported yet"
-        
-        if extra_where_sql or distance_clause:
-            extra_where_sql = 'WHERE\n\t' + extra_where_sql
-            
-        template = Template("""
-            SELECT 
-            gl.id,
-            ATAN2(
-                SQRT(
-                POW(COS(RADIANS($x)) *
-                    SIN(RADIANS(gl.latitude - $y)), 2) + 
-                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($x)) - 
-                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                    COS(RADIANS(gl.latitude - $y)), 2)), 
-                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($x)) + 
-                COS(RADIANS(gl.longitude)) * COS(RADIANS($x)) * 
-                COS(RADIANS(gl.latitude - $y)))
-                ) * 6372.795 AS distance
-            FROM 
-            $table gl
-            
-            %s
-            %s
-            ORDER BY distance ASC
-            LIMIT $number
-            OFFSET $offset
-            ;
-        """ % (extra_where_sql, distance_clause))
-        sql_string = template.substitute(locals())
-        
-        cursor.execute(sql_string)
-        nearbys = cursor.fetchall()
-        if within_range:
-            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
-        
-        # get a list of primary keys of the nearby model objects
-        ids = [p[0] for p in nearbys]
-        # get a list of distances from the model objects
-        dists = [p[1] for p in nearbys]
-        places = self.filter(id__in=ids)
-        # the QuerySet comes back in an undefined order; let's
-        # order it by distance from the given point
-        def order_by(objects, listing, name):
-            """a convenience method that takes a list of objects,
-            and orders them by comparing an attribute given by `name`
-            to a sorted listing of values of the same length."""
-            sorted = []
-            for i in listing:
-                for obj in objects:
-                    if getattr(obj, name) == i:
-                        sorted.append(obj)
-            return sorted
-        return zip(order_by(places, ids, 'id'), dists)
-    
-    
-    def _manual_nearest_to(self, point, number=20, within_range=None, offset=0,
-                           extra_where_sql=''):
-        cursor = connection.cursor()
-        # point -> (long, lat)
-        #x, y = point
-        table = self.model._meta.db_table
-        if extra_where_sql and not extra_where_sql.strip().lower().startswith('where'):
-            extra_where_sql = "WHERE %s" % extra_where_sql
-        template = Template("""
-            SELECT 
-            gl.id,
-            gl.latitude,
-            gl.longitude
-            FROM 
-            $table gl
-            
-            %s
-            ;
-        """ % (extra_where_sql,))
-        sql_string = template.substitute(locals())
-        cursor.execute(sql_string)
-        from math import sqrt 
-        from geopy import distance as geopy_distance
-        def distance(latitude, longitude):
-            return geopy_distance.distance((point[1], point[0]), (latitude, longitude)).miles
-
-        nearbys = []
-        
-        for id, latitude, longitude in cursor.fetchall():
-            d = distance(latitude, longitude)
-            if within_range:
-                if d <= within_range:
-                    nearbys.append([d, id])
-            else:
-                nearbys.append([d, id])
-                
-        def order_by(objects, listing, name):
-            """a convenience method that takes a list of objects,
-            and orders them by comparing an attribute given by `name`
-            to a sorted listing of values of the same length."""
-            sorted = []
-            for i in listing:
-                for obj in objects:
-                    if getattr(obj, name) == i:
-                        sorted.append(obj)
-            return sorted
-        ids = [p[1] for p in nearbys]
-        # get a list of distances from the model objects
-        dists = [p[0] for p in nearbys]
-        places = self.filter(id__in=ids)
-        return zip(order_by(places, ids, 'id'), dists)
-        
-
     
     
 class KungfuPerson(models.Model):

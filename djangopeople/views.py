@@ -16,6 +16,11 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import simplejson
 
+# project
+from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
+from sorl.thumbnail.processors import dynamic_import, get_valid_options
+thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
+
 # app
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo
@@ -26,6 +31,12 @@ from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   PhotoEditForm, NewsletterOptionsForm
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
+
+try:
+    from django_static import slimfile, staticfile
+except ImportError:
+    from django_static.templatetags.django_static import slimfile, staticfile
+
 
 def set_cookie(response, key, value, expire=None):
     # http://www.djangosnippets.org/snippets/40/
@@ -419,7 +430,6 @@ def XXX___deprecated____photo_upload(request, username):
                 initial['country'] = diary_entry.country
                 initial['latitude'] = diary_entry.latitude
                 initial['longitude'] = diary_entry.longitude
-                print initial
             except DiaryEntry.DoesNotExist:
                 pass
                 
@@ -469,9 +479,6 @@ class UploadError(Exception):
 def swf_upload_test(request):
     if request.method == "POST":
         person = KungfuPerson.objects.all().order_by('?')[0]
-        
-        #print "POST.keys()", request.POST.keys()
-        #print "FILES.keys()", request.FILES.keys()
         
         filename = request.POST['Filename']
         filedata = request.FILES['Filedata']
@@ -1487,31 +1494,33 @@ def newsletter_options(request, username):
 def find_clubs_by_location_json(request):
     
     try:
-        latitude = float(request.GET['latitude'])
-        longitude = float(request.GET['longitude'])
+        (latitude, longitude) = (float(request.GET['latitude']), 
+                                 float(request.GET['longitude']))
     except (KeyError, ValueError):
         return render_json({'error':'Invalid parameters'})
+    
+    
     
     country = request.GET.get('country')
     location_description = request.GET.get('location_description')
     within_range = int(request.GET.get('within_range', 5)) # important!
     
-    clubs = _find_clubs_by_location(latitude, longitude,
+    clubs = _find_clubs_by_location((latitude, longitude),
                                     country=country,
                                     location_description=location_description,
                                     within_range=within_range)
     
     if not clubs and location_description:
-        clubs = _find_clubs_by_location(latitude, longitude,
+        clubs = _find_clubs_by_location((latitude, longitude),
                                         country=country,
                                         within_range=within_range)
         if not clubs:
-            clubs = _find_clubs_by_location(latitude, longitude,
+            clubs = _find_clubs_by_location((latitude, longitude),
                                             country=country,
                                             within_range=within_range * 2)
             
             if not clubs:
-                clubs = _find_clubs_by_location(latitude, longitude,
+                clubs = _find_clubs_by_location((latitude, longitude),
                                                 country=country,
                                                 within_range=within_range * 4)
                 
@@ -1528,7 +1537,7 @@ def find_clubs_by_location_json(request):
             
     
     
-def _find_clubs_by_location(latitude, longitude,
+def _find_clubs_by_location(location,
                             country=None, 
                             location_description=None,
                             within_range=10):
@@ -1562,16 +1571,153 @@ def _find_clubs_by_location(latitude, longitude,
     # need to add extra where that checks if they are members of a club
     # XXX
 
-
     extra_where_sql = ' AND '.join(extra_where_sql)
     
-    people_near = KungfuPerson.objects.nearest_to((longitude, latitude),
-                                                  extra_where_sql=extra_where_sql,
-                                                  within_range=within_range)
+    if type(location) is dict:
+        if len(location) == 2:
+            location = (location['latitude'], location['longitude'])
+        elif len(location) == 4:
+            location = (location['left'], location['upper'],
+                        location['right'], location['lower'])
+        else:
+            raise ValueError("Invalid location parameter")
+        
+    if len(location) == 2:
+        people = KungfuPerson.objects.nearest_to(location,
+                                                 extra_where_sql=extra_where_sql,
+                                                 within_range=within_range)
+    elif len(location) == 4:
+        people = KungfuPerson.objects.in_box(location,
+                                             extra_where_sql=extra_where_sql)
+    
+    
     clubs = []
 
-    for (person, distance) in people_near:
+    for (person, distance) in people:
         for club in person.club_membership.all():
             if club not in clubs:
                 clubs.append(club)
     return clubs
+
+
+def zoom(request):
+    """zoom() is about showing a map and when the user zooms in on a region
+    it finds out what's in that region and updates a list.
+    """
+    
+    return render(request, 'zoom.html', locals())
+
+def _get_zoom_content(left, upper, right, lower, request=None):
+
+    clubs = []
+    styles = []
+    people = KungfuPerson.objects.in_box((left, upper, right, lower))
+    
+    for person in people:
+        for club in person.club_membership.all():
+            if club not in clubs:
+                clubs.append(club)
+        for style in person.styles.all():
+            if style not in styles:
+                styles.append(style)
+        
+    photo = Photo.objects.in_box((left, upper, right, lower))
+    diary_entries = DiaryEntry.objects.\
+      in_box((left, upper, right, lower)).filter(is_public=True)
+    
+    
+    return locals()
+
+
+
+def zoom_content(request):
+    """zoom_content() just returns a limited block of html which is used to
+    show a selection of clubs, styles, people, photos, etc. based on a zoomed
+    region on a map. 
+    """
+    # Milano  
+    # (right, lower) = 45.520661,9.100456 
+    # Lyon,Bern corner  
+    # (left, upper) = 46.789306,4.841881
+    
+    try:
+        left = float(request.POST.get('left'))
+        upper = float(request.POST.get('upper'))
+        right = float(request.POST.get('right'))
+        lower = float(request.POST.get('lower'))
+    except (KeyError, ValueError, TypeError):
+        logging.error("Invalid zoom", exc_info=True)
+        return HttpResponse("Invalid zoom!")
+    
+    content_data = _get_zoom_content(left, upper, right, lower)
+    
+    return render(request, 'zoom-content.html', content_data)
+
+
+
+def zoom_content_json(request):
+    """same as zoom_content() but return it as a structure JSON string"""
+    try:
+        left = float(request.POST['left'])
+        upper = float(request.POST['upper'])
+        right = float(request.POST['right'])
+        lower = float(request.POST['lower'])
+    except (KeyError, ValueError, TypeError):
+        logging.error("Invalid zoom", exc_info=True)
+        return HttpResponse("Invalid zoom!")
+
+    content_data = _get_zoom_content(left, upper, right, lower)
+    
+    def _jsonify_person(person):
+        data = dict(url=person.get_absolute_url(),
+                    fullname=unicode(person))
+        if person.photo:
+            thumbnail = DjangoThumbnail(person.photo, (60,60), opts=[], 
+                                        processors=thumbnail_processors)
+            data['thumbnail_url'] = thumbnail.absolute_url
+        else:
+            data['thumbnail_url'] = staticfile("/img/upload-a-photo-60.png")
+            
+        return data
+    
+    def _jsonify_photo(photo):
+        data = dict(url=photo.get_absolute_url())
+        thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=[], 
+                                    processors=thumbnail_processors)
+        data['thumbnail_url'] = thumbnail.absolute_url
+        return data
+    
+    data = {}
+    for person in content_data.get('people', []):
+        if 'people' not in data:
+            data['people'] = []
+        
+        data['people'].append(_jsonify_person(person))
+        
+    for club in content_data.get('clubs', []):
+        if 'clubs' not in data:
+            data['clubs'] = []
+        data['clubs'].append(dict(url=club.get_absolute_url(),
+                                  name=club.name))
+        
+    for style in content_data.get('styles', []):
+        if 'styles' not in data:
+            data['styles'] = []
+        data['styles'].append(dict(url=style.get_absolute_url(),
+                                   name=style.name))
+        
+    for photo in content_data.get('photos', []):
+        if 'photos' not in data:
+            data['photos'] = []
+        
+        data['photos'].append(_jsonify_photo(photo))
+        
+    for diary_entry in content_data.get('diary_entries', []):
+        if 'diary_entries' not in data:
+            data['diary_entries'] = []
+        
+        data['diary_entries'].append(dict(url=diary_entry.get_absolute_url(),
+                                          title=diary_entry.title))
+    
+    return render_json(data)
+    
