@@ -49,11 +49,13 @@ var people = [
 	  {% endfor %}
 	</div>
 
+	<div class="horizontal-photos">
 		{% for person in recent_people_limited %}
                 <a href="{{ person.get_absolute_url }}">
                 <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}">
 		</a>
         	{% endfor %}
+	</div>
 
 
 

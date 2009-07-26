@@ -909,6 +909,20 @@ li.latest-list-home {
 	color: #666;
 }
 
+.horizontal-photos {
+	height: 60px;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.horizontal-photos img {
+	margin-right: 5px;
+}
+
+.horizontal-photos img:hover {
+	margin-right: 5px;
+}
+
 
 
 .small-text {
