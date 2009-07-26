@@ -1,11 +1,12 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
 
 {% block title %}Sign up |{% endblock %}
 
 {% block nav_li_class_signup %} class="current"{% endblock %}>
 
 {% block extracss %}
-<link rel="stylesheet" href="/css/flags.css" type="text/css"/>
+<link rel="stylesheet" href="{% slimfile "/css/flags.css" %}" type="text/css"/>
 <style type="text/css">
 #id_location_description {
     width: 18em;
@@ -15,7 +16,9 @@
 
 {% block js %}
 <script type="text/javascript" src="/js/jquery.color.js"></script>
+<script type="text/javascript" src="/js/jquery.qtip-1.0.0-rc3.js"></script>
 <script type="text/javascript" src="/js/signup.js"></script>
+
 {% endblock %}
 
 {% block header%}

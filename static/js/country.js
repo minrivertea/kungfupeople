@@ -5,6 +5,7 @@ google.setOnLoadCallback(function() {
     gmap = new google.maps.Map2(document.getElementById('gmap'));
     gmap.addControl(new google.maps.LargeMapControl());
     gmap.addControl(new google.maps.MapTypeControl());
+   
     // Figure out map settings based on country bounds
     // We have to render the map first or the bounds calculations will fail
     gmap.setCenter(new google.maps.LatLng(bbox_north, bbox_west));

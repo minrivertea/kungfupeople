@@ -57,6 +57,10 @@ function reverseGeocode() {
 		  if (gmap.getZoom() >= 2)
 		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+3);
 		  
+		  if (!($('#id_club_url').val() && $('#id_club_name').val())) {
+		     __suggest_club_by_location();
+		  }
+		  
 	       }
 	       
             }
@@ -71,6 +75,75 @@ function reverseGeocode() {
         }
        
     });
+}
+
+var _club_suggestions = {};
+function suggest_club(id) {
+   if (id) {
+      $('#club-suggestions-tip:visible').hide();
+      $('#id_club_name').val(_club_suggestions[id][0]);
+      $('#id_club_url').val(_club_suggestions[id][1]);
+   }
+   //if ($('#id_club_name').data("qtip")) $('#id_club_name').qtip("destroy");
+   $('#id_club_name').qtip("destroy");
+}
+
+function __suggest_club_by_location() {
+   var params = {
+      latitude: $('#id_latitude').val(),
+      longitude: $('#id_longitude').val(),
+      country: $('#id_country').val(),
+      location_description: $('#id_location_description').val()
+   };
+                                
+   $.getJSON('/find-clubs-by-location.json', params, function(result) {
+      if (result.error) { alert(result.error); return; }
+      
+      if (!result.length) return;
+      var html = "<p id=\"club-suggestions-tip\"><strong>Let me guess! Is it";
+      if (result.length==1)
+        html += "...:";
+      else
+        html += " one of these:";
+      html += "</strong><br/>";
+      $.each(result, function(i, each) {
+         html += each.name;
+         html += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+         _club_suggestions[each.id] = [each.name, each.url];
+         html += " <a href=\"#\" onclick=\"suggest_club("+ each.id +"); return false\">yes</a>";
+         html += " <a href=\"#\" onclick=\"suggest_club(false); return false\">no</a>";
+         html += "<br/>";
+      });
+      html += "</p>";
+      
+      if ($('#id_club_name').data("qtip"))
+        $('#id_club_name').qtip("destroy");
+      
+      $('#id_club_name').qtip({
+         content: html,
+           position: {
+              corner : {
+                 tooltip: "bottomLeft",
+                   target: "topRight"
+              }
+           },
+         style: {
+            border: {
+               width: 3,
+                 radius: 10
+            },
+            padding: 8,
+              tip: true,
+              name: "cream"
+         },
+         show: {
+            when: false, // Don't specify a show event
+              ready: true // Show the tooltip when ready
+         },
+         hide: false // Don't specify a hide event
+      });
+        
+   });
 }
 
 function hasRegions(country_name) {
@@ -142,19 +215,6 @@ google.setOnLoadCallback(function() {
     gmap.addControl(new google.maps.LargeMapControl3D());
     gmap.addControl(new google.maps.MapTypeControl());    
     
-    
-   /* OLD WAY
-    $('#gmap').one('click', function(event) {
-       $('html,body').animate({scrollTop: $('#gmap').offset().top}, 500);
-       if (!marker) {
-	  if (!point)
-	    point = gmap.getCenter();
-	  __create_marker(point);
-	  marker.openInfoWindowHtml("Drag the marker to your location on the map");
-       }
-    });
-    */
-   
    
     // If latitude and longitude are populated, center there 
     if ($('#id_latitude').val() && $('#id_longitude').val()) {
@@ -178,7 +238,7 @@ google.setOnLoadCallback(function() {
       if (!point)
 	point = gmap.getCenter();
       __create_marker(point);
-      marker.openInfoWindowHtml("Drag the marker to your location on the map");
+      marker.openInfoWindowHtml("Drag the marker to where you train");
    }   
    
    

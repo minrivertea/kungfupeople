@@ -445,27 +445,151 @@ class ViewsTestCase(TestCase):
         # by distance, Saint-Genis-Pouilly is very close to Geneva, Switzerland
         # first by searching really really close to Geneva to make sure the sorting
         # is right
-        clubs = func(latitude=46.202, longitude=6.142, within_range=40)
+        clubs = func(dict(latitude=46.202, longitude=6.142), within_range=40)
         self.assertEqual(clubs, [doggy_style, wing_chun])
 
         # but if you include the country it should only find the one in that country
-        clubs = func(latitude=46.202, longitude=6.142, country="switzerland")
+        clubs = func(dict(latitude=46.202, longitude=6.142), country="switzerland")
         self.assertEqual(clubs, [doggy_style])
         
         # Search in Kings cross which it between Euston and Islington
-        clubs = func(latitude=51.53079, longitude=-0.121021)
+        clubs = func(dict(latitude=51.53079, longitude=-0.121021))
         self.assertEqual(clubs, [wing_chun, white_crane])
         # adding country wont help
-        clubs = func(latitude=51.53079, longitude=-0.121021, country="GB")
+        clubs = func(dict(latitude=51.53079, longitude=-0.121021), country="GB")
         self.assertEqual(clubs, [wing_chun, white_crane])
         
-        clubs = func(latitude=51.53079, longitude=-0.121021, country="GB", 
+        clubs = func(dict(latitude=51.53079, longitude=-0.121021), country="GB", 
                      location_description="islington")
         self.assertEqual(clubs, [wing_chun])
         
+        # try the same searches but with the json interface
+        def func(location, country=None,
+                 location_description=None,
+                 within_range=None):
+            params = dict(latitude=location['latitude'], 
+                          longitude=location['longitude'])
+            if country is not None:
+                params['country'] = country
+            if location_description is not None:
+                params['location_description'] = location_description
+            if within_range is not None:
+                params['within_range'] = within_range
+            
+            response = self.client.get('/find-clubs-by-location.json', params)
+            assert response.status_code == 200
+            return simplejson.loads(response.content)
+        
+        clubs = func(dict(latitude=46.202, longitude=6.142), within_range=40)
+        self.assertEqual(len(clubs), 2)
+        self.assertEqual([x['name'] for x in clubs],
+                          [u'Doggy Style', u'Wing Chun Club'])
         
         
+    def test_zoom_content(self):
+        """zoom in on a region and expect to find people there"""
         
         
+        # some examples to work with
+        # Place, Country, latitude, longitude
+        # Fuzhou, Fujian, 26.0740535325, 119.292297363
+        # Islington, England, 51.532601866, -0.108382701874 
+        # Euston, England,  51.527475885, -0.128552913666
+        # Geneva, Switzerland, 46.20217114444467, 6.142730712890625
+        # Saint-Genis-Pouilly, France, 46.244451065485094, 6.0225677490234375
+        
+        switzerland = Country.objects.get(name=u"Switzerland")
+        france = Country.objects.get(name=u"France")
+        uk = Country.objects.get(name=u"United Kingdom")
         
         
+        user1, person1 = self._create_person("user1", "user1@example.com",
+                                             country=switzerland.name,
+                                             latitude=46.20217114444467,
+                                             longitude=6.142730712890625,
+                                             location_description=u"Geneva")
+        doggy_style = self._create_club(u"Doggy Style")
+        person1.club_membership.add(doggy_style)
+        masturbated = self._create_diary_entry(user1, u"Masturbated",
+                                               u"That was fun",
+                                               is_public=False,
+                                               country=switzerland.name,
+                                               latitude=46.20217114444467,
+                                               longitude=6.142730712890625,
+                                               location_description=u"Geneva")
+
+
+        user2, person2 = self._create_person("user2", "user2@example.com",
+                                             country=france.name,
+                                             latitude=46.244451065485094,
+                                             longitude=6.0225677490234375,
+                                             location_description=u"Saint-Genis-Pouilly")
+        wing_chun_club = self._create_club(u"Wing Chun Club")
+        person2.club_membership.add(wing_chun_club)
+        wing_chun = self._create_style(u"Wing Chun")
+        person2.styles.add(wing_chun)
+        got_flexible = self._create_diary_entry(user2, u"Got flexible",
+                                                u"More flexible now",
+                                                country=france.name,
+                                                latitude=46.244451065485094,
+                                                longitude=6.0225677490234375,
+                                                location_description=u"Saint-Genis-Pouilly"
+                                               )
+        
+
+        user3, person3 = self._create_person("user3", "user3@example.com",
+                                             country=uk.name,
+                                             latitude=51.532601866,
+                                             longitude=-0.108382701874,
+                                             location_description=u"Islington")
+
+        person3.club_membership.add(wing_chun_club)
+        
+        white_crane = self._create_club(u"FWC White Crane")
+        user4, person4 = self._create_person("user4", "user4@example.com",
+                                             country=uk.name,
+                                             latitude=51.527475885,
+                                             longitude=-0.128552913666,
+                                             location_description=u"Euston")
+        
+        person4.club_membership.add(white_crane)
+        
+        # north east of Ireland
+        north_west = (56.13330691237569, -14.47998046875)
+        # Koln, Germany
+        south_east = (50.84757295365389, 6.943359375)
+        
+        # the people we expect inside this box are the UK people/clubs only
+        in_box = KungfuPerson.objects.in_box((north_west[0], north_west[1],
+                                              south_east[0], south_east[1]))
+        
+        self.assertEqual([x.id for x in in_box], 
+                         [x.id for x in [person3, person4]])
+        
+        # north of Lyon, France and west of Bern, Switzerland
+        north_west = (46.830133640447386, 5.2294921875)
+        # slightly north west of Milano, Italy
+        south_east = (45.54483149242463, 8.525390625)
+        
+        # the people we expect inside this box are the France, Switzerland people
+        in_box = KungfuPerson.objects.in_box((north_west[0], north_west[1],
+                                              south_east[0], south_east[1]))
+        self.assertEqual([x.id for x in in_box], 
+                         [x.id for x in [person1, person2]])
+        
+        
+        # test zoom_content_json
+        response = self.client.post('/zoom-content.json',
+                                    dict(left=north_west[0], upper=north_west[1],
+                                         right=south_east[0], lower=south_east[1]))
+        
+        self.assertEqual(response.status_code, 200)
+        content = simplejson.loads(response.content)
+        # we expect two people
+        self.assertEqual(len(content['people']), 2)
+        # two clubs
+        self.assertEqual(len(content['clubs']), 2)
+        # one style
+        self.assertEqual(len(content['styles']), 1)
+        # one diary entry
+        self.assertEqual(len(content['diary_entries']), 1)

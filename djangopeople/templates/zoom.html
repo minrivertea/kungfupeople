@@ -1,0 +1,62 @@
+{% extends base_template %}
+{% load misc_extras %}
+{% load django_static %}
+{% load thumbnail %}
+
+{% block title %}Zoom |{% endblock %}
+
+{% block extracss %}
+<style type="text/css">
+div.zoomed-content {
+	margin: 10px 10px 20px 0px;
+	float: left;
+	width: 250px;
+  
+}
+div.zoomed-content h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 15px;
+	margin-left: 0px;
+	padding-bottom: 5px;
+}
+
+</style>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+var people = [
+{% for p in country.kungfuperson_set.all %}
+  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
+{% endfor %}
+];
+</script>
+<script src="{% slimfile "/js/worldmap.js" %}" type="text/javascript"></script>
+<script src="/js/zoom.js" type="text/javascript"></script>
+
+{% endblock %}
+
+
+{% block map %}
+    <div class="mapContainer major">
+        <div id="gmap">&nbsp;</div>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+
+    <div id="zoom-content-outer">
+      <div align="center" style="text-align:center; padding:40px">
+      <h4>Zoom in on a region on the map (hint: double click)</h4>
+      <h4>...and it will show the relevant content only in that region</h4>
+      </div>
+    </div>
+		
+		
+</div>	
+{% endblock %}

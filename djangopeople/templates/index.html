@@ -6,12 +6,14 @@
 {% block js %}
 <script type="text/javascript">
 {# This javascript variable is going to be used in index.js #}
+{% slimcontent %}
 var people = [
     // latitude, longitude, name, username, location description
     {% for person in recent_people %}
       {{ person|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
     {% endfor %}
 ];
+{% endslimcontent %}
 </script>
 <script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 

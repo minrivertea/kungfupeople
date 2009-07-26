@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-{% load django_static %}
+{% load django_static misc_extras %}
 <html lang="en">{% load thumbnail %}
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -92,7 +92,7 @@
       </script>
     {% endif %}
     <script type="text/javascript" src="{% slimfile "/js/common.js" %}"></script>
-
+    <script type="text/javascript">{{ NEARBY_PERSON_KEYS|nearby_person_keys_js|safe }}</script>
     {% block js %}{% endblock %}
 
 {% if GOOGLE_ANALYTICS_TRACKER_ID %}

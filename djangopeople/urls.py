@@ -1,9 +1,14 @@
+# python
 import os
+
+# django
 from django.conf.urls.defaults import *
 from django.conf import settings
-from djangopeople import views
 from djangopeople.models import KungfuPerson
 from djangopeople.feeds import LatestAll, LatestPeople
+
+# app
+from djangopeople import views
 
 feeds = {
     'people': LatestPeople,
@@ -21,11 +26,15 @@ urlpatterns = patterns('',
     (r'^recover/([a-z0-9]{3,})/([a-f0-9]+)/([a-f0-9]{32})/$',
         views.lost_password_recover),
     (r'^signup/$', views.signup),
+    url(r'^zoom/$', views.zoom, name="zoom"),
+    url(r'^zoom-content/$', views.zoom_content, name="zoom_content"),
+    url(r'^zoom-content.json$', views.zoom_content_json, name="zoom_content_json"),
                        
     url(r'^swf_upload_test/$', views.swf_upload_test),
 
     (r'^guess-club-name.json$', views.guess_club_name_json),
     (r'^guess-username.json$', views.guess_username_json),
+    url(r'^find-clubs-by-location.json$', views.find_clubs_by_location_json),
 
     (r'^search/$', views.search),
                        
