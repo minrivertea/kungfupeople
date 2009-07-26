@@ -903,22 +903,8 @@ li.latest-list-home {
 	width: 60px;
 }
 
-ul.horizontal-image-list {
-	margin: 10px 0 20px 0px;
-	display: inline;
-}
-
-li.horizontal-image-list {
-	list-style-type:none;
-	float: left;
-	display: inline;
-	margin: 0 10px 10px 0;
-	height: 60px;
-	width: 60px;
-}
-
 .horizontal-image-list-text {
-	margin-bottom: -5px;
+	margin-bottom: 5px;
 	font-size: 0.7em;
 	color: #666;
 }
