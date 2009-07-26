@@ -471,12 +471,17 @@ a:hover img {
 }
 
 a:link,
-a:visited,
+a:visited {
+	color: #708e20;
+}
+
 a:hover,
 a:active,
 a:focus {
-	color: #708e20;
+	color: #A30F01;
 }
+
+
 
 /* @end */
 
@@ -1106,18 +1111,14 @@ diaries ul {
 
 .inside-content-box-head {
 	padding: 10px;
-	height: 20px;
-	background-color: #A30F01;
--moz-border-radius-topleft:10px;
--moz-border-radius-topright:10px;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
+	height: 10px;
 }
 
 .inside-content-box-head h4 {
-	color: white;
-	margin-left: -5px;
-	text-align: center;
+	font-size: 14px;
+	color: #a30f01;
+	margin-left: 5px;
+	border-bottom: 1px solid #a30f01;
 }
 
 .inside-content-box-main {

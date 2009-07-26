@@ -14,6 +14,7 @@
 	<div id="no-map-content-box">
 
 	<h2>{{ person.user.get_full_name }}'s photos</h2>
+	<a class="small-text" href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
 
 	<ul class="horizontal-image-list">
 		{% for photo in photos %}
