@@ -904,7 +904,8 @@ li.latest-list-home {
 }
 
 ul.horizontal-image-list {
-    margin: 10px 0 20px 0px;
+	margin: 10px 0 20px 0px;
+	display: inline;
 }
 
 li.horizontal-image-list {
