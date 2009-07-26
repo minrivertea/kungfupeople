@@ -67,7 +67,8 @@ body * {
 	height: 160px;
 	margin: 0px 0px -90px 0px;
 	border-bottom: 15px solid #F3CF1A;
-	background-color: #a30f01;
+	/* background-color: #a30f01; */
+	background-color: #990000;
 }
 
 #nav {
@@ -318,13 +319,12 @@ p.large {
 
 #right-column {
 	min-width: 230px;
-	width: 260px;
+	width: 300px;
 	float: left;
 	display: block;
 	height: 100%;
 	margin: 20px 0px 0 20px;
-	padding: 30px;
-	background-color: #F3CF1A;
+	background-color: white;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
