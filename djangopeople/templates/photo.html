@@ -37,7 +37,16 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 		{% endif %}
 
        		<h2>Photo</h2>
-		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  {% if is_owner %} <a href="edit">Edit</a>  |  <a href="delete">Delete</a> {% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}</p>
+		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>		
+
+		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  
+		{% if is_owner %} 
+		<a href="edit">Edit</a>  |  
+		<a href="delete">Delete</a> 
+		{% else %}
+		<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>
+		{% endif %}
+		</p>
 	
 		<p><em>{{ photo.description }}</em></p>
 

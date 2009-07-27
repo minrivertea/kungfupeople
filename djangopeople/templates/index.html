@@ -48,18 +48,15 @@ var people = [
 	    >{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
 	  {% endfor %}
 	</div>
-	  
-		<ul class="horizontal-image-list">
+
+	<div class="horizontal-photos">
 		{% for person in recent_people_limited %}
-        	<li class="horizontal-image-list">
-       	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
                 <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}">
 		</a>
-		</li>
         	{% endfor %}
-		</ul>
 	</div>
+
 
 
 		<div class="highlight-home">
