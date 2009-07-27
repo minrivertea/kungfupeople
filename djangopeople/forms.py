@@ -384,3 +384,18 @@ class NewsletterOptionsForm(forms.Form):
     
     
 
+
+class CropForm(forms.Form):
+     x1 = forms.IntegerField()
+     y1 = forms.IntegerField()
+     x2 = forms.IntegerField()
+     y2 = forms.IntegerField()
+     w = forms.IntegerField()
+     h = forms.IntegerField()
+     
+     def __init__(self, *args, **kwargs):
+         super(CropForm, self).__init__(*args, **kwargs)
+         #for field in self.fields:
+         #    self.fields[field].widget = forms.widgets.HiddenInput()
+             
+     

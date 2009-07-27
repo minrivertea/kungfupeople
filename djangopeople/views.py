@@ -15,6 +15,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.db import transaction
 from django.utils import simplejson
+from django.core.urlresolvers import reverse
+
 
 # project
 from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
@@ -28,7 +30,7 @@ import utils
 from utils import unaccent_string, must_be_owner
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
-  PhotoEditForm, NewsletterOptionsForm
+  PhotoEditForm, NewsletterOptionsForm, CropForm
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 
@@ -802,7 +804,8 @@ def upload_profile_photo(request, username):
             # Figure out what type of image it is
             photo = request.FILES['photo']
             image_content = photo.read()
-            format = Image.open(StringIO(image_content)).format
+            image = Image.open(StringIO(image_content))
+            format = image.format
             format = format.lower().replace('jpeg', 'jpg')
             filename = md5.new(image_content).hexdigest() + '.' + format
             # Save the image
@@ -817,7 +820,16 @@ def upload_profile_photo(request, username):
             open(path, 'w').write(image_content)
             person.photo = 'profiles/%s' % filename
             person.save()
-            return HttpResponseRedirect('/%s/upload/done/' % username)
+            
+            # if the image is more than 10% away from being a square, encourage 
+            # them to crop it
+            (width, height) = image.size
+            r = float(width)/height
+            if r > 1.1 or r < 0.9:
+                return HttpResponseRedirect(reverse("crop_profile_photo", 
+                                                    args=(person.user.username,)))
+            else:
+                return HttpResponseRedirect(person.get_absolute_url())
     else:
         form = ProfilePhotoUploadForm()
     return render(request, 'upload_profile_photo.html', {
@@ -825,10 +837,10 @@ def upload_profile_photo(request, username):
         'person': person,
     })
 
-@must_be_owner
-def upload_done(request, username):
-    "Using a double redirect to try and stop back button from re-uploading"
-    return HttpResponseRedirect('/%s/' % username)
+#@must_be_owner
+#def upload_done(request, username):
+#    "Using a double redirect to try and stop back button from re-uploading"
+    
 
 def country(request, country_code):
     country = get_object_or_404(Country, iso_code = country_code.upper())
@@ -1738,4 +1750,84 @@ def zoom_content_json(request):
                                       title=country.name))        
 
     return render_json(data)
+
+
+@must_be_owner
+def crop_profile_photo(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    
+    if not person.photo:
+        return HttpResponseRedirect(reverse("upload_profile_photo",
+                                           args=(username,)))
+    
+    photo = person.photo
+    
+    if request.GET.get('undo'):
+        if not request.session.get('old_profile_path'):
+            return HttpResponse("Old profile photo does not exist any more")
+        
+        person.photo = request.session['old_profile_path']
+        person.save()
+        return HttpResponseRedirect(reverse("crop_profile_photo",
+                                           args=(username,)))
+    
+    image = Image.open(StringIO(photo.read()))
+
+    width, height = image.size
+
+    # but on the cropping page we'll show it as 500x500
+    if height > width:
+        width = 500 * width / height
+        height = 500
+    else:
+        height = 500 * height / width
+        width = 500
+
+    if request.method == "POST":
+        form = CropForm(request.POST)
+        if form.is_valid():
+            image = image.resize((width, height))
+            image = image.crop((form.cleaned_data['x1'],
+                                form.cleaned_data['y1'],
+                                form.cleaned_data['x2'],
+                                form.cleaned_data['y2']))
+            old_path = photo.path
+            ext = os.path.splitext(old_path)[-1]
+            filename = md5.new(image.tostring()).hexdigest() + ext
+            new_path = os.path.join(os.path.dirname(old_path),
+                                    filename)
+
+            image.save(new_path, image.format)
+            person.photo = new_path.replace(settings.MEDIA_ROOT+'/', '')
+            person.save()
+
+            request.session['old_profile_path'] = old_path
+
+        return HttpResponseRedirect(person.get_absolute_url())
+    
+    
+    # set_select is about selecting a preselect box on the image that 
+    # selects the maximum square possible. 
+    # If the picture is a portrait, x1 and x2 should be 0 and image-width
+    if height > width:
+        # round one pixel in
+        x1, x2 = 1, width - 1
+        y1 = height/2 - width/2
+        y2 = y1 + width
+    else:
+        y1, y2 = 1, height - 1
+        x1 = width/2 - height/2
+        x2 = x1 + height
+        
+    set_select_box = [x1, y1, x2, y2]
+    
+    form = CropForm(initial=dict(w=width, h=height,
+                                 x1=set_select_box[0],
+                                 y1=set_select_box[1],
+                                 x2=set_select_box[2],
+                                 y2=set_select_box[3],
+                                ))
+    
+    
+    return render(request, 'crop-profile-photo.html', locals())
     

@@ -1,0 +1,63 @@
+{% extends "base_no_map.html" %}
+{% load thumbnail django_static %}
+
+{% block title %}Crop your profile photo |{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" href="/css/jquery.Jcrop.css" type="text/css" />
+{% endblock %}
+
+{% block js %}
+<script src="/js/jquery.Jcrop.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function __save_coords(coords) {
+   var width = coords.w;
+   $('#id_w').val(width);
+   var height = coords.h;
+   $('#id_h').val(height);
+   
+   $('#id_x1').val(coords.x);
+   $('#id_y1').val(coords.y);
+   $('#id_x2').val(coords.x2);
+   $('#id_y2').val(coords.y2);
+}
+
+$(function() {
+  $('#cropbox').Jcrop({aspectRatio:1 {% if set_select_box %}, setSelect:{{ set_select_box|escapejs }}{% endif %}
+  , onSelect:__save_coords
+  });
+});
+</script>
+                
+{% endblock %}
+
+{% block header%}
+<h1>Crop your profile photo</h1>
+{% endblock %}
+
+{% block content %}
+
+<div id="current-look">
+<p>
+<img src="{% thumbnail person.photo 60x60 crop %}" alt="{{ person }}">
+
+This is what your profile photo currently looks like cropped to a square of 60x60 pixels.</p>
+</div>
+<br/>
+
+<div id="crop-look">
+    	<form method="post" action="">
+        {{ form.x1 }}
+        {{ form.y1 }}
+        {{ form.x2 }}
+        {{ form.y2 }}
+        {{ form.w }}
+        {{ form.h }}
+	
+	<img src="{% thumbnail person.photo 500x500  %}" id="cropbox">
+	
+	<br/><input type="submit" value="Crop and save your profile photo">
+	
+	</form>
+</div>        
+{% endblock %}
