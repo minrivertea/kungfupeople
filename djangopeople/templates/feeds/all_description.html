@@ -3,7 +3,7 @@
 
 {% ifequal obj|item_module_name 'kungfuperson' %}
   {% if obj.photo  %}
-  <a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 %}" alt="photo"/></a><br/>
+  <a href="http://{{ site.domain }}{{ obj.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail obj.photo 40x40 crop %}" alt="photo"/></a><br/>
   {% endif %}
 
   {{ obj.user.first_name }} {{ obj.user.last_name }}
@@ -23,7 +23,7 @@
   <em>{{ obj.content|html2plaintext|linebreaks }}</em>
   {% for photo in obj.get_photos %}
     {% if forloop.first %}<br/>Related photos: {% endif %}
-  <a href="http://{{ site.domain }}{{ photo.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail photo.photo 40x40 %}" alt="photo"/></a>
+  <a href="http://{{ site.domain }}{{ photo.get_absolute_url }}"><img src="http://{{ site.domain }}{% thumbnail photo.photo 40x40 crop %}" alt="photo"/></a>
   {% endfor %}
   
 {% else %}

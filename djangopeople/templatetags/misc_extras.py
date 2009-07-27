@@ -92,7 +92,7 @@ def _nearby_people_escape(person):
                 )
     
     if person.photo:
-        thumbnail = DjangoThumbnail(person.photo, (60,60), opts=[], 
+        thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
                                     processors=thumbnail_processors)
         data['photo_thumbnail_url'] = thumbnail.absolute_url
     else:

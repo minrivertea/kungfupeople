@@ -1611,6 +1611,7 @@ def _get_zoom_content(left, upper, right, lower, request=None):
 
     clubs = []
     styles = []
+    countries = []
     people = KungfuPerson.objects.in_box((left, upper, right, lower))
     
     for person in people:
@@ -1620,11 +1621,20 @@ def _get_zoom_content(left, upper, right, lower, request=None):
         for style in person.styles.all():
             if style not in styles:
                 styles.append(style)
+                
+        if person.country not in countries:
+            countries.append(person.country)
         
-    photo = Photo.objects.in_box((left, upper, right, lower))
+    photos = Photo.objects.in_box((left, upper, right, lower))
+    for photo in photos:
+        if photo.country not in countries:
+            countries.append(photo.country)
+    
     diary_entries = DiaryEntry.objects.\
       in_box((left, upper, right, lower)).filter(is_public=True)
-    
+    for diary_entry in diary_entries:
+        if diary_entry.country not in countries:
+            countries.append(diary_entry.country)
     
     return locals()
 
@@ -1657,12 +1667,12 @@ def zoom_content(request):
 
 def zoom_content_json(request):
     """same as zoom_content() but return it as a structure JSON string"""
-    try:
-        left = float(request.POST['left'])
-        upper = float(request.POST['upper'])
-        right = float(request.POST['right'])
-        lower = float(request.POST['lower'])
-    except (KeyError, ValueError, TypeError):
+    if 1:#try:
+        left = float(request.GET['left'])
+        upper = float(request.GET['upper'])
+        right = float(request.GET['right'])
+        lower = float(request.GET['lower'])
+    else:#except (KeyError, ValueError, TypeError):
         logging.error("Invalid zoom", exc_info=True)
         return HttpResponse("Invalid zoom!")
 
@@ -1672,7 +1682,7 @@ def zoom_content_json(request):
         data = dict(url=person.get_absolute_url(),
                     fullname=unicode(person))
         if person.photo:
-            thumbnail = DjangoThumbnail(person.photo, (60,60), opts=[], 
+            thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
                                         processors=thumbnail_processors)
             data['thumbnail_url'] = thumbnail.absolute_url
         else:
@@ -1682,7 +1692,7 @@ def zoom_content_json(request):
     
     def _jsonify_photo(photo):
         data = dict(url=photo.get_absolute_url())
-        thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=[], 
+        thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=['crop'], 
                                     processors=thumbnail_processors)
         data['thumbnail_url'] = thumbnail.absolute_url
         return data
@@ -1718,6 +1728,14 @@ def zoom_content_json(request):
         
         data['diary_entries'].append(dict(url=diary_entry.get_absolute_url(),
                                           title=diary_entry.title))
-    
+        
+        
+    for country in content_data.get('countries', []):
+        if 'countries' not in data:
+            data['countries'] = []
+        
+        data['countries'].append(dict(url=country.get_absolute_url(),
+                                      title=country.name))        
+
     return render_json(data)
     

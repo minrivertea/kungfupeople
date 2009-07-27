@@ -289,6 +289,10 @@ class Country(models.Model):
     
     class Admin:
         pass
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("country", (self.iso_code.lower(),))
 
 class Region(models.Model):
     code = models.CharField(max_length=20)

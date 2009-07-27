@@ -41,7 +41,7 @@ urlpatterns = patterns('',
     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
         {'feed_dict': feeds}),
                        
-    (r'^([a-z]{2})/$', views.country),
+    url(r'^([a-z]{2})/$', views.country, name="country"),
     (r'^([a-z]{2})/sites/$', views.country_sites),
     (r'^([a-z]{2})/(\w+)/$', views.region),
     
