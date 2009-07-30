@@ -37,6 +37,8 @@ urlpatterns = patterns('',
     url(r'^find-clubs-by-location.json$', views.find_clubs_by_location_json),
 
     (r'^search/$', views.search),
+    url(r'^tinymcefilebrowser/$', views.tinymce_filebrowser,
+       name="tinymce.filebrowser"),
                        
     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
         {'feed_dict': feeds}),

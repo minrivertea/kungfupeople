@@ -428,7 +428,8 @@ def prowl_new_diary_entry(sender, instance, created, **__):
         prowl("Diary entry added",
               description=description)
         
-post_save.connect(prowl_new_diary_entry, sender=DiaryEntry)
+post_save.connect(prowl_new_diary_entry, sender=DiaryEntry,
+                 dispatch_uid="prowl_new_diary_entry")
 
 
 class Photo(models.Model):

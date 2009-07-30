@@ -12,7 +12,6 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 # app
 from djangopeople.models import KungfuPerson, Photo, DiaryEntry
 
-
 def context(request):
 
     data = {'TEMPLATE_DEBUG': settings.TEMPLATE_DEBUG,
