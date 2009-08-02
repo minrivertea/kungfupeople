@@ -130,6 +130,11 @@ div.bio a.edit {
 		<div id="profile-head-title">
        		<h2>{{ person.user.get_full_name|lower }}</h2>
 		</div>
+			<div class="region">
+			<a href="/{{ person.country.iso_code|lower }}/">
+			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
+			{{ person.location_description }}
+			</div>
 		{% if is_owner %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
@@ -253,14 +258,8 @@ div.bio a.edit {
             {% with person.get_nearest as people %}
             {% if people %}
             <h4>People near {{ person.user.first_name }}</h4>
-			<div class="region">
-			<a href="/{{ person.country.iso_code|lower }}/">
-			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
-			{{ person.location_description }}
-			</div>
-
             
-	<div id="horizontal-image-listing">
+	    <div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
                 {% for person in people %}
                 

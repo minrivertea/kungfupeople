@@ -6,23 +6,20 @@ function L(x) {
 
 
 function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) {
-   console.log(arguments);
-    var html =  '<ul class="detailsList">' + 
-        '<li>' + 
-        '<img src="' + photo + '" alt="' + name + '" class="main">' + 
+    var html =   
+        '<img class="list-photo" src="' + photo + '" alt="' + name + '">' + 
         '<h3><a href="' + user_url + '">' + name + '</a></h3>' + 
         '<p class="meta"><a href="/' + iso_code + '/" class="nobg">' + 
         '<img src="/static/img/flags/' + iso_code + '.gif"></a> ' + 
         location + '</p>' + 
-        '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>'
-        '</li></ul>';
+        '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>';
    if (clubs) {
       html += "<p><strong>" + (clubs.length == 1) ? "Club:" : "Clubs:";
-      html += "</strong><br/>";
+      html += "</strong> ";
       $.each(clubs, function(i, each) {
-         console.log(each.name);
          html += '<a href="' + each.url + '">' + each.name + '</a><br/>';
       });
+      html += "</p>";
    }
      return html;
 }
