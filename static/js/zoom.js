@@ -39,11 +39,44 @@ function __show_zoom_content(result) {
                 .attr('title', item.fullname);
             link.append($('<img>').attr('src',item.thumbnail_url));
             subcontainer.append(link);
-                                
+            
+            var point = new google.maps.LatLng(item.lat, item.lng);
+            var marker = new google.maps.Marker(point, getMarkerOptsThumbnail(item.marker_thumbnail_url));
+            gmap.addOverlay(marker);
+            google.maps.Event.addListener(marker, 'click', function() {
+               try {
+                  var window = makeWindow(item.fullname, item.url, item.location_description,
+                                          item.thumbnail_url, item.iso_code, item.lat, item.lng,
+                                          item.clubs);
+               } catch(ex) {
+                  alert(ex);
+               }
+               marker.openInfoWindow(window);
+            });
+            
+            
+
          } else if (installation.id=='photos') {
             subcontainer.append($('<a></a>')
                                 .attr('href', item.url)
                                 .append($('<img>').attr('src', item.thumbnail_url)));
+            var point = new google.maps.LatLng(item.lat, item.lng);
+            var marker = new google.maps.Marker(point, getMarkerOptsThumbnail(item.marker_thumbnail_url));
+            gmap.addOverlay(marker);
+            google.maps.Event.addListener(marker, 'click', function() {
+               try {
+                  var window = makePhotoWindow(item.fullname, item.url, item.location_description,
+                                               item.thumbnail_url, item.iso_code, item.lat, item.lng,
+                                               item.description);
+               } catch(ex) {
+                  alert(ex);
+               }
+               marker.openInfoWindow(window);
+            });            
+            //var point = new google.maps.LatLng(item.lat, item.lng);
+            //var marker = new google.maps.Marker(point, getMarkerOpts());
+            //gmap.addOverlay(marker);
+
          } else {
             if (installation.id=='diary_entries')
               subcontainer.append($('<a></a>').attr('href', item.url).attr('title', item.title).text(item.title));

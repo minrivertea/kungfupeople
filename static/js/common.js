@@ -6,7 +6,6 @@ function L(x) {
 
 
 function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) {
-   console.log(arguments);
     var html =  '<ul class="detailsList">' + 
         '<li>' + 
         '<img src="' + photo + '" alt="' + name + '" class="main">' + 
@@ -20,12 +19,12 @@ function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) 
       html += "<p><strong>" + (clubs.length == 1) ? "Club:" : "Clubs:";
       html += "</strong><br/>";
       $.each(clubs, function(i, each) {
-         console.log(each.name);
          html += '<a href="' + each.url + '">' + each.name + '</a><br/>';
       });
    }
      return html;
 }
+
 
 function zoomOn(lat, lon) {
     //gmap.closeInfoWindow();
@@ -66,7 +65,18 @@ function showNearbyPeople(gmap) {
 
 function getMarkerOpts() {
     var greenIcon = new google.maps.Icon(google.maps.DEFAULT_ICON);
-    greenIcon.image = "http://djangopeople.net/static/img/green-bubble.png";
+    greenIcon.image = "http://static.kungfupeople.com/img/green-bubble.png";
+    greenIcon.iconSize = new google.maps.Size(32,32);
+    greenIcon.shadowSize = new google.maps.Size(56,32);
+    greenIcon.iconAnchor = new google.maps.Point(16,32);
+    greenIcon.infoWindowAnchor = new google.maps.Point(16,0); 
+    markerOpts = { icon: greenIcon };
+    return markerOpts;
+}
+
+function getMarkerOptsThumbnail(thumbnail_url) {
+    var greenIcon = new google.maps.Icon(google.maps.DEFAULT_ICON);
+    greenIcon.image = thumbnail_url;
     greenIcon.iconSize = new google.maps.Size(32,32);
     greenIcon.shadowSize = new google.maps.Size(56,32);
     greenIcon.iconAnchor = new google.maps.Point(16,32);
