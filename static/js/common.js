@@ -6,23 +6,34 @@ function L(x) {
 
 
 function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) {
-    var html =  '<ul class="detailsList">' + 
-        '<li>' + 
-        '<img src="' + photo + '" alt="' + name + '" class="main">' + 
+    var html = '<img class="list-photo" src="' + photo + '" alt="' + name + '">' + 
         '<h3><a href="' + user_url + '">' + name + '</a></h3>' + 
         '<p class="meta"><a href="/' + iso_code + '/" class="nobg">' + 
         '<img src="/static/img/flags/' + iso_code + '.gif"></a> ' + 
         location + '</p>' + 
-        '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>'
-        '</li></ul>';
-   if (clubs) {
+        '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>';
+   if (clubs && clubs.length) {
       html += "<p><strong>" + (clubs.length == 1) ? "Club:" : "Clubs:";
-      html += "</strong><br/>";
+      html += "</strong> ";
       $.each(clubs, function(i, each) {
          html += '<a href="' + each.url + '">' + each.name + '</a><br/>';
       });
+      html += "</p>";
    }
      return html;
+}
+
+
+function makePhotoWindow(name, url, user_url, location, photo, iso_code, lat, lon, description) {
+    var html = '<a href="' + url + '"><img class="list-photo" src="' + photo + '" alt="' + name + '"></a>' +
+        '<p><strong>Uploaded by<br/><a href="' + user_url + '">' + name + '</a></strong></p>' +
+        '<p class="meta"><a href="/' + iso_code + '/" class="nobg">' + 
+        '<img src="/static/img/flags/' + iso_code + '.gif"></a> ' + 
+        location + '</p>' + 
+        '<p class="meta"><a href="#" onclick="zoomOn(' + lat + ', ' + lon + '); return false;">Zoom to point</a></p>';
+   if (description)
+     html += "<p><em>" + description + "</em></p>";
+   return html;
 }
 
 

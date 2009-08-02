@@ -65,7 +65,8 @@ function __show_zoom_content(result) {
             gmap.addOverlay(marker);
             google.maps.Event.addListener(marker, 'click', function() {
                try {
-                  var window = makePhotoWindow(item.fullname, item.url, item.location_description,
+                  var window = makePhotoWindow(item.fullname, item.url, item.user_url,
+                                               item.location_description,
                                                item.thumbnail_url, item.iso_code, item.lat, item.lng,
                                                item.description);
                } catch(ex) {

@@ -1736,7 +1736,7 @@ def zoom_content_json(request):
         data = dict(url=person.get_absolute_url(),
                     fullname=unicode(person),
                     location_description=person.location_description,
-                    iso_code=person.country.iso_code,
+                    iso_code=person.country.iso_code.lower(),
                     lat=person.latitude,
                     lng=person.longitude,
                    )
@@ -1760,9 +1760,10 @@ def zoom_content_json(request):
     
     def _jsonify_photo(photo):
         data = dict(url=photo.get_absolute_url(),
-                    fullname=unicode(photo.person),
+                    fullname=u"%s %s" % (photo.user.first_name, photo.user.last_name),
+                    user_url=photo.user.get_profile().get_absolute_url(),
                     location_description=photo.location_description,
-                    iso_code=photo.country.iso_code,
+                    iso_code=photo.country.iso_code.lower(),
                     lat=photo.latitude,
                     lng=photo.longitude,
                     description=photo.description,
