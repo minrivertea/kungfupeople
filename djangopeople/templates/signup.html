@@ -15,9 +15,17 @@
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="/js/jquery.color.js"></script>
-<script type="text/javascript" src="/js/jquery.qtip-1.0.0-rc3.js"></script>
-<script type="text/javascript" src="/js/signup.js"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.color.js" %}"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.qtip-1.0.0-rc3.js" %}"></script>
+{% if base_location %}
+<script type="text/javascript">
+var INITIAL_LAT = {{ base_location.lat }};
+var INITIAL_LON = {{ base_location.lng }};
+var INITIAL_ZOOM = 4;
+</script>
+{% endif %}
+<script type="text/javascript" src="{% slimfile "/js/signup-core.js" %}"></script>
+<script type="text/javascript" src="{% slimfile "/js/signup.js" %}"></script>
 
 {% endblock %}
 
@@ -170,7 +178,11 @@
 	<div id="right-column">
 	<div class="right-box">
 	    	<h2>2. Where do you train?</h2>
+                {% if base_location %}
+	    	<p>Drag the marker on the map to correct your location.</p>
+                {% else %}
 	    	<p>Click on the map above to set your location.</p>
+                {% endif %}
     <fieldset>
 
 	<div id="location">

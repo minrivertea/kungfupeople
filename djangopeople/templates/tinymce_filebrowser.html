@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+{% load django_static thumbnail %}
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Select a photo</title>
+    <link rel="stylesheet" href="{% slimfile "/css/styles.css" %}" type="text/css" media="all" charset="utf-8">
+    
+</head>
+<body>
+
+<a style="float:right; margin:10px; font-weight:bold" href="#" onclick="tinyMCEPopup.close(); return false">Close</a>
+<h3>Photos</h3>
+<form action="" name="file_form">
+<input type="hidden" name="photourl"/>
+{% for photo in photos %}
+<div class="photo">
+  <p><a style="float:left;margin:0 10px 10px 0;" href="#" onclick="document.file_form.photourl.value='{% thumbnail photo.photo 200x200 crop %}'; FileBrowserDialogue.mySubmit(); return false;"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
+  {{ photo.description|truncatewords:15 }}<br/>
+  {{ photo.location_description }}, {{ photo.country.name }}
+  </p>
+  <br style="clear:left"/>
+</div>
+{% endfor %}
+
+</form>
+
+    {% if OFFLINE_MODE %}
+      <script type="text/javascript" src="{% staticfile "/js/jquery-1.3.2.min.js" %}"></script>
+      <script type="text/javascript">var OFFLINE_MODE=true</script>
+    {% else %}
+      <script type="text/javascript">var OFFLINE_MODE=false</script>
+      <script src="http://www.google.com/jsapi?key={{ GOOGLE_MAPS_API_KEY }}" type="text/javascript"></script>
+      <script type="text/javascript">
+      google.load("jquery", "1",{"other_params":"sensor=false"});
+      </script>
+    {% endif %}
+
+<script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce.js" %}"></script>
+<script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce_popup.js" %}"></script>
+<script type="text/javascript">
+var FileBrowserDialogue = {
+    init : function () {
+        // Here goes your code for setting your custom things onLoad.
+    },
+    mySubmit : function () {
+        var URL = document.file_form.photourl.value;
+        var win = tinyMCEPopup.getWindowArg("window");
+
+        // insert information now
+        win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
+
+        // are we an image browser
+        if (typeof(win.ImageDialog) != "undefined") {
+            // we are, so update image dimensions...
+            if (win.ImageDialog.getImageData)
+                win.ImageDialog.getImageData();
+
+            // ... and preview if necessary
+            if (win.ImageDialog.showPreviewImage)
+                win.ImageDialog.showPreviewImage(URL);
+        }
+
+        // close popup window
+        tinyMCEPopup.close();
+    }
+}
+$(function() {
+  tinyMCEPopup.onInit.add(FileBrowserDialogue.init, FileBrowserDialogue);
+});  
+</script>
+
+</body>
+</html>

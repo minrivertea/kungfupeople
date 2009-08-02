@@ -32,6 +32,8 @@ from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
 
+from iplookup import getGeolocationByIP, getGeolocationByIP_cached
+
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 
 try:
@@ -181,8 +183,12 @@ def lost_password_recover(request, username, days, hash):
 
 @transaction.commit_on_success
 def signup(request):
+    
     if not request.user.is_anonymous():
         return HttpResponseRedirect('/')
+    
+    base_location = None
+    
     if request.method == 'POST':
         form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
@@ -257,11 +263,47 @@ def signup(request):
             return HttpResponseRedirect('/%s/whatnext/' % username)
         else: print form.errors
     else:
-        form = SignupForm()
+        
+        initial = {}
+        if request.META.get('REMOTE_ADDR',''):
+            ip = request.META.get('REMOTE_ADDR')
+            # debugging
+            if settings.DEBUG and (ip == '127.0.0.1' or ip.startswith('192.168.')):
+                from random import choice
+                ip = choice(['156.25.4.2','150.70.84.41','62.203.65.228','220.231.34.10',
+                             '58.171.130.89','82.132.138.250',
+                             '193.247.250.13','72.204.121.78','202.154.137.7',
+                             '62.6.149.26','202.154.143.159','216.86.82.83'])
+                print ip
+            if not (ip == '127.0.0.1' or ip.startswith('192.168.')):
+                base_location = getGeolocationByIP_cached(ip)
+                if base_location['lat'] == 0.0 and base_location['lng'] == 0.0:
+                    base_location = None
+                    
+            if base_location:
+                try:
+                    country = Country.objects.get(name__iexact=base_location['country'])
+                    initial['country'] = country.iso_code
+                    
+                    if base_location.get('region') and base_location.get('city') and\
+                      base_location.get('region').lower() != base_location.get('city').lower():
+                        initial['location_description'] = "%s, %s" % \
+                          (base_location['city'], base_location['region'])
+                    elif base_location['city']:
+                        initial['location_description'] = base_location['city']
+                    initial['latitude'] = base_location['lat']
+                    initial['longitude'] = base_location['lng']
+                except Country.DoesNotExist:
+                    # the lookup is duff
+                    base_location = None
+        
+        form = SignupForm(initial=initial)
+                    
     
     return render(request, 'signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
+        'base_location': base_location,
     })
 
 def whatnext(request, username):
@@ -1030,7 +1072,7 @@ def diary_entry_add(request, username):
                 region = Region.objects.get(
                     country__iso_code = form.cleaned_data['country'],
                     code = form.cleaned_data['region']
-                ) 
+                )
 
             if form.cleaned_data['country']:
                 entry = DiaryEntry.objects.create(
@@ -1122,10 +1164,10 @@ def diary_entry_edit(request, username, slug):
             'title': entry.title,
             'content': entry.content,
             'is_public': entry.is_public,
-            'location_description': person.location_description,
-            'country': person.country.iso_code,
-            'latitude': person.latitude,
-            'longitude': person.longitude,
+            'location_description': entry.location_description,
+            'country': entry.country.iso_code,
+            'latitude': entry.latitude,
+            'longitude': entry.longitude,
         }
         form = DiaryEntryForm(initial=initial)
     return render(request, 'diary_entry_add.html', locals())
@@ -1831,3 +1873,12 @@ def crop_profile_photo(request, username):
     
     return render(request, 'crop-profile-photo.html', locals())
     
+
+def tinymce_filebrowser(request):
+    type_ = request.GET.get('type') # needed?
+    url = request.GET.get('url')
+    print "url", repr(url)
+    if request.user and not request.user.is_anonymous():
+        photos = Photo.objects.filter(user=request.user)
+        
+    return render(request, 'tinymce_filebrowser.html', locals())

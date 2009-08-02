@@ -4,14 +4,23 @@
 {% block title %}{{ page_title }} |{% endblock %}
 
 {% block js %}
+{% if entry.latitude and entry.longitude %}
+<script type="text/javascript">
+var PAGE_LATITUDE = {{ entry.latitude }};
+var PAGE_LONGITUDE = {{ entry.longitude }};
+</script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
+{% endif %}
 <script type="text/javascript" src="{% slimfile "/js/diary_add.js" %}"></script>
 
 <script type="text/javascript" src="{% staticfile "/js/tiny_mce/tiny_mce.js" %}"></script>
+<script type="text/javascript" src="{% staticfile "/js/tinymce_files.js" %}"></script>
 <script type="text/javascript">
 tinyMCE.init({
 	theme : "advanced",
 	mode : "textareas",
+	file_browser_callback : "MyFileBrowser"
+
 });
 </script>
 
