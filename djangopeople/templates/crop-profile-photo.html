@@ -41,7 +41,8 @@ $(function() {
 <p>
 <img src="{% thumbnail person.photo 60x60 crop %}" alt="{{ person }}">
 
-This is what your profile photo currently looks like cropped to a square of 60x60 pixels.</p>
+This is what your <strong>profile photo</strong>
+currently looks like <strong>cropped to a square</strong> of 60x60 pixels.</p>
 </div>
 <br/>
 
@@ -56,7 +57,9 @@ This is what your profile photo currently looks like cropped to a square of 60x6
 	
 	<img src="{% thumbnail person.photo 500x500  %}" id="cropbox">
 	
-	<br/><input type="submit" value="Crop and save your profile photo">
+	<br><input type="submit" value="Crop and save your profile photo">
+        <br><br>
+        <a href="{{ person.get_absolute_url }}">Cancel</a>
 	
 	</form>
 </div>        

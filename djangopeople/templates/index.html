@@ -51,7 +51,8 @@ var people = [
 
 	<div class="horizontal-photos">
 		{% for person in recent_people_limited %}
-                <a href="{{ person.get_absolute_url }}">
+                <a href="{{ person.get_absolute_url }}" 
+                   title="Click to see {{ person.user.first_name }}'s profile">
                 <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}">
 		</a>
         	{% endfor %}
@@ -62,21 +63,22 @@ var people = [
 		<div class="highlight-home">
 		<h3>Styles recently added</h3>
 		{% for style in styles %}
-		<a href="{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}<br/>{% endif %}
+		    <a href="{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}<br/>{% endif %}
 		{% endfor %}
 		</div>
 
 		<div class="highlight-home">
 		<h3>Clubs recently added</h3>
 		{% for club in clubs %}
-		<a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br/>{% endif %}
+		    <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br/>{% endif %}
 		{% endfor %}
 		</div>
 
 		<div class="highlight-home">
 		<h3>Photos recently added</h3>
 		{% for photo in photos %}
-			<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
+		    <a href="{{ photo.get_absolute_url }}"
+                       title="Uploaded by {{ photo.user.first_name }} {{ photo.user.last_name }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
 		{% endfor %}
 		</div>
 

@@ -1734,21 +1734,49 @@ def zoom_content_json(request):
     
     def _jsonify_person(person):
         data = dict(url=person.get_absolute_url(),
-                    fullname=unicode(person))
+                    fullname=unicode(person),
+                    location_description=person.location_description,
+                    iso_code=person.country.iso_code.lower(),
+                    lat=person.latitude,
+                    lng=person.longitude,
+                   )
         if person.photo:
             thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
                                         processors=thumbnail_processors)
             data['thumbnail_url'] = thumbnail.absolute_url
+            
+            thumbnail = DjangoThumbnail(person.photo, (30,30), opts=['crop'],
+                                        processors=thumbnail_processors)
+            data['marker_thumbnail_url'] = thumbnail.absolute_url
         else:
             data['thumbnail_url'] = staticfile("/img/upload-a-photo-60.png")
+            data['marker_thumbnail_url'] = staticfile("/img/upload-a-photo-30.png")
+        clubs = []
+        for club in person.club_membership.all():
+            clubs.append({'name': club.name, 'url':club.get_absolute_url()})
+        data['clubs'] = clubs
             
         return data
     
     def _jsonify_photo(photo):
-        data = dict(url=photo.get_absolute_url())
+        data = dict(url=photo.get_absolute_url(),
+                    fullname=u"%s %s" % (photo.user.first_name, photo.user.last_name),
+                    user_url=photo.user.get_profile().get_absolute_url(),
+                    location_description=photo.location_description,
+                    iso_code=photo.country.iso_code.lower(),
+                    lat=photo.latitude,
+                    lng=photo.longitude,
+                    description=photo.description,
+                   )
+        
         thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=['crop'], 
                                     processors=thumbnail_processors)
         data['thumbnail_url'] = thumbnail.absolute_url
+        
+        thumbnail = DjangoThumbnail(photo.photo, (30,30), opts=['crop'], 
+                                    processors=thumbnail_processors)
+        data['marker_thumbnail_url'] = thumbnail.absolute_url
+        
         return data
     
     data = {}
@@ -1877,7 +1905,6 @@ def crop_profile_photo(request, username):
 def tinymce_filebrowser(request):
     type_ = request.GET.get('type') # needed?
     url = request.GET.get('url')
-    print "url", repr(url)
     if request.user and not request.user.is_anonymous():
         photos = Photo.objects.filter(user=request.user)
         
