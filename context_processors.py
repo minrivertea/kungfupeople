@@ -17,12 +17,14 @@ def context(request):
     data = {'TEMPLATE_DEBUG': settings.TEMPLATE_DEBUG,
             'DEBUG': settings.DEBUG,
             'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
+            'GOOGLE_ANALYTICS_TRACKER_ID': settings.GOOGLE_ANALYTICS_TRACKER_ID,
             'OFFLINE_MODE': settings.OFFLINE_MODE,
             'base_template': "base.html",
             'mobile_version': False,
             'mobile_user_agent': False,
             'PROJECT_NAME': settings.PROJECT_NAME,
             'PROJECT_MARTIAL_ART': settings.PROJECT_MARTIAL_ART,
+            
             }
     
 ##    data['show_signup_notice'] = False
