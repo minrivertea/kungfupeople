@@ -9,3 +9,5 @@ You can delete them later since they all have usernames that end in
 To run the unit tests::
 
  $ ./manage.py test --settings=test_settings newsletter djangopeople
+ 
+ 
