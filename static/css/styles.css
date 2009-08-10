@@ -69,7 +69,7 @@ body * {
 	border-bottom: 15px solid #F3CF1A;
 	/* background-color: #990000; */
 	/* background-color: #990000; */
-	background: url("/img/headerback.png") repeat-x;
+	background: url("/img/headerback.png") no-repeat #a10606;
 }
 
 #nav {
@@ -82,14 +82,14 @@ body * {
 	border-bottom: 1px solid #DA5858;
 }
 
-
+/*
 #logo {
-	background: url("/img/logo.png") no-repeat;
 	height: 66px;
 	width: 508px;
 	float: left;
 	margin: 20px 0 0 90px;
 }
+*/
 
 #logo:hover {
 	filter:alpha(opacity=90);
@@ -115,9 +115,10 @@ body * {
 }
 
 
-#title {
-	margin: 30px 0 0 0px;
+a.title {
+	margin: 20px 0 0 100px;
 	height: 60px;
+	/*background: url('/img/logo.jpg') no-repeat 0 0;*/
 }
 
 #signup {
@@ -323,15 +324,14 @@ p.large {
 }
 
 #right-column {
-	min-width: 220px;
-	width: 300px;
 	float: left;
 	display: block;
-	height: 100%;
-	margin: 20px 0px 0 20px;
-	background-color: white;
-	padding: 20px;
-	border: 2px solid #F3CF1A;
+	height: auto;
+	min-height: 400px;
+	width: 350px;
+	margin: 20px 0px 0 0px;
+	/* background: url('/img/right-column-back.jpg') no-repeat 0 0 white;*/
+	padding: 10px;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 -moz-border-radius-topleft:10px;
@@ -420,7 +420,7 @@ a:link img,
 a:visited img {
 	height: auto;
 	width: auto;
-	border: none;
+	border: 0px;
 	background-color: none;
 	padding: 0px;
 	text-decoration: none
@@ -430,7 +430,7 @@ a:visited img {
 a:hover img {
 	height: auto;
 	width: auto;
-	border: none;
+	border: 0px;
 	background-color: white;
 	padding: 0px;
 	margin: 0px;
@@ -770,8 +770,8 @@ h1 {
 	background-color: #990000;
 	font-weight: normal;
 	color: white;
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
 
@@ -1269,6 +1269,21 @@ img.delete {
 .red {
 	color: red;
 	font-weight: bold;
+}
+
+p.promo-title {
+	margin: 30px 300px 10px 0px;
+	font-family: Georgia, serif;
+	font-size: 1.7em;
+	color: #a10606;
+
+}
+
+p.promo {
+	margin: 0px 300px 10px 0px;
+	font-family: Georgia, serif;
+	font-size: 1.2em;
+	color: #666;
 }
 
 
