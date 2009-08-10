@@ -565,6 +565,7 @@ class KungfuPerson(models.Model):
     # (possible values are ('', 'plain', 'html')
     newsletter = models.CharField(max_length=5, default='html',
                                   choices=NEWSLETTER_CHOICES,
+                                  blank=True
                                   
                                  )
 
