@@ -549,8 +549,8 @@ class KungfuPerson(models.Model):
     bio = models.TextField(blank=True)
     styles = models.ManyToManyField(Style)
     club_membership = models.ManyToManyField(Club)
-    what_is_kungfu = models.CharField(max_length=144, blank=False)
-    
+    what_is_kungfu = models.CharField(max_length=144, blank=True)
+
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
     region = models.ForeignKey(Region, blank=True, null=True)
@@ -564,7 +564,9 @@ class KungfuPerson(models.Model):
     # default is 'html;, they can override that later if they want to unsubscribe
     # (possible values are ('', 'plain', 'html')
     newsletter = models.CharField(max_length=5, default='html',
-                                  choices=NEWSLETTER_CHOICES)
+                                  choices=NEWSLETTER_CHOICES,
+                                  
+                                 )
 
     # Stats
     profile_views = models.IntegerField(default=0)
