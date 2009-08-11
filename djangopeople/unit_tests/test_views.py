@@ -579,7 +579,7 @@ class ViewsTestCase(TestCase):
         
         
         # test zoom_content_json
-        response = self.client.post('/zoom-content.json',
+        response = self.client.get('/zoom-content.json',
                                     dict(left=north_west[0], upper=north_west[1],
                                          right=south_east[0], lower=south_east[1]))
         

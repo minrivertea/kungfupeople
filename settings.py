@@ -93,7 +93,7 @@ MIDDLEWARE_CLASSES = (
     'djangopeople.middleware.NoDoubleSlashes',
     'djangopeople.middleware.AutoLogin',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'crashkit.CrashKitDjangoMiddleware',
+    #'crashkit.CrashKitDjangoMiddleware',
 )
 
 ROOT_URLCONF = 'djangopeoplenet.urls'

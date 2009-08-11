@@ -187,7 +187,10 @@ class PhotoUploadForm(forms.Form):
 
 class PhotoEditForm(forms.Form):
     description = forms.CharField(widget = forms.Textarea)
-    diary_entry = forms.FloatField(required=False)
+    #diary_entry = forms.IntegerField(required=False,
+    #                                 widget=forms.widgets.Select()
+    #                                )
+    diary_entry = forms.ChoiceField(required=False)
 
     country = forms.ChoiceField(required=False)
     latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
@@ -201,6 +204,7 @@ class PhotoEditForm(forms.Form):
         self.fields['country'].choices = [('', '')] + [
           (c.iso_code, c.name) for c in Country.objects.all()]
         self.fields['region'].choices = region_choices()
+        #self.fields['diary_entry'].choices = diary_entry_choices()
 
 
 class ProfilePhotoUploadForm(forms.Form):

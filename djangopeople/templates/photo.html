@@ -1,7 +1,11 @@
 {% extends base_template %}
 {% load django_static %}
 
-{% block title%} Photo |{% endblock %}
+{% block title%}{% if html_title %}{{ html_title }}{% else %}Photo{% endif %} |{% endblock %}
+
+{% if meta_description %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% endif %}
 
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
@@ -48,7 +52,7 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 		{% endif %}
 		</p>
 	
-		<p><em>{{ photo.description }}</em></p>
+		<p><em>{{ photo.description|linebreaks }}</em></p>
 
 		<div class="large-photo-container">
 		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
@@ -59,7 +63,13 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 <div id="right-column">
 
 	<div class="right-box">
-	<p>This item has been geo-tagged in <strong>{{ photo.location_description }} ({{ photo.country.iso_code }})</strong>! Click on the map to see other items related to this area.</p>
+	<p>This item has been geo-tagged in <strong>{{ photo.location_description }} ({{ photo.country.name }})</strong>. Click on the map to see other items related to this area.</p>
+        
+        {% if photo.diary_entry %}
+        <p>Related to diary entry
+        <a href="{{ photo.diary_entry.get_absolute_url }}">{{ photo.diary_entry }}</a></p>
+        {% endif %}
+        
 	</div>
 
 </div>

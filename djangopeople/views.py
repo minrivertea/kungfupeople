@@ -10,7 +10,7 @@ from urllib2 import HTTPError, URLError
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import slugify, truncatewords
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.db import transaction
@@ -383,121 +383,6 @@ def derive_username(nickname):
         to_add += 1
     return nickname
 
-@must_be_owner
-def XXX___deprecated____photo_upload(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
-    if request.method == 'POST':
-        form = PhotoUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = person.user
-            description = form.cleaned_data['description']
-            photo = form.cleaned_data['photo']
-            region = None
-            diary_entry = None
-            # Figure out what type of image it is
-            photo = request.FILES['photo']
-            image_content = photo.read()
-            format = Image.open(StringIO(image_content)).format
-            format = format.lower().replace('jpeg', 'jpg')
-            filename = md5.new(image_content).hexdigest() + '.' + format
-            # Save the image
-            path = os.path.join(settings.MEDIA_ROOT, 'photos', filename)
-            # check that the dir of the path exists
-            dirname = os.path.dirname(path)
-            if not os.path.isdir(dirname):
-                try:
-                    os.mkdir(dirname)
-                except IOError:
-                    raise IOError, "Unable to created the directory %s" % dirname
-            open(path, 'w').write(image_content)
-
-            if form.cleaned_data['diary_entry']:
-                diary_entry = form.cleaned_data['diary_entry']
-                if isinstance(diary_entry, int):
-                    diary_entry = get_object_or_404(DiaryEntry, id=diary_entry)
-                    if diary_entry.user != person.user:
-                        # crazy paranoia
-                        from django.forms import ValidationError
-                        raise ValidationError("Not your entry")
-
-            if form.cleaned_data['region']:
-                region = Region.objects.get(
-                    country__iso_code = form.cleaned_data['country'],
-                    code = form.cleaned_data['region']
-                ) 
-
-            if form.cleaned_data['country']:
-                photo = Photo.objects.create(
-                    user=user,
-                    description=description,
-                    photo=photo,
-                    diary_entry=diary_entry,
-                    country=Country.objects.get(iso_code = form.cleaned_data['country']),
-                    latitude=form.cleaned_data['latitude'],
-                    longitude=form.cleaned_data['longitude'],
-                    location_description=form.cleaned_data['location_description'],
-                    region = region,
-                    )
-
-            else:
-                photo = Photo.objects.create(
-                    user=user,
-                    description=description,
-                    photo=photo,
-                    diary_entry=diary_entry,
-                    country=person.country,
-                    latitude=person.latitude,
-                    longitude=person.longitude,
-                    location_description=person.location_description,
-                    region=person.region,
-                )
-            
-            if diary_entry:
-                url = diary_entry.get_absolute_url()
-            else:
-                url = '/%s/upload/done/' % username
-            return HttpResponseRedirect(url)
-    else:
-        
-        initial = {'location_description': person.location_description,
-                   'country': person.country.iso_code,
-                   'latitude': person.latitude,
-                   'longitude': person.longitude,
-                  }
-        if request.GET.get('diary'):
-            try:
-                diary_entry = DiaryEntry.objects.get(id=request.GET.get('diary'))
-                if diary_entry.user != person.user:
-                    raise DiaryEntry.DoesNotExist
-                initial['diary_entry'] = diary_entry.id
-                initial['location_description'] = diary_entry.location_description
-                initial['country'] = diary_entry.country
-                initial['latitude'] = diary_entry.latitude
-                initial['longitude'] = diary_entry.longitude
-            except DiaryEntry.DoesNotExist:
-                pass
-                
-        form = PhotoUploadForm(initial=initial)
-        
-        diary_entries = []
-        for entry in DiaryEntry.objects.filter(user=person.user
-                                              ).order_by('-date_added')[:100]:
-            title = entry.title
-            if len(title) > 40:
-                title = title[:40] + '...'
-            title += entry.date_added.strftime(' (%d %b %Y)')
-            diary_entries.append((entry.id, title))
-            
-        if diary_entries:
-            diary_entries.insert(0, ('', ''))
-            form.fields['diary_entry'].widget.choices = tuple(diary_entries)
-        else:
-            del form.fields['diary_entry']
-            
-    return render(request, 'photo_upload_form.html', {
-        'form': form,
-        'person': person,
-    })
 
 
 @must_be_owner
@@ -785,14 +670,31 @@ def photo_edit(request, username, photo_id):
     region = None
     page_title = "Edit your photo"
     button_value = "Save changes"
+    
+    diary_entries = []
+    for entry in DiaryEntry.objects.filter(user=person.user
+                                            ).order_by('-date_added')[:100]:
+        title = entry.title
+        if len(title) > 40:
+            title = title[:40] + '...'
+        title += entry.date_added.strftime(' (%d %b %Y)')
+        diary_entries.append((entry.id, title))
+        
 
     if request.method == 'POST':
         form = PhotoEditForm(request.POST)
+        
+        if diary_entries:
+            diary_entries.insert(0, ('', ''))
+            form.fields['diary_entry'].choices = tuple(diary_entries)
+        else:
+            del form.fields['diary_entry']
+            
         if form.is_valid():  
             diary_entry = photo.diary_entry
 
             if form.cleaned_data['diary_entry']:
-                diary_entry = form.cleaned_data['diary_entry']
+                diary_entry = DiaryEntry.objects.get(pk=form.cleaned_data['diary_entry'])
 
             if form.cleaned_data['region']:
                 region = Region.objects.get(
@@ -810,20 +712,29 @@ def photo_edit(request, username, photo_id):
             photo.description = form.cleaned_data['description']
             photo.diary_entry = diary_entry
             photo.save()
-
-            return HttpResponseRedirect('/%s/upload/done/' % username)
+            
+            return HttpResponseRedirect(photo.get_absolute_url())
+            #return HttpResponseRedirect('/%s/upload/done/' % username)
     else:
         initial = {
             'description': photo.description,
             'photo': photo,
-            'diary_entry': photo.diary_entry,
             'country': photo.country.iso_code,
             'region': photo.region,
             'longitude': photo.longitude,
             'latitude': photo.latitude,
             'location_description': photo.location_description,
         }
+        if photo.diary_entry:
+            initial['diary_entry'] = photo.diary_entry.id
         form = PhotoEditForm(initial=initial)
+        
+        if diary_entries:
+            diary_entries.insert(0, ('', ''))
+            form.fields['diary_entry'].choices = tuple(diary_entries)
+        else:
+            del form.fields['diary_entry']
+            
     return render(request, 'photo_upload_form.html', locals())
 
 @must_be_owner
@@ -986,12 +897,20 @@ def profile(request, username):
 def photo(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username = username)
     photo = get_object_or_404(Photo, id=photo_id)
+    
+    try:
+        html_title = photo.description.splitlines()[0]
+        meta_description = photo.description.replace('\n', '')
+        html_title = truncatewords(html_title, 10)
+        if photo.location_description:
+            html_title += ', %s' % photo.location_description
+        if photo.country:
+            html_title += ', %s' % photo.country.name
+    except IndexError:
+        html_title = None
 
-    return render(request, 'photo.html', {
-        'person': person,
-        'photo': photo,
-        'is_owner': request.user.username == username,
-    })
+    is_owner = request.user.username == username
+    return render(request, 'photo.html', locals())
 
 def viewallphotos(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
