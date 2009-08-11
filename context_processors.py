@@ -12,6 +12,8 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 # app
 from djangopeople.models import KungfuPerson, Photo, DiaryEntry
 
+THIS_YEAR = datetime.datetime.today().strftime('%Y')
+
 def context(request):
 
     data = {'TEMPLATE_DEBUG': settings.TEMPLATE_DEBUG,
@@ -24,6 +26,7 @@ def context(request):
             'mobile_user_agent': False,
             'PROJECT_NAME': settings.PROJECT_NAME,
             'PROJECT_MARTIAL_ART': settings.PROJECT_MARTIAL_ART,
+            'COPYRIGHT_YEAR': THIS_YEAR,
             
             }
     

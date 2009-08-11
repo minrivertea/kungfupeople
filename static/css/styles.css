@@ -82,6 +82,9 @@ body * {
 	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
+#nav a.bigger {
+        font-weight:bold;
+}
 
 /*
 #logo {
@@ -1291,39 +1294,11 @@ img.delete {
 	font-weight: bold;
 }
 
-#promo-text {
-	display: block;
-	width: 500px;
-	height: auto;
-	float: left;
+#footer {
+  margin-top:40px;
+  padding:10px;
+  border-top:1px solid #ccc;
 }
-
-p.promo-title {
-	margin: 0px 0 5px 30px;
-	width: 600px;
-	font-family: Georgia, serif;
-	font-size: 2em;
-	color: #a10606;
-	padding-bottom: 0px;
+#footer p {
+  text-align:center;
 }
-
-p.promo {
-	margin-left: -70px;
-	padding: 0px 30px 0px 100px;
-	width: 450px;
-	font-family: Helvetica, sans-serif;
-	font-size: 14px;
-	color: #666;
-}
-
-p.promo-title-2 {
-	border-bottom: white 1px solid;
-	margin: 0px 0 5px 0px;
-	font-family: Georgia, serif;
-	font-size: 1.5em;
-	color: #666;
-	padding-bottom: 7px;
-}
-
-
-
