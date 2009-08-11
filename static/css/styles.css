@@ -64,7 +64,7 @@ body * {
 	float: left;
 	min-width: 1068px;
 	width: 100%;
-	height: 160px;
+	height: 181px;
 	margin: 0px 0px -90px 0px;
 	border-bottom: 15px solid #F3CF1A;
 	/* background-color: #990000; */
@@ -78,7 +78,7 @@ body * {
 	color: #F3CF1A;
 	height: 20px;
 	margin: 0px 0px 0px 0px;
-	background-color: #5E0000;
+	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
 
@@ -257,6 +257,13 @@ a.title {
 	margin: -30px 0 40px 0px;
 	padding: 10px;
 
+}
+
+#home-image-listing {
+	width: 400px;
+	height: auto;
+	margin-top: 30px;
+	float: left;
 }
 
 #horizontal-image-listing {
@@ -676,12 +683,29 @@ ul.split li {
 /* @end */
 
 .highlight-home {
-	margin: 20px 0px 30px 0px;
+	margin: 30px 0px 30px 30px;
 	float: left;	
-	min-width: 300px;
-	width: 33%;
+	width: 300px;
+}
+
+
+.highlight-home h3 {
+	font-family: Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #666;
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
+}
+
+.highlight-home-people {
+	margin: 30px 0px 30px 0px;
+	float: left;	
+	width: 450px;
 	background-color: white;
 }
+
 
 .highlight-profile {
 	margin: 0 0px 15px 0px;
@@ -701,16 +725,6 @@ ul.split li {
 	margin-left: -120px;
 }
 
-.highlight-home h3 {
-	font-family: Helvetica, sans-serif;
-	font-size: 18px;
-	font-weight: bold;
-	color: #666;
-	border-bottom: 1px solid #e6e6e6;
-	margin-bottom: 15px;
-	margin-left: 0px;
-	padding-bottom: 5px;
-}
 
 
 
@@ -1271,19 +1285,28 @@ img.delete {
 	font-weight: bold;
 }
 
-p.promo-title {
-	margin: 30px 300px 10px 0px;
-	font-family: Georgia, serif;
-	font-size: 1.7em;
-	color: #a10606;
+#promo-text {
+	display: block;
+	width: 540px;
+	float: left;
+}
 
+p.promo-title {
+	margin: 30px 0 5px 30px;
+	width: 600px;
+	font-family: Georgia, serif;
+	font-size: 2em;
+	color: #a10606;
+	padding-bottom: 0px;
 }
 
 p.promo {
-	margin: 0px 300px 10px 0px;
+	margin-left: 30px;
+	width: 450px;
 	font-family: Georgia, serif;
 	font-size: 1.2em;
 	color: #666;
 }
+
 
 
