@@ -29,6 +29,7 @@ body * {
 .wrapper {
 	min-width: 860px;
 	width: 100%;
+	margin-top: 30px;
 	background-color: white;
 	float: left;
 	/* background: url('/img/bodyback.png') top left repeat-y; */
@@ -264,6 +265,7 @@ a.title {
 	height: auto;
 	margin-top: 30px;
 	float: left;
+
 }
 
 #horizontal-image-listing {
@@ -700,10 +702,14 @@ ul.split li {
 }
 
 .highlight-home-people {
-	margin: 30px 0px 30px 0px;
-	float: left;	
-	width: 450px;
-	background-color: white;
+	margin: 0px 0px 0px 0px;
+	padding: 20px 80px 30px 40px;
+	float: right;	
+	width: 320px;
+	height: auto;
+	min-height: 50px;
+	/*background: url('/img/corner.gif/') repeat-y top left #e1e1e1;*/
+	background-color: #e1e1e1;
 }
 
 
@@ -923,14 +929,13 @@ li.latest-list-home {
 	width: 60px;
 }
 
-.horizontal-image-list-text {
+.horizontal-image-list-text, .horizontal-image-list-text a {
 	margin-bottom: 5px;
-	font-size: 0.7em;
-	color: #666;
+	font-size: 10px;
 }
 
 .horizontal-photos {
-	height: 60px;
+	height: auto;
 	display: block;
 	margin-bottom: 5px;
 }
@@ -1178,6 +1183,7 @@ diaries ul {
 }
 
 .large-photo-container {
+	margin-top: 15px;
 	text-align: left;
 }
 
@@ -1287,12 +1293,13 @@ img.delete {
 
 #promo-text {
 	display: block;
-	width: 540px;
+	width: 500px;
+	height: auto;
 	float: left;
 }
 
 p.promo-title {
-	margin: 30px 0 5px 30px;
+	margin: 0px 0 5px 30px;
 	width: 600px;
 	font-family: Georgia, serif;
 	font-size: 2em;
@@ -1301,11 +1308,21 @@ p.promo-title {
 }
 
 p.promo {
-	margin-left: 30px;
+	margin-left: -70px;
+	padding: 0px 30px 0px 100px;
 	width: 450px;
-	font-family: Georgia, serif;
-	font-size: 1.2em;
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
 	color: #666;
+}
+
+p.promo-title-2 {
+	border-bottom: white 1px solid;
+	margin: 0px 0 5px 0px;
+	font-family: Georgia, serif;
+	font-size: 1.5em;
+	color: #666;
+	padding-bottom: 7px;
 }
 
 

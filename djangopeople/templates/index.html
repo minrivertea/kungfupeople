@@ -41,10 +41,10 @@ var people = [
 
 	<div id="promo-text">
 	<p class="promo-title">We're calling all kung fu people</p>
-	<p class="promo">to help create a global map of kung fu stylists. There's no rhyme or reason, other than to join fellow stylists together as part of one global family of martial artists.</p>
+	<p class="promo">to help create a global map of kung fu stylists. There's no rhyme or reason, just to join fellow stylists together as part of one global family of martial artists.<a href="/signup/"> Signup now!</a></p>
 
-	<p class="promo-title">...to add yourself to the map</p>
-	<p class="promo">simply by putting a marker where you train. It's easy, and you'll be taking part in a worldwide martial arts project.</p>
+	<p class="promo-title">Add yourself to the map</p>
+	<p class="promo">simply by putting a marker where you train. It's easy, and you'll be taking part in a worldwide martial arts project.<a href="/about/"> Find out more...</a></p>
 
 	<p class="promo-title">...and help promote martial arts</p>
 	<p class="promo">by helping people find places in their local area to train - simply by adding your profile, you can also add your club to our growing site.</p>
@@ -52,7 +52,16 @@ var people = [
 
 	<div class="highlight-home-people">
 
+			<p class="promo-title-2">{{ recent_people.count }} people have already signed up!</p>
+			<div class="horizontal-image-list-text">
+		  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/"
+		    >{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
+		  {% endfor %}
+			</div>
+
 		<div class="horizontal-photos">
+
+
 			{% for person in recent_people_limited %}
         	        <a href="{{ person.get_absolute_url }}" 
         	           title="Click to see {{ person.user.first_name }}'s profile">
@@ -61,14 +70,6 @@ var people = [
         		{% endfor %}
 		</div>
 
-		<div class="horizontal-image-list-text">
-		  Showing {{ recent_people.count }} recent
-		  {% ifequal recent_people.count 1 %}signup{% else %}signups{% endifequal %} 
-		  in: 
-		  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/"
-		    >{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
-		  {% endfor %}
-		</div>
 	</div>
 
 	<br clear="all"/>

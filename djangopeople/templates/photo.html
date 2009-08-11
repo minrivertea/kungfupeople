@@ -40,7 +40,15 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 		{% else %}
 		{% endif %}
 
-       		<h2>Photo</h2>
+		<div class="large-photo-container">
+		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
+		</div>
+
+	</div>
+
+<div id="right-column">
+
+	<div class="right-box">
 		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>		
 
 		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  
@@ -54,15 +62,6 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 	
 		<p><em>{{ photo.description|linebreaks }}</em></p>
 
-		<div class="large-photo-container">
-		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
-		</div>
-
-	</div>
-
-<div id="right-column">
-
-	<div class="right-box">
 	<p>This item has been geo-tagged in <strong>{{ photo.location_description }} ({{ photo.country.name }})</strong>. Click on the map to see other items related to this area.</p>
         
         {% if photo.diary_entry %}
