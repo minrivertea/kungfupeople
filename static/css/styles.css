@@ -1286,10 +1286,16 @@ img.delete {
 }
 
 #footer {
-  margin-top:40px;
-  padding:10px;
-  border-top:1px solid #ccc;
+	margin-top:40px;
+	padding:10px;
+	border-top: 15px solid #F3CF1A;
+	background-color: #a10606;
 }
 #footer p {
-  text-align:center;
+	color: #F3CF1A;
+  	text-align:center;
+}
+
+#footer a {
+	color: white;
 }
