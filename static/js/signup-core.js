@@ -31,16 +31,16 @@ function __reversed_geocode(name, countryName, iso_code, region) {
 	       
 	       if (marker) {
 
-		  var html = name+"<br>"+countryName+"<br>";
+		  marker_html = name+"<br>"+countryName+"<br>";
                   if (LOCATION_BY_IP)
-                    html += "(<font size=\"-1\"><strong>note:</strong> you can correct this in your profile afterwards)</font><br>";
-                  html += "<br><font size=\"-1\">zoom ";
+                    marker_html += "(<font size=\"-1\"><strong>note:</strong> you can correct this in your profile afterwards)</font><br>";
+                  marker_html += "<br><font size=\"-1\">zoom ";
 		  if (gmap.getZoom() < 14)
-		    html += "<a href=\"#\" onclick=\"__zoom_in();return false\">in</a> ";
+		    marker_html += "<a href=\"#\" onclick=\"__zoom_in();return false\">in</a> ";
 		  if (gmap.getZoom() > 2)
-		    html += "<a href=\"#\" onclick=\"__zoom_out();return false\">out</a>";
-		  html += "</font>"
-		  marker.openInfoWindowHtml(html);
+		    marker_html += "<a href=\"#\" onclick=\"__zoom_out();return false\">out</a>";
+		  marker_html += "</font>"
+		  marker.openInfoWindowHtml(marker_html);
 		  
 		  if (gmap.getZoom() >= 2)
 		    gmap.setCenter(marker.getLatLng(), gmap.getZoom()+3);
@@ -171,11 +171,22 @@ function hasRegions(country_name) {
 function __on_dragend(delay_seconds) {
    point = marker.getLatLng();
    
-   $('#id_latitude').val(point.lat());
-   $('#id_longitude').val(point.lng());
+   var lat = point.lat();
+   var lng = point.lng();
+   $('#id_latitude').val(lat);
+   $('#id_longitude').val(lng);
+
+   // Don't geocode if we're still at the starting point
+   if (!lng || !lat || (Math.abs(lat - INITIAL_LAT) < 0.01 &&
+			Math.abs(lng - INITIAL_LON) < 0.01)) {
+      marker.openInfoWindowHtml(marker_html);
+      return;
+   }
    
-   marker.openInfoWindowHtml('<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." /> '+
-                             "Please wait...<br/>Fetching location name");
+   marker_html = '<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." /> '+
+                 "Please wait...<br/>Fetching location name";
+   marker.openInfoWindowHtml(marker_html);
+
    if (delay_seconds) {
       if (lookupTimer)
         clearTimeout(lookupTimer);
@@ -203,6 +214,7 @@ function __create_marker(point) {
 var zoom_level;
 var point;
 var marker;
+var marker_html;
 var gmap;
 var lookupTimer = false;
 
@@ -258,15 +270,15 @@ google.setOnLoadCallback(function() {
        __create_marker(point);
        if (LOCATION_BY_IP) {
           zoom_level = 5;
-          var html = "<strong>Drag the marker to where you train</strong><br>";
-          html += "Currently at: " + $('#id_location_description').val();
-          html += "<br>" + __iso_code_to_country_name($('#id_country').val());
-          html += "<br><br><font size=\"-1\">zoom ";
-          html += "<a href=\"#\" onclick=\"__zoom_in(3);return false\">in</a> ";
-          html += "<a href=\"#\" onclick=\"__zoom_out();return false\">out</a>";
-          html += "</font>"
-            
-          marker.openInfoWindowHtml(html);
+          marker_html = "<strong>Drag the marker to where you train</strong><br>";
+          marker_html += "Currently at: " + $('#id_location_description').val();
+          marker_html += "<br>" + __iso_code_to_country_name($('#id_country').val());
+          marker_html += "<br><br><font size=\"-1\">zoom ";
+          marker_html += "<a href=\"#\" onclick=\"__zoom_in(3);return false\">in</a> ";
+          marker_html += "<a href=\"#\" onclick=\"__zoom_out();return false\">out</a>";
+          marker_html += "</font>"
+          
+          marker.openInfoWindowHtml(marker_html);
           
        } else {
           zoom_level = 8;
@@ -280,12 +292,13 @@ google.setOnLoadCallback(function() {
    gmap.setCenter(point, zoom_level);
    
    
- if (!marker) {
+   if (!marker) {
       $('html,body').animate({scrollTop: $('#gmap').offset().top}, 500);
       if (!point)
 	point = gmap.getCenter();
       __create_marker(point);
-      marker.openInfoWindowHtml("Drag the marker to where you train");
+      marker_html = "Drag the marker to where you train";
+      marker.openInfoWindowHtml(marker_html);
    }      
    
 });
