@@ -30,7 +30,6 @@ body * {
 	min-width: 860px;
 	width: 100%;
 	margin-top: 30px;
-	background-color: white;
 	float: left;
 	/* background: url('/img/bodyback.png') top left repeat-y; */
 }
@@ -690,20 +689,18 @@ ul.split li {
 	font-size: 18px;
 	font-weight: bold;
 	color: #666;
-	border-bottom: 1px solid #e6e6e6;
-	margin-bottom: 15px;
+	margin: 0 0 5px -10px;
 	padding-bottom: 5px;
 }
 
 .highlight-home-people {
 	margin: 0px 0px 0px 0px;
-	padding: 20px 80px 30px 40px;
+	padding: 6px 0px 30px 15px;
 	float: right;	
-	width: 320px;
+	width: 350px;
 	height: auto;
 	min-height: 50px;
-	/*background: url('/img/corner.gif/') repeat-y top left #e1e1e1;*/
-	background-color: #e1e1e1;
+	background: url('/img/bracket.png/') no-repeat top left;
 }
 
 
@@ -771,21 +768,23 @@ h1 {
 	text-align: right;
 	float: left;
 	width: auto;
-	margin: 0px 0 0 25px;
+	margin: 0px 0 0 0px;
 }
 
 #nav a {
 	font-size: 1.1em;
 	font-weight: normal;
 	color: white;
+	height: 15px;
+	padding: 7px 7px 6px 8px;
 }
 
 #nav a:hover, #nav a:focus {
-	background-color: #990000;
+	background-color: #db4040;
 	font-weight: normal;
 	color: white;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	height: 15px;
+	padding: 7px 7px 6px 8px;
 }
 
 
@@ -1281,7 +1280,7 @@ img.delete {
 }
 
 .red {
-	color: red;
+	color: #A10606;
 	font-weight: bold;
 }
 

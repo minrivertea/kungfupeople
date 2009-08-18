@@ -14,37 +14,28 @@
 }
 
 p.promo-title {
-	margin: 0px 0 5px 30px;
+	margin: 0px 0 20px 20px;
 	width: 600px;
-	font-family: Georgia, serif;
-	font-size: 2em;
+	font-size: 3em;
+	font-weight: bold;
 	color: #a10606;
 	padding-bottom: 0px;
 }
-p.promo-title a {
-        text-decoration:underline;
-        font-family: Georgia, serif;
-	font-size: 1em;
-	color: #a10606;
+a.promo-link {
+	font-size: 1.5em;
+	margin-left: 40px;
+	text-decoration: underline;
 }
 
 p.promo {
-	margin-left: -70px;
-	padding: 0px 30px 0px 100px;
-	width: 450px;
+	margin-left: 30px;
+	padding: 0px 30px 0px 0px;
+	width: 470px;
 	font-family: Helvetica, sans-serif;
 	font-size: 14px;
 	color: #666;
 }
 
-p.promo-title-2 {
-	border-bottom: white 1px solid;
-	margin: 0px 0 5px 0px;
-	font-family: Georgia, serif;
-	font-size: 1.5em;
-	color: #666;
-	padding-bottom: 7px;
-}
 {% endslimcontent %}
 </style>
 {% endblock %}
@@ -86,35 +77,18 @@ var people = [
 
 
 	<div id="promo-text">
-	<p class="promo-title">We're calling all kung fu people</p>
-	<p class="promo">to help create a global map of kung fu stylists. There's no rhyme or reason, just to join fellow stylists together as part of one global family of martial artists.</p>
+	<p class="promo-title">Calling all kung fu people!</p>
+	<p class="promo">If you do kung fu, then we need your help! We're creating a massive global map of every martial artist and club around the globe, and we want you to stand up, be counted and say "I'm a proud kung fu person!"</p>
 
-	<p class="promo-title"><a href="{% url signup %}">Add yourself to the map</a></p>
-	<p class="promo">simply by putting a marker where you train. It's easy, and you'll be taking part in a worldwide martial arts project.<a href="/about/"> Find out more...</a></p>
+	<p><a class="promo-link" href="{% url signup %}">I do kung fu - add me to the map now!</a></p>
+	<p><a class="promo-link" href="/about/">I'm interested...tell me more</a></p>
 
-	<p class="promo-title">...and help promote martial arts</p>
-	<p class="promo">by helping people find places in their local area to train - simply by adding your profile, you can also add your club to our growing site.</p>
 	</div>
 
 	<div class="highlight-home-people">
 
-			<p class="promo-title-2">{{ recent_people.count }} people have already signed up!</p>
-			<div class="horizontal-image-list-text">
-		  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/"
-		    >{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
-		  {% endfor %}
-			</div>
+			<strong>NEW!</strong> {{ recent_people.count }} people have already signed up - <a href="{% url signup %}">add yourself now!</a>
 
-		<div class="horizontal-photos">
-
-
-			{% for person in recent_people_limited %}
-        	        <a href="{{ person.get_absolute_url }}" 
-        	           title="Click to see {{ person.user.first_name }}'s profile">
-        	        <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}">
-			</a>
-        		{% endfor %}
-		</div>
 
 	</div>
 
@@ -138,11 +112,18 @@ var people = [
 		</div>
 
 		<div class="highlight-home">
-		<h3>Photos recently added</h3>
-		{% for photo in photos %}
-		    <a href="{{ photo.get_absolute_url }}"
-                       title="Uploaded by {{ photo.user.first_name }} {{ photo.user.last_name }}"><img src="{% thumbnail photo.photo 60x60 crop %}" alt="{{ photo.description|truncatewords:10 }}"></a>
-		{% endfor %}
+		<h3>People recently added</h3>
+
+			{% for person in recent_people_limited %}
+        	        <a href="{{ person.get_absolute_url }}" 
+        	           title="Click to see {{ person.user.first_name }}'s profile">
+        	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}">
+			</a>
+        		{% endfor %}
+			<div class="horizontal-image-list-text">
+		  (located in:  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
+		  {% endfor %})
+			</div>
 		</div>
 
 
