@@ -1,3 +1,7 @@
+if (typeof LOCATION_BY_IP == "undefined")
+  var LOCATION_BY_IP=false;
+  
+  
 $(function() {
    
    

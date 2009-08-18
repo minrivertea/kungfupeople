@@ -19,9 +19,14 @@
 <script type="text/javascript" src="{% staticfile "/js/jquery.qtip-1.0.0-rc3.js" %}"></script>
 {% if base_location %}
 <script type="text/javascript">
+var LOCATION_BY_IP=true;
 var INITIAL_LAT = {{ base_location.lat }};
 var INITIAL_LON = {{ base_location.lng }};
 var INITIAL_ZOOM = 4;
+</script>
+{% else %}
+<script type="text/javascript">
+var LOCATION_BY_IP=false;
 </script>
 {% endif %}
 <script type="text/javascript" src="{% slimfile "/js/signup-core.js" %}"></script>
@@ -108,10 +113,11 @@ var INITIAL_ZOOM = 4;
 	</div>
 	</fieldset>
     
-    <h2>3. Tell us about yourself</h2>
+    <h2>2. Tell us about yourself</h2>
 
     <fieldset>
 
+        {% comment %}
 	<div class="form-field-outer">
 		<div class="form-field-left">
             		{{ form.style.errors }}
@@ -121,6 +127,7 @@ var INITIAL_ZOOM = 4;
 			{{ form.style }}  <br/><span class="form-hint">(eg. White Crane, Shaolin, etc.)</span>
 		</div>
 	</div>
+        {% endcomment %}
 
 	<div class="form-field-outer">
 		<div class="form-field-left">
@@ -156,7 +163,7 @@ var INITIAL_ZOOM = 4;
 
 
 
-	    <h2>4. Finish!</h2>
+	    <h2>3. Finish!</h2>
 
 	<p>To create your profile on {{ PROJECT_NAME }} and add yourself to the growing community, click the button below.</p>
 	<p><em><span class="form-hint">Your data is stored securely and will not be shared with third parties, but if you're concerned, read our <a href="/privacy/">privacy policy</a>.</span></em></p>
@@ -175,15 +182,15 @@ var INITIAL_ZOOM = 4;
 
 	</div>
 
-	<div id="right-column">
+	<div id="right-column" {% if base_location %}style="display:none"{% endif %}>
 	<div class="right-box">
-	    	<h2>2. Where do you train?</h2>
+	    	<h2>Where do you train?</h2>
                 {% if base_location %}
 	    	<p>Drag the marker on the map to correct your location.</p>
                 {% else %}
 	    	<p>Click on the map above to set your location.</p>
                 {% endif %}
-    <fieldset>
+        <fieldset>
 
 	<div id="location">
             	<label for="id_location_description">Location *</label>
@@ -229,9 +236,9 @@ var INITIAL_ZOOM = 4;
 		</div>
 	</div>
 
-    </fieldset>
+        </fieldset>
+	</div><!--/.right_box-->
     </form>
-	</div>
 	</div>
 </div>
 {% endblock %}
