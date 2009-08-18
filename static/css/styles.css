@@ -82,18 +82,9 @@ body * {
 	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
-#nav a.bigger {
+#nav a.bigger,#nav a.bigger:hover {
         font-weight:bold;
 }
-
-/*
-#logo {
-	height: 66px;
-	width: 508px;
-	float: left;
-	margin: 20px 0 0 90px;
-}
-*/
 
 #logo:hover {
 	filter:alpha(opacity=90);
