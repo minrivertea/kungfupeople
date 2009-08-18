@@ -75,7 +75,7 @@ var people = [
 {% block content %}
 <div class="wrapper">
 
-
+	            {% if not user.is_authenticated %}
 	<div id="promo-text">
 	<p class="promo-title">Calling all kung fu people!</p>
 	<p class="promo">If you do kung fu, then we need your help! We're creating a massive global map of every martial artist and club around the globe, and we want you to stand up, be counted and say "I'm a proud kung fu person!"</p>
@@ -93,6 +93,8 @@ var people = [
 	</div>
 
 	<br style="clear:both">
+
+		{% endif %}
 
 
 
