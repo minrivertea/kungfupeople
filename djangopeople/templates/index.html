@@ -86,11 +86,9 @@ var people = [
 	</div>
 
 	<div class="highlight-home-people">
-
-			<strong>NEW!</strong> {{ recent_people.count }} people have already signed up - <a href="{% url signup %}">add yourself now!</a>
-
-
+	<strong>NEW!</strong> {{ recent_people.count }} people have already signed up - <a href="{% url signup %}">add yourself now!</a>
 	</div>
+
 
 	<br style="clear:both">
 
@@ -98,7 +96,7 @@ var people = [
 
 
 
-
+	<div id="highlight">
 		<div class="highlight-home">
 		<h3>Styles recently added</h3>
 		{% for style in styles %}
@@ -127,6 +125,7 @@ var people = [
 		  {% endfor %})
 			</div>
 		</div>
+	</div>
 
 
 		

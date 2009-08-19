@@ -76,10 +76,10 @@ function showNearbyPeople(gmap) {
 
 function getMarkerOpts() {
     var greenIcon = new google.maps.Icon(google.maps.DEFAULT_ICON);
-    greenIcon.image = "http://static.kungfupeople.com/img/green-bubble.png";
-    greenIcon.iconSize = new google.maps.Size(32,32);
-    greenIcon.shadowSize = new google.maps.Size(56,32);
-    greenIcon.iconAnchor = new google.maps.Point(16,32);
+    greenIcon.image = "/img/reddot.png";
+    greenIcon.iconSize = new google.maps.Size(30,30);
+    greenIcon.shadowSize = new google.maps.Size(0,0);
+    greenIcon.iconAnchor = new google.maps.Point(18,20);
     greenIcon.infoWindowAnchor = new google.maps.Point(16,0); 
     markerOpts = { icon: greenIcon };
     return markerOpts;

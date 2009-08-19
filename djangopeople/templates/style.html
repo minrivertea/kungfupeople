@@ -44,19 +44,6 @@ div.bio a.edit {
 {% block content %}
 <div class="wrapper">
 
-	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-		<ul class="horizontal-image-list">
-		{% for person in people %}
-        	<li class="horizontal-image-list">
-       	        <div class="list-photo">
-                <a href="{{ person.get_absolute_url }}">
-                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
-		</a>
-		</li>
-        	{% endfor %}
-		</ul>
-	</div>
 
 	<div id="content-box">
 
@@ -97,10 +84,29 @@ div.bio a.edit {
 
 	<div class="right-box">
 
+	<div id="horizontal-image-listing">
+		<div class="horizontal-image-list-text">This style has {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+		<ul class="horizontal-image-list">
+		{% for person in people %}
+        	<li class="horizontal-image-list">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}" width="40" height="40">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
+	</div>
+	</div>
+
+	<div class="right-box">
+
 		<h4>Want to learn kung fu?</h4><p>Thinking about joining a kung fu club? Read some of <a href="/join-kungfu-club-tips/">our tips for joining a club...</a></p>
 		
    	</div>
 
 	</div>
+
+</div>
 
 {% endblock %}
