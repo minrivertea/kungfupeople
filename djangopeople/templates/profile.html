@@ -153,7 +153,7 @@ div.bio a.edit {
 
 			<div class="bio">
 			{% if person.bio %}
-        	      	{% filter linebreaks %}{{ person.bio|urlize|truncatewords:"50" }}{% endfilter %}
+        	      	{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}
 			{% else %}
 			{% if is_owner %}
 			<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
