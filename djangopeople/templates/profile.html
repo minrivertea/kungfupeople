@@ -256,7 +256,7 @@ div.bio a.edit {
 	{% for video in videos %}
 	{{ video.embed_src|safe }}
 	<p>{{ video.description }}</p>
-	<p><a href="/{{ user.username }}/videos/delete/{{ video.id }}/">(delete this video)</a>
+	<p><a href="videos/delete/{{ video.id }}/">(delete this video)</a>
 	{% endfor %}
 	</div>
 	{% endif %}
