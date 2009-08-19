@@ -94,7 +94,9 @@ div.bio a.edit {
 
 		<h4>Are you a member of this club?</h4><p>You can easily add your profile to the site and join the club - increase the numbers and be proud of where you train! <a href="/signup/">Signup now</a></p>
 
+		{% if not club.description %}
 		<h4>Are you the instructor of this club?</h4><p> You can add more information to this page to help people find out more about your club. <a href="/promote-my-club/">Find out how here.</a></p>
+		{% endif %}
 		
    	</div>
 
