@@ -1239,7 +1239,7 @@ def delete_video(request, username, pk):
     
     video.delete()
     
-    return HttpResponseRedirect('/%s/videos/' % user.username)
+    return HttpResponseRedirect('/%s/' % user.username)
 
 
 @must_be_owner
