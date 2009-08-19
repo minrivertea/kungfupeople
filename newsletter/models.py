@@ -162,7 +162,7 @@ class Newsletter(models.Model):
         _before = settings.TEMPLATE_STRING_IF_INVALID
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
         try:
-            assert settings.TEMPLATE_DEBUG
+            #assert settings.TEMPLATE_DEBUG#XXX can't remember why I put this here
             template = Template(template_as_string)
             rendered = template.render(context)
         finally:
