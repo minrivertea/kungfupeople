@@ -700,7 +700,7 @@ ul.split li {
 	width: 350px;
 	height: auto;
 	min-height: 50px;
-	background: url('/img/bracket.png/') no-repeat top left;
+	background: url('/img/bracket.png') no-repeat top left;
 }
 
 
