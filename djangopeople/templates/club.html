@@ -78,6 +78,10 @@ div.bio a.edit {
 
 
 		<p><a href="{{ club.url }}">Visit {{ club.name }}'s website</a></p>
+		
+		{% if club.description %}
+		{{ club.description }}
+		{% endif %}
         	
 		</div>
        
@@ -94,6 +98,7 @@ div.bio a.edit {
 		
    	</div>
 
+	</div>
 	</div>
 
 {% endblock %}

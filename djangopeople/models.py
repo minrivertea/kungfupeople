@@ -591,7 +591,7 @@ class KungfuPerson(models.Model):
     def __repr__(self):
         return "<KungfuPerson: %r>" % self.user.username
 
-    def get_nearest(self, num=5):
+    def get_nearest(self, num=5, within_range=100*1000):
         #from time import time
         #t0=time()
         #r = self._get_nearest(num=num)
@@ -602,7 +602,7 @@ class KungfuPerson(models.Model):
         #t0=time()
         r = [p for (p, d) 
              in KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
-                                                number=num,
+                                                number=num, within_range=within_range,
                                                 extra_where_sql='id<>%s' % self.id)]
         #t1=time()
         #print "RESULT 2", (t1-t0)

@@ -238,13 +238,13 @@ def signup(request):
                     person.styles.add(style)
                 
             # and then add their club membership if provided
-            url = form.cleaned_data['club_url']
-            name = form.cleaned_data['club_name']
+            url = form.cleaned_data['club_url'].strip()
+            name = form.cleaned_data['club_name'].strip()
             slug = slugify(unaccent_string(name).replace('&','and'))
             #slug = name.strip().replace(' ', '-').lower()
             if url and name:
                 club = _get_or_create_club(url, name)
-                club.slug = slug
+                club.slug = slug[:50]
                 club.save()
                 person.club_membership.add(club)
                 person.save()
