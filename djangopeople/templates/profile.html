@@ -1,7 +1,7 @@
 {% extends base_template %}
 {% load django_static thumbnail misc_extras %}
 
-{% block title%}{{ person }} |{% endblock %}
+{% block title%}{{ person }}, {{ person.location_description }}, {{ person.country.name }} |{% endblock %}
 
 {% block meta_description %}{{ meta_description }}{% endblock %}
 {% block meta_keywords %}{{ meta_keywords }}{% endblock %}
@@ -24,7 +24,7 @@ var PAGE_LONGITUDE = {{ person.longitude }};
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
 {% endif %}
 <script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
-{% if pester_first_photo or pester_first_diary_entry %}
+{% if pester_first_photo or pester_first_diary_entry or pester_first_style %}
   <script type="text/javascript">
   $(function() {
     $('a.close_tip').click(function() {
@@ -92,6 +92,19 @@ div.bio a.edit {
 		</div>
 		</div>
 		{% endif %}
+                
+		{% if pester_first_style %}
+		<div class="no-photo-box">
+		<br/>
+		<div class="no-photo-box-image"><img src="/static/img/edit_page.png"/></div>
+		<div class="no-photo-box-main">
+		<div class="no-photo-box-close"><a href="?close_tip_first_style=1" class="meta close_tip" id="close_tip_first_style">close</a></div>
+		<p>Be proud of the style you do. Update your style.</p>
+		<a class="major-notice" href="style/">Which style do you practice?</a>
+		</div>
+		</div>
+		<br/>
+		{% endif %}                
 
 		{% if pester_first_diary_entry %}
 		<div class="no-photo-box">
