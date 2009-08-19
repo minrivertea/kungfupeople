@@ -48,7 +48,7 @@ div.bio a.edit {
 
 	{% if members %}
 	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>, {% endfor %}</div>
+		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 		<ul class="horizontal-image-list">
 		{% for person in members %}
         	<li class="horizontal-image-list">
