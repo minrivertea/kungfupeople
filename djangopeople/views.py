@@ -831,7 +831,7 @@ def profile(request, username):
     clubs = person.club_membership.all()
     styles = person.styles.all()
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
-    videos = Video.objects.filter(user=person.user)[:1]
+    videos = Video.objects.filter(user=person.user)
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
     person.profile_views += 1 # Not bothering with transactions; only a stat

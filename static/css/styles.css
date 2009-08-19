@@ -1303,3 +1303,9 @@ img.delete {
 #footer a {
 	color: white;
 }
+
+div.video {
+	display: block;
+	width: 600px;
+	margin-bottom: 40px;
+}
