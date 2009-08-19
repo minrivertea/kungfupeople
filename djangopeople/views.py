@@ -870,6 +870,20 @@ def profile(request, username):
                 
             if not request.COOKIES.get('close_tip_diary_entry'):
                 pester_first_diary_entry = True
+                
+        pester_first_style = False
+        if not person.styles.all():
+            if request.GET.get('close_tip_first_style'):
+                if request.is_ajax():
+                    response = HttpResponse('Hidden!')
+                else:
+                    response = HttpResponseRedirect(person.get_absolute_url())
+                set_cookie(response, 'close_tip_style', '1',
+                           expire=60*60*24*3)
+                return response
+                           
+            elif not request.COOKIES.get('close_tip_style'):
+                pester_first_style = True
             
         
     # Prep some SEO meta tags stuff
