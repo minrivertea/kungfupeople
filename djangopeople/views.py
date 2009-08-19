@@ -240,7 +240,7 @@ def signup(request):
             # and then add their club membership if provided
             url = form.cleaned_data['club_url']
             name = form.cleaned_data['club_name']
-            slug = slugify(unaccent_string(name))
+            slug = slugify(unaccent_string(name).replace('&','and'))
             #slug = name.strip().replace(' ', '-').lower()
             if url and name:
                 club = _get_or_create_club(url, name)
@@ -349,7 +349,7 @@ def _get_or_create_club(url, name):
     
     # still here?!
     if name:
-        slug = slugify(unaccent_string(name))
+        slug = slugify(unaccent_string(name).replace('&','and'))
     else:
         slug = ''
     return Club.objects.create(url=url, name=name,
@@ -998,7 +998,7 @@ def diary_entry_add(request, username):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             is_public = form.cleaned_data['is_public']
-            slug = slugify(unaccent_string(title)[:50])
+            slug = slugify(unaccent_string(title).replace('&','and')[:50])
             region = None
 
             if form.cleaned_data['region']:
