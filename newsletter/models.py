@@ -161,12 +161,23 @@ class Newsletter(models.Model):
     def _render_template(self, context, template_as_string):
         _before = settings.TEMPLATE_STRING_IF_INVALID
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
+        _before_template_debug = settings.TEMPLATE_DEBUG
+        _before_debug = settings.DEBUG
+        #settings.TEMPLATE_DEBUG = True
+        #settings.DEBUG = True
         try:
             #assert settings.TEMPLATE_DEBUG#XXX can't remember why I put this here
             template = Template(template_as_string)
             rendered = template.render(context)
+        except:
+            logging.error("Unable to render template:\n%s" % template_as_string,
+                          exc_info=True)
+            raise NewsletterTemplateError("err")
         finally:
             settings.TEMPLATE_STRING_IF_INVALID = _before
+            settings.TEMPLATE_DEBUG = _before_template_debug
+            settings.DEBUG = _before_debug
+            
         return rendered
     
     

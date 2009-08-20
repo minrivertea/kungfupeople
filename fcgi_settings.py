@@ -1,5 +1,8 @@
 from settings import *
 
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
 GOOGLE_ANALYTICS_TRACKER_ID = None
 OFFLINE_MODE = False
 
