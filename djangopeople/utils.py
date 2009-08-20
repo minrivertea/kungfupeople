@@ -6,8 +6,32 @@ from time import time
 # django
 from django.conf import settings
 from django.core.cache import cache
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+
 
 ORIGIN_DATE = datetime.date(2000, 1, 1)
+
+
+def render(request, template, context_dict=None, **kwargs):
+    return render_to_response(
+        template, context_dict or {}, context_instance=RequestContext(request),
+                              **kwargs
+    )
+
+def render_basic(template, context_dict=None, **kwargs):
+    return render_to_response(
+        template, context_dict or {}, **kwargs
+    )
+
+def get_unique_user_cache_key(meta_request):
+    bits = []
+    bits.append(meta_request.get('HTTP_USER_AGENT',''))
+    bits.append(meta_request.get('HTTP_ACCEPT_LANGUAGE',''))
+    bits.append(meta_request.get('REMOTE_ADDR',''))
+    return md5.new(''.join(bits)).hexdigest()
+
 
 hex_to_int = lambda s: int(s, 16)
 int_to_hex = lambda i: hex(i).replace('0x', '')

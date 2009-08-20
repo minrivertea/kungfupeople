@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     'django_static',
     'django.contrib.sitemaps',
     'newsletter',
+    'stats',
                   
 )
 

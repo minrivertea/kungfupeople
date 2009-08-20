@@ -16,6 +16,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 
 
 # project
@@ -27,7 +28,7 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo
 import utils
-from utils import unaccent_string, must_be_owner
+from utils import unaccent_string, must_be_owner, get_unique_user_cache_key
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
@@ -42,10 +43,16 @@ except ImportError:
     from django_static.templatetags.django_static import slimfile, staticfile
 
 
+ONE_MINUTE = 60
+ONE_HOUR = ONE_MINUTE * 60
+ONE_DAY = ONE_HOUR * 24
+ONE_WEEK = ONE_DAY * 7
+ONE_YEAR = ONE_WEEK * 52
+
 def set_cookie(response, key, value, expire=None):
     # http://www.djangosnippets.org/snippets/40/
     if expire is None:
-        max_age = 365*24*60*60  #one year
+        max_age = ONE_YEAR  #one year
     else:
         max_age = expire
     expires = datetime.datetime.strftime(datetime.datetime.utcnow() + \
@@ -834,8 +841,15 @@ def profile(request, username):
     videos = Video.objects.filter(user=person.user)
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
-    person.profile_views += 1 # Not bothering with transactions; only a stat
-    person.save()
+    
+    #_http_referer =
+    if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
+        cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
+        print "CACHE_KEY", repr(cache_key)
+        if cache.get(cache_key) is None:
+            person.profile_views += 1 # Not bothering with transactions; only a stat
+            person.save()
+            cache.set(cache_key, 1, ONE_DAY)
     
     is_owner = request.user.username == username
     
