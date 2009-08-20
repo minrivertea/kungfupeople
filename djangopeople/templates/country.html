@@ -32,7 +32,7 @@ var bbox_east = {{ country.bbox_east }};
 <div class="wrapper">
 
 	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>, {% endfor %}</div>
+		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 		<ul class="horizontal-image-list">
 		{% for person in people %}
         	<li class="horizontal-image-list">

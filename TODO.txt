@@ -37,6 +37,9 @@ FEATURE LIST:
  * You can view other users in a particular country/region
  * You can upload photos and geo-tag them, and add descriptions etc.
 
+EMAILED PEOPLE
+
+
 
 
 DESIRED FEATURES:

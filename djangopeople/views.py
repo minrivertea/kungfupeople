@@ -238,13 +238,13 @@ def signup(request):
                     person.styles.add(style)
                 
             # and then add their club membership if provided
-            url = form.cleaned_data['club_url']
-            name = form.cleaned_data['club_name']
-            slug = slugify(unaccent_string(name))
+            url = form.cleaned_data['club_url'].strip()
+            name = form.cleaned_data['club_name'].strip()
+            slug = slugify(unaccent_string(name).replace('&','and'))
             #slug = name.strip().replace(' ', '-').lower()
             if url and name:
                 club = _get_or_create_club(url, name)
-                club.slug = slug
+                club.slug = slug[:50]
                 club.save()
                 person.club_membership.add(club)
                 person.save()
@@ -349,7 +349,7 @@ def _get_or_create_club(url, name):
     
     # still here?!
     if name:
-        slug = slugify(unaccent_string(name))
+        slug = slugify(unaccent_string(name).replace('&','and'))
     else:
         slug = ''
     return Club.objects.create(url=url, name=name,
@@ -831,7 +831,7 @@ def profile(request, username):
     clubs = person.club_membership.all()
     styles = person.styles.all()
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
-    videos = Video.objects.filter(user=person.user)[:1]
+    videos = Video.objects.filter(user=person.user)
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
     person.profile_views += 1 # Not bothering with transactions; only a stat
@@ -998,7 +998,7 @@ def diary_entry_add(request, username):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             is_public = form.cleaned_data['is_public']
-            slug = slugify(unaccent_string(title)[:50])
+            slug = slugify(unaccent_string(title).replace('&','and')[:50])
             region = None
 
             if form.cleaned_data['region']:
@@ -1239,7 +1239,7 @@ def delete_video(request, username, pk):
     
     video.delete()
     
-    return HttpResponseRedirect('/%s/videos/' % user.username)
+    return HttpResponseRedirect('/%s/' % user.username)
 
 
 @must_be_owner

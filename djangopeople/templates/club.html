@@ -48,7 +48,7 @@ div.bio a.edit {
 
 	{% if members %}
 	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>, {% endfor %}</div>
+		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 		<ul class="horizontal-image-list">
 		{% for person in members %}
         	<li class="horizontal-image-list">
@@ -78,6 +78,10 @@ div.bio a.edit {
 
 
 		<p><a href="{{ club.url }}">Visit {{ club.name }}'s website</a></p>
+		
+		{% if club.description %}
+		{{ club.description|safe }}
+		{% endif %}
         	
 		</div>
        
@@ -88,10 +92,15 @@ div.bio a.edit {
 
 	<div class="right-box">
 
+		<h4>Are you a member of this club?</h4><p>You can easily add your profile to the site and join the club - increase the numbers and be proud of where you train! <a href="/signup/">Signup now</a></p>
+
+		{% if not club.description %}
 		<h4>Are you the instructor of this club?</h4><p> You can add more information to this page to help people find out more about your club. <a href="/promote-my-club/">Find out how here.</a></p>
+		{% endif %}
 		
    	</div>
 
+	</div>
 	</div>
 
 {% endblock %}
