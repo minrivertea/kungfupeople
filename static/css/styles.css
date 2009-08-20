@@ -1335,7 +1335,7 @@ div.number {
 	color: #666;
 }
 
-#code {
+div.code {
 	height: auto;
 	width: auto;
 	background-color: #e6e6e6;
