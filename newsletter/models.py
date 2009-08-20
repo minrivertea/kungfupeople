@@ -188,7 +188,7 @@ class Newsletter(models.Model):
         The optional parameter @last_send_date can be used to figure out 
         for example which Photos have been added since the last send date.
         """
-        context = {}
+        context = {'person':person}
         context['first_name'] = person.user.first_name
         context['last_name'] = person.user.last_name
         context['email'] = person.user.email
