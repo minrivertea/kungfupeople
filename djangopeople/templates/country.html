@@ -26,13 +26,31 @@ var bbox_east = {{ country.bbox_east }};
     <div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
     </div>
+	<div id="counter">
+	<div class="number">{{ people.count }}</div> {% ifequal count 1 %}kungfu person lives {% else %}kungfu people live {% endifequal %}in {{ country }}!<br />
+	<a href="signup">Add yourself now!</a>
+	</div>
 {% endblock %}
 
     {% block content %}
 <div class="wrapper">
 
+	<div id="content-box">
+
+		<div id="profile-head">
+
+       		<h2>{{ country }}</h2>
+
+		{% load thumbnail %}
+        
+        	{% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
+
+      		</div>
+
+		{% if people %}
+		<div class="highlight-profile">
+		<h3>stylists training in {{ country }}</h3>
 	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 		<ul class="horizontal-image-list">
 		{% for person in people %}
         	<li class="horizontal-image-list">
@@ -44,19 +62,8 @@ var bbox_east = {{ country.bbox_east }};
         	{% endfor %}
 		</ul>
 	</div>
-
-	<div id="content-box">
-
-		<div id="profile-head">
-
-       		<h2>{{ country }}</h2>
-
-{% load thumbnail %}
-        
-
-        {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
-
-      		</div>
+		</div>
+		{% endif %}
 	</div>
 	</div>
     {% endblock %}

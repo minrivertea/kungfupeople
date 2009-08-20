@@ -41,26 +41,15 @@ div.bio a.edit {
     <div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
     </div>
+
+	<div id="counter">
+	<div class="number">{{ count }}</div> {% ifequal count 1 %}person is a member {% else %}people are members {% endifequal %}of this club!<br />
+	<a href="signup">Add yourself now!</a>
+	</div>
 {% endblock %}
 
 {% block content %}
 <div class="wrapper">
-
-	{% if members %}
-	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-		<ul class="horizontal-image-list">
-		{% for person in members %}
-        	<li class="horizontal-image-list">
-       	        <div class="list-photo">
-                <a href="{{ person.get_absolute_url }}">
-                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
-		</a>
-		</li>
-        	{% endfor %}
-		</ul>
-	</div>
-	{% endif %}
 
 
 	<div id="content-box">
@@ -84,6 +73,25 @@ div.bio a.edit {
 		{% endif %}
         	
 		</div>
+
+	{% if members %}
+		<div class="highlight-profile">
+		<h3>members</h3>
+	<div id="horizontal-image-listing">
+		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+		<ul class="horizontal-image-list">
+		{% for person in members %}
+        	<li class="horizontal-image-list">
+       	        <div class="list-photo">
+                <a href="{{ person.get_absolute_url }}">
+                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}/img/upload-a-photo-60.png{% endif %}" alt="{{ person }}" width="60" height="60">
+		</a>
+		</li>
+        	{% endfor %}
+		</ul>
+	</div>
+	</div>
+	{% endif %}
        
 	</div>
 
