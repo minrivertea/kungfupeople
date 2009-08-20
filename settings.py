@@ -153,6 +153,11 @@ NEARBY_PERSON_KEYS = {'fullname':'A',
                       'clubs':'I',
                       }
 
+
+# default is 2 weeks, so we can safely increase that because there's nothing
+# secure and confidential on this website
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2 * 10 # 20 weeks
+
 try:
     from local_settings import *
 except ImportError:

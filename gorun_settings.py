@@ -1,13 +1,19 @@
 DIRECTORIES = (
    ('newsletter/unit_tests/test_views.py',
     './manage.py test --settings=test_settings newsletter.ViewsTestCase'),
-    
+
+   ('newsletter/unit_tests/test_templatetags.py',
+    './manage.py test --settings=test_settings newsletter.NewsletterExtrasTestCase'),
+               
    ('newsletter/unit_tests', 
     './manage.py test --settings=test_settings newsletter'),
 
    ('newsletter/views.py',
     './manage.py test --settings=test_settings newsletter.ViewsTestCase.test_find_clubs_by_location'),
 
+   ('newsletter/templatetags/newsletter_extras.py',
+    './manage.py test --settings=test_settings newsletter.NewsletterExtrasTestCase'),
+               
 
    ('djangopeople/unit_tests/test_views.py',
     './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
