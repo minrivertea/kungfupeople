@@ -713,7 +713,7 @@ ul.split li {
 	margin: 0 0px 15px 0px;
 	padding-left: 120px;
 	float: left;	
-	width: 540px;
+	width: 480px;
 	background-color: white;
 }
 
@@ -1324,12 +1324,18 @@ div.video {
 }
 
 div.number {
-	width: 50px;
+	width: auto;
 	height: 30px;
 	padding-top: 10px;
+	margin-right: 5px;
 	float: left;
 	font-size: 3.2em;
 	font-family: Helvetica, sans-serif;
 	font-weight: bold;
 	color: #666;
+}
+
+code {
+	background-color: #e6e6e6;
+	padding: 10px;
 }
