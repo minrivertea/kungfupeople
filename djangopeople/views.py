@@ -29,7 +29,8 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo
 import utils
-from utils import unaccent_string, must_be_owner, get_unique_user_cache_key
+from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
+  get_previous_next
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
@@ -937,7 +938,17 @@ def photo(request, username, photo_id):
             html_title += ', %s' % photo.country.name
     except IndexError:
         html_title = None
-
+        
+    # to figure out what photo comes next or previous we need to look at what
+    # set this photo belong to. If this photo is a list of photos related to a
+    # diary entry, then use that. Otherwise, assume that the photo is related 
+    # to a user simply and work from that. 
+    if photo.diary_entry:
+        photo_set = Photo.objects.filter(diary_entry=photo.diary_entry)
+    else:
+        photo_set = Photo.objects.filter(user=photo.user)
+    previous, next = get_previous_next(photo_set, photo)
+    
     is_owner = request.user.username == username
     return render(request, 'photo.html', locals())
 

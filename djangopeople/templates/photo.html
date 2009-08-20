@@ -46,7 +46,22 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 		{% endif %}
 
 		<div class="large-photo-container">
-		<p><img src="{% thumbnail photo.photo 600x600 %}"></p>
+                {% thumbnail photo.photo 600x600 as thumb %}
+      		<p><img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}"></p>
+			<div style="width:{{ thumb.width }}px">
+                          <div style="float:right">
+                          {% if next %}
+                            {% thumbnail next.photo 60x60 crop as next_thumb %}
+                            <a href="{{ next.get_absolute_url }}"><img src="{{ next_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0"></a>
+                          {% endif %}
+                          </div>
+                          <div>
+                          {% if previous %}
+                            {% thumbnail previous.photo 60x60 crop as previous_thumb %}
+                            <a href="{{ previous.get_absolute_url }}"><img src="{{ previous_thumb }}" width="{{ previous_thumb.width }}" height="{{ previous_thumb.height }}" border="0"></a>
+                          {% endif %}
+                          </div>
+			</div>
 		</div>
 
 	</div>

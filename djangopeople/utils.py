@@ -33,6 +33,30 @@ def get_unique_user_cache_key(meta_request):
     return md5.new(''.join(bits)).hexdigest()
 
 
+def get_previous_next(object_set, object_):
+    """return a tuple (<previous>, <next>) where <previous> and <next> are 
+    objects from the object_set list/queryset.
+    <previous> and <next> can also be None"""
+    previous = next = None
+    
+    _is_next = False
+    for each in object_set:
+        if _is_next:
+            next = each
+            break
+        
+        if each == object_:
+            _is_next = True
+        else:
+            previous = each
+    if not _is_next:
+        # never matched
+        previous = None
+    
+    return previous, next
+    
+
+
 hex_to_int = lambda s: int(s, 16)
 int_to_hex = lambda i: hex(i).replace('0x', '')
 
