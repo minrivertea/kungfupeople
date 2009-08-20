@@ -17,6 +17,7 @@ from django.db import transaction
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
+from django.core.paginator import Paginator
 
 
 # project
