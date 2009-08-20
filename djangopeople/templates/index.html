@@ -70,6 +70,11 @@ var people = [
 	<div class="mapContainer major">
         		<div id="gmap">&nbsp;</div>
 	</div>
+
+	<div id="counter">
+	<div class="number">{{ recent_people.count }}</div> people have already signed up!<br />
+	<a href="signup">Add yourself now!</a>
+	</div>
 {% endblock %}
 
 {% block content %}
@@ -84,10 +89,6 @@ var people = [
 	<p><a class="promo-link" href="zoom/">Help me find a kung fu club!</a></p>
 	<p><a class="promo-link" href="/about/">I'm interested...tell me more</a></p>
 
-	</div>
-
-	<div class="highlight-home-people">
-	<strong>NEW!</strong> {{ recent_people.count }} people have already signed up - <a href="{% url signup %}">add yourself now!</a>
 	</div>
 
 
@@ -106,9 +107,9 @@ var people = [
 		</div>
 
 		<div class="highlight-home">
-		<h3>Clubs recently added</h3>
+		<h3>Clubs recently added ({{ clubs.count }})</h3>
 		{% for club in clubs %}
-		    <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br>{% endif %}
+		    <span style="font-size: {{ club.get_members.count }}px;"><a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br>{% endif %}</span>
 		{% endfor %}
 		</div>
 

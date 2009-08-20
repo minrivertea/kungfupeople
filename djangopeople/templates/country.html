@@ -57,4 +57,6 @@ var bbox_east = {{ country.bbox_east }};
         {% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
 
       		</div>
+	</div>
+	</div>
     {% endblock %}
