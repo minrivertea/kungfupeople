@@ -332,7 +332,7 @@ p.large {
 	height: auto;
 	min-height: 400px;
 	width: 350px;
-	margin: 20px 0px 0 0px;
+	margin: 40px 0px 0 0px;
 	/* background: url('/img/right-column-back.jpg') no-repeat 0 0 white;*/
 	padding: 10px;
 -moz-border-radius-bottomleft:10px;
@@ -1315,7 +1315,7 @@ div.counter-current {
 	padding: 5px 20px 0 10px;
 	height: 45px;
 	width: auto;
-	margin: 0px 70px -45px 0px;
+	margin: 0px 70px -45px -60px;
 	background-color: #F3CF1A;
 	color: #666;
 -moz-border-radius-bottomleft:10px;
@@ -1328,7 +1328,7 @@ div.counter {
 	height: 45px;
 	text-align: center;
 	width: auto;
-	margin: 0px 10px -45px 0px;
+	margin: 0px 70px -45px 0px;
 	background: url('/img/counterback.png') repeat-x #f3dd76;
 	color: #666;
 	border-top: 1px solid white;

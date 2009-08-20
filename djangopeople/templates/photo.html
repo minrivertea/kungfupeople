@@ -29,6 +29,11 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
         {% endif %}
         </div>
     </div>
+
+	<div class="counter">
+	<div class="number"></div>Tagged in <strong>{{ photo.location_description }} ({{ photo.country.name }}) </strong><br/>
+	Click the map for more detail
+	</div>
 {% endblock %}
 
 {% block content %}
@@ -62,8 +67,6 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 	
 		<p><em>{{ photo.description|linebreaks }}</em></p>
 
-	<p>This item has been geo-tagged in <strong>{{ photo.location_description }} ({{ photo.country.name }})</strong>. Click on the map to see other items related to this area.</p>
-        
         {% if photo.diary_entry %}
         <p>Related to diary entry
         <a href="{{ photo.diary_entry.get_absolute_url }}">{{ photo.diary_entry }}</a></p>
