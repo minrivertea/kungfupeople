@@ -24,7 +24,7 @@ class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('send_date_plus', 'sent', 'subject_template', 'author', 'modify_date',
                     'send_count',)
     list_filter = ('language',)
-    ordering = ('send_date',)
+    ordering = ('-send_date',)
     exclude = ('add_date', 'modify_date', 'author', 'sent_date')
     
     def sent(self, obj):

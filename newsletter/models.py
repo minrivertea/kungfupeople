@@ -161,12 +161,21 @@ class Newsletter(models.Model):
     def _render_template(self, context, template_as_string):
         _before = settings.TEMPLATE_STRING_IF_INVALID
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
+        _before_template_debug = settings.TEMPLATE_DEBUG
+        _before_debug = settings.DEBUG
         try:
             #assert settings.TEMPLATE_DEBUG#XXX can't remember why I put this here
             template = Template(template_as_string)
             rendered = template.render(context)
+        except: # I hate it but at least it re-raises in this block
+            import sys
+            type_, val, tb = sys.exc_info()
+            logging.error("Unable to render template:\n%s" % template_as_string,
+                          exc_info=True)
+            raise NewsletterTemplateError("%s: %s" % (type_, val))
         finally:
             settings.TEMPLATE_STRING_IF_INVALID = _before
+            
         return rendered
     
     
@@ -179,7 +188,7 @@ class Newsletter(models.Model):
         The optional parameter @last_send_date can be used to figure out 
         for example which Photos have been added since the last send date.
         """
-        context = {}
+        context = {'person':person}
         context['first_name'] = person.user.first_name
         context['last_name'] = person.user.last_name
         context['email'] = person.user.email
