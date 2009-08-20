@@ -276,6 +276,7 @@ def signup(request):
                 except:
                     import sys
                     type_, val, tb = sys.exc_info()
+                    print "UTMZ", repr(utmz)
                     print "ERROR: %s: %s" % (type_, val)
                     import traceback
                     traceback.print_tb(tb)
