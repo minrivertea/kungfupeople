@@ -56,7 +56,7 @@ var bbox_east = {{ country.bbox_east }};
         	<li class="horizontal-image-list">
        	        <div class="list-photo">
                 <a href="{{ person.get_absolute_url }}">
-                <img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" alt="{{ person }}" width="60" height="60">
+                <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person.user.get_full_name }}" width="40" height="40">
 		</a>
 		</li>
         	{% endfor %}

@@ -64,12 +64,12 @@ body * {
 	float: left;
 	min-width: 1068px;
 	width: 100%;
-	height: 181px;
+	height: 161px;
 	margin: 0px 0px -90px 0px;
 	border-bottom: 15px solid #F3CF1A;
 	/* background-color: #990000; */
 	/* background-color: #990000; */
-	background: url("/img/headerback.png") no-repeat #a10606;
+	background: url("/img/headerback.jpg") no-repeat #a10606;
 }
 
 #nav {
@@ -110,7 +110,7 @@ body * {
 
 
 a.title {
-	margin: 41px 0 0 100px;
+	margin: 21px 0 0 100px;
 	height: 60px;
 	/*background: url('/img/logo.jpg') no-repeat 0 0;*/
 }
@@ -1310,13 +1310,26 @@ div.video {
 	margin-bottom: 40px;
 }
 
-#counter {
+div.counter-current {
 	float: right;
 	padding: 5px 20px 0 10px;
 	height: 45px;
 	width: auto;
-	margin: 0px 70px -45px 0;
-	background-color: #f3dd76;
+	margin: 0px 70px -45px 0px;
+	background-color: #F3CF1A;
+	color: #666;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+}
+
+div.counter {
+	float: right;
+	padding: 5px 20px 0 10px;
+	height: 45px;
+	text-align: center;
+	width: auto;
+	margin: 0px 10px -45px 0px;
+	background: url('/img/counterback.png') repeat-x #f3dd76;
 	color: #666;
 	border-top: 1px solid white;
 -moz-border-radius-bottomleft:10px;
