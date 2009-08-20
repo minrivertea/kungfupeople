@@ -262,6 +262,27 @@ def signup(request):
             user.set_password(creation_args['password'])
             user.save()
             
+            # use the cookie Google Analytics gives us
+            utmz = request.COOKIES.get('__utmz')
+            if utmz:
+                try:
+                    utmcsr = re.findall('utmcsr=([^\|]+)\|', utmz)[0]
+                    utmccn = re.findall('utmccn=([^\|]+)\|', utmz)[0]
+                    utmcct = re.findall('utmcct=(.*?)$', utmz)[0]
+                    came_from = "%s,%s %s" % (utmcsr, utmcct, utmccn)
+                    person.came_from = came_from
+                    person.save()
+                    
+                except:
+                    import sys
+                    type_, val, tb = sys.exc_info()
+                    print "ERROR: %s: %s" % (type_, val)
+                    import traceback
+                    traceback.print_tb(tb)
+                    logging.error("Unable to set came_from",
+                                exc_info=True)
+                    
+            
             from django.contrib.auth import load_backend, login
             for backend in settings.AUTHENTICATION_BACKENDS:
                 if user == load_backend(backend).get_user(user.pk):
@@ -306,9 +327,8 @@ def signup(request):
                     # the lookup is duff
                     base_location = None
         
-        form = SignupForm(initial=initial)
+        form = SignupForm(initial=initial)        
         
-    print request.COOKIES
     
     return render(request, 'signup.html', {
         'form': form,
