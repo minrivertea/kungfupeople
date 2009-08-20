@@ -307,7 +307,8 @@ def signup(request):
                     base_location = None
         
         form = SignupForm(initial=initial)
-                    
+        
+    print request.COOKIES
     
     return render(request, 'signup.html', {
         'form': form,
@@ -847,7 +848,6 @@ def profile(request, username):
     #_http_referer =
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
-        print "CACHE_KEY", repr(cache_key)
         if cache.get(cache_key) is None:
             person.profile_views += 1 # Not bothering with transactions; only a stat
             person.save()
