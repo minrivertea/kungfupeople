@@ -54,7 +54,9 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 <div id="right-column">
 
 	<div class="right-box">
-		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>		
+		{% if is_owner %}
+		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+		{% endif %}	
 
 		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  
 		{% if is_owner %} 
