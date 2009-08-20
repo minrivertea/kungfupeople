@@ -1309,3 +1309,27 @@ div.video {
 	width: 600px;
 	margin-bottom: 40px;
 }
+
+#counter {
+	float: right;
+	padding: 5px 20px 0 10px;
+	height: 45px;
+	width: auto;
+	margin: 0px 70px -45px 0;
+	background-color: #f3dd76;
+	color: #666;
+	border-top: 1px solid white;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+}
+
+div.number {
+	width: 50px;
+	height: 30px;
+	padding-top: 10px;
+	float: left;
+	font-size: 3.2em;
+	font-family: Helvetica, sans-serif;
+	font-weight: bold;
+	color: #666;
+}

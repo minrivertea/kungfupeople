@@ -334,6 +334,10 @@ class Club(models.Model):
 
     class Meta:
         verbose_name_plural = "Clubs"
+
+    def get_members(self):
+        members = KungfuPerson.objects.filter(club_membership=self)
+        return members
         
     @models.permalink
     def get_absolute_url(self):
