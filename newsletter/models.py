@@ -168,9 +168,10 @@ class Newsletter(models.Model):
             template = Template(template_as_string)
             rendered = template.render(context)
         except:
+            type_, val, tb = sys.exc_info()
             logging.error("Unable to render template:\n%s" % template_as_string,
                           exc_info=True)
-            raise NewsletterTemplateError("err")
+            raise NewsletterTemplateError("%s: %s" % (type_, val))
         finally:
             settings.TEMPLATE_STRING_IF_INVALID = _before
             
