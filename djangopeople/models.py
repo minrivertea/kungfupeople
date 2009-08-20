@@ -686,6 +686,10 @@ class KungfuPerson(models.Model):
     def get_person_thumbnail_folder(self):
         return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails', 
                             self.user.username)
+    
+    def get_photos(self):
+        return Photo.objects.filter(user=self.user).order_by('-date_added')
+    
         
 
 
