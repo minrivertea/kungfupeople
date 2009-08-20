@@ -1336,6 +1336,7 @@ div.number {
 }
 
 code {
+	line-height: 1.4em;
 	background-color: #e6e6e6;
 	padding: 10px;
 }
