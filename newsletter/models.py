@@ -167,7 +167,8 @@ class Newsletter(models.Model):
             #assert settings.TEMPLATE_DEBUG#XXX can't remember why I put this here
             template = Template(template_as_string)
             rendered = template.render(context)
-        except:
+        except: # I hate it but at least it re-raises in this block
+            import sys
             type_, val, tb = sys.exc_info()
             logging.error("Unable to render template:\n%s" % template_as_string,
                           exc_info=True)
