@@ -1,0 +1,24 @@
+{% extends "base_stats.html" %}
+
+{% block content %}
+{{ block.super }}
+<h2>Competitions</h2>
+
+<h3>Clubs with the most members</h3>
+{{ clubs_groups_table|safe }}
+
+<h3>Styles most people do</h3>
+{{ styles_groups_table|safe }}
+
+<h3>Countries with the most signups from</h3>
+{{ countries_groups_table|safe }}
+
+<h3>People with the most profile views</h3>
+{{ profile_views_groups_table|safe }}
+
+
+{% if not TEMPLATE_DEBUG %}
+<p>NB. These stats are only updated every 1 hour</p>
+{% endif %}
+
+{% endblock %}

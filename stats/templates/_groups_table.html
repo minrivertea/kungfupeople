@@ -1,0 +1,32 @@
+<table class="groups-table">
+  <thead>
+    <tr>
+      <td class="name" colspan="2">{{ column1_label }}</td>
+      <td class="count">{{ column2_label }}</td>
+    </tr>
+  </thead>
+  {% for group in groups %}
+    <tbody>
+      <tr>
+        <td class="counter">{{ forloop.counter }}</td>
+        <td><a href="{{ group.object.get_absolute_url }}">{{ group.object }}</a></td>
+        <td>{{ group.count }}</td>
+      </tr>
+    </tbody>
+  {% endfor %}
+  {% if restgroup %}
+    <tbody>
+      <tr>
+        <td  colspan="2" class="restgroup-name">{{ restgroup.name }}</td>
+        <td>{{ restgroup.count }}</td>
+      </tr>
+    </tbody>  
+  {% endif %}
+  <tfoot>
+    <tr>
+      <td colspan="2"><strong>Total:</strong></td>
+      <td>{{ count_total }}</td>
+    </tr>
+  </tfoot>
+  
+</table>

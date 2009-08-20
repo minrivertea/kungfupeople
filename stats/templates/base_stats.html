@@ -1,0 +1,33 @@
+{% extends "base_no_map.html" %}
+
+{% block title %}Stats | {{ block.super }}{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript" src="/js/jquery.flot.js"></script>
+{% endblock %}
+
+{% block extracss %}
+{{ block.super }}
+<style type="text/css">
+table { border-collapse: collapse; }
+table thead tr { background-color:#efefef; }
+table thead tr td { font-weight:bold; }
+table thead td, table tbody td { padding: 0 4px 0 4px; }
+
+table.groups-table { width:400px; }
+table.groups-table td.count { width:100px; }
+table.groups-table td.counter { width:20px; }
+table.groups-table td.restgroup-name { font-style:italic; }
+h3 { margin-top:30px; }
+
+#no-map-content-box { width:95% }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="all-stats-links" style="float:right">
+<h4>Stats</h4>
+
+</div>
+{% endblock %}
