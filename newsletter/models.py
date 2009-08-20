@@ -163,8 +163,6 @@ class Newsletter(models.Model):
         settings.TEMPLATE_STRING_IF_INVALID = InvalidVarException()
         _before_template_debug = settings.TEMPLATE_DEBUG
         _before_debug = settings.DEBUG
-        #settings.TEMPLATE_DEBUG = True
-        #settings.DEBUG = True
         try:
             #assert settings.TEMPLATE_DEBUG#XXX can't remember why I put this here
             template = Template(template_as_string)
@@ -175,8 +173,6 @@ class Newsletter(models.Model):
             raise NewsletterTemplateError("err")
         finally:
             settings.TEMPLATE_STRING_IF_INVALID = _before
-            settings.TEMPLATE_DEBUG = _before_template_debug
-            settings.DEBUG = _before_debug
             
         return rendered
     
