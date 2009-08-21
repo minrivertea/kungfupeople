@@ -569,12 +569,11 @@ class KungfuPerson(models.Model):
     newsletter = models.CharField(max_length=5, default='html',
                                   choices=NEWSLETTER_CHOICES,
                                   blank=True
-                                  
                                  )
 
     # Stats
     profile_views = models.IntegerField(default=0)
-    
+    came_from = models.CharField(max_length=250, null=True, blank=True)
     
     objects = DistanceManager()
 

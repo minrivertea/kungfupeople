@@ -29,7 +29,8 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo
 import utils
-from utils import unaccent_string, must_be_owner, get_unique_user_cache_key
+from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
+  get_previous_next
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
@@ -263,6 +264,28 @@ def signup(request):
             user.set_password(creation_args['password'])
             user.save()
             
+            # use the cookie Google Analytics gives us
+            utmz = request.COOKIES.get('__utmz')
+            if utmz:
+                try:
+                    utmcsr = re.findall('utmcsr=([^\|]+)\|', utmz)[0]
+                    utmccn = re.findall('utmccn=([^\|]+)\|', utmz)[0]
+                    utmcct = re.findall('utmcct=(.*?)$', utmz)[0]
+                    came_from = "%s,%s %s" % (utmcsr, utmcct, utmccn)
+                    person.came_from = came_from
+                    person.save()
+                    
+                except:
+                    import sys
+                    type_, val, tb = sys.exc_info()
+                    print "UTMZ", repr(utmz)
+                    print "ERROR: %s: %s" % (type_, val)
+                    import traceback
+                    traceback.print_tb(tb)
+                    logging.error("Unable to set came_from",
+                                exc_info=True)
+                    
+            
             from django.contrib.auth import load_backend, login
             for backend in settings.AUTHENTICATION_BACKENDS:
                 if user == load_backend(backend).get_user(user.pk):
@@ -307,8 +330,8 @@ def signup(request):
                     # the lookup is duff
                     base_location = None
         
-        form = SignupForm(initial=initial)
-                    
+        form = SignupForm(initial=initial)        
+        
     
     return render(request, 'signup.html', {
         'form': form,
@@ -508,7 +531,6 @@ def photo_upload_multiple_pre(request, username):
     filename = md5.new(image_content).hexdigest() + '.' + format
     # Save the image
     path = os.path.join(upload_folder, filename)
-    #print "Writing path", path
     open(path, 'w').write(image_content)
     
     image.thumbnail((60, 60))
@@ -848,7 +870,6 @@ def profile(request, username):
     #_http_referer =
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
-        print "CACHE_KEY", repr(cache_key)
         if cache.get(cache_key) is None:
             person.profile_views += 1 # Not bothering with transactions; only a stat
             person.save()
@@ -939,7 +960,17 @@ def photo(request, username, photo_id):
             html_title += ', %s' % photo.country.name
     except IndexError:
         html_title = None
-
+        
+    # to figure out what photo comes next or previous we need to look at what
+    # set this photo belong to. If this photo is a list of photos related to a
+    # diary entry, then use that. Otherwise, assume that the photo is related 
+    # to a user simply and work from that. 
+    if photo.diary_entry:
+        photo_set = Photo.objects.filter(diary_entry=photo.diary_entry)
+    else:
+        photo_set = Photo.objects.filter(user=photo.user)
+    previous, next = get_previous_next(photo_set, photo)
+    
     is_owner = request.user.username == username
     return render(request, 'photo.html', locals())
 
@@ -1430,7 +1461,6 @@ def _club_name_from_url(url, request=None):
     try:
         title = title_regex.findall(html)[0].strip()
     except IndexError:
-        print html
         return None
     
     try:
@@ -1859,3 +1889,12 @@ def tinymce_filebrowser(request):
         photos = Photo.objects.filter(user=request.user)
         
     return render(request, 'tinymce_filebrowser.html', locals())
+
+
+# view function suffixed with _html to indicate that it's returning
+# just a limited chunk of html
+def nav_html(request):
+    """return the piece of HTML that shows the nav,
+    i.e. the content inside the tag <div id="nav"></div>
+    """
+    return render(request, '_nav.html', dict())

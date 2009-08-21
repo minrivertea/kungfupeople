@@ -108,6 +108,7 @@ def context(request):
 
     data['NEARBY_PERSON_KEYS'] = settings.NEARBY_PERSON_KEYS
     
+    
     #print "noticed_recent_stuff", repr(request.session.get('noticed_recent_stuff'))
     return data
 

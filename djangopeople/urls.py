@@ -36,7 +36,8 @@ urlpatterns = patterns('',
     (r'^guess-username.json$', views.guess_username_json),
     url(r'^find-clubs-by-location.json$', views.find_clubs_by_location_json),
 
-    (r'^search/$', views.search),
+    url(r'^_nav.html$', views.nav_html, name="nav_html"),
+    url(r'^search/$', views.search, name="search"),
     url(r'^tinymcefilebrowser/$', views.tinymce_filebrowser,
        name="tinymce.filebrowser"),
                        

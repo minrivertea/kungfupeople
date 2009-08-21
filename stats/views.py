@@ -1,4 +1,4 @@
-# Create your views here.
+import re
 
 from django.utils import simplejson
 from django.conf import settings
@@ -6,18 +6,44 @@ from django.conf import settings
 from djangopeople.models import Club, KungfuPerson, Style, Country
 from djangopeople.utils import render, render_basic
 from django.views.decorators.cache import cache_page, never_cache
+from django.core.cache import cache
 
 
-if settings.DEBUG:
+if settings.DEBUG and 0:
     def cache_page(delay):
         def rendered(view):
             def inner(request, *args, **kwargs):
                 return view(request, *args, **kwargs)
             return inner
         return rendered
+
+from django.utils.decorators import decorator_from_middleware
+from django.middleware.cache import CacheMiddleware
+class CustomCacheMiddleware(CacheMiddleware):
+    def __init__(self, cache_delay=0, *args, **kwargs):
+        super(CustomCacheMiddleware, self).__init__(*args, **kwargs)
+        self.cache_delay = cache_delay
+        
+    def process_response(self, request, response):
+        if self.cache_delay:
+            extra_js = '<script type="text/javascript">var CACHE_CONTROL=%s;</script>' %\
+              self.cache_delay
+            response.content = response.content.replace(u'</body>',
+                                                        u'%s\n</body>' % extra_js)
+
+        response = super(CustomCacheMiddleware, self).process_response(request, response)
+        return response
+
+custom_cache_page = decorator_from_middleware(CustomCacheMiddleware)
     
-@cache_page(60 * 60 * 1) # 1 hours                   
+@custom_cache_page(60 * 60 * 1) # 1 hours
 def competitions(request):
+    data = dict()
+    data.update(_get_competitions_tables())
+    return render(request, 'competitions.html', data)
+    
+
+def _get_competitions_tables():
     groups = []
     for club in Club.objects.all():
         count = club.kungfuperson_set.count()
@@ -66,10 +92,14 @@ def competitions(request):
     groups.sort(lambda x,y: cmp(y['count'], x['count']))
     profile_views_groups_table = _groups_table(groups,
                                        "Person",
-                                       "Profile views").content    
+                                       "Profile views").content
+    
+    data = locals()
+    del data['groups']
+    del data['count']
+    return data
 
         
-    return render(request, 'competitions.html', locals())
 
 def _groups_table(groups, column1_label, column2_label, max_groups=10):
     count_total = sum([x['count'] for x in groups])

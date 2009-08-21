@@ -124,6 +124,7 @@ INSTALLED_APPS = (
                   
 )
 
+CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 GOOGLE_ANALYTICS_TRACKER_ID = "" # set to something when you have set up an account
 
