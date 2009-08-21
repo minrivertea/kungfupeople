@@ -73,7 +73,10 @@ var people = [
 
 	<div class="counter-current">
 	<div class="number">{{ people_count }}</div> new people added!<br />
-	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>{% endif %}
+	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
+	{% else %}
+	<a href="wall">See everyone!</a>		
+	{% endif %}
 	</div>
 	<div class="counter">
 	<div class="number"></div><strong>ZOOM!</strong> Find clubs, styles and people<br />

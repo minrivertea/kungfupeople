@@ -105,6 +105,8 @@ div.bio a.edit {
 			{{ person.location_description }}
 			</div>
 		{% if is_owner %}
+			{% if pester_first_photo %}
+			{% else %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
 		{% if not person.photo %}<a href="profileupload/"><strong>Upload a photo</strong></a>  |  {% endif %}
@@ -112,10 +114,11 @@ div.bio a.edit {
 		<a href="/{{ user.username }}/profile/">Edit your profile</a>  
 {% if diary_entries_private %}{% else %}|  <a href="/{{ user.username }}/diary/add">Add a blog post</a>{% endif %}  | 
 
-		{% if photos %}{% else %}|  <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  
+		{% if photos %}{% else %} <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  |
  			<a href="/{{ user.username }}/club/"> Edit clubs</a>  |  
 		<a href="/{{ user.username }}/style/">Edit styles</a></p>
 		</div>
+			{% endif %}
 		{% endif %}
 
 
@@ -127,8 +130,10 @@ div.bio a.edit {
         	      	{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}
 			{% else %}
 			{% if is_owner %}
+				{% if pester_first_photo %}
+				{% else %}
 			<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
-			{% else %}
+				{% endif %}
 			{% endif %}
 			{% endif %}
 			</div>
@@ -170,7 +175,7 @@ div.bio a.edit {
 		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
 		<div class="no-photo-box-main">
 		<div class="no-photo-box-close"><a href="?close_tip_first_photo=1" class="meta close_tip" id="close_tip_first_photo">close</a></div>
-		<p>*Why hide behind an icon - show the world your real face!</p>
+		<p>*People with profile photos get more views than users without a photo</p>
 		<a class="major-notice" href="profileupload/">Upload a profile photo now!</a>
 		</div>
 		</div>
