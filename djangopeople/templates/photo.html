@@ -69,11 +69,13 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 	
 		<p><em>{{ photo.description|linebreaks }}</em></p>
 
-        {% if photo.diary_entry %}
-        <p>Related to diary entry
-        <a href="{{ photo.diary_entry.get_absolute_url }}">{{ photo.diary_entry }}</a></p>
-        {% endif %}
-        
+        	{% if photo.diary_entry %}
+        	<p>Related to diary entry
+        	<a href="{{ photo.diary_entry.get_absolute_url }}">{{ photo.diary_entry }}</a></p>
+        	{% endif %}
+        	
+
+
 	</div>
 
 </div>
