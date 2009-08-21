@@ -529,7 +529,6 @@ def photo_upload_multiple_pre(request, username):
     filename = md5.new(image_content).hexdigest() + '.' + format
     # Save the image
     path = os.path.join(upload_folder, filename)
-    #print "Writing path", path
     open(path, 'w').write(image_content)
     
     image.thumbnail((60, 60))
@@ -1460,7 +1459,6 @@ def _club_name_from_url(url, request=None):
     try:
         title = title_regex.findall(html)[0].strip()
     except IndexError:
-        print html
         return None
     
     try:
@@ -1889,3 +1887,12 @@ def tinymce_filebrowser(request):
         photos = Photo.objects.filter(user=request.user)
         
     return render(request, 'tinymce_filebrowser.html', locals())
+
+
+# view function suffixed with _html to indicate that it's returning
+# just a limited chunk of html
+def nav_html(request):
+    """return the piece of HTML that shows the nav,
+    i.e. the content inside the tag <div id="nav"></div>
+    """
+    return render(request, '_nav.html', dict())

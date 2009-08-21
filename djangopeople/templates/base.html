@@ -16,29 +16,7 @@
 
 	<div id="header">
 	<div id="nav">
-
-	        <ul>
-		    <li><a href="/">home</a></li>
-	            <li><a href="/about/">about</a></li>
-		    <!--<li><a href="/contact/">contact</a></li>-->
-		    <li><a href="/promote-my-club/">promote your club</a></li>
-	            {% if not user.is_authenticated %}
-	            <!-- not logged in -->
-	            <li><a href="/signup/" class="bigger">add yourself to the map</a></li>
-	            <li><a href="/login/">login</a></li>
-	            {% else %}
-	            <!-- logged in -->
-	            <li>logged in as <strong><a href="/{{ user.username }}/">{{ user.username }}</a></strong> (<a href="/logout/">log out</a>)</li>
-	            {% endif %}
-	        </ul>
-                        {% comment %}
-			{% if not user.is_authenticated %}
-			<div id="hiddenLogin" style="display: none">
-			    <form action="/login/" method="post"><p><label for="id_usernameH">Username </label><input type="text" name="username" id="id_usernameH"></p><p><label for="id_passwordH">Password </label><input type="password" name="password" id="id_passwordH"></p><p><input type="submit" value="Log in" class="submit"></p>
-			    </form>
-			</div>
-			{% endif %}
-                        {% endcomment %}
+                {% include "_nav.html" %}
    	</div>
 
 

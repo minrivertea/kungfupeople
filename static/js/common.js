@@ -96,3 +96,11 @@ function getMarkerOptsThumbnail(thumbnail_url) {
     return markerOpts;
 }
 
+$(function() {
+   if (typeof CACHE_CONTROL != "undefined" && CACHE_CONTROL) {
+      // the page is cached, need to use AJAX to load what should be
+      // dynamic
+      $('#nav').load('/_nav.html');
+      // 
+   }
+});
