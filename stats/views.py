@@ -9,13 +9,6 @@ from django.views.decorators.cache import cache_page, never_cache
 from django.core.cache import cache
 
 
-if settings.DEBUG and 0:
-    def cache_page(delay):
-        def rendered(view):
-            def inner(request, *args, **kwargs):
-                return view(request, *args, **kwargs)
-            return inner
-        return rendered
 
 from django.utils.decorators import decorator_from_middleware
 from django.middleware.cache import CacheMiddleware
@@ -35,7 +28,17 @@ class CustomCacheMiddleware(CacheMiddleware):
         return response
 
 custom_cache_page = decorator_from_middleware(CustomCacheMiddleware)
-    
+
+
+if settings.DEBUG and 0:
+    def cache_page(delay):
+        def rendered(view):
+            def inner(request, *args, **kwargs):
+                return view(request, *args, **kwargs)
+            return inner
+        return rendered
+
+
 @custom_cache_page(60 * 60 * 1) # 1 hours
 def competitions(request):
     data = dict()
@@ -112,3 +115,9 @@ def _groups_table(groups, column1_label, column2_label, max_groups=10):
             restgroup['count'] += 1
     groups = groups[:max_groups]
     return render_basic('_groups_table.html', locals())
+
+
+
+def index(request):
+    """list all available stats pages"""
+    
