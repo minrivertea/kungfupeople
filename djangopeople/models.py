@@ -458,7 +458,6 @@ class Photo(models.Model):
 
     objects = DistanceManager()
 
-
     def __unicode__(self):
         return self.photo
     

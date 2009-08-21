@@ -76,6 +76,7 @@ def render_json(data):
 
 def index(request):
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
+    people_count = KungfuPerson.objects.all().count()
     clubs = Club.objects.all().order_by('-add_date')[:10]
     photos = Photo.objects.all().order_by('-date_added')[:10]
     styles = Style.objects.all().order_by('-add_date')[:10]
@@ -88,6 +89,7 @@ def index(request):
             pass
     return render(request, 'index.html', {
         'recent_people': recent_people,
+        'people_count': people_count,
         'your_person': your_person,
         'photos': photos,
         'styles': styles,
@@ -1035,7 +1037,7 @@ def edit_profile(request, username):
 def diary_entry_add(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entries = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
-    page_title = "Add a diary entry"
+    page_title = "Add a blog post"
     
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)

@@ -1,7 +1,7 @@
 {% extends base_template %}
 {% load django_static %}
 
-{% block title %}{{ entry.title }} | Diary |{% endblock %}
+{% block title %}{{ entry.title }} | {{ person.user.first_name|title }}'s Blog |{% endblock %}
 
 {% block extracss %}
 <style type="text/css">
@@ -29,6 +29,10 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
         {% endif %}
         </div>
     </div>
+	<div class="counter">
+	<div class="number"></div>Tagged in <strong>{{ entry.location_description }} ({{ entry.country.name }}) </strong><br/>
+	Click the map for more detail
+	</div>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +41,13 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
 <div id="content-box">
 
 	<h2>{{ entry.title }}</h2>
-	<p class="meta">{% if is_owner %}<a href="../../photo/upload?diary={{ entry.id }}"><strong>{% if photos %}Add more photos{% else %}Add photos to this entry{% endif %}</strong></a> | <a href="edit">Edit this entry</a>{% else %}<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>{% endif %}  |  {{ entry.date_added|date:"d M Y" }} |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
+	by <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name|title }}</a><br/><br />
+	<p class="meta">
+		{% if is_owner %}<a href="../../photo/upload?diary={{ entry.id }}"><strong>
+			{% if photos %}Add more photos{% else %}Add photos to this post{% endif %}
+			</strong></a> | <a href="edit">Edit this post</a>
+		{% endif %} 
+		{{ entry.date_added|date:"d M Y" }} |  {{ entry.location_description }} ({{ entry.country.iso_code }})</p>
 
 		{% if photos %}
 		<div id="related-photos">
@@ -68,9 +78,6 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
 
 <div id="right-column">
 
-	<div class="right-box">
-	<p>This item has been geo-tagged in <strong>{{ entry.location_description }} ({{ entry.country.iso_code }})</strong>! Click on the map to see other items related to this area.</p>
-	</div>
 
 </div>
 
