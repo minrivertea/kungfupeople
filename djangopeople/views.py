@@ -270,10 +270,18 @@ def signup(request):
                 try:
                     utmcsr = re.findall('utmcsr=([^\|]+)\|', utmz)[0]
                     utmccn = re.findall('utmccn=([^\|]+)\|', utmz)[0]
-                    utmcct = re.findall('utmcct=(.*?)$', utmz)[0]
-                    came_from = "%s,%s %s" % (utmcsr, utmcct, utmccn)
-                    person.came_from = came_from
-                    person.save()
+                    try:
+                        utmcct = re.findall('utmcct=(.*?)$', utmz)[0]
+                    except IndexError:
+                        utmcct = ''
+                    try:
+                        utmcmd = re.findall('utmcmd=(.*?)$', utmz)[0]
+                    except IndexError:
+                        utmcmd = ''
+                    if utmcsr not in ('(direct)',):
+                        came_from = "%s,%s,%s %s" % (utmcsr, utmcct, utmcmd, utmccn)
+                        person.came_from = came_from
+                        person.save()
                     
                 except:
                     import sys

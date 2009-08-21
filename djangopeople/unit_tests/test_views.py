@@ -16,8 +16,6 @@ _original_PROWL_API_KEY = settings.PROWL_API_KEY
 
 class ViewsTestCase(TestCase):
     
-        
-    
     def tearDown(self):
         # restore settings
         settings.MIDDLEWARE_CLASSES = _original_MIDDLEWARE_CLASSES
@@ -160,6 +158,91 @@ class ViewsTestCase(TestCase):
         
         self.assertEqual(KungfuPerson.objects.\
            filter(user__username="bob").count(), 1)
+        
+        # this should have posted to prowl
+        posted_prowl = self._get_posted_prowls()[-1]
+        self.assertTrue('Bob Sponge' in posted_prowl['description'])
+        
+    def test_signup_with_utmz_cookie(self):
+        """set a cookie called __utmz like Google Analytics does and the 
+        value of this should end up in KungfuPerson.came_from
+        """
+        example_country = Country.objects.all().order_by('?')[0]
+        utmz = '186359603.1250807267.14.4.utmcsr=forum.kungfumagazine.com|'\
+               'utmccn=(referral)|utmcmd=referral|utmcct=/forum/showthread.php'
+        response = self.client.get('/')
+        
+        self.client.cookies['__utmz'] = utmz
+        response = self.client.post('/signup/',
+                                    dict(username='bob',
+                                         email='bob@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        person = KungfuPerson.objects.get(user__username="bob")
+        
+        self.assertTrue(person.came_from)
+        self.assertTrue(person.came_from.count('forum.kungfumagazine.com'))
+        self.assertTrue(person.came_from.count('referral'))
+        self.assertTrue(person.came_from.count('/forum/showthread.php'))
+        
+        self.client.logout()
+        
+        utmz = '186359603.1250808317.14.5.utmcsr=google|utmccn=(organic)|utmcmd='\
+               'organic|utmctr=kung%20fu%20people'
+        self.client.cookies['__utmz'] = utmz
+        
+        response = self.client.post('/signup/',
+                                    dict(username='bob2',
+                                         email='bob2@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob2",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        person = KungfuPerson.objects.get(user__username="bob2")
+        
+        self.assertTrue(person.came_from)
+        self.assertTrue(person.came_from.count('google'))
+        self.assertTrue(person.came_from.count('organic'))
+        self.assertTrue(person.came_from.count('kung%20fu%20people'))
+
+        self.client.logout()
+        
+        utmz = '186359603.1250862268.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)'
+        self.client.cookies['__utmz'] = utmz
+        
+        response = self.client.post('/signup/',
+                                    dict(username='bob3',
+                                         email='bob3@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob3",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        person = KungfuPerson.objects.get(user__username="bob3")
+        
+        self.assertFalse(person.came_from)
 
 
     def test_signup_multiple_styles(self):

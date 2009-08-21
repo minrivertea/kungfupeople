@@ -711,7 +711,7 @@ def prowl_new_person(sender, instance, created, **__):
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
     if created:
         try:
-            prowl("Kungfu Person created",
+            prowl("New person:",
                   description=description)
         except:
             try:

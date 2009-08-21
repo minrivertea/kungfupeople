@@ -149,7 +149,8 @@ except ImportError:
     import warnings
     warnings.warn("prowlpy no installed")
     prowl_api = None
-        
+
+
 def prowlpy_wrapper(event, description="",
                     application="KungfuPeople",
                     priority=None):
@@ -177,9 +178,6 @@ def prowlpy_wrapper(event, description="",
         s =  ''.join(s)[:256]
         return re.sub('\W','', s)
     
-    print "PARAMS"
-    print params
-    print
     cache_key = params2cachekey(params)
     
     if not cache.get(cache_key):
@@ -190,5 +188,4 @@ def prowlpy_wrapper(event, description="",
             logging.error("Error sending event %r" % event, exc_info=True)
             
         cache.set(cache_key, time(), 10)
-                        
                         

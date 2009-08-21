@@ -10,16 +10,30 @@ from djangopeople.utils import unaccent_string
 
 _original_PROWL_API_KEY = settings.PROWL_API_KEY
 
+_posted_prowls = []
+class FakeProwl(object):
+    def post(self, *args, **kwargs):
+        _posted_prowls.append(kwargs)
+
 class TestCase(DjangoTestCase):
     
-    
     def setUp(self):
-        settings.PROWL_API_KEY = None
+        # you're not supposed to run unit tests in anything persistentish
+        # like a memcache or a database
+        assert settings.CACHE_BACKEND == 'locmem:///'
+        
+        import djangopeople.utils
+        if djangopeople.utils.prowl_api:
+            djangopeople.utils.prowl_api = FakeProwl()
+            
         super(TestCase, self).setUp()
+        
+    def _get_posted_prowls(self):
+        return _posted_prowls
         
     def tearDown(self):
         # restore settings
-        settings.PROWL_API_KEY = _original_PROWL_API_KEY
+        #settings.PROWL_API_KEY = _original_PROWL_API_KEY
         super(TestCase, self).tearDown()
         
     
