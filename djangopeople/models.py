@@ -3,6 +3,7 @@ import os
 import uuid
 from datetime import datetime
 from string import Template
+import logging
 
 # django
 from django.db import connection
@@ -429,8 +430,12 @@ def prowl_new_diary_entry(sender, instance, created, **__):
     site = Site.objects.get_current()
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
     if created:
-        prowl("Diary entry added",
-              description=description)
+        try:
+            prowl("Diary entry added",
+                  description=description)
+        except:
+            logging.error("Unabled to prowl about new diary entry",
+                          exc_info=True)
         
 post_save.connect(prowl_new_diary_entry, sender=DiaryEntry,
                  dispatch_uid="prowl_new_diary_entry")
@@ -487,8 +492,13 @@ def prowl_new_photo(sender, instance, created, **__):
     site = Site.objects.get_current()
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
     if created:
-        prowl("Photo added",
-              description=description)
+        try:
+            prowl("Photo added",
+                  description=description)
+        except:
+            logging.error("Unabled to prowl about new photo",
+                          exc_info=True)
+            
         
 post_save.connect(prowl_new_photo, sender=Photo)
 
@@ -700,8 +710,17 @@ def prowl_new_person(sender, instance, created, **__):
     site = Site.objects.get_current()
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
     if created:
-        prowl("Kungfu Person created",
-              description=description)
+        try:
+            prowl("New person:",
+                  description=description)
+        except:
+            try:
+                print repr(description)
+            except:
+                pass
+            logging.error("Unabled to prowl about new person",
+                          exc_info=True)
+            
         
 post_save.connect(prowl_new_person, sender=KungfuPerson)
         

@@ -1,4 +1,5 @@
 # python
+import re
 import logging
 import md5, datetime
 from time import time
@@ -148,7 +149,8 @@ except ImportError:
     import warnings
     warnings.warn("prowlpy no installed")
     prowl_api = None
-        
+
+
 def prowlpy_wrapper(event, description="",
                     application="KungfuPeople",
                     priority=None):
@@ -173,7 +175,9 @@ def prowlpy_wrapper(event, description="",
                 s.append(v.encode('utf8'))
             else:
                 s.append(str(v))
-        return ''.join(s)[:256]
+        s =  ''.join(s)[:256]
+        return re.sub('\W','', s)
+    
     cache_key = params2cachekey(params)
     
     if not cache.get(cache_key):
@@ -184,5 +188,4 @@ def prowlpy_wrapper(event, description="",
             logging.error("Error sending event %r" % event, exc_info=True)
             
         cache.set(cache_key, time(), 10)
-                        
                         

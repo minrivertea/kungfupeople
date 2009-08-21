@@ -14,14 +14,18 @@ DIRECTORIES = (
    ('newsletter/templatetags/newsletter_extras.py',
     './manage.py test --settings=test_settings newsletter.NewsletterExtrasTestCase'),
                
+   ('djangopeople/unit_tests/test_utils.py',
+    './manage.py test --settings=test_settings djangopeople.UtilsTestCase'),
+   ('djangopeople/utils.py',
+    './manage.py test --settings=test_settings djangopeople.UtilsTestCase'),
 
    ('djangopeople/unit_tests/test_views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
                
-   ('djangopeople/models.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
+   #('djangopeople/models.py',
+   # './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
    ('djangopeople/views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
