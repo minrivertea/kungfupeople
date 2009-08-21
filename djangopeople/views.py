@@ -954,6 +954,10 @@ def profile(request, username):
    
     return render(request, 'profile.html', locals())
 
+def wall(request):
+    people = KungfuPerson.objects.all()
+    return render(request, 'wall.html', locals())
+
 def photo(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username = username)
     photo = get_object_or_404(Photo, id=photo_id)

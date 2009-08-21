@@ -429,6 +429,8 @@ a:visited img {
 	padding: 0px;
 	text-decoration: none
 	cursor: pointer;
+	float: left;
+	margin: 0 5px 5px 0;
 }
 
 a:hover img {
@@ -440,6 +442,8 @@ a:hover img {
 	margin: 0px;
 	text-decoration: none
 	cursor: pointer;
+	float: left;
+	margin: 0 5px 5px 0;
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	-khtml-opacity: 0.6;
@@ -932,9 +936,8 @@ li.latest-list-home {
 	font-size: 10px;
 }
 
-.horizontal-photos {
+div.horizontal-photos {
 	height: auto;
-	display: block;
 	margin-bottom: 5px;
 }
 
