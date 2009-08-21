@@ -1,0 +1,35 @@
+{% extends "base_no_map.html" %}
+{% load django_static %}
+{% load thumbnail %}
+
+{% block title %}All Kungfu People |{% endblock %}
+
+{% block nav_li_class_login %} class="current"{% endblock %}>
+
+{% block extracss %}
+<style type="text/css">
+{% slimcontent %}
+
+p.promo {
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+	color: #666;
+}
+{% endslimcontent %}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+	<h2>the wall</h2>
+	<p class="promo">Showing all current users ({{ people.count }})</p>
+	<div class="horizontal-photos">
+	{% for p in people %}
+	<a href="{{ p.get_absolute_url }}">
+	<img src="{% thumbnail p.photo 60x60 crop %}" title="{{ p.user.get_full_name }}">
+	</a>	
+	{% endfor %} 
+	</div>    
+
+{% endblock %}
