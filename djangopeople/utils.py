@@ -1,4 +1,5 @@
 # python
+import re
 import logging
 import md5, datetime
 from time import time
@@ -173,7 +174,12 @@ def prowlpy_wrapper(event, description="",
                 s.append(v.encode('utf8'))
             else:
                 s.append(str(v))
-        return ''.join(s)[:256]
+        s =  ''.join(s)[:256]
+        return re.sub('\W','', s)
+    
+    print "PARAMS"
+    print params
+    print
     cache_key = params2cachekey(params)
     
     if not cache.get(cache_key):
