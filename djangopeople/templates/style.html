@@ -42,7 +42,10 @@ div.bio a.edit {
 
 	<div class="counter-current">
 	<div class="number">{{ count }}</div> {% ifequal count 1 %}person does {% else %}people do {% endifequal %}{{ style }}!<br />
-	<a href="/signup">Add yourself now!</a>
+	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
+	{% else %}
+	<a href="/wall">See everyone!</a>		
+	{% endif %}
 	</div>
 
 	<div class="counter">
