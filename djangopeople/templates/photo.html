@@ -50,16 +50,7 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
       		<p><img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}"></p>
 			<div style="width:{{ thumb.width }}px">
                           <div style="float:right">
-                          {% if next %}
-                            {% thumbnail next.photo 60x60 crop as next_thumb %}
-                            <a href="{{ next.get_absolute_url }}"><img src="{{ next_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0"></a>
-                          {% endif %}
-                          </div>
-                          <div>
-                          {% if previous %}
-                            {% thumbnail previous.photo 60x60 crop as previous_thumb %}
-                            <a href="{{ previous.get_absolute_url }}"><img src="{{ previous_thumb }}" width="{{ previous_thumb.width }}" height="{{ previous_thumb.height }}" border="0"></a>
-                          {% endif %}
+                          
                           </div>
 			</div>
 		</div>
@@ -81,8 +72,33 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 		<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>
 		{% endif %}
 		</p>
+
+		<div class="next-previous">
+                {% if previous %}
+			<div class="photo-previous">
+                	{% thumbnail previous.photo 60x60 crop as previous_thumb %}
+                        <a title="next" href="{{ previous.get_absolute_url }}">
+			<img src="{{ previous_thumb }}" width="{{ previous_thumb.width }}" height="{{ previous_thumb.height }}" border="0">
+			</a>
+			</div>
+                 {% endif %}
+		<div class="photo-current">
+		{% thumbnail photo.photo 60x60 crop as current_thumb %}
+		<img src="{{ current_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0">
+		</div>
+		{% if next %}
+			<div class="photo-next">
+                	{% thumbnail next.photo 60x60 crop as next_thumb %}
+                        <a title="next" href="{{ next.get_absolute_url }}">
+			<img src="{{ next_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0">
+			</a>
+			</div>
+                {% endif %}
+		</div>
+
+		<br clear="all"/>
 	
-		<p><em>{{ photo.description|linebreaks }}</em></p>
+		{{ photo.description|linebreaks }}
 
         	{% if photo.diary_entry %}
         	<p>Related to diary entry

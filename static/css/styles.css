@@ -429,6 +429,8 @@ a:visited img {
 	padding: 0px;
 	text-decoration: none
 	cursor: pointer;
+	float: left;
+	margin: 0 5px 5px 0;
 }
 
 a:hover img {
@@ -440,6 +442,8 @@ a:hover img {
 	margin: 0px;
 	text-decoration: none
 	cursor: pointer;
+	float: left;
+	margin: 0 5px 5px 0;
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	-khtml-opacity: 0.6;
@@ -932,9 +936,8 @@ li.latest-list-home {
 	font-size: 10px;
 }
 
-.horizontal-photos {
+div.horizontal-photos {
 	height: auto;
-	display: block;
 	margin-bottom: 5px;
 }
 
@@ -1353,4 +1356,38 @@ div.code {
 	width: auto;
 	background-color: #e6e6e6;
 	padding: 10px;
+}
+
+div.next-previous {
+	height: 80px;
+	width: 70%;
+	background-color: #e6e6e6;
+	padding: 20px;
+	margin-top: 10px;
+}
+
+div.photo-next {
+	width: 60px;
+	float: right;
+	height: 80px;
+	background: url('/img/arrow-right.png') no-repeat bottom left;
+}
+
+div.photo-current {
+	width: 60px;
+	float: left;
+	margin-left: 30px;
+	height: 60px;
+	border: 2px solid white;
+	filter:alpha(opacity=30);
+	-moz-opacity:0.3;
+	-khtml-opacity: 0.3;
+	opacity: 0.3;
+}
+
+div.photo-previous {
+	width: 60px;
+	height: 80px;
+	float: left;
+	background: url('/img/arrow-left.png') no-repeat bottom left;
 }

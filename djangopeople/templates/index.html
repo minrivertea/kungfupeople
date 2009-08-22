@@ -72,8 +72,16 @@ var people = [
 	</div>
 
 	<div class="counter-current">
+<<<<<<< HEAD:djangopeople/templates/index.html
 	<div class="number">{{ people_count }}</div> new people added!<br>
 	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>{% endif %}
+=======
+	<div class="number">{{ people_count }}</div> new people added!<br />
+	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
+	{% else %}
+	<a href="wall">See everyone!</a>		
+	{% endif %}
+>>>>>>> dda1bd4bedf5617b148aced4dde2379ba0925cdd:djangopeople/templates/index.html
 	</div>
 	<div class="counter">
 	<div class="number"></div><strong>ZOOM!</strong> Find clubs, styles and people<br>
@@ -120,12 +128,15 @@ var people = [
 		<div class="highlight-home">
 		<h3>People recently added</h3>
 
+			<div class="horizontal-photos">
 			{% for person in recent_people_limited %}
         	        <a href="{{ person.get_absolute_url }}" 
         	           title="Click to see {{ person.user.first_name }}'s profile">
         	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}">
 			</a>
         		{% endfor %}
+			</div>
+			<br clear="all"/>
 			<div class="horizontal-image-list-text">
 		  (located in:  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
 		  {% endfor %})
