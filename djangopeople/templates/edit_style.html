@@ -1,7 +1,20 @@
-{% extends "base.html" %}
+{% extends base_template %}
+{% load django_static %}
+{% block title %}Edit your styles |{% endblock %}
 
-{% block title %}Edit your clubs |{% endblock %}
+{% block extracss %}
+<link rel="stylesheet" href="{% slimfile "/css/jquery.autocomplete.css" %}" type="text/css"/>
+{% endblock %}
 
+{% block js %}
+<script type="text/javascript" src="{% staticfile "/js/jquery.autocomplete.min.js" %}"></script>
+<script type="text/javascript">
+var ALL_STYLES = {{ all_styles_js|safe }};
+$(function () {
+  $('#id_style_name').autocomplete(ALL_STYLES);
+});
+</script>
+{% endblock %}
 
 
 {% block content %}
@@ -16,7 +29,7 @@
 	<div class="form-field-outer">
 		<div class="form-field-left">
     	        	{{ form.style_name.errors }}
-    	        	<label for="id_club_url">Style Name</label>
+    	        	<label for="id_style_name">Style Name</label>
 		</div>
 
 		<div class="form-field-right">

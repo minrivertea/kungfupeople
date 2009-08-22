@@ -254,7 +254,7 @@ def signup(request):
             slug = slugify(unaccent_string(name).replace('&','and'))
             #slug = name.strip().replace(' ', '-').lower()
             if url and name:
-                club = _get_or_create_club(url, name)
+                club = _get_or_create_club(name, url=url)
                 club.slug = slug[:50]
                 club.save()
                 person.club_membership.add(club)
@@ -371,7 +371,14 @@ def diary_entry(request, username, slug):
     })
     
 
-def _get_or_create_club(url, name):
+def _get_or_create_club(name, url=None):
+    assert name, "must have a club name"
+    # search by name
+    try:
+        return Club.objects.get(name__iexact=name)
+    except Club.DoesNotExist:
+        pass
+    
     if url:
         if not url.startswith('http'):
             url = 'http://' + url
@@ -381,29 +388,18 @@ def _get_or_create_club(url, name):
         except Club.DoesNotExist:
             pass
         
-    if name:
-        # search by name
-        try:
-            return Club.objects.get(name__iexact=name)
-        except Club.DoesNotExist:
-            pass
-    
     # still here?!
-    if name:
-        slug = slugify(unaccent_string(name).replace('&','and'))
-    else:
-        slug = ''
-    return Club.objects.create(url=url, name=name,
-                               slug=slug)
+    slug = slugify(unaccent_string(name).replace('&','and'))
+    return Club.objects.create(url=url, name=name.strip(),
+                               slug=slug.strip())
 
 def _get_or_create_style(name):
-    if name:
-        # search by name
-        try:
-            return Style.objects.get(name__iexact=name)
-        except Style.DoesNotExist:
-            pass
-    
+    # search by name
+    try:
+        return Style.objects.get(name__iexact=name)
+    except Style.DoesNotExist:
+        pass
+        
     # still here?!
     return Style.objects.create(name=name)
 
@@ -1180,16 +1176,14 @@ def edit_club(request, username):
     if request.method == 'POST':
         form = ClubForm(request.POST)
         if form.is_valid():        
-            url = form.cleaned_data['club_url']
-            name = form.cleaned_data['club_name']
-            slug = name.strip().replace(' ', '-').lower()
-            if url or name:
-                club = _get_or_create_club(url, name)
-                club.slug = slug
-                club.save()
-                person.club_membership.add(club)
-                person.save()
-                return HttpResponseRedirect('/%s/club/' % username)
+            url = form.cleaned_data['club_url'] # not required field
+            name = form.cleaned_data['club_name'] # required field
+            # _get_or_create_club() takes care of creating slug if necessary
+            club = _get_or_create_club(name, url=url)
+            person.club_membership.add(club)
+            person.save()
+            return HttpResponseRedirect('/%s/club/' % username)
+        
         else:
             if form.non_field_errors():
                 non_field_errors = form.non_field_errors()
@@ -1197,6 +1191,13 @@ def edit_club(request, username):
                 errors = form.errors
     else:
         form = ClubForm()
+        current_club_ids = [x.id for x in clubs]
+        all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()
+                     if x.id not in current_club_ids]
+        all_clubs_js = simplejson.dumps(all_clubs)
+        print all_clubs
+        del current_club_ids
+        
     return render(request, 'edit_club.html', locals())
 
 @must_be_owner
@@ -1230,6 +1231,12 @@ def edit_style(request, username):
                 return HttpResponseRedirect('/%s/style/' % username)
     else:
         form = StyleForm()
+        # generate a list of all styles for the javascript autocomplete.
+        # TODO: If this starts to get too large (unlikely) consider
+        # using AJAX instead.
+        all_styles = [x.name for x in Style.objects.all()]
+        all_styles_js = simplejson.dumps(all_styles)
+        
     return render(request, 'edit_style.html', locals())
 
 @must_be_owner
