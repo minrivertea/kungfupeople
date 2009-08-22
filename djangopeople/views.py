@@ -1266,17 +1266,28 @@ def videos(request, username):
     
 
 @must_be_owner
+@transaction.commit_on_success
 def add_video(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
     if request.method == 'POST':
         form = VideoForm(request.POST)
         if form.is_valid():
+            youtube_video_id = form.cleaned_data['youtube_video_id']
             embed_src = form.cleaned_data['embed_src']
+            title = form.cleaned_data['title']
             description = form.cleaned_data['description']
+            thumbnail_url = form.cleaned_data['thumbnail_url']
+            #print locals()
+            #raise Exception
             video = Video.objects.create(user=person.user,
                                          embed_src=embed_src,
-                                         description=description.strip())
+                                         title=title.strip(),
+                                         description=description.strip(),
+                                         thumbnail_url=thumbnail_url,
+                                        )
             return HttpResponseRedirect('/%s/' % username)
+        else:
+            print form.errors
     else:
         form = VideoForm()
     return render(request, 'add_video.html', {
@@ -1906,3 +1917,20 @@ def nav_html(request):
     i.e. the content inside the tag <div id="nav"></div>
     """
     return render(request, '_nav.html', dict())
+
+
+from youtube import YouTubeVideoError, get_youtube_video_by_id
+
+def get_youtube_video_by_id_json(request):
+    video_id = request.GET.get('video_id')
+    if not video_id:
+        raise ValueError("No video URL or ID")
+    from time import sleep
+    sleep(3)
+    
+    try:
+        data = get_youtube_video_by_id(video_id)
+    except YouTubeVideoError, msg:
+        return render_json(dict(error=str(msg)))
+    
+    return render_json(data)

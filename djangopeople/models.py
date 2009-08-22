@@ -326,7 +326,7 @@ class Club(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     url = models.URLField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     logo = models.ImageField(blank=True, upload_to='clubs')
     add_date = models.DateField('date added', default=datetime.now)
 
@@ -506,7 +506,10 @@ post_save.connect(prowl_new_photo, sender=Photo)
 class Video(models.Model):
     user = models.ForeignKey(User)
     embed_src = models.TextField()
+    title = models.CharField(max_length=250, blank=True)
     description = models.TextField(blank=True)
+    youtube_video_id = models.CharField(max_length=100, blank=True, null=True)
+    thumbnail_url = models.CharField(max_length=250, blank=True, null=True)
     add_date = models.DateField('date added', default=datetime.now)
     approved = models.BooleanField(default=True)
     

@@ -9,6 +9,8 @@ from django.db.models import ObjectDoesNotExist
 from groupedselect import GroupedChoiceField
 from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry, Photo
 
+from youtube import YouTubeVideoError, get_youtube_video_by_id, video_url_or_id
+
 
 try:
     from BeautifulSoup import BeautifulSoup
@@ -350,8 +352,16 @@ class StyleForm(forms.Form):
     style_name = forms.CharField(max_length=200)
 
 class VideoForm(forms.Form):
+    youtube_video_id = forms.CharField(required=False,
+                                      widget=forms.widgets.TextInput(attrs=dict(size=36)))
+    title = forms.CharField(required=True, 
+                            widget=forms.widgets.TextInput(attrs=dict(size=36)))    
+    
     embed_src = forms.CharField(widget=forms.Textarea, required=False)
     description = forms.CharField(widget=forms.Textarea, required=False)
+    
+    thumbnail_url = forms.CharField(required=False,
+                                    widget=forms.widgets.HiddenInput())
     
     def clean_embed_src(self):
         embed_src = self.cleaned_data['embed_src']
@@ -370,6 +380,16 @@ class VideoForm(forms.Form):
             
         self.cleaned_data['embed_src'] = str(soup)
         return self.cleaned_data['embed_src']
+    
+    def clean_youtube_video_id(self):
+        video_id = self.cleaned_data['youtube_video_id'].strip()
+        if video_id:
+            try:
+                video_id = video_url_or_id(video_id)
+            except YouTubeVideoError, msg:
+                raise forms.ValidationError(str(msg))
+            
+        return video_id
 
 
 def make_validator(key, form):

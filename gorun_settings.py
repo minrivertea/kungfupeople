@@ -22,10 +22,8 @@ DIRECTORIES = (
    ('djangopeople/unit_tests/test_views.py',
     './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
                
-   #('djangopeople/models.py',
-   # './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_zoom_content'),
-   ('djangopeople/views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
+   ('djangopeople/',
+    './manage.py test --settings=test_settings djangopeople.YouTubeTestCase.test_video_by_youtube_video_id'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),
