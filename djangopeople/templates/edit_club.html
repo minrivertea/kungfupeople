@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 {% load django_static %}
 
 {% block title %}Edit your clubs |{% endblock %}
@@ -61,8 +61,6 @@ $(function () {
 
 
 {% block content %}
-	<div class="no-map-wrapper">
-	<div id="no-map-content-box">
 
 
     <form method="post" action="/{{ person.user.username }}/club/">
@@ -71,10 +69,6 @@ $(function () {
         
         {% if non_field_errors %}
           {{ non_field_errors }}
-        {% else %}
-          {% if errors %}
-            {{ errors }}
-          {% endif %}
         {% endif %}
 
     	<fieldset>
@@ -113,17 +107,20 @@ $(function () {
 
     </form>
 
-</div>
 
-<div id="right-column">
 
+
+
+{% endblock %}
+
+{% block right_column %}
 	<h3>Your current club{{ clubs|pluralize }}</h3>
 	{% for club in clubs %}
-	<p>(<a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/"><img title="remove this club" class="small-icon" src="/img/delete.png"></a>)<a href="/club/{{ club.slug }}">{{ club }}</a>
+	<p>(<a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/"
+             title="remove this club"
+             ><img class="small-icon" src="/img/delete.png" alt="delete"></a>)
+             <a href="/club/{{ club.slug }}">{{ club }}</a>
 	</p>
 	{% endfor %}
-
-</div>
-
 
 {% endblock %}

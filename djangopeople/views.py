@@ -1004,6 +1004,11 @@ def style(request, name):
     people = KungfuPerson.objects.filter(styles=style)
     diaries = DiaryEntry.objects.filter(user__in=[x.id for x in people]).order_by('-date_added')
     count = people.count()
+    
+    club_ids = set()
+    for person in people:
+        club_ids.update([x.id for x in person.club_membership.all()])
+    clubs = Club.objects.filter(id__in=list(club_ids))
 
     return render(request, 'style.html', locals())
 
