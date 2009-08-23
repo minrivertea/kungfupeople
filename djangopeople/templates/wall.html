@@ -24,9 +24,9 @@ p.promo {
 	<h2>the wall</h2>
 	<p class="promo">Showing all current users ({{ people.count }})</p>
 	<div class="horizontal-photos">
-	{% for p in people %}
-	<a href="{{ p.get_absolute_url }}">
-	<img src="{% thumbnail p.photo 60x60 crop %}" title="{{ p.user.get_full_name }}">
+	{% for person in people %}
+	<a href="{{ person.get_absolute_url }}">
+	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
 	</a>	
 	{% endfor %} 
 	</div>    
