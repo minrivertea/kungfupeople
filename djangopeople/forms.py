@@ -1,13 +1,17 @@
 # python
 import re
+from urlparse import urlparse
 
 # django
 from django import forms
 from django.forms.forms import BoundField
 from django.db.models import ObjectDoesNotExist
+from django.conf import settings
 
 from groupedselect import GroupedChoiceField
 from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry, Photo
+
+from youtube import YouTubeVideoError, get_youtube_video_by_id, video_url_or_id
 
 
 try:
@@ -292,66 +296,62 @@ class ProfileForm(forms.Form):
         return email
 
 class ClubForm(forms.Form):
-    club_name = forms.CharField(max_length=200, required=False)
-    club_url = forms.URLField()
+    """Now that there is an autocomplete feature that automatically figures out
+    the name by the url or the url by the name, we can relax a bit more about
+    trying to be convenient on the server-side of things.
+    We just can't accept clubs without name so the form is going to have to 
+    require it. However, the URL is now no longer required. Basically, we let
+    clubs exist without a URL.
+    """
+    club_name = forms.CharField(max_length=200,
+                                widget=forms.widgets.TextInput(attrs=dict(size=40)))
+    club_url = forms.URLField(max_length=200, required=False,
+                              widget=forms.widgets.TextInput(attrs=dict(size=40)))
     
-    def clean(self):
-        
-        name = self.cleaned_data['club_name']
+    def clean_club_url(self):
         url = self.cleaned_data['club_url']
-        if not url.count('://'):
+        if not url.startswith('http://'):
             url = 'http://' + url
-            self.cleaned_data['club_url'] = url
             
-        if not name:
-            from urlparse import urlparse
-            from models import Club
-            try:
-                club = Club.objects.get(url__iexact=url)
-            except Club.DoesNotExist:
-                try:
-                    print repr('://'.join(urlparse(url)[:2]))
-                    club = Club.objects.get(url__istartswith=\
-                     '://'.join(urlparse(url)[0:2]))
-                except Club.MultipleObjectsReturned:
-                    raise forms.ValidationError(
-                      "Club name missing when there are multiple clubs with a similar URL")
-                except Club.DoesNotExist:
-                    raise forms.ValidationError("You need to add a club name")
-            self.cleaned_data['club_name'] = name
+        # what constitues a valid URL?
+        # it's expected to have a protocol and at this point, what other 
+        # protocol could we possibly accept except http?
+        if not urlparse(url)[0] == 'http':
+            raise forms.ValidationError("URL has to start with http://")
+        
+        # there has to be a domain
+        if not urlparse(url)[1]:
+            raise forms.ValidationError("No domain name")
+        
+        # lastly, do a HEAD request and check that the website exists
+        if not settings.OFFLINE_MODE:
+            import httplib
+            conn = httplib.HTTPConnection(urlparse(url)[1])
+            conn.request("HEAD", urlparse(url)[2])
+            res = conn.getresponse()
+            if res.status == 200 or (str(res.status).startswith('30') and len(str(res.status)) == 3):
+                pass
+            else:
+                raise forms.ValidationError("Unable to connect to URL (%s)" % res.reason)
+                
+        return url
 
-        #print repr(name)
-        #print repr(url)
-        return self.cleaned_data
-        
-        
-        # If the club_name is blank and we can get it from the database,
-        # the it's ok. Otherwise not
-        if not self.cleaned_data['club_name']:
-            url = self.cleaned_data['club_url']
-            from urlparse import urlparse
-            from models import Club
-            if not url.count('://'):
-                url = 'http://' + url
-            try:
-                club = Club.objects.get(url__iexact=url)
-            except Club.DoesNotExist:
-                try:
-                    club = Club.objects.get(url__istarts=urlparse(url)[1])
-                except Club.DoesNotExist:
-                    raise forms.ValidationError("club_name missing")
-                                            
-
-        return self.cleaned_data['club_name']
-        
         
 
 class StyleForm(forms.Form):
     style_name = forms.CharField(max_length=200)
 
 class VideoForm(forms.Form):
+    youtube_video_id = forms.CharField(required=False,
+                                      widget=forms.widgets.TextInput(attrs=dict(size=36)))
+    title = forms.CharField(required=True, 
+                            widget=forms.widgets.TextInput(attrs=dict(size=36)))    
+    
     embed_src = forms.CharField(widget=forms.Textarea, required=False)
     description = forms.CharField(widget=forms.Textarea, required=False)
+    
+    thumbnail_url = forms.CharField(required=False,
+                                    widget=forms.widgets.HiddenInput())
     
     def clean_embed_src(self):
         embed_src = self.cleaned_data['embed_src']
@@ -370,6 +370,16 @@ class VideoForm(forms.Form):
             
         self.cleaned_data['embed_src'] = str(soup)
         return self.cleaned_data['embed_src']
+    
+    def clean_youtube_video_id(self):
+        video_id = self.cleaned_data['youtube_video_id'].strip()
+        if video_id:
+            try:
+                video_id = video_url_or_id(video_id)
+            except YouTubeVideoError, msg:
+                raise forms.ValidationError(str(msg))
+            
+        return video_id
 
 
 def make_validator(key, form):

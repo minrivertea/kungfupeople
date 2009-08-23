@@ -261,7 +261,9 @@ div.bio a.edit {
 	<h3>videos</h3>
 	{% for video in videos %}
 	{% if is_owner %}
-	<a href="videos/delete/{{ video.id }}/">(delete this video)</a><br/>{% endif %}{{ video.description }}
+	<a href="videos/delete/{{ video.id }}/">(delete this video)</a><br/>{% endif %}
+        <strong>{{ video.title }}</strong><br>
+        {{ video.description }}
 	
 	<div class="video">{{ video.embed_src|safe }}</div>
 	{% endfor %}

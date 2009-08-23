@@ -676,3 +676,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(len(content['styles']), 1)
         # one diary entry
         self.assertEqual(len(content['diary_entries']), 1)
+        
+        
+        
+        
+        

@@ -1,8 +1,103 @@
 {% extends base_template %}
+{% load django_static %}
 
 {% block title %}Add a video to your profile |{% endblock %}
 
 {% block js %}
+<script type="text/javascript">
+function __not_youtube_video() {
+  $('#video-youtube').hide(500);
+  $('#video-details:hidden').show(300);
+}
+
+var _youtube_video_id_lookup;
+var _fetching = false; // custom lock file
+
+
+function __pre_fetch_video_details() {
+  $('.pleasewait:hidden').show();
+}
+
+function __post_fetch_video_details() {
+  $('.pleasewait:visible').hide();
+}
+
+function __fetch_video_details(video_id) {
+    _youtube_video_id_lookup = video_id;
+    if (_fetching) return;
+    _fetching = true;
+    $.getJSON('/get_youtube_video_by_id.json', {video_id:video_id}, function(res) {
+      if (res.error) {
+        alert("Error! " + res.error);
+      } else {
+        $('#video-details:hidden').show(400);
+        $('#embed_src-outer').hide();
+        if (res.embed_src) {
+          $('#id_embed_src').val(res.embed_src);
+          $('#preview-outer:hidden').show();
+          $('div.form-field-right', '#preview-outer').html(res.embed_src);
+          $('#embed_src-outer').hide();
+        }
+        if (res.title)
+          $('#id_title').val(res.title);
+        if (res.description)
+          $('#id_description').val(res.description);
+        if (res.thumbnail_url)
+          $('#id_thumbnail_url').val(res.thumbnail_url);
+          
+      }
+      _fetching = false;
+      __post_fetch_video_details();
+    });
+
+}
+
+$(function() {
+  
+  if (!$('#id_youtube_video_id').val() && !$('#id_embed_src').val()) {
+    $('#video-details:visible').hide();//fadeTo(0, 0.3);
+    $('#video-youtube').append(
+      $('<a href="#"></a>').bind('click', function() {
+        __not_youtube_video();
+        return false;
+      }).append($("<span>(No, it's not a YouTube video)</span>"))
+    );
+  }
+  
+  function update_by_video_id(video_id) {
+    if (!$.trim(video_id).length) return;
+    if (_youtube_video_id_lookup && _youtube_video_id_lookup == video_id)
+      return;
+    __pre_fetch_video_details();
+    __fetch_video_details(video_id);
+  }
+  $('#id_youtube_video_id')
+    .bind('keyup', function() {update_by_video_id($(this).val())})
+    .bind('change', function() {update_by_video_id($(this).val())});
+  
+  $('form[method="post"]').bind('submit', function() {
+    console.log($('#id_youtube_video_id').val());
+    console.log(!$('#id_embed_src').val());
+    if ($('#id_youtube_video_id').val() && !$('#id_embed_src').val()) {
+      update_by_video_id($('#id_youtube_video_id').val());
+      return false;
+    }
+    if (!$('#id_embed_src').val()) {
+      alert("No video code");
+      return false;
+    }
+    if (!$('#id_title').val()) {
+      alert("Video title missing");
+      return false;
+    }    
+      
+    return true;
+    
+  });
+  
+    
+});
+</script>
 {% endblock %}
 
 {% block header%}
@@ -13,39 +108,91 @@
 	<div class="no-map-wrapper">
 	<div id="no-map-content-box">
 	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
-
-	<h2>1. Paste your video code</h2>
-
+        
     	<form method="post" action="/{{ user.username }}/videos/add/">
 
-    
-	<fieldset>
+        
+	<div id="video-youtube">
+	<h2>Link to a YouTube&trade; video?</h2>
+        <fieldset>
+        <div class="form-field-outer">
+		<div class="form-field-left">
+            		{{ form.youtube_video_id.errors }}
+            		<label for="id_youtube_video_id">Video URL</label>
+		</div>
 
-	<div class="form-field-outer">
+		<div class="form-field-right">
+			{{ form.youtube_video_id }}
+                        
+                  <span class="pleasewait" style="display:none">
+                    <img src="{% staticfile "/static/img/loading.gif" %}" width="16" height="16" alt="Please wait...">
+                    Fetching YouTube&trade; video details. Please wait...
+                  </span>
+		</div>
+	</div>
+        </fieldset>
+        </div><!--/#video-youtube-->
+
+        
+        <div id="video-details" style="display:none">
+	<h2>Video details</h2>
+        
+        <fieldset>
+        {{ form.thumbnail_url }}
+        
+        <div class="form-field-outer" id="preview-outer" style="display:none">
+		<div class="form-field-left">
+            		<label for="">Preview</label>
+		</div>
+
+		<div class="form-field-right">
+                &nbsp;
+		</div>
+	</div>
+        
+
+	<div class="form-field-outer" id="embed_src-outer">
 		<div class="form-field-left">
             		{{ form.embed_src.errors }}
-            		<label for="id_video">Video code</label>
+            		<label for="id_embed_src">Video code</label>
 		</div>
 
 		<div class="form-field-right">
 			{{ form.embed_src|safe }}
 		</div>
 	</div>
+        
+	<div class="form-field-outer">
+		<div class="form-field-left">
+            		{{ form.title.errors }}
+            		<label for="id_title">Title</label>
+		</div>
+
+		<div class="form-field-right">
+			{{ form.title }}
+		</div>
+	</div>
+        
 
 	<div class="form-field-outer">
 		<div class="form-field-left">
             		{{ form.description.errors }}
-            		<label for="id_video_description">Video description</label>
+            		<label for="id_video_description">Description</label>
 		</div>
 
 		<div class="form-field-right">
 			{{ form.description }}
 		</div>
 	</div>
+        </fieldset>
+        </div><!--/#video-details-->
+        
 
 	<div class="form-field-outer">
 	
-	<h2>2. Save your video</h2>
+	<h2>Save your video</h2>
+        
+        
 
 	<div class="form-field-submit">
 		<div class="button-outer">
@@ -56,13 +203,8 @@
 	</div>
 
 	</div>
-	
 
 
-    	</fieldset>
-
-
-    
 	</form>
 	</div>
 

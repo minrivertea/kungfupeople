@@ -254,7 +254,7 @@ def signup(request):
             slug = slugify(unaccent_string(name).replace('&','and'))
             #slug = name.strip().replace(' ', '-').lower()
             if url and name:
-                club = _get_or_create_club(url, name)
+                club = _get_or_create_club(name, url=url)
                 club.slug = slug[:50]
                 club.save()
                 person.club_membership.add(club)
@@ -371,7 +371,14 @@ def diary_entry(request, username, slug):
     })
     
 
-def _get_or_create_club(url, name):
+def _get_or_create_club(name, url=None):
+    assert name, "must have a club name"
+    # search by name
+    try:
+        return Club.objects.get(name__iexact=name)
+    except Club.DoesNotExist:
+        pass
+    
     if url:
         if not url.startswith('http'):
             url = 'http://' + url
@@ -381,29 +388,18 @@ def _get_or_create_club(url, name):
         except Club.DoesNotExist:
             pass
         
-    if name:
-        # search by name
-        try:
-            return Club.objects.get(name__iexact=name)
-        except Club.DoesNotExist:
-            pass
-    
     # still here?!
-    if name:
-        slug = slugify(unaccent_string(name).replace('&','and'))
-    else:
-        slug = ''
-    return Club.objects.create(url=url, name=name,
-                               slug=slug)
+    slug = slugify(unaccent_string(name).replace('&','and'))
+    return Club.objects.create(url=url, name=name.strip(),
+                               slug=slug.strip())
 
 def _get_or_create_style(name):
-    if name:
-        # search by name
-        try:
-            return Style.objects.get(name__iexact=name)
-        except Style.DoesNotExist:
-            pass
-    
+    # search by name
+    try:
+        return Style.objects.get(name__iexact=name)
+    except Style.DoesNotExist:
+        pass
+        
     # still here?!
     return Style.objects.create(name=name)
 
@@ -1184,16 +1180,14 @@ def edit_club(request, username):
     if request.method == 'POST':
         form = ClubForm(request.POST)
         if form.is_valid():        
-            url = form.cleaned_data['club_url']
-            name = form.cleaned_data['club_name']
-            slug = name.strip().replace(' ', '-').lower()
-            if url or name:
-                club = _get_or_create_club(url, name)
-                club.slug = slug
-                club.save()
-                person.club_membership.add(club)
-                person.save()
-                return HttpResponseRedirect('/%s/club/' % username)
+            url = form.cleaned_data['club_url'] # not required field
+            name = form.cleaned_data['club_name'] # required field
+            # _get_or_create_club() takes care of creating slug if necessary
+            club = _get_or_create_club(name, url=url)
+            person.club_membership.add(club)
+            person.save()
+            return HttpResponseRedirect('/%s/club/' % username)
+        
         else:
             if form.non_field_errors():
                 non_field_errors = form.non_field_errors()
@@ -1201,6 +1195,13 @@ def edit_club(request, username):
                 errors = form.errors
     else:
         form = ClubForm()
+        current_club_ids = [x.id for x in clubs]
+        all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()
+                     if x.id not in current_club_ids]
+        all_clubs_js = simplejson.dumps(all_clubs)
+        print all_clubs
+        del current_club_ids
+        
     return render(request, 'edit_club.html', locals())
 
 @must_be_owner
@@ -1234,6 +1235,12 @@ def edit_style(request, username):
                 return HttpResponseRedirect('/%s/style/' % username)
     else:
         form = StyleForm()
+        # generate a list of all styles for the javascript autocomplete.
+        # TODO: If this starts to get too large (unlikely) consider
+        # using AJAX instead.
+        all_styles = [x.name for x in Style.objects.all()]
+        all_styles_js = simplejson.dumps(all_styles)
+        
     return render(request, 'edit_style.html', locals())
 
 @must_be_owner
@@ -1270,17 +1277,28 @@ def videos(request, username):
     
 
 @must_be_owner
+@transaction.commit_on_success
 def add_video(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
     if request.method == 'POST':
         form = VideoForm(request.POST)
         if form.is_valid():
+            youtube_video_id = form.cleaned_data['youtube_video_id']
             embed_src = form.cleaned_data['embed_src']
+            title = form.cleaned_data['title']
             description = form.cleaned_data['description']
+            thumbnail_url = form.cleaned_data['thumbnail_url']
+            #print locals()
+            #raise Exception
             video = Video.objects.create(user=person.user,
                                          embed_src=embed_src,
-                                         description=description.strip())
+                                         title=title.strip(),
+                                         description=description.strip(),
+                                         thumbnail_url=thumbnail_url,
+                                        )
             return HttpResponseRedirect('/%s/' % username)
+        else:
+            print form.errors
     else:
         form = VideoForm()
     return render(request, 'add_video.html', {
@@ -1910,3 +1928,20 @@ def nav_html(request):
     i.e. the content inside the tag <div id="nav"></div>
     """
     return render(request, '_nav.html', dict())
+
+
+from youtube import YouTubeVideoError, get_youtube_video_by_id
+
+def get_youtube_video_by_id_json(request):
+    video_id = request.GET.get('video_id')
+    if not video_id:
+        raise ValueError("No video URL or ID")
+    from time import sleep
+    sleep(3)
+    
+    try:
+        data = get_youtube_video_by_id(video_id)
+    except YouTubeVideoError, msg:
+        return render_json(dict(error=str(msg)))
+    
+    return render_json(data)

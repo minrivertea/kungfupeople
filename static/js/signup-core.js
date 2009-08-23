@@ -183,8 +183,8 @@ function __on_dragend(delay_seconds) {
       return;
    }
    
-   marker_html = '<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..." /> '+
-                 "Please wait...<br/>Fetching location name";
+   marker_html = '<img src="/static/img/loading.gif" width="16" height="16" alt="Please wait..."> '+
+                 "Please wait...<br>Fetching location name";
    marker.openInfoWindowHtml(marker_html);
 
    if (delay_seconds) {

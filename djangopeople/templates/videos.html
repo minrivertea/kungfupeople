@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_no_map.html" %}
 
 {% block title %}{{ person.user.get_full_name }}'s videos |{% endblock %}
 
@@ -14,17 +14,18 @@ div.video { margin-bottom:20px; }
 
 	<a class="small-text" href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
 
-	<h2>{{ person.user.get_full_name }}'s Videos ({{ videos.count }})</h2>
+	<h2>{{ person.user.get_full_name }}'s videos ({{ videos.count }})</h2>
 	{% if is_owner %}<a href="/{{ person.user.username }}/videos/add/">Add a video</a>{% endif %}
 
 	<div id="videos">
 	  {% for video in videos %}
 	    <div class="video">
+              <h3>{{ video.title }}</h3>
 	      {{ video.embed_src|safe }}
 	      <br/>
 	      <span class="description">{{ video.description }}</span>
 	      {% if your_videos %}
-	        <a href="delete/{{ video.id }}/">Delete</a><br/>
+	        <br/><a href="delete/{{ video.id }}/">Delete</a><br/>
 	        {% if not video.approved %}
 	          <p style="color:red">Video not approved yet! Only you can see it</p>
 	        {% endif %}

@@ -125,7 +125,7 @@ class Command(BaseCommand):
             name, url = random.choice(self.random_clubs)
             slug = name.strip().replace(' ', '-').lower()
             if url or name:
-                club = _get_or_create_club(url, name)
+                club = _get_or_create_club(name, url=url)
                 club.slug = slug
                 club.save()
                 person.club_membership.add(club)

@@ -1,10 +1,61 @@
-{% extends "base.html" %}
+{% extends base_template %}
 {% load django_static %}
 
 {% block title %}Edit your clubs |{% endblock %}
 
+{% block extracss %}
+<link rel="stylesheet" href="{% slimfile "/css/jquery.autocomplete.css" %}" type="text/css"/>
+{% endblock %}
+
 {% block js %}
-<script type="text/javascript" src="{% slimfile "/js/edit_club.js" %}"></script>
+<script type="text/javascript" src="{% staticfile "/js/jquery.autocomplete.min.js" %}"></script>
+<script type="text/javascript">
+var ALL_CLUBS = {{ all_clubs_js|safe }};
+var CLUB_NAMES = new Array();
+var CLUB_URLS = new Array();
+
+$.each(ALL_CLUBS, function (i, e) {
+  CLUB_NAMES.push(e.name);
+  CLUB_URLS.push(e.url);
+  if (e.url.substr(0, 7) == 'http://')
+    CLUB_URLS.push(e.url.substr(7, e.url.length));
+});
+
+$(function () {
+  $('#id_club_name').autocomplete(CLUB_NAMES)
+    .result(function(event, item) {
+      $.each(ALL_CLUBS, function (i, e) {
+        if (e.name == item) {
+          $('#id_club_url').val(e.url);
+        }
+      });
+   });
+   
+  $('#id_club_url').autocomplete(CLUB_URLS)
+    .result(function(event, item) {
+        item = "" + item; // change to string
+        $.each(ALL_CLUBS, function (i, e) {
+          if (item.substr(0, 7) == 'http://') {
+            if (e.url == item) {
+              $('#id_club_name').val(e.name);
+            }
+          } else {
+            if (e.url == 'http://' + item) {
+              $('#id_club_name').val(e.name);
+            }
+          }
+        });
+        if ($('#id_club_url').val().substr(0,4) == 'www.')
+          $('#id_club_url').val('http://' + $('#id_club_url').val());
+          
+   }).bind('change', function() {
+     if ($(this).val().substr(0,7) != 'http://')
+       $(this).val('http://' + $(this).val());
+   });
+   
+});
+</script>
+
 {% endblock %}
 
 
@@ -30,23 +81,23 @@
 
 	<div class="form-field-outer">
 		<div class="form-field-left">
-    	        	{{ form.club_url.errors }}
-    	        	<label for="id_club_url">Club URL</label>
-		</div>
-
-		<div class="form-field-right">
-    	        	{{ form.club_url }}
-		</div>
-	</div>
-
-	<div class="form-field-outer">
-		<div class="form-field-left">
                 	{{ form.club_name.errors }}
                 	<label for="id_club_name">Club Name</label>
 		</div>
 
 		<div class="form-field-right">
     	        	{{ form.club_name }}
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+    	        	{{ form.club_url.errors }}
+    	        	<label for="id_club_url">Club URL</label>
+		</div>
+
+		<div class="form-field-right">
+    	        	{{ form.club_url }}
 		</div>
 	</div>
 
