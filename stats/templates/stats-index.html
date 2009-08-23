@@ -1,0 +1,22 @@
+{% extends "base_stats.html" %}
+
+{% block extracss %}
+{{ block.super }}
+<style type="text/css">
+div.stat a { font-weight:bold; }
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+<h2>Statistics - Gotto love 'em!</h2>
+
+<div class="stat">
+<h3><a href="{% url competitions %}">Competitions</a></h3>
+</div>
+
+<div class="stat">
+<h3><a href="{% url new_people %}">New people</a></h3>
+</div>
+
+{% endblock %}

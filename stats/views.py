@@ -1,4 +1,5 @@
 import re
+import datetime
 
 from django.utils import simplejson
 from django.conf import settings
@@ -7,8 +8,8 @@ from djangopeople.models import Club, KungfuPerson, Style, Country
 from djangopeople.utils import render, render_basic
 from django.views.decorators.cache import cache_page, never_cache
 from django.core.cache import cache
-
-
+from django.contrib.auth.models import User
+from stats.utils import extract_views_from_urlpatterns
 
 from django.utils.decorators import decorator_from_middleware
 from django.middleware.cache import CacheMiddleware
@@ -118,6 +119,42 @@ def _groups_table(groups, column1_label, column2_label, max_groups=10):
 
 
 
+
+
 def index(request):
     """list all available stats pages"""
+    return render(request, 'stats-index.html', locals())
+
+
+def new_people(request):
+    """page that shows a line graph showing the number of new signups
+    cummulativively or individual"""
+    #blocks = 'monthly'
+    
+    first_date = User.objects.all().order_by('date_joined')[0].date_joined
+    last_date = User.objects.all().order_by('-date_joined')[0].date_joined
+    
+    buckets = dict()
+    
+    prev_month = None
+    date = first_date
+    qs = User.objects.filter(is_staff=False)
+    while date < last_date:
+        key = date.strftime('%Y%m')
+        if key not in buckets:
+            buckets[key] = {'year': date.year, 
+                            'month': date.month,
+                            'month_name': date.strftime('%B'),
+                            'date': date,
+                            'count': qs.filter(date_joined__year=date.year,
+                                               date_joined__month=date.month).count()
+                            }
+        date = date + datetime.timedelta(days=1)
+        
+    # turn it into a list
+    buckets = [v for v in buckets.values()]
+    buckets.sort(lambda x,y: cmp(x['date'], y['date']))
+    total_count = sum([x['count'] for x in buckets])
+    
+    return render(request, 'stats-new-people.html', locals())
     

@@ -1,0 +1,43 @@
+{% extends "base_stats.html" %}
+
+{% block extracss %}
+{{ block.super }}
+<style type="text/css">
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+<h2>Number of new people</h2>
+
+<p>
+<strong>From:</strong> {{ first_date|date:"d M Y" }}<br>
+<strong>Until:</strong> {{ last_date|date:"d M Y" }}
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <td>Year</td>
+      <td>Month</td>
+      <td>No. new people</td>
+    </tr>
+  </thead>
+  {% for bucket in buckets %}
+  <tbody>
+    <tr>
+      <td>{{ bucket.year }}</td>
+      <td>{{ bucket.month_name }}</td>
+      <td align="center">{{ bucket.count }}</td>
+    </tr>
+  </tbody>
+  {% endfor %}
+  <tfoot>
+    <tr>
+      <td colspan="2">Total:</td>
+      <td align="center">{{ total_count }}</td>
+    </tr>
+  <tfoot>
+</table>
+
+{% endblock %}
