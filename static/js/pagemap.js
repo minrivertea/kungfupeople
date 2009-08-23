@@ -22,9 +22,7 @@ google.setOnLoadCallback(function() {
 	 gmap.removeControl(mapTypeControl);
 	 gmap.removeControl(shrinkControl);
 	 // Back to original center:
-	 var point = new google.maps.LatLng(
-					    person_latitude, person_longitude
-					    );
+	 var point = new google.maps.LatLng(PAGE_LATITUDE, PAGE_LONGITUDE);
 	 var marker = new google.maps.Marker(point, getMarkerOpts());
 	 gmap.addOverlay(marker);
 	 
@@ -58,7 +56,7 @@ google.setOnLoadCallback(function() {
       button.style.cursor = "pointer";
    }
    
-   var largeMapControl = new google.maps.LargeMapControl();
+   var largeMapControl = new google.maps.LargeMapControl3D()
    var mapTypeControl = new google.maps.MapTypeControl();
    var shrinkControl = new ShrinkControl();
    
@@ -83,7 +81,6 @@ google.setOnLoadCallback(function() {
 	 gmap.checkResize();
 	 gmap.enableDragging();
 	 // Need to recreate LargeMapControl to work around a bug
-	 largeMapControl = new google.maps.LargeMapControl();
 	 gmap.addControl(largeMapControl);
 	 gmap.addControl(mapTypeControl);
 	 gmap.addControl(shrinkControl);
