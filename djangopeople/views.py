@@ -152,21 +152,34 @@ def lost_password(request):
     username = request.POST.get('username', '')
     if username:
         try:
-            person = KungfuPerson.objects.get(user__username = username)
+            person = KungfuPerson.objects.get(user__username__iexact=username)
         except KungfuPerson.DoesNotExist:
             return render(request, 'lost_password.html', {
                 'message': 'That was not a valid username.'
             })
+        username = person.user.username
+        cache_key = 'password_recover_%s' % username.replace(' ','')
+        
+        if cache.get(cache_key) is not None:
+            msg = "Recovery instructions already sent.\n"
+            msg += "Please try again a bit later.\n"
+            return HttpResponse(msg)
+        
         path = utils.lost_url_for_user(username)
         from django.core.mail import send_mail
         import smtplib
+        current_url = request.build_absolute_uri()
         body = render_to_string('recovery_email.txt', {
             'path': path,
             'person': person,
+            'site_url': 'http://' + urlparse(current_url)[1],
+            'PROJECT_NAME': settings.PROJECT_NAME,
+                                                       
         })
         try:
             send_mail(
-                'Django People account recovery', body,
+                      '%s password recovery' % settings.PROJECT_NAME,
+                      body,
                 settings.RECOVERY_EMAIL_FROM, [person.user.email],
                 fail_silently=False
             )
@@ -174,10 +187,14 @@ def lost_password(request):
             return render(request, 'lost_password.html', {
                 'message': 'Could not e-mail you a recovery link.',
             })
+        
+        
+        cache.set(cache_key, 1, 60)
+        
         return render(request, 'lost_password.html', {
-            'message': ('An e-mail has been sent with instructions for '
-                "recovering your account. Don't forget to check your spam "
-                'folder!')
+            'message': ('An e-mail has been sent to %s with instructions for '
+                "recovering your password. Don't forget to check your spam "
+                'folder!' % person.user.email)
         })
     return render(request, 'lost_password.html')
 
