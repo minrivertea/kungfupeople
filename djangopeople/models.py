@@ -371,7 +371,7 @@ class Style(models.Model):
             # in the alpha phase till we sort out the club add stuff.
             from django.template.defaultfilters import slugify
             from utils import unaccent_string
-            self.slug = slugify(unaccent_string(self.name))
+            self.slug = slugify(unaccent_string(self.name[:50]))
             self.save()
         return ("style.view", (self.slug,))
 
