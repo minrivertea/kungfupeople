@@ -47,8 +47,11 @@ def video_url_or_id(url_or_id):
     If the parameter 'url_or_id' is a URL fish out the video ID out of it
     """
     def url2id(url):
-        qs = urlparse(url)[4]
-        return parse_qs(qs)['v'][0]
+        if '/v/' in url:
+            return url.split('/v/')[1].split('&')[0]
+        else:
+            qs = urlparse(url)[4]
+            return parse_qs(qs)['v'][0]
         
     if url_or_id.startswith('http'):
         try:
