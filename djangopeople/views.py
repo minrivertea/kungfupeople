@@ -152,7 +152,10 @@ def lost_password(request):
     username = request.POST.get('username', '')
     if username:
         try:
-            person = KungfuPerson.objects.get(user__username__iexact=username)
+            try:
+                person = KungfuPerson.objects.get(user__username__iexact=username)
+            except KungfuPerson.DoesNotExist:
+                person = KungfuPerson.objects.get(user__email__iexact=username)
         except KungfuPerson.DoesNotExist:
             return render(request, 'lost_password.html', {
                 'message': 'That was not a valid username.'
