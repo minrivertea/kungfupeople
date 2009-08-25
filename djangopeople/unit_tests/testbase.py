@@ -17,6 +17,8 @@ class FakeProwl(object):
 
 class TestCase(DjangoTestCase):
     
+    #_miles_between_lat_long_created = False
+    
     def setUp(self):
         # you're not supposed to run unit tests in anything persistentish
         # like a memcache or a database
@@ -25,6 +27,29 @@ class TestCase(DjangoTestCase):
         import djangopeople.utils
         if djangopeople.utils.prowl_api:
             djangopeople.utils.prowl_api = FakeProwl()
+
+        #print "_miles_between_lat_long_created", self._miles_between_lat_long_created
+        if settings.DATABASE_NAME == 'test_kungfupeople' and \
+          settings.DATABASE_NAME == 'postgresql_psycopg2':
+            from django.db import connection
+            cursor = connection.cursor()
+            sql_string = """
+            CREATE LANGUAGE plpgsql;
+
+            CREATE OR REPLACE function miles_between_lat_long(  
+              lat1 numeric, long1 numeric, lat2 numeric, long2 numeric  
+            ) returns numeric  
+            language 'plpgsql' as $$  
+            declare  
+              x numeric = 69.1 * (lat2 - lat1);  
+              y numeric = 69.1 * (long2 - long1) * cos(lat1/57.3);  
+            begin  
+              return sqrt(x * x + y * y);  
+            end  
+            $$;
+            """
+            cursor.execute(sql_string)
+            #self._miles_between_lat_long_created = True
             
         super(TestCase, self).setUp()
         

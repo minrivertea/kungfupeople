@@ -296,7 +296,8 @@ div.bio a.edit {
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
-                    <a href="{{ person.get_absolute_url }}"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person }}"></a>
+                    <a href="{{ person.get_absolute_url }}"
+                       title="Roughly {{ person.distance_miles|floatformat:0 }} miles"><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
 
 		</div>
                 </li>

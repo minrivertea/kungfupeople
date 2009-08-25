@@ -23,10 +23,10 @@ DIRECTORIES = (
     './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_lost_password'),
 
    ('djangopeople/unit_tests/test_models.py',
-    './manage.py test --settings=test_settings_pg djangopeople.ModelsTestCase'),
+    './manage.py test --settings=test_settings djangopeople.ModelsTestCase'),
 
    ('djangopeople/',
-    './manage.py test --settings=test_settings_pg djangopeople.ModelsTestCase'),
+    './manage.py test --settings=test_settings djangopeople.ModelsTestCase'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),

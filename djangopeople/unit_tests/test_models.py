@@ -1,3 +1,4 @@
+from django.conf import settings
 from testbase import TestCase
 
 from djangopeople.models import KungfuPerson, Country
@@ -40,23 +41,24 @@ class ModelsTestCase(TestCase):
                                              location_description=u"Lausanne")
         
         
-        near = person1.get_nearest()
+        near = person1.get_nearest(within_range=9999)
         
         self.assertEqual(near, [person2, person4, person3])
         
-        from geopy import distance as geopy_distance
-        def distance((latitude1, longitude1), (latitude2, longitude2)):
-            print "select miles_between_lat_long(%s, %s, %s, %s);"%(latitude1, longitude1, latitude2, longitude2)
-            return geopy_distance.distance((latitude1, longitude1), 
-                                           (latitude2, longitude2)).miles
-        start = (person1.latitude, person1.longitude)
-        saint_genis = (person2.latitude, person2.longitude)
-        islington = (person3.latitude, person3.longitude)
-        lausanne = (person4.latitude, person4.longitude)
-        print distance(start, saint_genis)
-        print distance(start, islington)
-        print distance(start, lausanne)
+        # the within range feature doesn't work in mysql
+        if settings.DATABASE_ENGINE == 'mysql':
+            return
         
-        print near
+        # person2: 21.7 miles
+        # person4: 34.7 miles
+        # person3: 471.9 miles
+        near = person1.get_nearest(within_range=100)
+        
+        self.assertEqual(near, [person2, person4])
+        
+        near = person1.get_nearest(num=1, within_range=100)
+        
+        self.assertEqual(near, [person2])
+        
         
         

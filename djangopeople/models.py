@@ -47,6 +47,8 @@ class DistanceManager(models.Manager):
         
         `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
         
+        NB: (x,y) <=> (lat, long)
+        
         returns a list of tuples, sorted by increasing distance from the given `point`. 
         each tuple being (model_object, dist), where distance is in the units of the 
         spatial ref sys given by `to_srid`"""
@@ -63,106 +65,79 @@ class DistanceManager(models.Manager):
                                            offset=offset,
                                            extra_where_sql=extra_where_sql)
         
-        elif settings.DATABASE_ENGINE == 'mysql':
-            return self._mysql_nearest_to(point, number, within_range=within_range,
-                                          offset=offset,
-                                          extra_where_sql=extra_where_sql)
-
         cursor = connection.cursor()
-        x, y = point
+        x, y = point # x=latitude, y=longitude
         table = self.model._meta.db_table
-
-        distance_clause = ''
-        if within_range:
-            # do something
-            pass
         
-        if extra_where_sql or distance_clause:
-            extra_where_sql = 'WHERE\n\t' + extra_where_sql
-            
-        if settings.DATABASE_NAME == 'test_kungfupeople':
-            sql_string = """
-            CREATE LANGUAGE plpgsql;
-
-            CREATE OR REPLACE function miles_between_lat_long(  
-              lat1 numeric, long1 numeric, lat2 numeric, long2 numeric  
-            ) returns numeric  
-            language 'plpgsql' as $$  
-            declare  
-              x numeric = 69.1 * (lat2 - lat1);  
-              y numeric = 69.1 * (long2 - long1) * cos(lat1/57.3);  
-            begin  
-              return sqrt(x * x + y * y);  
-            end  
-            $$;
-            """
-            cursor.execute(sql_string)
-            
-        template = Template("""
-            SELECT 
-            gl.id,
-                        miles_between_lat_long($x, $y,
-                                   gl.latitude::numeric, gl.longitude::numeric
-                                   ) AS distance
-
-            FROM 
-            $table gl
-            %s
-            %s
-            ORDER BY distance ASC
-            LIMIT $number
-            OFFSET $offset
-            ;
-        """ % (extra_where_sql, distance_clause))
-        sql_string = template.substitute(locals())
         
+        if settings.DATABASE_ENGINE == 'mysql':
+            if extra_where_sql:
+                extra_where_sql = 'WHERE\n\t' + extra_where_sql
+                
+            template = Template("""
+                SELECT 
+                gl.id,
+                ATAN2(
+                    SQRT(
+                    POW(COS(RADIANS($y)) *
+                        SIN(RADIANS(gl.latitude - $x)), 2) +
+                    POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
+                        SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+                        COS(RADIANS(gl.latitude - $x)), 2)), 
+                    (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
+                    COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+                    COS(RADIANS(gl.latitude - $x)))
+                    ) * 6372.795 AS distance
+                FROM 
+                $table gl
+                
+                %s
+                ORDER BY distance ASC
+                LIMIT $number
+                OFFSET $offset
+                ;
+            """ % (extra_where_sql,))
+            sql_string = template.substitute(locals())
+            
+        else:
+            # Postgres!
+    
+            distance_clause = ''
+            if within_range:
+                # do something
+                distance_clause = Template("""
+                AND
+                miles_between_lat_long($x,$y, 
+                                    gl.latitude::numeric, gl.longitude::numeric
+                                    ) < %s
+                """ % within_range
+                                        ).substitute(locals())
+            
+            if extra_where_sql or distance_clause:
+                extra_where_sql = 'WHERE\n\t' + extra_where_sql
+                
+                
+            template = Template("""
+                SELECT 
+                gl.id,
+                miles_between_lat_long($x, $y,
+                                    gl.latitude::numeric, gl.longitude::numeric
+                                    ) AS distance
+    
+                FROM 
+                $table gl
+                %s
+                %s
+                ORDER BY distance ASC
+                LIMIT $number
+                OFFSET $offset
+                ;
+            """ % (extra_where_sql, distance_clause))
+            sql_string = template.substitute(locals())
+            
         cursor.execute(sql_string)
         nearbys = cursor.fetchall()
         
-        for each in nearbys:
-            print each
-
-        
-##        distance_clause = ''
-##        
-##        if extra_where_sql or distance_clause:
-##            extra_where_sql = 'WHERE\n\t' + extra_where_sql
-##            
-##        template = Template("""
-##            SELECT 
-##            gl.id,
-##            ATAN2(
-##                SQRT(
-##                POW(COS(RADIANS($y)) *
-##                    SIN(RADIANS(gl.latitude - $x)), 2) +
-##                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
-##                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
-##                    COS(RADIANS(gl.latitude - $x)), 2)), 
-##                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
-##                COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
-##                COS(RADIANS(gl.latitude - $x)))
-##                ) * 6372.795 AS distance
-##            FROM 
-##            $table gl
-##            
-##            %s
-##            %s
-##            ORDER BY distance ASC
-##            LIMIT $number
-##            OFFSET $offset
-##            ;
-##        """ % (extra_where_sql, distance_clause))
-##        sql_string = template.substitute(locals())
-##        print sql_string
-##        
-##        cursor.execute(sql_string)
-##        nearbys = cursor.fetchall()
-##        if within_range:
-##            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
-##            
-##        for each in nearbys:
-##            print each
-##        
         # get a list of primary keys of the nearby model objects
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
@@ -218,23 +193,9 @@ class DistanceManager(models.Manager):
                     nearbys.append([d, id])
             else:
                 nearbys.append([d, id])
-                
-        def order_by(objects, listing, name):
-            """a convenience method that takes a list of objects,
-            and orders them by comparing an attribute given by `name`
-            to a sorted listing of values of the same length."""
-            sorted = []
-            for i in listing:
-                for obj in objects:
-                    if getattr(obj, name) == i:
-                        sorted.append(obj)
-            return sorted
-        ids = [p[1] for p in nearbys]
-        # get a list of distances from the model objects
-        dists = [p[0] for p in nearbys]
-        places = self.filter(id__in=ids)
-        return zip(order_by(places, ids, 'id'), dists)
-    
+        nearbys.sort()
+        nearbys = nearbys[:number]
+        return [[self.get(id=y), x] for (x,y) in nearbys]
     
     def in_box(self, box):
         """ box is (left, upper, right, lower) """
@@ -668,7 +629,7 @@ class KungfuPerson(models.Model):
     def __repr__(self):
         return "<KungfuPerson: %r>" % self.user.username
 
-    def get_nearest(self, num=5, within_range=100*1000):
+    def get_nearest(self, num=5, within_range=100):
         #from time import time
         #t0=time()
         #r = self._get_nearest(num=num)
@@ -685,11 +646,11 @@ class KungfuPerson(models.Model):
         ##                                        extra_where_sql='id<>%s' % self.id)]
         
         r = []
-        people = KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
+        people = KungfuPerson.objects.nearest_to((self.latitude, self.longitude),
                                                 number=num, within_range=within_range,
                                                 extra_where_sql='id<>%s' % self.id)
-        for person, distance in people:
-            person.distance = distance
+        for person, distance_miles in people:
+            person.distance_miles = distance_miles
             r.append(person)
         
         #t1=time()
