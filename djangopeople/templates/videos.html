@@ -1,39 +1,58 @@
 {% extends "base_no_map.html" %}
+{% load thumbnail %}
 
-{% block title %}{{ person.user.get_full_name }}'s videos |{% endblock %}
+{% block title %}{{ video.title|title }} | Video |{% endblock %}
 
 {% block extracss %}
-<style type="text/css">
-div.video { margin-bottom:20px; }
-</style>
+
 {% endblock %}
 
 {% block content %}
 
+
 <div id="content-box">
 
-	<a class="small-text" href="/{{ person.user.username }}">(back to {{ person.user.first_name }}'s profile)</a>
 
-	<h2>{{ person.user.get_full_name }}'s videos ({{ videos.count }})</h2>
-	{% if is_owner %}<a href="/{{ person.user.username }}/videos/add/">Add a video</a>{% endif %}
 
-	<div id="videos">
-	  {% for video in videos %}
-	    <div class="video">
-              <h3>{{ video.title }}</h3>
+	    <div class="video-full">
+
 	      {{ video.embed_src|safe }}
-	      <br/>
-	      <span class="description">{{ video.description }}</span>
-	      {% if your_videos %}
-	        <br/><a href="delete/{{ video.id }}/">Delete</a><br/>
-	        {% if not video.approved %}
-	          <p style="color:red">Video not approved yet! Only you can see it</p>
-	        {% endif %}
-	      {% endif %}
+
+
 	    </div>
-	  {% endfor %}
+
 	</div>
 
+</div>
+
+<div id="right-column">
+	<div class="right-box">
+
+		<h3>{{ video.title }}</h3>
+		<p class="meta">{{ video.add_date|date:"d M Y" }} | 
+		{% if is_owner %} 
+		<a href="/{{ person.user.username }}/videos/add/">Add another</a>  | 
+		<a href="delete">Delete</a> |
+		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+		{% else %}
+		<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>
+		{% endif %}
+		</p>
+
+		<p>{{ video.description }}</p>
+		<br/>
+		
+
+		<h3>Other recent videos</h4>
+		{% for video in recent %}
+		<div class="video-thumb">
+			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}" height="60" width="60"/></a>
+			<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong>
+			<p class="meta">{{ video.description|truncatewords:20 }}</p>
+		</div>	
+		{% endfor %}
+
+	</div>	
 </div>
 
 {% endblock %}

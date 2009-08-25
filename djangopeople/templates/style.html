@@ -103,22 +103,7 @@ div.bio a.edit {
                 {% endif %}
 
 
-		{% if diaries %}
-		<div class="highlight-profile">
-		<h3>Posts written by {{ style }} stylists</h3>
-		<ul class="diary-list">
-		{% for entry in diaries %}
-		<li class="diary-list">
-		<a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
-		<br>
-		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
-		<p class="meta"><a href="/{{ entry.user.username }}">{{ entry.user.get_full_name }}</a>  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
-		</li>
-		{% endfor %}
-		</ul>
-
-		</div>
-		{% endif %}
+	
        
 	</div>
 

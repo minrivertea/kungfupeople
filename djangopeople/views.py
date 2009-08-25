@@ -1148,7 +1148,7 @@ def diary_entry_add(request, username):
 def diary_entry_edit(request, username, slug):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entry = get_object_or_404(DiaryEntry, slug=slug, user=person.user)
-    page_title = "Edit a diary entry"
+    page_title = "Edit your blog post"
 
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)
@@ -1283,21 +1283,16 @@ def delete_style(request, username, style):
 
 
 
-def videos(request, username):
+def video(request, username, video_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    videos = Video.objects.filter(user=person.user)
-    if not (request.user and request.user.username == username):
-        your_videos = False
-        # you're not watching your own videos
-        videos = videos.filter(approved=True)
-    else:
-        your_videos = True
+    video = get_object_or_404(Video, user=person.user, id=video_id)
+    recent = Video.objects.all().order_by('-add_date').exclude(id=video.id)[:5]
 
     return render(request, 'videos.html', {
         'person': person,
-        'videos': videos,
+        'video': video,
         'is_owner': request.user.username == username,
-        'your_videos': your_videos,
+        'recent': recent,
     })
     
 

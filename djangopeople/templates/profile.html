@@ -226,15 +226,15 @@ div.bio a.edit {
 			<ul class="diary-list">
 			{% for entry in diary_entries_private %}
 				<li class="diary-list">
-				<a class="diary-title" href="diary/{{ entry.slug }}/">
-				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}{{ entry.title }}
+				<a href="diary/{{ entry.slug }}/">
+				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}
+				{{ entry.title }}
 				</a> 
-				<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/edit/">(edit)</a> 
-				<a href="/{{ person.user.username }}/diary/{{ entry.slug }}/delete/">
-				<img class="delete" src="/static/img/delete.png">
-				</a>
-				<br/>
-				<span class="meta">{{ entry.date_added|date:"d M Y" }}  |</span>
+				<br />
+				<p class="meta">{{ entry.date_added|date:"d M Y" }}  |
+				<a href="diary/{{ entry.slug }}/delete">Delete</a>  |
+				<a href="diary/{{ entry.slug }}/edit">Edit</a>  
+				</p>
 				</li>
 			{% endfor %}
 			</ul>
@@ -248,7 +248,11 @@ div.bio a.edit {
 				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}{{ entry.title }}
 				</a>
 				<br/>
-				<span class="meta">({{ entry.date_added|date:"d M Y" }})</span>
+				<p class="meta">({{ entry.date_added|date:"d M Y" }})
+				<a href="">Delete</a>  |
+
+				</p>
+
 				</li>
 			{% endfor %}
 			</ul>
@@ -260,12 +264,17 @@ div.bio a.edit {
 	<div class="highlight-profile">
 	<h3>videos</h3>
 	{% for video in videos %}
-	{% if is_owner %}
-	<a href="videos/delete/{{ video.id }}/">(delete this video)</a><br/>{% endif %}
-        <strong>{{ video.title }}</strong><br>
-        {{ video.description }}
+		<div class="video-thumb">
+			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}"/></a>
+        		<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br/>
+        		{{ video.description|truncatewords:25 }}<br/>
+			<p class="meta">{{ video.add_date|date:"d M Y" }} | 
+		{% if is_owner %} 
+		<a href="videos/delete/{{ video.id }}">Delete</a> 
+		{% endif %}
+		</p>
 	
-	<div class="video">{{ video.embed_src|safe }}</div>
+		</div>
 	{% endfor %}
 	</div>
 	{% endif %}

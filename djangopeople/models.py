@@ -577,6 +577,10 @@ class Video(models.Model):
     def __unicode__(self):
         return self.description and self.description.replace('\n', ' ')\
           or self.embed_src[:40]
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ("video.view", (self.user.username, self.id))
     
     
 class AutoLoginKey(models.Model):

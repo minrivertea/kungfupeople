@@ -132,7 +132,7 @@ $(function() {
 	<div class="form-field-outer">
 		<div class="form-field-left">
                     {{ form.diary_entry.errors }}
-                    <label for="id_diary_entry">Diary Entry</label>
+                    <label for="id_diary_entry">Blog Post</label>
 		</div>
 
 		<div class="form-field-right">
@@ -226,6 +226,8 @@ $(function() {
 		<img src="{% thumbnail photo.photo 100x100 crop %}">
 		</div>
 		{% endif %}
+		</div>
+	</div>
 
 
 {% endblock %}
