@@ -1148,7 +1148,7 @@ def diary_entry_add(request, username):
 def diary_entry_edit(request, username, slug):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entry = get_object_or_404(DiaryEntry, slug=slug, user=person.user)
-    page_title = "Edit a diary entry"
+    page_title = "Edit your blog post"
 
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)

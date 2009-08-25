@@ -348,7 +348,7 @@ p.large {
 	width: 100%;
     	float: left;
     	display: block;
-	margin: 0px 0px 10px 0px;
+	margin: 0px 10px 10px 0px;
 }
 
 
@@ -429,7 +429,6 @@ a:visited img {
 	padding: 0px;
 	text-decoration: none
 	cursor: pointer;
-	margin: 0 5px 5px 0;
 }
 
 a:hover img {
@@ -441,7 +440,6 @@ a:hover img {
 	margin: 0px;
 	text-decoration: none
 	cursor: pointer;
-	margin: 0 5px 5px 0;
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	-khtml-opacity: 0.6;
@@ -939,11 +937,11 @@ div.horizontal-photos {
 	margin-bottom: 5px;
 }
 
-.horizontal-photos img {
+.horizontal-photos a {
 	margin-right: 5px;
 }
 
-.horizontal-photos img:hover {
+.horizontal-photos a:hover {
 	margin-right: 5px;
 }
 
@@ -1372,7 +1370,7 @@ div.next-previous {
 	height: 80px;
 	width: 70%;
 	background-color: #e6e6e6;
-	padding: 20px;
+	padding: 20px 30px 10px 30px;
 	margin-top: 10px;
 }
 
