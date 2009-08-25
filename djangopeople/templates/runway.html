@@ -1,0 +1,37 @@
+{% extends "base_no_map.html" %}
+{% load django_static %}
+
+{% block title %}Runway |{% endblock %}
+
+{% block extracss %}
+<!--<link rel="stylesheet" href="{% slimfile "/css/jquery.autocomplete.css" %}" type="text/css">-->
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="http://api.simile-widgets.org/runway/1.0/runway-api.js"></script>
+<script type="text/javascript" src="data.js"></script>
+<script type="text/javascript">
+$(function () {
+  setTimeout(function () {
+  widget = Runway.createOrShowInstaller(
+    document.getElementById("the-widget"),
+    {
+        // examples of initial settings
+        // slideSize: 200,
+        // backgroundColorTop: "#fff",
+        
+        // event handlers
+        onReady: function() {
+            widget.setRecords(RUNWAY_RECORDS);
+        }
+    }
+  );}, 1000);
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Runway</h2>
+
+<div id="the-widget" style="height: 400px;"></div>
+{% endblock %}

@@ -1970,3 +1970,61 @@ def get_youtube_video_by_id_json(request):
         return render_json(dict(error=str(msg)))
     
     return render_json(data)
+
+def runway(request):
+    
+    return render(request, 'runway.html', locals())
+
+def runway_data_js(request):
+    cache_key = 'runway_data_js'
+    js = cache.get(cache_key)
+    if js is None:
+        
+        def get_person_subtitle(person):
+            subtitle = "%s, %s\n" % (person.location_description,
+                                     person.country.name)
+            clubs = [x.name for x in person.club_membership.all()]
+            if len(clubs) == 1:
+                subtitle += "Club: %s\n" % clubs[0]
+            elif clubs:
+                subtitle += "Clubs: %s\n" % ', '.join(clubs)
+                
+            styles = [x.name for x in person.styles.all()]
+            if len(styles) == 1:
+                subtitle += "Style: %s\n" % styles[0]
+            elif styles:
+                subtitle += "Styles: %s\n" % ', '.join(styles)
+            
+            return subtitle
+            
+        def get_person_title(person):
+            return person.user.get_full_name()
+        
+        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
+        records = []
+        for person in people:
+            thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
+                                        processors=thumbnail_processors)
+            data = dict(image=thumbnail.absolute_url,
+                        title=get_person_title(person),
+                        subtitle=get_person_subtitle(person))
+            records.append(data)
+            
+        js = 'var RUNWAY_RECORDS=%s;' % simplejson.dumps(records)
+        cache.set(cache_key, js, 60*60)# how many seconds?
+    
+    return HttpResponse(js, mimetype="text/javascript")
+    
+def crossdomain_xml(request):
+    domain = "*"
+    print request.META.keys() # referer?
+    xml = '<?xml version="1.0"?>\n'\
+          '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/'\
+          'dtds/cross-domain-policy.dtd">\n'\
+          """<cross-domain-policy>
+           <allow-access-from domain="%s" />
+          </cross-domain-policy>""" % domain
+    xml = xml.strip()
+    
+    return HttpResponse(xml, mimetype="application/xml")
+    
