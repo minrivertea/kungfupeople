@@ -62,35 +62,51 @@ class DistanceManager(models.Manager):
                                            within_range=within_range,
                                            offset=offset,
                                            extra_where_sql=extra_where_sql)
+        
+        elif settings.DATABASE_ENGINE == 'mysql':
+            return self._mysql_nearest_to(point, number, within_range=within_range,
+                                          offset=offset,
+                                          extra_where_sql=extra_where_sql)
 
         cursor = connection.cursor()
         x, y = point
         table = self.model._meta.db_table
+
         distance_clause = ''
-        #if within_range:
-        #    # Need to turn the select below into a subquery so I can do where distance <= X
-        #    raise NotImplementedError, "Not supported yet"
+        if within_range:
+            # do something
+            pass
         
         if extra_where_sql or distance_clause:
             extra_where_sql = 'WHERE\n\t' + extra_where_sql
             
+        if settings.DATABASE_NAME == 'test_kungfupeople':
+            sql_string = """
+            CREATE LANGUAGE plpgsql;
+
+            CREATE OR REPLACE function miles_between_lat_long(  
+              lat1 numeric, long1 numeric, lat2 numeric, long2 numeric  
+            ) returns numeric  
+            language 'plpgsql' as $$  
+            declare  
+              x numeric = 69.1 * (lat2 - lat1);  
+              y numeric = 69.1 * (long2 - long1) * cos(lat1/57.3);  
+            begin  
+              return sqrt(x * x + y * y);  
+            end  
+            $$;
+            """
+            cursor.execute(sql_string)
+            
         template = Template("""
             SELECT 
             gl.id,
-            ATAN2(
-                SQRT(
-                POW(COS(RADIANS($y)) *
-                    SIN(RADIANS(gl.latitude - $x)), 2) +
-                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
-                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
-                    COS(RADIANS(gl.latitude - $x)), 2)), 
-                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
-                COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
-                COS(RADIANS(gl.latitude - $x)))
-                ) * 6372.795 AS distance
+                        miles_between_lat_long($x, $y,
+                                   gl.latitude::numeric, gl.longitude::numeric
+                                   ) AS distance
+
             FROM 
             $table gl
-            
             %s
             %s
             ORDER BY distance ASC
@@ -102,9 +118,51 @@ class DistanceManager(models.Manager):
         
         cursor.execute(sql_string)
         nearbys = cursor.fetchall()
-        if within_range:
-            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
         
+        for each in nearbys:
+            print each
+
+        
+##        distance_clause = ''
+##        
+##        if extra_where_sql or distance_clause:
+##            extra_where_sql = 'WHERE\n\t' + extra_where_sql
+##            
+##        template = Template("""
+##            SELECT 
+##            gl.id,
+##            ATAN2(
+##                SQRT(
+##                POW(COS(RADIANS($y)) *
+##                    SIN(RADIANS(gl.latitude - $x)), 2) +
+##                POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
+##                    SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+##                    COS(RADIANS(gl.latitude - $x)), 2)), 
+##                (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
+##                COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+##                COS(RADIANS(gl.latitude - $x)))
+##                ) * 6372.795 AS distance
+##            FROM 
+##            $table gl
+##            
+##            %s
+##            %s
+##            ORDER BY distance ASC
+##            LIMIT $number
+##            OFFSET $offset
+##            ;
+##        """ % (extra_where_sql, distance_clause))
+##        sql_string = template.substitute(locals())
+##        print sql_string
+##        
+##        cursor.execute(sql_string)
+##        nearbys = cursor.fetchall()
+##        if within_range:
+##            nearbys = [(x, y) for (x, y) in nearbys if y <= within_range]
+##            
+##        for each in nearbys:
+##            print each
+##        
         # get a list of primary keys of the nearby model objects
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
@@ -615,10 +673,21 @@ class KungfuPerson(models.Model):
         #
         #print r
         #t0=time()
-        r = [p for (p, d) 
-             in KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
+        
+        
+        ##r = [p for (p, d) 
+        ##     in KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
+        ##                                        number=num, within_range=within_range,
+        ##                                        extra_where_sql='id<>%s' % self.id)]
+        
+        r = []
+        people = KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
                                                 number=num, within_range=within_range,
-                                                extra_where_sql='id<>%s' % self.id)]
+                                                extra_where_sql='id<>%s' % self.id)
+        for person, distance in people:
+            person.distance = distance
+            r.append(person)
+        
         #t1=time()
         #print "RESULT 2", (t1-t0)
         #print r
