@@ -2000,12 +2000,16 @@ def runway_data_js(request):
         def get_person_title(person):
             return person.user.get_full_name()
         
+        root_url = 'http://%s' % urlparse(request.build_absolute_uri())[1]
         people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
         records = []
         for person in people:
             thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
                                         processors=thumbnail_processors)
-            data = dict(image=thumbnail.absolute_url,
+            thumbnail_url = thumbnail.absolute_url
+            if thumbnail_url.startswith('/'):
+                thumbnail_url = root_url + thumbnail_url
+            data = dict(image=thumbnail_url,
                         title=get_person_title(person),
                         subtitle=get_person_subtitle(person))
             records.append(data)
