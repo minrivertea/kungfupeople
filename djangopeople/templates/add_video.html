@@ -76,8 +76,6 @@ $(function() {
     .bind('change', function() {update_by_video_id($(this).val())});
   
   $('form[method="post"]').bind('submit', function() {
-    console.log($('#id_youtube_video_id').val());
-    console.log(!$('#id_embed_src').val());
     if ($('#id_youtube_video_id').val() && !$('#id_embed_src').val()) {
       update_by_video_id($('#id_youtube_video_id').val());
       return false;
