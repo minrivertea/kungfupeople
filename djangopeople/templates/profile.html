@@ -270,7 +270,7 @@ div.bio a.edit {
         		{{ video.description|truncatewords:25 }}<br/>
 			<p class="meta">{{ video.add_date|date:"d M Y" }} | 
 		{% if is_owner %} 
-		<a href="delete/{{ video.id }}">Delete</a> 
+		<a href="videos/delete/{{ video.id }}">Delete</a> 
 		{% endif %}
 		</p>
 	
