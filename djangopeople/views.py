@@ -2004,7 +2004,7 @@ def runway_data_js(request):
         people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
         records = []
         for person in people:
-            thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
+            thumbnail = DjangoThumbnail(person.photo, (200,200), opts=['crop'],
                                         processors=thumbnail_processors)
             thumbnail_url = thumbnail.absolute_url
             if thumbnail_url.startswith('/'):
