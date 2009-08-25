@@ -50,13 +50,34 @@
 
 <div id="placeholder" style="width:550px;height:300px;"></div>
 
+
+<div id="list-new-people">
+  <div class="pleasewait" style="display:none; text-align:center; width:400px; margin:50px">
+  <img src="{% staticfile "/static/img/loading.gif" %}" width="16" height="16" alt="Loading">
+  Please wait...
+  </div>
+  <div id="list-new-people-inner">
+  </div>
+</div>
+
 {% endblock %}
 
 
 {% block js %}
-<!--[if IE]><script language="javascript" type="text/javascript" src="{% staticfile "/js/excanvas.min.js" %}"></script><![endif]-->
+<!--[if IE]><script language="javascript" type="text/javascript" src="{% staticfile "/js/excanvas.compiled.js" %}"></script><![endif]-->
 <script type="text/javascript" src="{% staticfile "/js/jquery.flot.js" %}"></script>
 <script type="text/javascript">
+
+function __unlist_new_people() {
+  $('#list-new-people-inner').hide(400);
+}
+function __list_new_people(ts1, ts2) {
+  $('.pleasewait:hidden', '#list-new-people').show();
+  $.get('/stats/_list-new-people.html', {from:ts1, to:ts2}, function(result) {
+    $('.pleasewait:visible', '#list-new-people').hide(200);
+    $('#list-new-people-inner').html(result);
+  });
+}
 $(function() {
     var d = {{ buckets_timestamps_json }};
     var d2 = {{ buckets_cumulative_timestamps_json }};
@@ -90,15 +111,44 @@ $(function() {
     }
     
     var options = {
+        legend: { position:"nw" },
         xaxis: { mode: "time" },
         selection: { mode: "x" },
-        grid: { markings: weekendAreas }
+	shadowSize: 4,
+        grid: { markings: weekendAreas, clickable:true, hoverable:true }
     };
     
     var plot = $.plot($("#placeholder"),[
                        {label:"new people", data:d},
                        {label:"cumulative", data:d2}
                        ], options);
+                       
+    var orig_selection = plot.getSelection();
+		       
+    $("#placeholder").bind("plotselected", function (event, selection) {
+      __list_new_people(selection.xaxis.from, selection.xaxis.to);
+      //window.console.log(event);
+      //plot.triggerRedrawOverlay();
+      plot.draw();
+      //plot.setSelection(orig_selection, true);
+      
+      return false;
+    }).bind("plotunselected", function () {
+      __unlist_new_people();
+    });
+    
+		   
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        //alert("You clicked at " + pos.x + ", " + pos.y);
+        // secondary axis coordinates if present are in pos.x2, pos.y2,
+        // if you need global screen coordinates, they are pos.pageX, pos.pageY
+
+        if (item) {
+          $.highlight(item.series, item.datapoint);
+          alert("You clicked a point!");
+        }
+    });
+
     
     /*
     var overview = $.plot($("#overview"), [d], {
@@ -129,6 +179,8 @@ $(function() {
         plot.setSelection(ranges);
     });
     */
+    
+    
     
 
 });

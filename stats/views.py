@@ -5,6 +5,7 @@ from time import mktime
 from django.utils import simplejson
 from django.conf import settings
 
+from django.http import Http404
 from djangopeople.models import Club, KungfuPerson, Style, Country
 from djangopeople.utils import render, render_basic
 from django.views.decorators.cache import cache_page, never_cache
@@ -174,3 +175,26 @@ def new_people(request):
     
     return render(request, 'stats-new-people.html', locals())
     
+    
+def list_new_people_html(request):
+    try:
+        # UTC timestamps
+        from_timestamp = float(request.GET.get('from'))
+        to_timestamp = float(request.GET.get('to'))
+        if from_timestamp > to_timestamp:
+            raise Http404("to timestamp less than from")
+    except ValueError:
+        raise Http404("Invalid timestamps")
+    
+    from_datetime = datetime.datetime.utcfromtimestamp(from_timestamp/ 1000)
+    to_datetime = datetime.datetime.utcfromtimestamp(to_timestamp/ 1000)
+    
+    print from_datetime, to_datetime
+    
+    people = KungfuPerson.objects.filter(user__date_joined__gte=from_datetime,
+                                         user__date_joined__lt=to_datetime)
+    print people.count()
+    #print people.query.as_sql()
+    people = people.select_related().order_by('user__date_joined')
+        
+    return render(request, '_list-new-people.html', locals())
