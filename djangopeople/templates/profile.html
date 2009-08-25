@@ -260,12 +260,17 @@ div.bio a.edit {
 	<div class="highlight-profile">
 	<h3>videos</h3>
 	{% for video in videos %}
-	{% if is_owner %}
-	<a href="videos/delete/{{ video.id }}/">(delete this video)</a><br/>{% endif %}
-        <strong>{{ video.title }}</strong><br>
-        {{ video.description }}
+		<div class="video-thumb">
+			<a href="{{ video.get_absolute_url }}"><img src="{{ video.thumbnail_url }}"/></a>
+        		<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br/>
+        		{{ video.description|truncatewords:25 }}<br/>
+			<p class="meta">{{ video.add_date|date:"d M Y" }} | 
+		{% if is_owner %} 
+		<a href="delete">Delete</a> 
+		{% endif %}
+		</p>
 	
-	<div class="video">{{ video.embed_src|safe }}</div>
+		</div>
 	{% endfor %}
 	</div>
 	{% endif %}
