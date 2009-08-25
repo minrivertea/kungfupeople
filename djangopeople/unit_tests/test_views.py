@@ -1,10 +1,12 @@
 """
 testing views
 """
-import os
+import os, re
 from django.utils import simplejson
 from django.conf import settings
 from django.utils import simplejson
+from django.core import mail
+
 
 from djangopeople.models import KungfuPerson, Club, Country, Style, \
   DiaryEntry, Photo
@@ -678,6 +680,59 @@ class ViewsTestCase(TestCase):
         self.assertEqual(len(content['diary_entries']), 1)
         
         
+    def test_lost_password(self):
+        """when you click on lost password it should send an email which will
+        contain a link back to the site"""
+        switzerland = Country.objects.get(name=u"Switzerland")
+        user, person = self._create_person("user1", "user1@example.com",
+                                           country=switzerland.name,
+                                           latitude=46.20217114444467,
+                                           longitude=6.142730712890625,
+                                           location_description=u"Geneva",
+                                           first_name="Userino")
+
+        #print KungfuPerson.objects.all()
+        response = self.client.get('/recover/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Enter your username' in response.content)
+        
+        # you have to post a variable called 'username'
+        response = self.client.post('/recover/', dict(username='NOOOPE'))
+        self.assertTrue('That was not a valid username' in response.content)
+
+        response = self.client.post('/recover/', dict(username='User1'))
+        # this should now have sent out an email
+        self.assertEquals(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual("%s password recovery" % settings.PROJECT_NAME, 
+                         email.subject)
+
+        self.assertTrue('Userino' in email.body)
+        self.assertTrue(settings.PROJECT_NAME in email.body)
+        recover_url = None
+        # all the urls in the email body should be openable
+        for url in re.findall(r'(http://.*?)[\s\.]', email.body):
+            if url.count('/recover/'):
+                recover_url = url
+            else:
+                r = self.client.get(url)
+                self.assertTrue(r.status_code in (200, 302))
+                
+        self.assertTrue(recover_url)
+            
+        self.assertTrue('e-mail has been sent' in response.content)
+        self.assertTrue(user.email in response.content)
+        
+        # before we open the actual recover link, check that you can't try
+        # to recover the password again.
+        response = self.client.post('/recover/', dict(username='User1'))
+        self.assertTrue('Recovery instructions already sent' in response.content)
+        self.assertTrue('Please try again a bit later' in response.content)
+        
+        # now, let's try to do the actual recover
+        response = self.client.get(recover_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response._headers['location'])
         
         
         

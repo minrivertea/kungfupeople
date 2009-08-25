@@ -1,0 +1,190 @@
+{% extends "base_stats.html" %}
+{% load django_static %}
+
+{% block extracss %}
+{{ block.super }}
+<style type="text/css">
+#details-and-table { width:400px; float:right;  }
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+<h2>Number of new people per month</h2>
+
+<div id="details-and-table">
+
+<p>
+<strong>From:</strong> {{ first_date|date:"d M Y" }}<br>
+<strong>Until:</strong> {{ last_date|date:"d M Y" }}
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <td>Year</td>
+      <td>Month</td>
+      <td>New people</td>
+      <td>Cumulative</td>
+    </tr>
+  </thead>
+  {% for bucket in buckets %}
+  <tbody>
+    <tr>
+      <td>{{ bucket.year }}</td>
+      <td>{{ bucket.month_name }}</td>
+      <td align="center">{{ bucket.count }}</td>
+      <td align="center">{{ bucket.total_count }}</td>
+    </tr>
+  </tbody>
+  {% endfor %}
+  <tfoot>
+    <tr>
+      <td colspan="2">Total:</td>
+      <td align="center">{{ total_count }}</td>
+    </tr>
+  <tfoot>
+</table>
+
+</div>
+
+<div id="placeholder" style="width:550px;height:300px;"></div>
+
+
+<div id="list-new-people">
+  <div class="pleasewait" style="display:none; text-align:center; width:400px; margin:50px">
+  <img src="{% staticfile "/static/img/loading.gif" %}" width="16" height="16" alt="Loading">
+  Please wait...
+  </div>
+  <div id="list-new-people-inner">
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<!--[if IE]><script language="javascript" type="text/javascript" src="{% staticfile "/js/excanvas.compiled.js" %}"></script><![endif]-->
+<script type="text/javascript" src="{% staticfile "/js/jquery.flot.js" %}"></script>
+<script type="text/javascript">
+
+function __unlist_new_people() {
+  $('#list-new-people-inner').hide(400);
+}
+function __list_new_people(ts1, ts2) {
+  $('.pleasewait:hidden', '#list-new-people').show();
+  $.get('/stats/_list-new-people.html', {from:ts1, to:ts2}, function(result) {
+    $('.pleasewait:visible', '#list-new-people').hide(200);
+    $('#list-new-people-inner').html(result);
+  });
+}
+$(function() {
+    var d = {{ buckets_timestamps_json }};
+    var d2 = {{ buckets_cumulative_timestamps_json }};
+
+    // first correct the timestamps - they are recorded as the daily
+    // midnights in UTC+0100, but Flot always displays dates in UTC
+    // so we have to add one hour to hit the midnights in the plot
+    for (var i = 0; i < d.length; ++i) {
+      d[i][0] += 60 * 60 * 1000;
+      d2[i][0] += 60 * 60 * 1000;
+    }
+
+    // helper for returning the weekends in a period
+    function weekendAreas(axes) {
+        var markings = [];
+        var d = new Date(axes.xaxis.min);
+        // go to the first Saturday
+        d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
+        d.setUTCSeconds(0);
+        d.setUTCMinutes(0);
+        d.setUTCHours(0);
+        var i = d.getTime();
+        do {
+            // when we don't set yaxis the rectangle automatically
+            // extends to infinity upwards and downwards
+            markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
+            i += 7 * 24 * 60 * 60 * 1000;
+        } while (i < axes.xaxis.max);
+
+        return markings;
+    }
+    
+    var options = {
+        legend: { position:"nw" },
+        xaxis: { mode: "time" },
+        selection: { mode: "x" },
+	shadowSize: 4,
+        grid: { markings: weekendAreas, clickable:true, hoverable:true }
+    };
+    
+    var plot = $.plot($("#placeholder"),[
+                       {label:"new people", data:d},
+                       {label:"cumulative", data:d2}
+                       ], options);
+                       
+    var orig_selection = plot.getSelection();
+		       
+    $("#placeholder").bind("plotselected", function (event, selection) {
+      __list_new_people(selection.xaxis.from, selection.xaxis.to);
+      //window.console.log(event);
+      //plot.triggerRedrawOverlay();
+      plot.draw();
+      //plot.setSelection(orig_selection, true);
+      
+      return false;
+    }).bind("plotunselected", function () {
+      __unlist_new_people();
+    });
+    
+		   
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        //alert("You clicked at " + pos.x + ", " + pos.y);
+        // secondary axis coordinates if present are in pos.x2, pos.y2,
+        // if you need global screen coordinates, they are pos.pageX, pos.pageY
+
+        if (item) {
+          $.highlight(item.series, item.datapoint);
+          alert("You clicked a point!");
+        }
+    });
+
+    
+    /*
+    var overview = $.plot($("#overview"), [d], {
+        lines: { show: true, lineWidth: 1 },
+        shadowSize: 0,
+        xaxis: { ticks: [], mode: "time" },
+        yaxis: { ticks: [], min: 0, max: 4000 },
+        selection: { mode: "x" }
+    })
+    */;
+
+    // now connect the two
+    
+    $("#placeholder").bind("plotselected", function (event, ranges) {
+        // do the zooming
+        plot = $.plot($("#placeholder"), [d],
+                      $.extend(true, {}, options, {
+                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                      }));
+        /*
+        // don't fire event on the overview to prevent eternal loop
+        overview.setSelection(ranges, true);
+        */
+    });
+    
+    /*
+    $("#overview").bind("plotselected", function (event, ranges) {
+        plot.setSelection(ranges);
+    });
+    */
+    
+    
+    
+
+});
+</script>
+
+
+{% endblock %}

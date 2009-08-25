@@ -152,21 +152,37 @@ def lost_password(request):
     username = request.POST.get('username', '')
     if username:
         try:
-            person = KungfuPerson.objects.get(user__username = username)
+            try:
+                person = KungfuPerson.objects.get(user__username__iexact=username)
+            except KungfuPerson.DoesNotExist:
+                person = KungfuPerson.objects.get(user__email__iexact=username)
         except KungfuPerson.DoesNotExist:
             return render(request, 'lost_password.html', {
                 'message': 'That was not a valid username.'
             })
+        username = person.user.username
+        cache_key = 'password_recover_%s' % username.replace(' ','')
+        
+        if cache.get(cache_key) is not None:
+            msg = "Recovery instructions already sent.\n"
+            msg += "Please try again a bit later.\n"
+            return HttpResponse(msg)
+        
         path = utils.lost_url_for_user(username)
         from django.core.mail import send_mail
         import smtplib
+        current_url = request.build_absolute_uri()
         body = render_to_string('recovery_email.txt', {
             'path': path,
             'person': person,
+            'site_url': 'http://' + urlparse(current_url)[1],
+            'PROJECT_NAME': settings.PROJECT_NAME,
+                                                       
         })
         try:
             send_mail(
-                'Django People account recovery', body,
+                      '%s password recovery' % settings.PROJECT_NAME,
+                      body,
                 settings.RECOVERY_EMAIL_FROM, [person.user.email],
                 fail_silently=False
             )
@@ -174,10 +190,14 @@ def lost_password(request):
             return render(request, 'lost_password.html', {
                 'message': 'Could not e-mail you a recovery link.',
             })
+        
+        
+        cache.set(cache_key, 1, 60)
+        
         return render(request, 'lost_password.html', {
-            'message': ('An e-mail has been sent with instructions for '
-                "recovering your account. Don't forget to check your spam "
-                'folder!')
+            'message': ('An e-mail has been sent to %s with instructions for '
+                "recovering your password. Don't forget to check your spam "
+                'folder!' % person.user.email)
         })
     return render(request, 'lost_password.html')
 
@@ -1004,6 +1024,11 @@ def style(request, name):
     people = KungfuPerson.objects.filter(styles=style)
     diaries = DiaryEntry.objects.filter(user__in=[x.id for x in people]).order_by('-date_added')
     count = people.count()
+    
+    club_ids = set()
+    for person in people:
+        club_ids.update([x.id for x in person.club_membership.all()])
+    clubs = Club.objects.filter(id__in=list(club_ids))
 
     return render(request, 'style.html', locals())
 
@@ -1940,3 +1965,65 @@ def get_youtube_video_by_id_json(request):
         return render_json(dict(error=str(msg)))
     
     return render_json(data)
+
+def runway(request):
+    
+    return render(request, 'runway.html', locals())
+
+def runway_data_js(request):
+    cache_key = 'runway_data_js'
+    js = cache.get(cache_key)
+    if js is None:
+        
+        def get_person_subtitle(person):
+            subtitle = "%s, %s\n" % (person.location_description,
+                                     person.country.name)
+            clubs = [x.name for x in person.club_membership.all()]
+            if len(clubs) == 1:
+                subtitle += "Club: %s\n" % clubs[0]
+            elif clubs:
+                subtitle += "Clubs: %s\n" % ', '.join(clubs)
+                
+            styles = [x.name for x in person.styles.all()]
+            if len(styles) == 1:
+                subtitle += "Style: %s\n" % styles[0]
+            elif styles:
+                subtitle += "Styles: %s\n" % ', '.join(styles)
+            
+            return subtitle
+            
+        def get_person_title(person):
+            return person.user.get_full_name()
+        
+        root_url = 'http://%s' % urlparse(request.build_absolute_uri())[1]
+        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
+        records = []
+        for person in people:
+            thumbnail = DjangoThumbnail(person.photo, (200,200), opts=['crop'],
+                                        processors=thumbnail_processors)
+            thumbnail_url = thumbnail.absolute_url
+            if thumbnail_url.startswith('/'):
+                thumbnail_url = root_url + thumbnail_url
+            data = dict(image=thumbnail_url,
+                        title=get_person_title(person),
+                        subtitle=get_person_subtitle(person))
+            records.append(data)
+            
+        js = 'var RUNWAY_RECORDS=%s;' % simplejson.dumps(records)
+        cache.set(cache_key, js, 60*60)# how many seconds?
+    
+    return HttpResponse(js, mimetype="text/javascript")
+    
+def crossdomain_xml(request):
+    domain = "*"
+    print request.META.keys() # referer?
+    xml = '<?xml version="1.0"?>\n'\
+          '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/'\
+          'dtds/cross-domain-policy.dtd">\n'\
+          """<cross-domain-policy>
+           <allow-access-from domain="%s" />
+          </cross-domain-policy>""" % domain
+    xml = xml.strip()
+    
+    return HttpResponse(xml, mimetype="application/xml")
+    

@@ -88,6 +88,19 @@ div.bio a.edit {
 		</ul>
 	</div>
 		</div>
+                
+                {% if clubs %}
+                <div class="highlight-profile">
+		<h3>Clubs where stylists do {{ style }}</h3>
+                <ul class="club-list">
+		{% for club in clubs %}
+		<li class="club-list">
+		<a class="club-name" href="{{ club.get_absolute_url }}">{{ club.name }}</a>
+		</li>
+		{% endfor %}
+                </ul>
+                </div>
+                {% endif %}
 
 
 		{% if diaries %}
@@ -97,13 +110,12 @@ div.bio a.edit {
 		{% for entry in diaries %}
 		<li class="diary-list">
 		<a class="diary-title" href="/{{ entry.user.username }}/diary/{{ entry.slug }}/">{{ entry.title }}</a>
-		<br/>
+		<br>
 		<p class="diary-summary-text">{{ entry.content|striptags|truncatewords:20 }}</p>
 		<p class="meta"><a href="/{{ entry.user.username }}">{{ entry.user.get_full_name }}</a>  |  {{ entry.date_added|date:"d M Y" }}  |</p> 
 		</li>
-		</ul>
-
 		{% endfor %}
+		</ul>
 
 		</div>
 		{% endif %}

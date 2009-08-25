@@ -1,0 +1,18 @@
+{% load django_static thumbnail %}
+<div id="new-people">
+  {% for person in people %}
+  <div class="person">
+    <p>
+      <a href="{{ person.get_absolute_url }}" title="{{ person }}"
+         style="float:left; margin-right:5px"
+         ><img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" border="0" alt="{{ person }}"></a>
+     <strong><a href="{{ person.get_absolute_url }}" title="{{ person }}">{{ person }}</a></strong><br>
+     Joined us: {{ person.user.date_joined|date:"d M Y" }}<br>
+     {{ person.location_description }}, {{ person.country.name }}
+     <a href="/{{ person.country.iso_code|lower }}/">
+			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" border="0" class="flag country-name"></a>
+     </p>
+     <br style="clear:left">
+  </div>
+  {% endfor %}
+</div>

@@ -20,7 +20,9 @@ NEARBY_PERSON_KEYS = settings.NEARBY_PERSON_KEYS
 
 register = template.Library()
 
-def uniqify(seq, idfun=None): 
+def uniqify(seq, idfun=None):
+    if seq is None:
+        raise ValueError("Sequence can not be None")
     if idfun is None:
         def idfun(x): return x
     seen = {}

@@ -325,9 +325,12 @@ class ClubForm(forms.Form):
         
         # lastly, do a HEAD request and check that the website exists
         if not settings.OFFLINE_MODE:
-            import httplib
+            import httplib, socket
             conn = httplib.HTTPConnection(urlparse(url)[1])
-            conn.request("HEAD", urlparse(url)[2])
+            try:
+                conn.request("HEAD", urlparse(url)[2])
+            except socket.gaierror:
+                raise forms.ValidationError("Unable to connect to URL")
             res = conn.getresponse()
             if res.status == 200 or (str(res.status).startswith('30') and len(str(res.status)) == 3):
                 pass

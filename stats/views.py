@@ -1,14 +1,17 @@
 import re
+import datetime
+from time import mktime
 
 from django.utils import simplejson
 from django.conf import settings
 
+from django.http import Http404
 from djangopeople.models import Club, KungfuPerson, Style, Country
 from djangopeople.utils import render, render_basic
 from django.views.decorators.cache import cache_page, never_cache
 from django.core.cache import cache
-
-
+from django.contrib.auth.models import User
+from stats.utils import extract_views_from_urlpatterns
 
 from django.utils.decorators import decorator_from_middleware
 from django.middleware.cache import CacheMiddleware
@@ -118,6 +121,80 @@ def _groups_table(groups, column1_label, column2_label, max_groups=10):
 
 
 
+
+
 def index(request):
     """list all available stats pages"""
+    return render(request, 'stats-index.html', locals())
+
+
+def new_people(request):
+    """page that shows a line graph showing the number of new signups
+    cummulativively or individual"""
+    #blocks = 'monthly'
     
+    first_date = User.objects.all().order_by('date_joined')[0].date_joined
+    last_date = User.objects.all().order_by('-date_joined')[0].date_joined
+    
+    buckets = dict()
+    
+    prev_month = None
+    date = first_date
+    qs = User.objects.filter(is_staff=False)
+    
+    count_previous = 0
+    total_count = 0
+    while date < last_date:
+        key = date.strftime('%Y%m')
+        if key not in buckets:
+            date_hourless = datetime.date(date.year, date.month, 15)
+            count = qs.filter(date_joined__year=date.year,
+                              date_joined__month=date.month).count()
+            total_count += count
+            buckets[key] = {'year': date.year, 
+                            'month': date.month,
+                            'month_name': date.strftime('%B'),
+                            'date': date,
+                            'count': count,
+                            'total_count': total_count,
+                            'timestamp': int(mktime(date_hourless.timetuple())) * 1000,
+                            }
+        date = date + datetime.timedelta(days=1)
+        
+    # turn it into a list
+    buckets = [v for v in buckets.values()]
+    buckets.sort(lambda x,y: cmp(x['date'], y['date']))
+
+    buckets_timestamps = [[x['timestamp'], x['count']]
+                          for x in buckets]
+    buckets_timestamps_json = simplejson.dumps(buckets_timestamps)
+    
+    buckets_cumulative_timestamps = [[x['timestamp'], x['total_count']]
+                          for x in buckets]
+    buckets_cumulative_timestamps_json = simplejson.dumps(buckets_cumulative_timestamps)
+    
+    return render(request, 'stats-new-people.html', locals())
+    
+    
+def list_new_people_html(request):
+    try:
+        # UTC timestamps
+        from_timestamp = float(request.GET.get('from'))
+        to_timestamp = float(request.GET.get('to'))
+        if from_timestamp > to_timestamp:
+            raise Http404("to timestamp less than from")
+    except ValueError:
+        raise Http404("Invalid timestamps")
+    
+    from_datetime = datetime.datetime.utcfromtimestamp(from_timestamp/ 1000)
+    to_datetime = datetime.datetime.utcfromtimestamp(to_timestamp/ 1000)
+    
+    print from_datetime, to_datetime
+    
+    people = KungfuPerson.objects.filter(user__date_joined__gte=from_datetime,
+                                         user__date_joined__lt=to_datetime)
+    print people.count()
+    #print people.query.as_sql()
+    people = people.select_related().order_by('user__date_joined')
+        
+    return render(request, '_list-new-people.html', locals())
