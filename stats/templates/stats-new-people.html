@@ -52,6 +52,13 @@
 
 <div id="placeholder" style="width:550px;height:300px;"></div>
 
+<p>
+{% if weekly %}
+<a href="../">Switch to <strong>per month</strong></a>
+{% else %}
+<a href="weekly/">Switch to <strong>per week</strong></a>
+{% endif %}
+</p>
 
 <div id="list-new-people">
   <div class="pleasewait" style="display:none; text-align:center; width:400px; margin:50px">

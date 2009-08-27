@@ -127,7 +127,7 @@ def index(request):
     """list all available stats pages"""
     return render(request, 'stats-index.html', locals())
 
-
+@custom_cache_page(60 * 60)
 def new_people(request, period='monthly'):
     """page that shows a line graph showing the number of new signups
     cummulativively or individual"""
