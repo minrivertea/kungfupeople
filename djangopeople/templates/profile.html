@@ -65,7 +65,11 @@ div.bio a.edit {
     <div class="mapContainer minor">
         <div id="gmap">&nbsp;
         {% if OFFLINE_MODE %}
-        <img src="/static/img/map-short-placeholder.png" />
+        <img src="/static/img/map-short-placeholder.png">
+        {% else %}
+          {% if static_map_url %}
+          <img src="{{ static_map_url }}">
+          {% endif %}
         {% endif %}
         </div>
     </div>
