@@ -10,7 +10,7 @@
 
 {% block content %}
 {{ block.super }}
-<h2>Number of new people per month</h2>
+<h2>Number of new people per {% if weekly %}week{% else %}month{% endif %}</h2>
 
 <div id="details-and-table">
 
@@ -24,6 +24,7 @@
     <tr>
       <td>Year</td>
       <td>Month</td>
+      {% if weekly %}<td>Week</td>{% endif %}
       <td>New people</td>
       <td>Cumulative</td>
     </tr>
@@ -33,6 +34,7 @@
     <tr>
       <td>{{ bucket.year }}</td>
       <td>{{ bucket.month_name }}</td>
+      {% if weekly %}<td>{{ bucket.week_name }}</td>{% endif %}
       <td align="center">{{ bucket.count }}</td>
       <td align="center">{{ bucket.total_count }}</td>
     </tr>

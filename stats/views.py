@@ -128,28 +128,50 @@ def index(request):
     return render(request, 'stats-index.html', locals())
 
 
-def new_people(request):
+def new_people(request, period='monthly'):
     """page that shows a line graph showing the number of new signups
     cummulativively or individual"""
     #blocks = 'monthly'
+    
+    weekly = period == 'weekly'
+    def _find_week_min_max(date):
+        # given a date anywhere in the middle of the week, return the date
+        # of that week's Monday at 00:00:00 and return the Monday exactly
+        # 7 days later
+        search_date = datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
+        while search_date.strftime('%A') != 'Monday':
+            search_date = search_date - datetime.timedelta(days=1)
+            
+        return search_date, search_date + datetime.timedelta(days=7)
     
     first_date = User.objects.all().order_by('date_joined')[0].date_joined
     last_date = User.objects.all().order_by('-date_joined')[0].date_joined
     
     buckets = dict()
     
-    prev_month = None
     date = first_date
     qs = User.objects.filter(is_staff=False)
     
     count_previous = 0
     total_count = 0
     while date < last_date:
-        key = date.strftime('%Y%m')
+        if weekly:
+            key = date.strftime('%Y%W')
+        else:
+            # default is monthly
+            key = date.strftime('%Y%m')
         if key not in buckets:
             date_hourless = datetime.date(date.year, date.month, 15)
-            count = qs.filter(date_joined__year=date.year,
-                              date_joined__month=date.month).count()
+            
+            if weekly:
+                week_min, next_week = _find_week_min_max(date)
+                this_qs = qs.filter(date_joined__gte=week_min,
+                                    date_joined__lt=next_week)
+            else:
+                this_qs = qs.filter(date_joined__year=date.year,
+                                date_joined__month=date.month)
+                
+            count = this_qs.count()
             total_count += count
             buckets[key] = {'year': date.year, 
                             'month': date.month,
@@ -159,6 +181,9 @@ def new_people(request):
                             'total_count': total_count,
                             'timestamp': int(mktime(date_hourless.timetuple())) * 1000,
                             }
+            if weekly:
+                buckets[key]['week_name'] = date.strftime('%W')
+            
         date = date + datetime.timedelta(days=1)
         
     # turn it into a list
