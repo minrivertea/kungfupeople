@@ -161,13 +161,15 @@ def new_people(request, period='monthly'):
             # default is monthly
             key = date.strftime('%Y%m')
         if key not in buckets:
-            date_hourless = datetime.date(date.year, date.month, 15)
+            
             
             if weekly:
                 week_min, next_week = _find_week_min_max(date)
                 this_qs = qs.filter(date_joined__gte=week_min,
                                     date_joined__lt=next_week)
+                date_hourless = week_min
             else:
+                date_hourless = datetime.date(date.year, date.month, 15)
                 this_qs = qs.filter(date_joined__year=date.year,
                                 date_joined__month=date.month)
                 
