@@ -1,21 +1,15 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 
 {% block title %}Edit your profile |{% endblock %}
 
-{% block js %}
-{% endblock %}
-
 
 {% block content %}
-	<div class="no-map-wrapper">
-	<div id="no-map-content-box">
 
-	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+    <p><a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a></p>
 
-    <form method="post" action="/{{ person.user.username }}/profile/">
-    	<h2>1. Edit your contact details</h2>
+    <form method="post" action="{% url edit_profile person.user.username %}">
+    	<h2>Edit your contact details</h2>
 
-	<fieldset>
 	<div class="form-field-outer">
 		<div class="form-field-left">
     	        {{ form.email.errors }}
@@ -26,12 +20,10 @@
     	        {{ form.email }}
 		</div>
 	</div>
-	</fieldset>
 	
 
-    	<h2>2. Edit your personal introduction</h2>
+    	<h2>Edit your personal introduction</h2>
     
-	<fieldset>
 	<div class="form-field-outer">
 		<div class="form-field-left">
             	{{ form.bio.errors }}
@@ -42,9 +34,9 @@
     	        {{ form.bio }}
 		</div>
 	</div>
-	</fieldset>
+        
 
-    	<h2>3. Save your changes</h2>
+    	<h2>Save your changes</h2>
 
 	<div class="form-field-submit">
 		<div class="button-outer">
@@ -56,7 +48,6 @@
 
     </form>
 
-</div>
 
 
 {% endblock %}

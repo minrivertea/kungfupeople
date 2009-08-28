@@ -31,8 +31,8 @@
 		<h3>{{ video.title }}</h3>
 		<p class="meta">{{ video.add_date|date:"d M Y" }} | 
 		{% if is_owner %} 
-		<a href="/{{ person.user.username }}/videos/add/">Add another</a>  | 
-		<a href="delete">Delete</a> |
+		<a href="{% url add_video person.user.username %}">Add another</a>  | 
+		<a href="{% url delete_video person.user.username video.id %}">Delete</a> |
 		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
 		{% else %}
 		<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>
