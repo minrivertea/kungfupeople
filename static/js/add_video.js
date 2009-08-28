@@ -23,20 +23,39 @@ function __fetch_video_details(video_id) {
       if (res.error) {
         alert("Error! " + res.error);
       } else {
-        $('#video-details:hidden').show(400);
-        $('#embed_src-outer').hide();
+         $('#video-details:hidden').show(400);
+         $('#embed_src-outer').hide();
+         if (res.thumbnail_url)
+           $('#id_thumbnail_url').val(res.thumbnail_url);
+
         if (res.embed_src) {
           $('#id_embed_src').val(res.embed_src);
           $('#preview-outer:hidden').show();
           $('div.form-field-right', '#preview-outer').html(res.embed_src);
           $('#embed_src-outer').hide();
         }
-        if (res.title)
-          $('#id_title').val(res.title);
-        if (res.description)
-          $('#id_description').val(res.description);
-        if (res.thumbnail_url)
-          $('#id_thumbnail_url').val(res.thumbnail_url);
+         
+         $('a', '#thumbnail-alternatives').remove();
+         if (res.thumbnail_alternatives) {
+            $('#thumbnails-outer:hidden').show(); //WORK IN PROGRESS
+            
+            $.each(res.thumbnail_alternatives, function(i, e) {
+               var img = $('<img>').attr('src', e);
+               var a = $('<a href="#"></a>').attr('href', e).click(function () {
+                  $('a.chosen', '#thumbnail-alternatives').removeClass('chosen');
+                  $(this).addClass('chosen');
+                  $('#id_thumbnail_url').val($(this).attr('href'))
+                  return false;
+               }).append(img);
+               if (e == $('#id_thumbnail_url').val())
+                 a.addClass('chosen');
+               $('#thumbnail-alternatives').append(a);
+            });
+         }         
+         if (res.title)
+           $('#id_title').val(res.title);
+         if (res.description)
+           $('#id_description').val(res.description);
           
       }
       _fetching = false;
@@ -53,16 +72,17 @@ $(function() {
       $('<a href="#"></a>').bind('click', function() {
         __not_youtube_video();
         return false;
-      }).append($("<span>(No, it's not a YouTube video)</span>"))
+      }).append($("<span>(No, it's not a YouTube video)</span>").addClass('not-youtube'))
     );
   }
   
   function update_by_video_id(video_id) {
-    if (!$.trim(video_id).length) return;
-    if (_youtube_video_id_lookup && _youtube_video_id_lookup == video_id)
-      return;
-    __pre_fetch_video_details();
-    __fetch_video_details(video_id);
+     if (!$.trim(video_id).length) return;
+     if (_youtube_video_id_lookup && _youtube_video_id_lookup == video_id)
+       return;
+     __pre_fetch_video_details();
+     $('span.not-youtube:visible').hide();
+     __fetch_video_details(video_id);
   }
   $('#id_youtube_video_id')
     .bind('keyup', function() {update_by_video_id($(this).val())})

@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 {% load django_static %}
 
 {% block title %}Add a video to your profile |{% endblock %}
@@ -7,16 +7,23 @@
 <script type="text/javascript" src="{% slimfile "/js/add_video.js" %}"></script>
 {% endblock %}
 
+{% block extracss %}
+<style type="text/css">
+#thumbnail-alternatives a { padding:2px; }
+#thumbnail-alternatives a.chosen img { border:2px solid red !important; }
+</style>
+{% endblock %}
+
+
+
 {% block header%}
 <h1>Add a video to your profile</h1>
 {% endblock %}
 
 {% block content %}
-	<div class="no-map-wrapper">
-	<div id="no-map-content-box">
-	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+	<p><a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a></p>
         
-    	<form method="post" action="/{{ user.username }}/videos/add/">
+    	<form method="post" action="{% url add_video person.user.username %}">
 
         
 	<div id="video-youtube">
@@ -45,7 +52,20 @@
 	<h2>Video details</h2>
         
         <fieldset>
-        {{ form.thumbnail_url }}
+        
+	
+        <div class="form-field-outer" id="thumbnails-outer" style="display:none">
+		<div class="form-field-left">
+            		<label for="">Choose preferred thumbnail</label>
+		</div>
+
+		<div class="form-field-right">
+		{{ form.thumbnail_url }}
+                        <div id="thumbnail-alternatives">
+         		</div>
+		</div>
+	</div>
+	
         
         <div class="form-field-outer" id="preview-outer" style="display:none">
 		<div class="form-field-left">
