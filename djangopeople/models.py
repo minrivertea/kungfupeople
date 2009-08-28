@@ -629,7 +629,7 @@ class KungfuPerson(models.Model):
     def __repr__(self):
         return "<KungfuPerson: %r>" % self.user.username
 
-    def get_nearest(self, num=5, within_range=100):
+    def get_nearest(self, num=5, within_range=20):
         #from time import time
         #t0=time()
         #r = self._get_nearest(num=num)

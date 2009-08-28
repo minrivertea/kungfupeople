@@ -36,6 +36,7 @@ from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
 
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
+#from googlemaps import get_person_profile_static_map
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
 
@@ -967,6 +968,8 @@ def profile(request, username):
     for style in person.styles.all():
         meta_keywords.append(style.name)
     meta_keywords = ','.join(meta_keywords)
+    
+    #static_map_url = get_person_profile_static_map(person)
    
     return render(request, 'profile.html', locals())
 
