@@ -77,9 +77,11 @@ def get_youtube_video_by_id(url_or_id):
     title = entry.media.title.text
     description = entry.media.description.text
     thumbnail_url = ''
+    thumbnail_alternatives = []
     for thumbnail in entry.media.thumbnail:
         if (thumbnail.width, thumbnail.height) == ('120','90'):
             thumbnail_url = thumbnail.url
+            thumbnail_alternatives.append(thumbnail_url)
     
     #PrintEntryDetails(entry)
     
@@ -100,5 +102,6 @@ def get_youtube_video_by_id(url_or_id):
     embed_src = embed_src_template.substitute(variables).strip()
 
     return dict(title=title, embed_src=embed_src, description=description,
-                thumbnail_url=thumbnail_url)
+                thumbnail_url=thumbnail_url,
+                thumbnail_alternatives=thumbnail_alternatives)
         

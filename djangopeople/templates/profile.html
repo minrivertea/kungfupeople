@@ -113,14 +113,12 @@ div.bio a.edit {
 			{% else %}
 		<div id="profile-head-toolbar">
 		<p class="meta">
-		{% if not person.photo %}<a href="profileupload/"><strong>Upload a photo</strong></a>  |  {% endif %}
-		<a href="/{{user.username }}/videos/add/">Link to a video</a>  |  
-		<a href="/{{ user.username }}/profile/">Edit your profile</a>  
-{% if diary_entries_private %}{% else %}|  <a href="/{{ user.username }}/diary/add">Add a blog post</a>{% endif %}  | 
-
-		{% if photos %}{% else %} <a href="/{{ user.username }}/photo/upload">Upload photos</a>{% endif %}  |
- 			<a href="/{{ user.username }}/club/"> Edit clubs</a>  |  
-		<a href="/{{ user.username }}/style/">Edit styles</a></p>
+		<a href="{% url add_video user.username %}">Link to a video</a>  | 
+		<a href="{% url edit_profile user.username %}">Edit your profile</a>  |
+                <a href="{% url add_diary_entry user.username %}">Add a blog post</a>  |
+		<a href="{% url upload_photo user.username %}">Upload photos</a>  |
+          	<a href="{% url edit_club user.username %}">Edit clubs</a>  |
+		<a href="{% url edit_style user.username %}">Edit styles</a></p>
 		</div>
 			{% endif %}
 		{% endif %}
@@ -148,7 +146,7 @@ div.bio a.edit {
 			{% for style in styles %}
 			<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>{% if not forloop.last %}, {% endif %}
 			{% endfor %}
-			</span><br/>
+			</span><br>
 			{% endif %}
  
 			{% if clubs %}
@@ -251,10 +249,8 @@ div.bio a.edit {
 				<a class="diary-title" href="diary/{{ entry.slug }}/">
 				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}{{ entry.title }}
 				</a>
-				<br/>
+				<br>
 				<p class="meta">({{ entry.date_added|date:"d M Y" }})
-				<a href="">Delete</a>  |
-
 				</p>
 
 				</li>
@@ -272,9 +268,10 @@ div.bio a.edit {
 			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}"/></a>
         		<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br/>
         		{{ video.description|truncatewords:25 }}<br/>
-			<p class="meta">{{ video.add_date|date:"d M Y" }} | 
+			<p class="meta">{{ video.add_date|date:"d M Y" }} 
 		{% if is_owner %} 
-		<a href="videos/delete/{{ video.id }}">Delete</a> 
+                |
+		<a href="{% url delete_video person.user.username video.id %}">Delete</a>
 		{% endif %}
 		</p>
 	

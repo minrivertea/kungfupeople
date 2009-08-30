@@ -1959,8 +1959,6 @@ def get_youtube_video_by_id_json(request):
     video_id = request.GET.get('video_id')
     if not video_id:
         raise ValueError("No video URL or ID")
-    from time import sleep
-    sleep(3)
     
     try:
         data = get_youtube_video_by_id(video_id)
@@ -1970,7 +1968,6 @@ def get_youtube_video_by_id_json(request):
     return render_json(data)
 
 def runway(request):
-    
     return render(request, 'runway.html', locals())
 
 def runway_data_js(request):
