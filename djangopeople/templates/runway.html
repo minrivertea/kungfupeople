@@ -4,16 +4,19 @@
 {% block title %}Runway |{% endblock %}
 
 {% block extracss %}
-<!--<link rel="stylesheet" href="{% slimfile "/css/jquery.autocomplete.css" %}" type="text/css">-->
+<style type="text/css">
+#no-map-content-box { width:95%; }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="http://api.simile-widgets.org/runway/1.0/runway-api.js"></script>
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="http://api.simile-widgets.org/runway/1.0/runway-api.js"></script>
 <script type="text/javascript" src="data.js"></script>
 <script type="text/javascript">
 $(function () {
-  alert(Runway);
-  alert(Runway.createOrShowInstaller);
   widget = Runway.createOrShowInstaller(
     document.getElementById("the-widget"),
     {
@@ -33,6 +36,5 @@ $(function () {
 
 {% block content %}
 <h2>Runway</h2>
-
-<div id="the-widget" style="height: 400px;"></div>
+<div id="the-widget" style="height:400px;"></div>
 {% endblock %}
