@@ -9,19 +9,15 @@ from django.core import mail
 
 
 from djangopeople.models import KungfuPerson, Club, Country, Style, \
-  DiaryEntry, Photo
+  DiaryEntry, Photo, Recruitment
 from djangopeople import views
 from testbase import TestCase
 
-_original_MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES
 _original_PROWL_API_KEY = settings.PROWL_API_KEY
 
 class ViewsTestCase(TestCase):
     
     def tearDown(self):
-        # restore settings
-        settings.MIDDLEWARE_CLASSES = _original_MIDDLEWARE_CLASSES
-              
         # delete any upload thumbnails
         thumbnails_root = os.path.join(settings.MEDIA_ROOT,
                                        'photos', 
@@ -161,9 +157,10 @@ class ViewsTestCase(TestCase):
         self.assertEqual(KungfuPerson.objects.\
            filter(user__username="bob").count(), 1)
         
-        # this should have posted to prowl
-        posted_prowl = self._get_posted_prowls()[-1]
-        self.assertTrue('Bob Sponge' in posted_prowl['description'])
+        if settings.PROWL_API_KEY:
+            # this should have posted to prowl
+            posted_prowl = self._get_posted_prowls()[-1]
+            self.assertTrue('Bob Sponge' in posted_prowl['description'])
         
     def test_signup_with_utmz_cookie(self):
         """set a cookie called __utmz like Google Analytics does and the 
@@ -277,8 +274,54 @@ class ViewsTestCase(TestCase):
         self.assertEqual(Style.objects.filter(name="Fat style").count(), 1)
         self.assertEqual(Style.objects.filter(name="Chocolate rain").count(), 1)
         
-
+    def test_signup_with_recruitment(self):
+        """Image you came to the site by the URL 
+        http://kungfupeople.com/?rc=1
+        then that means that user with ID 1 recruited you.
+        This information is kept in a session variable.
+        """
+        # disable the CSRF middlware temporarily
+        mdc = list(settings.MIDDLEWARE_CLASSES)
+        try:
+            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
+            settings.MIDDLEWARE_CLASSES = tuple(mdc)
+        except ValueError:
+            # not there
+            pass
         
+        user, person = self._create_person('billy', 'billy@example.com')
+        recruiter_id = user.id
+        
+        self.client.get('/', dict(rc=user.id))
+        # the session should have been set up now
+        
+        example_country = Country.objects.all().order_by('?')[0]
+        
+        response = self.client.post('/signup/', 
+                                    dict(username='bob',
+                                         email='bob@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                         style=u"Fat style, Chocolate rain"
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        
+        self.assertEqual(KungfuPerson.objects.\
+           filter(user__username="bob").count(), 1)
+        
+        self.assertEqual(Recruitment.objects.count(), 1)
+        recruitment = Recruitment.objects.all()[0]
+        self.assertEqual(recruitment.recruiter, user)
+        self.assertEqual(recruitment.recruited, 
+                         KungfuPerson.objects.get(user__username="bob").user)
+
     def test_newsletter_options(self):
         """test changing your newsletter options"""
         
@@ -539,10 +582,11 @@ class ViewsTestCase(TestCase):
         
         # Search in Kings cross which it between Euston and Islington
         clubs = func(dict(latitude=51.53079, longitude=-0.121021))
-        self.assertEqual(clubs, [wing_chun, white_crane])
+        self.assertEqual(clubs, [white_crane, wing_chun])
+        
         # adding country wont help
         clubs = func(dict(latitude=51.53079, longitude=-0.121021), country="GB")
-        self.assertEqual(clubs, [wing_chun, white_crane])
+        self.assertEqual(clubs, [white_crane, wing_chun])
         
         clubs = func(dict(latitude=51.53079, longitude=-0.121021), country="GB", 
                      location_description="islington")

@@ -2,6 +2,7 @@ from testbase import TestCase
 from djangopeople.youtube import YouTubeVideoError, get_youtube_video_by_id, \
   video_url_or_id
 
+
 class YouTubeTestCase(TestCase):
     
     def test_video_url_or_id(self):
@@ -47,9 +48,6 @@ class YouTubeTestCase(TestCase):
         self.assertTrue(data.get('description'))
         self.assertEqual(data['description'], 'Dengue Fever')
         
-        self.assertTrue(data.get('thumbnail_src'))
-
-        #print data
-        
+        self.assertTrue(data.get('thumbnail_url'))
         
         

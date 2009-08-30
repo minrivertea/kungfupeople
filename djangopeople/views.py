@@ -27,7 +27,7 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 
 # app
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
-  DiaryEntry, Photo
+  DiaryEntry, Photo, Recruitment
 import utils
 from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
   get_previous_next
@@ -218,7 +218,7 @@ def signup(request):
     
     if not request.user.is_anonymous():
         return HttpResponseRedirect('/')
-    
+
     base_location = None
     
     if request.method == 'POST':
@@ -313,6 +313,13 @@ def signup(request):
                     traceback.print_tb(tb)
                     logging.error("Unable to set came_from",
                                 exc_info=True)
+                    
+            if request.session.get('recruiter'):
+                # Note: request.session.get('recruiter') is the user ID
+                recruiter = User.objects.get(id=request.session.get('recruiter'))
+                if recruiter != user:
+                    Recruitment.objects.create(recruiter=recruiter,
+                                               recruited=user)
                     
             
             from django.contrib.auth import load_backend, login
@@ -969,6 +976,18 @@ def profile(request, username):
     meta_keywords = ','.join(meta_keywords)
     
     #static_map_url = get_person_profile_static_map(person)
+    
+    try:
+        recruiter = Recruitment.objects.get(recruited=person.user).recruiter
+        recruiter_profile = recruiter.get_profile()
+        print recruiter
+    except Recruitment.DoesNotExist:
+        pass
+    
+    recruited_users = Recruitment.objects.filter(recruiter=person.user)\
+      .order_by('-add_date')
+    recruited_people = [x.recruited.get_profile() for x in recruited_users]
+    
    
     return render(request, 'profile.html', locals())
 

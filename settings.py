@@ -92,6 +92,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
     'djangopeople.middleware.NoDoubleSlashes',
     'djangopeople.middleware.AutoLogin',
+    'djangopeople.middleware.Recruitment',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     #'crashkit.CrashKitDjangoMiddleware',
 )

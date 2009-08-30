@@ -8,6 +8,8 @@ from django.conf import settings
 from djangopeople.models import KungfuPerson, Country, Club, Style, DiaryEntry
 from djangopeople.utils import unaccent_string
 
+_original_MIDDLEWARE_CLASSES = settings.MIDDLEWARE_CLASSES
+
 _original_PROWL_API_KEY = settings.PROWL_API_KEY
 
 _posted_prowls = []
@@ -57,6 +59,9 @@ class TestCase(DjangoTestCase):
         return _posted_prowls
         
     def tearDown(self):
+        # restore settings
+        settings.MIDDLEWARE_CLASSES = _original_MIDDLEWARE_CLASSES
+              
         # restore settings
         #settings.PROWL_API_KEY = _original_PROWL_API_KEY
         super(TestCase, self).tearDown()

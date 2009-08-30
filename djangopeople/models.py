@@ -775,3 +775,17 @@ class CountrySite(models.Model):
    
     class Admin:
         pass
+
+
+class Recruitment(models.Model):
+    """when one user recruits another user"""
+    recruiter = models.ForeignKey(User, related_name='recruiter')
+    recruited = models.ForeignKey(User, related_name='recruited')
+    add_date = models.DateTimeField('date added', default=datetime.now)
+    
+    def __unicode__(self):
+        return u"%s recruited %s" % (self.recruiter, self.recruited)
+    
+    
+    
+    
