@@ -1045,8 +1045,8 @@ def style(request, name):
         if cache.get(cache_key) is None:
             style.clicks += 1 # Not bothering with transactions; only a stat
             style.save()
-            cache.set(cache_key, 1, ONE_DAY)
-
+            cache.set(cache_key, '1', ONE_DAY)
+            
     return render(request, 'style.html', locals())
 
 

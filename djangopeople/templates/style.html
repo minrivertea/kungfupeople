@@ -69,6 +69,13 @@ div.bio a.edit {
 		{% endif %}
 
        		<h2>{{ style.name }}</h2>
+                
+                {% if request.user.is_superuser %}
+                <div class="admin-only">
+                <h4>Admins only</h4>
+                # clicks: <code>{{ style.clicks }}</code>
+                </div>
+                {% endif %}
 
 		</div>
 
