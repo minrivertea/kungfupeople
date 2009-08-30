@@ -316,6 +316,10 @@ p.large {
 	font-size: 1.8em;
 }
 
+a.large {
+	font-size: 1.8em;
+}
+
 #content-box {
 	width: 600px;
     	float: left;
