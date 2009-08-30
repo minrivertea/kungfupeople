@@ -116,7 +116,7 @@ class CustomSitemap(Sitemap):
             all.append(Page(photo.get_absolute_url(), changefreq=changefreq))
             
         # All diary entries
-        for entry in DiaryEntry.objects.all().order_by('-date_added'):
+        for entry in DiaryEntry.objects.filter(is_public=True).order_by('-date_added'):
             changefreq = 'monthly'
             age = (today - entry.date_added).days
             if age < 7:
@@ -132,12 +132,12 @@ class CustomSitemap(Sitemap):
             
         # All styles
         for style in Style.objects.all().order_by('-add_date'):
-            changefreq = 'monthly'
+            changefreq = 'weekly'
             all.append(Page(style.get_absolute_url(), changefreq=changefreq))
             
         # All countries
         for iso_code in country_iso_codes:
-            changefreq = 'weekly'
+            changefreq = 'monthly'
             all.append(Page('/%s/' % iso_code.lower(), changefreq=changefreq))
             
             

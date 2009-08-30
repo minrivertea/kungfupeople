@@ -348,7 +348,8 @@ class Club(models.Model):
     description = models.TextField(blank=True)
     logo = models.ImageField(blank=True, upload_to='clubs')
     add_date = models.DateField('date added', default=datetime.now)
-
+    clicks = models.IntegerField(default=0)
+    
     def __unicode__(self):
         return self.name
 
@@ -376,6 +377,7 @@ class Style(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     add_date = models.DateField('date added', default=datetime.now)
+    clicks = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name

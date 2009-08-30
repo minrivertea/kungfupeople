@@ -892,7 +892,6 @@ def profile(request, username):
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
     
-    #_http_referer =
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
         if cache.get(cache_key) is None:
@@ -1019,6 +1018,14 @@ def club(request, name):
     club = get_object_or_404(Club, slug=name)
     people = members = KungfuPerson.objects.filter(club_membership=club)
     count = members.count()
+    
+    if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
+        cache_key = "clicks-club-" + get_unique_user_cache_key(request.META)
+        if cache.get(cache_key) is None:
+            club.clicks += 1 # Not bothering with transactions; only a stat
+            club.save()
+            cache.set(cache_key, 1, ONE_DAY)
+    
 
     return render(request, 'club.html', locals())
 
@@ -1032,6 +1039,13 @@ def style(request, name):
     for person in people:
         club_ids.update([x.id for x in person.club_membership.all()])
     clubs = Club.objects.filter(id__in=list(club_ids))
+
+    if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
+        cache_key = "clicks-style-" + get_unique_user_cache_key(request.META)
+        if cache.get(cache_key) is None:
+            style.clicks += 1 # Not bothering with transactions; only a stat
+            style.save()
+            cache.set(cache_key, 1, ONE_DAY)
 
     return render(request, 'style.html', locals())
 
