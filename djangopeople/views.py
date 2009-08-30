@@ -991,6 +991,15 @@ def profile(request, username):
    
     return render(request, 'profile.html', locals())
 
+def user_info_html(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    clubs = person.club_membership.all()
+    styles = person.styles.all()
+    #photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
+    
+    return render(request, '_user-info.html', locals())
+    
+
 def wall(request):
     people = KungfuPerson.objects.all()
     return render(request, 'wall.html', locals())
@@ -2006,9 +2015,11 @@ def runway(request):
 def runway_data_js(request):
     cache_key = 'runway_data_js'
     js = cache.get(cache_key)
+    js=None
     if js is None:
         
         def get_person_subtitle(person):
+            return ""
             subtitle = "%s, %s\n" % (person.location_description,
                                      person.country.name)
             clubs = [x.name for x in person.club_membership.all()]
@@ -2029,7 +2040,7 @@ def runway_data_js(request):
             return person.user.get_full_name()
         
         root_url = 'http://%s' % urlparse(request.build_absolute_uri())[1]
-        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
+        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined').select_related()
         records = []
         for person in people:
             thumbnail = DjangoThumbnail(person.photo, (200,200), opts=['crop'],
@@ -2039,10 +2050,12 @@ def runway_data_js(request):
                 thumbnail_url = root_url + thumbnail_url
             data = dict(image=thumbnail_url,
                         title=get_person_title(person),
-                        subtitle=get_person_subtitle(person))
+                        subtitle=get_person_subtitle(person),
+                        username=person.user.username,
+                        url=person.get_absolute_url())
             records.append(data)
             
-        js = 'var RUNWAY_RECORDS=%s;' % simplejson.dumps(records)
+        js = 'var RUNWAY_RECORDS=%s;\n' % simplejson.dumps(records)
         cache.set(cache_key, js, 60*60)# how many seconds?
     
     return HttpResponse(js, mimetype="text/javascript")

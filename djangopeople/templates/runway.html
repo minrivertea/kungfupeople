@@ -5,7 +5,7 @@
 
 {% block extracss %}
 <style type="text/css">
-#no-map-content-box { width:95%; }
+#no-map-content-box { width:93%; }
 </style>
 {% endblock %}
 
@@ -16,17 +16,49 @@
 {% block js %}
 <script type="text/javascript" src="data.js"></script>
 <script type="text/javascript">
+
+var loaded_user_info = {};
+function __display_user_info(username) {
+  if (loaded_user_info[username]) {
+     $('#user-info').html(loaded_user_info[username]);
+  } else {
+     $.get('/' + username + '/_user-info.html', function(res) {
+       loaded_user_info[username] = res;
+       $('#user-info').html(res);
+     });
+  }
+}
+
+$(window).unload(function () {
+  // because I fear this can become large
+  delete loaded_user_info;
+});
+
+var intent_loaded_selection=false;
 $(function () {
   widget = Runway.createOrShowInstaller(
     document.getElementById("the-widget"),
     {
         // examples of initial settings
         // slideSize: 200,
-        // backgroundColorTop: "#fff",
+        backgroundColorTop: "#fff",
         
         // event handlers
         onReady: function() {
             widget.setRecords(RUNWAY_RECORDS);
+            widget.select(parseInt(RUNWAY_RECORDS.length/2));
+            intent_loaded_selection = true;
+        },
+        
+        onSelect: function(index, id) {
+          if (!intent_loaded_selection) return;
+          var record = RUNWAY_RECORDS[index];
+          if (record.username)
+            __display_user_info(record.username);
+        },
+        onTitleClick: function(index, id) {
+          var record = RUNWAY_RECORDS[index];
+          window.open(url);
         }
     }
   );
@@ -37,6 +69,7 @@ $(function () {
 {% block content %}
 <h2>Runway</h2>
 <div align="center">
-<div id="the-widget" style="height:400px;"></div>
+<div id="the-widget" style="height:350px;"></div>
+<div id="user-info" style="width:400px; text-align:left"></div>
 </div>
 {% endblock %}
