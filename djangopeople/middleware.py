@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, get_host, HttpResponsePermanentRed
 import re
 
 from django.conf import settings
-from djangopeople.models import AutoLoginKey
+from djangopeople.models import AutoLoginKey, User
 
 multislash_re = re.compile('/{2,}')
 
@@ -47,3 +47,14 @@ class AutoLogin(object):
             return HttpResponsePermanentRedirect(new_full_path)
                 
         return None
+    
+class Recruitment(object):
+    def process_request(self, request):
+        if request.GET.get('rc') and request.GET.get('rc').isdigit():
+            try:
+                recruiter = User.objects.get(pk=request.GET.get('rc'))
+                request.session['recruiter'] = recruiter.id
+            except User.DoesNotExist:
+                pass
+                
+        return None    

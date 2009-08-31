@@ -348,7 +348,8 @@ class Club(models.Model):
     description = models.TextField(blank=True)
     logo = models.ImageField(blank=True, upload_to='clubs')
     add_date = models.DateField('date added', default=datetime.now)
-
+    clicks = models.IntegerField(default=0)
+    
     def __unicode__(self):
         return self.name
 
@@ -376,6 +377,7 @@ class Style(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     add_date = models.DateField('date added', default=datetime.now)
+    clicks = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -773,3 +775,17 @@ class CountrySite(models.Model):
    
     class Admin:
         pass
+
+
+class Recruitment(models.Model):
+    """when one user recruits another user"""
+    recruiter = models.ForeignKey(User, related_name='recruiter')
+    recruited = models.ForeignKey(User, related_name='recruited')
+    add_date = models.DateTimeField('date added', default=datetime.now)
+    
+    def __unicode__(self):
+        return u"%s recruited %s" % (self.recruiter, self.recruited)
+    
+    
+    
+    

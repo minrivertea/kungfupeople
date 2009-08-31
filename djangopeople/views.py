@@ -27,7 +27,7 @@ thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 
 # app
 from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
-  DiaryEntry, Photo
+  DiaryEntry, Photo, Recruitment
 import utils
 from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
   get_previous_next
@@ -218,7 +218,7 @@ def signup(request):
     
     if not request.user.is_anonymous():
         return HttpResponseRedirect('/')
-    
+
     base_location = None
     
     if request.method == 'POST':
@@ -313,6 +313,13 @@ def signup(request):
                     traceback.print_tb(tb)
                     logging.error("Unable to set came_from",
                                 exc_info=True)
+                    
+            if request.session.get('recruiter'):
+                # Note: request.session.get('recruiter') is the user ID
+                recruiter = User.objects.get(id=request.session.get('recruiter'))
+                if recruiter != user:
+                    Recruitment.objects.create(recruiter=recruiter,
+                                               recruited=user)
                     
             
             from django.contrib.auth import load_backend, login
@@ -892,7 +899,6 @@ def profile(request, username):
     diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
     
-    #_http_referer =
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
         if cache.get(cache_key) is None:
@@ -970,8 +976,29 @@ def profile(request, username):
     meta_keywords = ','.join(meta_keywords)
     
     #static_map_url = get_person_profile_static_map(person)
+    
+    try:
+        recruiter = Recruitment.objects.get(recruited=person.user).recruiter
+        recruiter_profile = recruiter.get_profile()
+        print recruiter
+    except Recruitment.DoesNotExist:
+        pass
+    
+    recruited_users = Recruitment.objects.filter(recruiter=person.user)\
+      .order_by('-add_date')
+    recruited_people = [x.recruited.get_profile() for x in recruited_users]
+    
    
     return render(request, 'profile.html', locals())
+
+def user_info_html(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    clubs = person.club_membership.all()
+    styles = person.styles.all()
+    #photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
+    
+    return render(request, '_user-info.html', locals())
+    
 
 def wall(request):
     people = KungfuPerson.objects.all()
@@ -1019,6 +1046,14 @@ def club(request, name):
     club = get_object_or_404(Club, slug=name)
     people = members = KungfuPerson.objects.filter(club_membership=club)
     count = members.count()
+    
+    if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
+        cache_key = "clicks-club-" + get_unique_user_cache_key(request.META)
+        if cache.get(cache_key) is None:
+            club.clicks += 1 # Not bothering with transactions; only a stat
+            club.save()
+            cache.set(cache_key, 1, ONE_DAY)
+    
 
     return render(request, 'club.html', locals())
 
@@ -1033,6 +1068,13 @@ def style(request, name):
         club_ids.update([x.id for x in person.club_membership.all()])
     clubs = Club.objects.filter(id__in=list(club_ids))
 
+    if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
+        cache_key = "clicks-style-" + get_unique_user_cache_key(request.META)
+        if cache.get(cache_key) is None:
+            style.clicks += 1 # Not bothering with transactions; only a stat
+            style.save()
+            cache.set(cache_key, '1', ONE_DAY)
+            
     return render(request, 'style.html', locals())
 
 
@@ -1973,9 +2015,11 @@ def runway(request):
 def runway_data_js(request):
     cache_key = 'runway_data_js'
     js = cache.get(cache_key)
+    js=None
     if js is None:
         
         def get_person_subtitle(person):
+            return ""
             subtitle = "%s, %s\n" % (person.location_description,
                                      person.country.name)
             clubs = [x.name for x in person.club_membership.all()]
@@ -1996,7 +2040,7 @@ def runway_data_js(request):
             return person.user.get_full_name()
         
         root_url = 'http://%s' % urlparse(request.build_absolute_uri())[1]
-        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined')
+        people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined').select_related()
         records = []
         for person in people:
             thumbnail = DjangoThumbnail(person.photo, (200,200), opts=['crop'],
@@ -2006,10 +2050,12 @@ def runway_data_js(request):
                 thumbnail_url = root_url + thumbnail_url
             data = dict(image=thumbnail_url,
                         title=get_person_title(person),
-                        subtitle=get_person_subtitle(person))
+                        subtitle=get_person_subtitle(person),
+                        username=person.user.username,
+                        url=person.get_absolute_url())
             records.append(data)
             
-        js = 'var RUNWAY_RECORDS=%s;' % simplejson.dumps(records)
+        js = 'var RUNWAY_RECORDS=%s;\n' % simplejson.dumps(records)
         cache.set(cache_key, js, 60*60)# how many seconds?
     
     return HttpResponse(js, mimetype="text/javascript")

@@ -103,6 +103,14 @@ div.bio a.edit {
 		<div id="profile-head-title">
        		<h2>{{ person.user.get_full_name }}</h2>
 		</div>
+		
+                {% if request.user.is_superuser %}
+                <div class="admin-only">
+                <h4>Admins only</h4>
+                # profile views: <code>{{ person.profile_views }}</code>
+                </div>
+                {% endif %}
+		
 			<div class="region">
 			<a href="/{{ person.country.iso_code|lower }}/">
 			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
@@ -153,7 +161,7 @@ div.bio a.edit {
 			<span class="small-text"><strong><span class="dark-grey">Club{{ clubs.count|pluralize }}:</span></strong>
 			{% for club in clubs %}
 		        {% if club.url %} 
-		        <a href="{{ club.get_absolute_url }}" rel="nofollow">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
+		        <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
 		        {% else %}
     		        {{ club.name }}{% if not forloop.last %}, {% endif %}
  		        {% endif %}
@@ -161,6 +169,26 @@ div.bio a.edit {
 		    	</span><br/>
 			{% endif %}
 			</div>
+			
+			{% if recruiter and recruiter_profile %}
+			<div class="recruitment">
+			{{ person.user.first_name }} was recruited to this site by
+			<a href="{% url person.view recruiter.username %}">{{ recruiter.first_name }} {{ recruiter.last_name }}</a>
+			<img src="{% staticfile "/img/star.png" %}" alt="Star">
+			</div>
+			{% endif %}
+                        
+			{% if recruited_people %}
+			<div class="recruitment">
+			{{ person.user.first_name }} has recruited
+                        
+                        {% for recruited_person in recruited_people %}
+			<a href="{% url person.view recruited_person.user.username %}"
+                          >{{ recruited_person.user.first_name }} {{ recruited_person.user.last_name }}</a>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+			
+			</div>
+			{% endif %}                        
 
 		</div>
 

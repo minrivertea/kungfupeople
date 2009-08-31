@@ -11,6 +11,7 @@
     <meta name="description" content="{% block meta_description %}{% endblock %}">
     <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
     {% block extracss %}{% endblock %}
+    {% block extrahead %}{% endblock %}
 </head>
 <body{% block bodymeta %}{% endblock %}>
 
@@ -90,6 +91,20 @@
     {% endif %}
     <script type="text/javascript" src="{% slimfile "/js/common.js" %}"></script>
     <script type="text/javascript">{{ NEARBY_PERSON_KEYS|nearby_person_keys_js|safe }}</script>
+    {% if request.user.is_superuser %}
+    <script type="text/javascript">
+    $(function() {
+      $('.admin-only').each(function(i, e) {
+        $(e).prepend($('<a href="#"></a>')
+                      .css('font-size','70%').css('float','right')
+                      .text('close')
+                      .click(function () {
+                        $('.admin-only').hide();
+                      }));
+      });
+    });
+    </script>
+    {% endif %}
     {% block js %}{% endblock %}
 
 {% if GOOGLE_ANALYTICS_TRACKER_ID %}

@@ -92,6 +92,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
     'djangopeople.middleware.NoDoubleSlashes',
     'djangopeople.middleware.AutoLogin',
+    'djangopeople.middleware.Recruitment',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     #'crashkit.CrashKitDjangoMiddleware',
 )
@@ -123,6 +124,8 @@ INSTALLED_APPS = (
     'stats',
                   
 )
+
+MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 

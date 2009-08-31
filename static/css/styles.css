@@ -1406,3 +1406,13 @@ img.video-thumbnail {
 	float: left;
 	margin-right: 20px;
 }
+
+.admin-only {
+  border:1px solid #ccc;
+  background-color:#efefef;
+  padding:3px;
+}
+.admin-only h4 {
+  display:inline;
+  color:rgb(150,150,150);
+}

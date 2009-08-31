@@ -55,6 +55,8 @@ urlpatterns = patterns('',
     url(r'^([a-z0-9]{3,})/$', views.profile, name="person.view"),
     url(r'^([a-z0-9]{3,})/crop-profile-photo/$', views.crop_profile_photo,
         name="crop_profile_photo"),
+    url(r'^([a-z0-9]{3,})/_user-info.html$', views.user_info_html,
+        name="user_info_html"), # used by runway
     (r'^([a-z0-9]{3,})/password/$', views.edit_password),
     url(r'^([a-z0-9]{3,})/videos/add/$', views.add_video, name="add_video"),
     url(r'^([a-z0-9]{3,})/video/(\d+)/$', views.video, name="video.view"),
