@@ -8,7 +8,7 @@
     <p><a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a></p>
 
     <form method="post" action="{% url edit_profile person.user.username %}">
-    	<h2>Edit your contact details</h2>
+    	<h2>Edit your details</h2>
 
 	<div class="form-field-outer">
 		<div class="form-field-left">
@@ -20,9 +20,6 @@
     	        {{ form.email }}
 		</div>
 	</div>
-	
-
-    	<h2>Edit your personal introduction</h2>
     
 	<div class="form-field-outer">
 		<div class="form-field-left">
@@ -35,8 +32,6 @@
 		</div>
 	</div>
         
-
-    	<h2>Save your changes</h2>
 
 	<div class="form-field-submit">
 		<div class="button-outer">

@@ -686,34 +686,30 @@ ul.split li {
 /* @end */
 
 #highlight {
-
+	float: left;
+	width: 100%;
 }
 
 .highlight-home {
+	margin: 30px 20px 30px 30px;
+	float: left;	
+	width: 200px;
+}
+
+.highlight-home-people {
 	margin: 30px 0px 30px 30px;
 	float: left;	
-	width: 300px;
+	width: 400px;
 }
 
 .highlight-home h3 {
 	font-family: Helvetica, sans-serif;
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: normal;
 	color: #666;
 	margin: 0 0 5px -10px;
 	padding-bottom: 5px;
 }
-
-.highlight-home-people {
-	margin: 0px 0px 0px 0px;
-	padding: 6px 0px 30px 15px;
-	float: right;	
-	width: 350px;
-	height: auto;
-	min-height: 50px;
-	background: url('/img/bracket.png') no-repeat top left;
-}
-
 
 .highlight-profile {
 	margin: 0 0px 15px 0px;
