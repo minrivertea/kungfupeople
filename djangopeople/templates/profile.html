@@ -333,9 +333,61 @@ div.bio a.edit {
                 </li>
                 {% endfor %}
             </ul>
-	</div>
+	    </div>
             {% endif %}
             {% endwith %}
+
+            {% with person.get_same_club_people as people %}
+            {% if people %}
+            <h4>People who also belong to
+            {% for club in person.club_membership.all %}
+              {{ club.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </h4>
+            
+	    <div id="horizontal-image-listing">
+            <ul class="horizontal-image-list">
+                {% for person in people %}
+                
+                <li class="horizontal-image-list">
+		<div class="list-photo">
+                    <a href="{{ person.get_absolute_url }}"
+                       title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
+		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+
+		</div>
+                </li>
+                {% endfor %}
+            </ul>
+	    </div>
+            {% endif %}
+            {% endwith %}
+            
+            {% with person.get_same_style_people as people %}
+            {% if people %}
+            <h4>People who do the same style
+            {% for style in person.styles.all %}
+              {{ style.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </h4>
+            
+	    <div id="horizontal-image-listing">
+            <ul class="horizontal-image-list">
+                {% for person in people %}
+                
+                <li class="horizontal-image-list">
+		<div class="list-photo">
+                    <a href="{{ person.get_absolute_url }}"
+                       title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
+		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+
+		</div>
+                </li>
+                {% endfor %}
+            </ul>
+	    </div>
+            {% endif %}
+            {% endwith %}            
 	</div>
 	
 </div>

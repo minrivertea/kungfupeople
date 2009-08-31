@@ -741,7 +741,27 @@ class KungfuPerson(models.Model):
     def get_photos(self):
         return Photo.objects.filter(user=self.user).order_by('-date_added')
     
-        
+    
+    def get_same_club_people(self):
+        """return a queryset of people who belong to the same club"""
+        people = []
+        for club in self.club_membership.all():
+            for person in club.kungfuperson_set.exclude(id=self.id):
+                if person not in people:
+                    people.append(person)
+        people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))
+        return people
+
+    def get_same_style_people(self):
+        """return a queryset of people who do the same style"""
+        people = []
+        for style in self.styles.all():
+            for person in style.kungfuperson_set.exclude(id=self.id):
+                if person not in people:
+                    people.append(person)
+        people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))
+        return people
+
 
 
 def prowl_new_person(sender, instance, created, **__):

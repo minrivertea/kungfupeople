@@ -975,8 +975,6 @@ def profile(request, username):
         meta_keywords.append(style.name)
     meta_keywords = ','.join(meta_keywords)
     
-    #static_map_url = get_person_profile_static_map(person)
-    
     try:
         recruiter = Recruitment.objects.get(recruited=person.user).recruiter
         recruiter_profile = recruiter.get_profile()
