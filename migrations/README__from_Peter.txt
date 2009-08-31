@@ -8,3 +8,9 @@ I haven't really decided on a formal structure yet so I just create
 
 2. Run ./manage sqldiff <appname> > 00x_<appname>_<fieldname>.sql
 
+
+To migrate in these new changes run migration management command:
+
+ $ ./manage.py migration
+ 
+
