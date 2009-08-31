@@ -219,6 +219,9 @@ def signup(request):
     if not request.user.is_anonymous():
         return HttpResponseRedirect('/')
 
+    all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()]
+    all_clubs_js = simplejson.dumps(all_clubs)
+    
     base_location = None
     
     if request.method == 'POST':
@@ -347,8 +350,9 @@ def signup(request):
             if not (ip == '127.0.0.1' or ip.startswith('192.168.')):
                 base_location = getGeolocationByIP_cached(ip)
                 if base_location['lat'] == 0.0 and base_location['lng'] == 0.0:
+                    # getGeolocationByIP_cached failed :(
                     base_location = None
-                    
+            
             if base_location:
                 try:
                     country = Country.objects.get(name__iexact=base_location['country'])
@@ -366,13 +370,14 @@ def signup(request):
                     # the lookup is duff
                     base_location = None
         
-        form = SignupForm(initial=initial)        
+        form = SignupForm(initial=initial)
         
     
     return render(request, 'signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'base_location': base_location,
+        'all_clubs_js': all_clubs_js,
     })
 
 def whatnext(request, username):
@@ -1267,7 +1272,6 @@ def edit_club(request, username):
         all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()
                      if x.id not in current_club_ids]
         all_clubs_js = simplejson.dumps(all_clubs)
-        print all_clubs
         del current_club_ids
         
     return render(request, 'edit_club.html', locals())
