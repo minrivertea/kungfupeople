@@ -703,7 +703,7 @@ def photo_upload(request, username, prefer='multiple'):
             if diary_entry:
                 url = diary_entry.get_absolute_url()
             else:
-                url = '/%s/upload/done/' % username
+                url = person.get_absolute_url()
             return HttpResponseRedirect(url)
     else:
         
