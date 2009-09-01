@@ -93,7 +93,7 @@ var PEOPLE = {{ people_locations_json|safe }};
 
 	<br style="clear:both">
 
-		{% endif %}
+	{% endif %}
 
 
 
@@ -108,7 +108,7 @@ var PEOPLE = {{ people_locations_json|safe }};
 		<div class="highlight-home">
 		<h3>Clubs recently added</h3>
 		{% for club in clubs %}
-		    <span style="font-size: {{ club.get_members.count }}px;"><a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br>{% endif %}</span>
+		    <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br>{% endif %}
 		{% endfor %}
 		</div>
 
@@ -124,9 +124,10 @@ var PEOPLE = {{ people_locations_json|safe }};
         		{% endfor %}
 			</div>
 			<br clear="all"/>
+                        
 			<div class="horizontal-image-list-text">
-		  (located in:  {% for person in recent_people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}
-		  {% endfor %})
+			(located in:  {% for country in unique_countries %}<a href="{% url country country.iso_code|lower %}">{{ country }}</a>{% if not forloop.last %}, {% endif %}
+                        {% endfor %})
 			</div>
 		</div>
 	</div>

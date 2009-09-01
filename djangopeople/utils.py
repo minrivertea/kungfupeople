@@ -11,6 +11,24 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
+def uniqify(seq, idfun=None):
+    if seq is None:
+        raise ValueError("Sequence can not be None")
+    if idfun is None:
+        def idfun(x): return x
+    seen = {}
+    result = []
+    for item in seq:
+        marker = idfun(item)
+        # in old Python versions:
+        # if seen.has_key(marker)
+        # but in new ones:
+        ##if marker in seen: continue
+        if seen.has_key(marker): continue
+        seen[marker] = 1
+        result.append(item)
+    return result
+
 
 ORIGIN_DATE = datetime.date(2000, 1, 1)
 

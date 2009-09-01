@@ -30,7 +30,7 @@ from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo, Recruitment
 import utils
 from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
-  get_previous_next
+  get_previous_next, uniqify
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
@@ -76,7 +76,7 @@ def render_json(data):
     
 
 def index(request):
-    people = KungfuPerson.objects.all().select_related('user').order_by('-id')
+    people = KungfuPerson.objects.all().select_related().order_by('-id')
     people_count = KungfuPerson.objects.all().count()
     clubs = Club.objects.all().order_by('-add_date')[:5]  # select_related()???
     photos = Photo.objects.all().order_by('-date_added')[:5]
@@ -91,8 +91,14 @@ def index(request):
     
     people_locations_json = _get_people_locations_json(people)
     
+    unique_countries = uniqify([x.country for x in people],
+                              lambda x: x.id)
+    unique_countries.sort(lambda x,y: cmp(x.name.lower(), y.name.lower()))
+    print unique_countries
+    
     return render(request, 'index.html', {
         'people': people,
+        'unique_countries': unique_countries,
         'people_locations_json': people_locations_json,
         'people_count': people_count,
         'your_person': your_person,
