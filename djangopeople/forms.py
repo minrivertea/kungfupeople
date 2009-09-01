@@ -310,6 +310,13 @@ class ClubForm(forms.Form):
     
     def clean_club_url(self):
         url = self.cleaned_data['club_url']
+        
+        if not url and self.cleaned_data['club_name']:
+            try:
+                url = Club.objects.get(name__iexact=self.cleaned_data['club_name']).url
+            except Club.DoesNotExist:
+                pass
+        
         if not url.startswith('http://'):
             url = 'http://' + url
             

@@ -94,7 +94,6 @@ def index(request):
     unique_countries = uniqify([x.country for x in people],
                               lambda x: x.id)
     unique_countries.sort(lambda x,y: cmp(x.name.lower(), y.name.lower()))
-    print unique_countries
     
     return render(request, 'index.html', {
         'people': people,
@@ -109,7 +108,6 @@ def index(request):
         'recent_people': people[:24],
         'total_people': people_count,
         #'total_videos': Video.objects.filter(approved=True).count(),
-        'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
 
 def _get_people_locations_json(people):
@@ -923,7 +921,11 @@ def region(request, country_code, region_code):
     })
 
 def profile(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    try:
+        person = KungfuPerson.objects.select_related().get(user__username=username)
+    except KungfuPerson.DoesNotExist:
+        raise Http404("No user by that username")
+        
     clubs = person.club_membership.all().select_related()
     styles = person.styles.all().select_related()
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')\
@@ -990,6 +992,39 @@ def profile(request, username):
             elif not request.COOKIES.get('close_tip_style'):
                 pester_first_style = True
             
+    cache_key = 'same_club_people-%s' % person.user.username
+    _same_club_info = cache.get(cache_key)
+    if _same_club_info is None:
+        same_club_people = []
+        same_clubs = []
+        for club in clubs:
+            for same_club_person in club.kungfuperson_set.exclude(user=person.user):
+                # found someone who also does this club
+                if same_club_person not in same_club_people:
+                    same_club_people.append(same_club_person)
+                if club not in same_clubs:
+                    same_clubs.append(club)
+        cache.set(cache_key, (same_clubs, same_club_people),
+                  ONE_WEEK)
+    else:
+        same_clubs, same_club_people = _same_club_info
+    
+    cache_key = 'same_style_people-%s' % person.user.username
+    _same_style_info = cache.get(cache_key)
+    if _same_style_info is None:
+        same_style_people = []
+        same_styles = []
+        for style in styles:
+            for same_style_person in style.kungfuperson_set.exclude(user=person.user):
+                # found someone who also does this style
+                if same_style_person not in same_style_people:
+                    same_style_people.append(same_style_person)
+                if style not in same_styles:
+                    same_styles.append(style)
+        cache.set(cache_key, (same_styles, same_style_people),
+                  ONE_WEEK)
+    else:
+        same_styles, same_style_people = _same_style_info
         
     # Prep some SEO meta tags stuff
     meta_description = "%s %s, %s %s" % (person.user.first_name,
@@ -1005,16 +1040,15 @@ def profile(request, username):
     meta_keywords.append("%s %s" % (person.user.first_name, person.user.last_name))
     meta_keywords.append(person.location_description)
     meta_keywords.append(person.country.name)
-    for club in person.club_membership.all():
+    for club in clubs:
         meta_keywords.append(club.name)
-    for style in person.styles.all():
+    for style in styles:
         meta_keywords.append(style.name)
     meta_keywords = ','.join(meta_keywords)
     
     try:
         recruiter = Recruitment.objects.get(recruited=person.user).recruiter
         recruiter_profile = recruiter.get_profile()
-        print recruiter
     except Recruitment.DoesNotExist:
         pass
     
@@ -1025,6 +1059,7 @@ def profile(request, username):
     # for the world map
     people_locations_json = _get_people_locations_json(people_near)
     person_location_json = _get_person_location_json(person)
+    
     
     return render(request, 'profile.html', locals())
 
@@ -1280,10 +1315,10 @@ def diary_entry_edit(request, username, slug):
 
 @must_be_owner
 def diary_entry_delete(request, username, slug):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     entry = get_object_or_404(DiaryEntry, slug=slug)
     user = person.user
-    
+    assert entry.user == user
     entry.delete()
 
     return HttpResponseRedirect('/%s/' % user.username)
@@ -1291,7 +1326,7 @@ def diary_entry_delete(request, username, slug):
 
 @must_be_owner
 def edit_club(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     clubs = person.club_membership.all()
 
     if request.method == 'POST':
@@ -1303,6 +1338,9 @@ def edit_club(request, username):
             club = _get_or_create_club(name, url=url)
             person.club_membership.add(club)
             person.save()
+            cache_key = 'same_club_people-%s' % person.user.username
+            cache.delete(cache_key)
+
             return HttpResponseRedirect('/%s/club/' % username)
         
         else:
@@ -1334,7 +1372,7 @@ def delete_club_membership(request, username, clubname):
 
 @must_be_owner
 def edit_style(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     styles = person.styles.all()
 
     if request.method == 'POST':
@@ -1348,6 +1386,8 @@ def edit_style(request, username):
             style.save()
             person.styles.add(style)
             person.save()
+            cache_key = 'same_style_people-%s' % person.user.username
+            cache.delete(cache_key)
             return HttpResponseRedirect('/%s/style/' % username)
     else:
         form = StyleForm()
@@ -1399,8 +1439,6 @@ def add_video(request, username):
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
             thumbnail_url = form.cleaned_data['thumbnail_url']
-            #print locals()
-            #raise Exception
             video = Video.objects.create(user=person.user,
                                          embed_src=embed_src,
                                          title=title.strip(),

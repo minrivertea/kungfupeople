@@ -32,7 +32,5 @@ def context(request):
     
     data['MAP_KEYS'] = settings.MAP_KEYS
     
-    
-    #print "noticed_recent_stuff", repr(request.session.get('noticed_recent_stuff'))
     return data
 

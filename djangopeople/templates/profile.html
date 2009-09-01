@@ -333,17 +333,16 @@ div.bio a.edit {
 	    </div>
             {% endif %}
 
-            {% with person.get_same_club_people as people %}
-            {% if people %}
+            {% if same_club_people %}
             <h4>People who also belong to
-            {% for club in person.club_membership.all %}
+            {% for club in clubs %}
               {{ club.name }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </h4>
             
 	    <div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
-                {% for person in people %}
+                {% for person in same_club_people %}
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
@@ -357,19 +356,17 @@ div.bio a.edit {
             </ul>
 	    </div>
             {% endif %}
-            {% endwith %}
             
-            {% with person.get_same_style_people as people %}
-            {% if people %}
+            {% if same_style_people %}
             <h4>People who do the same style
-            {% for style in person.styles.all %}
+            {% for style in same_styles %}
               {{ style.name }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </h4>
             
 	    <div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
-                {% for person in people %}
+                {% for person in same_style_people %}
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
@@ -383,7 +380,6 @@ div.bio a.edit {
             </ul>
 	    </div>
             {% endif %}
-            {% endwith %}            
 	</div>
 	
 </div>
