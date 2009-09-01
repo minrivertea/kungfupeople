@@ -106,12 +106,14 @@ class DistanceManager(models.Manager):
             if within_range:
                 # do something
                 distance_clause = Template("""
-                AND
                 miles_between_lat_long($x,$y, 
                                     gl.latitude::numeric, gl.longitude::numeric
                                     ) < %s
                 """ % within_range
                                         ).substitute(locals())
+                
+            if extra_where_sql and distance_clause:
+                distance_clause = 'AND\n\t' + distance_clause
             
             if extra_where_sql or distance_clause:
                 extra_where_sql = 'WHERE\n\t' + extra_where_sql
@@ -142,7 +144,7 @@ class DistanceManager(models.Manager):
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
         dists = [p[1] for p in nearbys]
-        places = self.filter(id__in=ids)
+        places = self.filter(id__in=ids).select_related()
         # the QuerySet comes back in an undefined order; let's
         # order it by distance from the given point
         def order_by(objects, listing, name):
@@ -450,7 +452,7 @@ def prowl_new_diary_entry(sender, instance, created, **__):
     description = "%s %s" % (instance.user.first_name, instance.user.last_name)
     site = Site.objects.get_current()
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
-    if created:
+    if created and instance.is_public:
         try:
             prowl("Diary entry added",
                   description=description)
@@ -739,14 +741,15 @@ class KungfuPerson(models.Model):
                             self.user.username)
     
     def get_photos(self):
-        return Photo.objects.filter(user=self.user).order_by('-date_added')
+        return Photo.objects.filter(user=self.user).order_by('-date_added').select_related()
     
     
     def get_same_club_people(self):
         """return a queryset of people who belong to the same club"""
+        return []
         people = []
         for club in self.club_membership.all():
-            for person in club.kungfuperson_set.exclude(id=self.id):
+            for person in club.kungfuperson_set.exclude(id=self.id).select_related():
                 if person not in people:
                     people.append(person)
         people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))
@@ -756,7 +759,7 @@ class KungfuPerson(models.Model):
         """return a queryset of people who do the same style"""
         people = []
         for style in self.styles.all():
-            for person in style.kungfuperson_set.exclude(id=self.id):
+            for person in style.kungfuperson_set.exclude(id=self.id).select_related():
                 if person not in people:
                     people.append(person)
         people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))

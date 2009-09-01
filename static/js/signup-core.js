@@ -87,7 +87,8 @@ function reverseGeocode() {
              region = place.adminCode1;
            
            __reversed_geocode(name, countryName, iso_code, region);
-           
+         
+           $('#content-box:hidden').show();
 
         }
        
@@ -227,7 +228,8 @@ function __iso_code_to_country_name(iso_code) {
 }
 
 google.setOnLoadCallback(function() {
-
+   $('#content-box:hidden').show();
+   
     // Set up the select country thing to show flags    
     $('select#id_country').change(function() {
         $(this).parent().find('span.flag').remove();
@@ -250,7 +252,8 @@ google.setOnLoadCallback(function() {
             $('#id_region').val('');
         }
     }).change();
-    
+
+    // ARE THESE NEEDED????
     $('select#id_region').parent().hide();
     // Latitude and longitude should be invisible too
     $('input#id_latitude').parent().hide();
@@ -260,7 +263,6 @@ google.setOnLoadCallback(function() {
     gmap.addControl(new google.maps.LargeMapControl3D());
     gmap.addControl(new google.maps.MapTypeControl());    
     
-   
     // If latitude and longitude are populated, center there 
     if ($('#id_latitude').val() && $('#id_longitude').val()) {
         point = new google.maps.LatLng(
@@ -285,6 +287,7 @@ google.setOnLoadCallback(function() {
        }
        
     } else {
+       $('#content-box:visible').hide();
        point = new google.maps.LatLng(INITIAL_LAT, INITIAL_LON);
        zoom_level = INITIAL_ZOOM;
     }

@@ -1,13 +1,5 @@
-var gmap; 
-google.load('maps', '2',{'other_params':'sensor=false'});
 
-
-
-google.setOnLoadCallback(function() {
-   if (!document.getElementById('gmap')) return ;
-   if (OFFLINE_MODE) return;
-   
-   function ShrinkControl() {}
+function ShrinkControl() {}
    ShrinkControl.prototype = new GControl();
    ShrinkControl.prototype.initialize = function(gmap) {
       var shrinkButton = document.createElement('div');
@@ -18,8 +10,8 @@ google.setOnLoadCallback(function() {
 						    'title', 'Activate larger map'
 						    );
 	 hideNearbyPeople(gmap);
-	 gmap.removeControl(largeMapControl);
-	 gmap.removeControl(mapTypeControl);
+         gmap.removeControl(map_control);
+	 gmap.removeControl(map_type_control);
 	 gmap.removeControl(shrinkControl);
 	 // Back to original center:
 	 var point = new google.maps.LatLng(PAGE_LATITUDE, PAGE_LONGITUDE);
@@ -27,11 +19,10 @@ google.setOnLoadCallback(function() {
 	 gmap.addOverlay(marker);
 	 
 	 $('#gmap').animate({
-	    height: '7em',
-	      opacity: 1.0
+	    height: '7em'
 	 }, 500, 'swing', function() {
 	    gmap.checkResize();
-	    gmap.setCenter(point, 12);
+	    gmap.setCenter(point, ZOOM);
 	    gmap.disableDragging();
 	    $('#gmap').click(onMapClicked);
 	 });
@@ -39,12 +30,12 @@ google.setOnLoadCallback(function() {
       gmap.getContainer().appendChild(shrinkButton);
       return shrinkButton;
    }
-   ShrinkControl.prototype.getDefaultPosition = function() {
-      return new GControlPosition(G_ANCHOR_BOTTOM_LEFT, new GSize(70, 7));
-   }
+ShrinkControl.prototype.getDefaultPosition = function() {
+   return new GControlPosition(G_ANCHOR_BOTTOM_LEFT, new GSize(70, 7));
+}
    
-   // Sets the proper CSS for the given button element.
-   ShrinkControl.prototype.setButtonStyle_ = function(button) {
+// Sets the proper CSS for the given button element.
+ShrinkControl.prototype.setButtonStyle_ = function(button) {
       button.style.color = "black";
       button.style.backgroundColor = "white";
       button.style.font = "12px Arial";
@@ -54,14 +45,35 @@ google.setOnLoadCallback(function() {
       button.style.textAlign = "center";
       button.style.width = "6em";
       button.style.cursor = "pointer";
-   }
-   
-   var largeMapControl = new google.maps.LargeMapControl3D()
-   var mapTypeControl = new google.maps.MapTypeControl();
-   var shrinkControl = new ShrinkControl();
-   
-   gmap = new google.maps.Map2(document.getElementById('gmap'));
-    
+}
+
+var shrinkControl;
+function onMapClicked() {
+   shrinkControl = new ShrinkControl();
+   $('#gmap').css({'cursor': ''}).attr('title', '');
+   $('#gmap').animate({
+      height: '25em'
+   }, 500, 'swing', function() {
+      gmap.checkResize();
+      gmap.enableDragging();
+      // Need to recreate LargeMapControl to work around a bug
+      gmap.addControl(map_control);
+      gmap.addControl(map_type_control);
+      gmap.addControl(shrinkControl);
+      if (typeof PEOPLE != 'undefined')
+        show_people(PEOPLE);
+      // Unbind event so user can actually interact with map
+      $('#gmap').unbind('click', onMapClicked);
+   });
+   $('.right-box-top').animate({opacity: 1.0});
+}
+
+function GoogleMapsCallback(gmap) {
+   gmap.removeControl(map_control);
+   gmap.removeControl(map_type_control);
+   hide_people();
+   show_person(PERSON);
+     
    /* Map enlarges and becomes active when you click on it */
    $('#gmap')
      .css({'cursor': 'pointer', 'opacity': 1.0})
@@ -72,31 +84,7 @@ google.setOnLoadCallback(function() {
        .attr('title', 'Activate larger map');
    
    gmap.disableDragging();
-   function onMapClicked() {
-      $('#gmap').css({'cursor': ''}).attr('title', '');
-      $('#gmap').animate({
-	 height: '25em',
-	   opacity: 1.0
-      }, 500, 'swing', function() {
-	 gmap.checkResize();
-	 gmap.enableDragging();
-	 // Need to recreate LargeMapControl to work around a bug
-	 gmap.addControl(largeMapControl);
-	 gmap.addControl(mapTypeControl);
-	 gmap.addControl(shrinkControl);
-	 showNearbyPeople(gmap);
-	 // Unbind event so user can actually interact with map
-	 $('#gmap').unbind('click', onMapClicked);
-      });
-      $('.right-box-top').animate({opacity: 1.0});
-   }
+   
    $('#gmap').click(onMapClicked);
-   
-   if (typeof PAGE_LATITUDE=='undefined') {L('variable PAGE_LATITUDE not set'); return}
-   if (typeof PAGE_LONGITUDE=='undefined') {L('variable PAGE_LONGITUDE not set'); return}
-   
-   var point = new google.maps.LatLng(PAGE_LATITUDE, PAGE_LONGITUDE);
-   gmap.setCenter(point, 9);
-   var marker = new google.maps.Marker(point, getMarkerOpts());
-   gmap.addOverlay(marker);
-});
+
+};

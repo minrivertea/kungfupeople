@@ -6,11 +6,7 @@
 
 {% block js %}{% load thumbnail %}
 <script type="text/javascript">
-var people = [
-{% for p in country.kungfuperson_set.all %}
-  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-{% endfor %}
-];
+var PEOPLE = {{ people_locations_json|safe }};
 var bbox_north = {{ country.bbox_north }};
 var bbox_west = {{ country.bbox_west }};
 var bbox_south = {{ country.bbox_south }};

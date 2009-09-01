@@ -9,12 +9,7 @@
 
 {% block js %}
 <script type="text/javascript">
-var people = [
-    // latitude, longitude, name, username, location description, flag, isocode
-    {% for p in people %}
-      {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
+var PEOPLE = {{ people_locations_json|safe }};
 </script>
 <script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 {% endblock %}
@@ -44,9 +39,9 @@ div.bio a.edit {
 
 	<div class="counter">
 	<div class="number">{{ count }}</div> {% ifequal count 1 %}person is a member {% else %}people are members {% endifequal %}of this club!<br />
-	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
+	{% if not user.is_authenticated %}<a href="{% url signup %}">Add yourself now!</a>
 	{% else %}
-	<a href="/wall">See everyone!</a>		
+	<a href="{% url wall %}">See everyone!</a>		
 	{% endif %}
 	</div>
 {% endblock %}

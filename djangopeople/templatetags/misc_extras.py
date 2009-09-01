@@ -15,7 +15,7 @@ except ImportError:
     from django_static.templatetags.django_static import slimfile, staticfile
     
 
-NEARBY_PERSON_KEYS = settings.NEARBY_PERSON_KEYS
+MAP_KEYS = settings.MAP_KEYS
 
 
 register = template.Library()
@@ -42,32 +42,12 @@ def uniqify(seq, idfun=None):
 def uniqify_on(list_, on):
     return uniqify(list_, lambda x: getattr(x, on))
 
+@register.filter()
+def country_flag_src(iso_code):
+    return staticfile("/img/flags/%s.gif" % iso_code.lower())
 
-##@register.filter('nearby_people_escape')
-##def _nearby_people_escape(person):
-##    """return the person like this 
-##    
-##     [<latitude>, <longitude>, <full name>, <username>, <location_description>, 
-##      <photo thumnail url>, <country iso code lowercase>,
-##      [clubs], [styles]]
-##    
-##    ...escaped for javascript.
-##    """
-##    data = [person.latitude, person.longitude,
-##            unicode(person), person.user.username,
-##            person.location_description,
-##            ]
-##    
-##    if person.photo:
-##        thumbnail = DjangoThumbnail(person.photo, (60,60), opts=[], 
-##                                    processors=thumbnail_processors)
-##        data.append(thumbnail.absolute_url)
-##    else:
-##        data.append(staticfile("/img/upload-a-photo-60.png"))
-##        
-##    data.append(person.country.iso_code.lower())
-##    return simplejson.dumps(data)
-    
+
+## THIS MIGHT BE DEPRECATED BY NOW. AT LEAST IT SHOULD BE
 @register.filter('nearby_people_escape')
 def _nearby_people_escape(person):
     """return the person like this 
@@ -116,16 +96,16 @@ def _optimize_nearby_person_keys(data):
     """
     
     for k, v in data.items():
-        if k in NEARBY_PERSON_KEYS:
-            data[NEARBY_PERSON_KEYS[k]] = data.pop(k)
+        if k in MAP_KEYS:
+            data[MAP_KEYS[k]] = data.pop(k)
 
 @register.filter("nearby_person_keys_js")
 def _nearby_person_keys_js(key_definitions):
-    js = "var NEARBY_PERSON_KEYS=%s;\n" % simplejson.dumps(NEARBY_PERSON_KEYS)
+    js = "var MAP_KEYS=%s;\n" % simplejson.dumps(MAP_KEYS)
     #reversed = {}
-    #for k, v in NEARBY_PERSON_KEYS.items():
+    #for k, v in MAP_KEYS.items():
     #    reversed[v] = k
-    #js += "var NEARBY_PERSON_KEYS_REVERSED=%s;\n" % simplejson.dumps(reversed)
+    #js += "var MAP_KEYS_REVERSED=%s;\n" % simplejson.dumps(reversed)
     return js
 
 @register.filter("get_flag_image")

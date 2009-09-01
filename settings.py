@@ -6,7 +6,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # Thumbnail settings
-THUMBNAIL_DEBUG = True
+THUMBNAIL_DEBUG = False # not sure what this means!
 THUMBNAIL_SUBDIR = '_thumbs'
 
 # Tagging settings
@@ -147,7 +147,7 @@ PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
 
 CRASHKIT = None # enabled live
 
-NEARBY_PERSON_KEYS = {'fullname':'A',
+MAP_KEYS = {'fullname':'A',
                       'latitude':'B',
                       'longitude':'C',
                       'username':'D',

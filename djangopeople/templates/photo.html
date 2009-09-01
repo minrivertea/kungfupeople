@@ -12,9 +12,12 @@
 {% block js %}{% load thumbnail %}
 {% if photo.latitude and photo.longitude %}
 <script type="text/javascript">
+var PERSON = {{ photo_location_json|safe }};
 var PAGE_LATITUDE = {{ photo.latitude }};
 var PAGE_LONGITUDE = {{ photo.longitude }};
+var ZOOM = 10;
 </script>
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
 {% endif %}
 
@@ -61,7 +64,7 @@ var PAGE_LONGITUDE = {{ photo.longitude }};
 
 	<div class="right-box">
 		{% if is_owner %}
-		<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
+		<a class="small-text" href="{% url profile person.user.username %}">(back to your profile)</a>
 		{% endif %}	
 
 		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  

@@ -42,15 +42,8 @@ p.promo {
 
 {% block js %}
 <script type="text/javascript">
-{# This javascript variable is going to be used in index.js #}
-{% slimcontent %}
-var people = [
-    // latitude, longitude, name, username, location description
-    {% for person in recent_people %}
-      {{ person|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-{% endslimcontent %}
+{# This javascript variable is going to be used in worldmap.js #}
+var PEOPLE = {{ people_locations_json|safe }};
 </script>
 <script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 
@@ -59,7 +52,7 @@ var people = [
 	{% block signup %}
 
 	<div id="signup">
-	<p><strong>A world-wide map of {{ PROJECT_NAME }}! <a href="/signup/">Signup today.</a></strong></p>
+	<p><strong>A world-wide map of {{ PROJECT_NAME }}! <a href="{% url signup %}">Signup today.</a></strong></p>
 	</div>
 	{% endblock %}
 
@@ -68,7 +61,7 @@ var people = [
 {% block map %}
 
 	<div class="mapContainer major">
-        		<div id="gmap">&nbsp;</div>
+        <div id="gmap">&nbsp;</div>
 	</div>
 
 	<div class="counter-current">
@@ -80,14 +73,14 @@ var people = [
 	</div>
 	<div class="counter">
 	<div class="number"></div><strong>ZOOM!</strong> Find clubs, styles and people<br>
-	<a href="zoom">Try it out now.</a>
+	<a href="{% url zoom %}">Try it out now.</a>
 	</div>
 {% endblock %}
 
 {% block content %}
 <div class="wrapper">
 
-	            {% if not user.is_authenticated %}
+         {% if not user.is_authenticated %}
 	<div id="promo-text">
 	<p class="promo-title">Calling all kung fu people!</p>
 	<p class="promo">If you do kung fu, then we need your help! We're creating a massive global map of every martial artist and club around the globe, and we want you to stand up, be counted and say "I'm a proud kung fu person!"</p>
@@ -123,7 +116,7 @@ var people = [
 		<h3>People recently added</h3>
 
 			<div class="horizontal-photos">
-			{% for person in recent_people_limited %}
+			{% for person in recent_people %}
         	        <a href="{{ person.get_absolute_url }}" 
         	           title="Click to see {{ person.user.first_name }}'s profile">
         	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}">

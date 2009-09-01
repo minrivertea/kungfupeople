@@ -13,9 +13,12 @@ div.video { margin-bottom:20px; }
 {% block js %}{% load thumbnail %}
 {% if entry.latitude and entry.longitude %}
 <script type="text/javascript">
+var PERSON = {{ diary_entry_location_json|safe }};
 var PAGE_LATITUDE = {{ entry.latitude }};
 var PAGE_LONGITUDE = {{ entry.longitude }};
+var ZOOM = 10;
 </script>
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
 {% endif %}
 
@@ -41,7 +44,7 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
 <div id="content-box">
 
 	<h2>{{ entry.title }}</h2>
-	by <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name|title }}</a><br/><br />
+	by <a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name|title }}</a><br><br>
 	<p class="meta">
 		{% if is_owner %}<a href="../../photo/upload?diary={{ entry.id }}"><strong>
 			{% if photos %}Add more photos{% else %}Add photos to this post{% endif %}

@@ -11,21 +11,18 @@
 {% block js %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
-var nearby_people = [
-{% for p in person.get_nearest %}
-  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-{% endfor %}
-];
-
+var PERSON = {{ person_location_json|safe }};
+var PEOPLE = {{ people_locations_json|safe }};
 var PAGE_LATITUDE = {{ person.latitude }};
 var PAGE_LONGITUDE = {{ person.longitude }};
+var ZOOM = 10;
 </script>
 {% if not OFFLINE_MODE %}
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
 {% endif %}
-<script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
 {% if pester_first_photo or pester_first_diary_entry or pester_first_style %}
-  <script type="text/javascript">
+<script type="text/javascript">
   $(function() {
     $('a.close_tip').click(function() {
       $(this).parents('div.no-photo-box').remove();
@@ -34,7 +31,7 @@ var PAGE_LONGITUDE = {{ person.longitude }};
       return false;
     });
   });
-  </script>
+</script>
 {% endif %}
 
 <style type="text/css">
@@ -88,7 +85,7 @@ div.bio a.edit {
 		<img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}">
 		{% if is_owner %}
 		<div class="change-photo">
-		<a class="small-text" href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">
+		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
 		{% if person.photo %}Change your photo
 		{% else %}<strong>Upload a photo</strong>
 		{% endif %}
@@ -107,7 +104,8 @@ div.bio a.edit {
                 {% if request.user.is_superuser %}
                 <div class="admin-only">
                 <h4>Admins only</h4>
-                # profile views: <code>{{ person.profile_views }}</code>
+                # profile views: <code>{{ person.profile_views }}</code><br>
+                came from: <code>{{ person.came_from }}</code>
                 </div>
                 {% endif %}
 		
@@ -142,7 +140,7 @@ div.bio a.edit {
 			{% if is_owner %}
 				{% if pester_first_photo %}
 				{% else %}
-			<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
+			<p>You haven't written a bio yet - <a href="{% url edit_profile user.username %}">why not introduce yourself a little?</a></p>
 				{% endif %}
 			{% endif %}
 			{% endif %}
@@ -315,13 +313,12 @@ div.bio a.edit {
 
 	<div id="right-column">
 
-            {% with person.get_nearest as people %}
-            {% if people %}
+            {% if people_near %}
             <h4>People near {{ person.user.first_name }}</h4>
             
 	    <div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
-                {% for person in people %}
+                {% for person in people_near %}
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
@@ -335,7 +332,6 @@ div.bio a.edit {
             </ul>
 	    </div>
             {% endif %}
-            {% endwith %}
 
             {% with person.get_same_club_people as people %}
             {% if people %}

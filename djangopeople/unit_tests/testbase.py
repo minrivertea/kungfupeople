@@ -52,7 +52,16 @@ class TestCase(DjangoTestCase):
             """
             cursor.execute(sql_string)
             #self._miles_between_lat_long_created = True
-            
+
+        # disable the CSRF middlware temporarily
+        mdc = list(settings.MIDDLEWARE_CLASSES)
+        try:
+            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
+            settings.MIDDLEWARE_CLASSES = tuple(mdc)
+        except ValueError:
+            # not there
+            pass
+        
         super(TestCase, self).setUp()
         
     def _get_posted_prowls(self):

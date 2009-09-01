@@ -1,8 +1,12 @@
+{% load thumbnail misc_extras %}
+{% if include_photo %}
+{% if person.photo %}<img class="list-photo" src="{% thumbnail person.photo 60x60 crop %}" alt="photo">{% endif %}
+{% endif %}
 <h2><a href="{{ person.get_absolute_url }}">{{ person.user.get_full_name }}</a></h2>
 
 			<div class="region">
-			<a href="/{{ person.country.iso_code|lower }}/">
-			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
+			<a href="/{{ person.country.iso_code|lower }}/"
+                        ><img src="{{ person.country.iso_code|country_flag_src }}" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 			{{ person.location_description }}
 			</div>
 

@@ -95,8 +95,8 @@ var LOCATION_BY_IP=false;
 {% endblock %}
 
 {% block content %}
-	<div id="content-box">
-    		<form method="post" action="/signup/">
+	<div id="content-box" style="display:none">
+    		<form method="post" action="{% url signup %}">
     		<h2>1. Create your account</h2> 
 
 
@@ -231,7 +231,7 @@ var LOCATION_BY_IP=false;
 
 	</div>
 
-	<div id="right-column" {% if base_location %}style="display:none"{% endif %}>
+	<div id="right-column" style="display:none">
 	<div class="right-box">
 	    	<h2>Where do you train?</h2>
                 {% if base_location %}

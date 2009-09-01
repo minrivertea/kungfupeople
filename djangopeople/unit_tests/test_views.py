@@ -247,6 +247,7 @@ class ViewsTestCase(TestCase):
     def test_signup_multiple_styles(self):
         """test posting to signup and say that you have multiple styles
         by entering it with a comma"""
+        
         # load from fixtures
         example_country = Country.objects.all().order_by('?')[0]
         
@@ -274,21 +275,68 @@ class ViewsTestCase(TestCase):
         self.assertEqual(Style.objects.filter(name="Fat style").count(), 1)
         self.assertEqual(Style.objects.filter(name="Chocolate rain").count(), 1)
         
+    def test_signup_style_with_paranthesis(self):
+        """test posting to signup and say that you have a style with a bracket
+        then the slug shouldn't break
+        """
+        # load from fixtures
+        example_country = Country.objects.all().order_by('?')[0]
+        
+        response = self.client.post('/signup/', 
+                                    dict(username='bob',
+                                         email='bob@example.org',
+                                         password1='secret',
+                                         password2='secret',
+                                         first_name=u"Bob",
+                                         last_name=u"Sponge",
+                                         region='',
+                                         country=example_country.iso_code,
+                                         latitude=1.0,
+                                         longitude=-1.0,
+                                         location_description=u"Hell, Pergatory",
+                                         style=u"Fat style (as in Phat!)"
+                                        ))
+        self.assertEqual(response.status_code, 302)
+        
+        self.assertEqual(KungfuPerson.objects.\
+           filter(user__username="bob").count(), 1)
+        
+        # This should now have created 2 styles
+        self.assertEqual(Style.objects.all().count(), 1)
+        self.assertEqual(Style.objects.filter(name="Fat style (as in Phat!)").count(), 1)
+        style = Style.objects.all()[0]
+        self.assertEqual(style.slug, 'fat-style-as-in-phat')
+        self.assertEqual(style.get_absolute_url(),
+                         '/style/fat-style-as-in-phat/')
+        
+        # now try to add another style with a bracket in it
+        response = self.client.get('/bob/style/')
+        assert response.status_code == 200
+        self.assertTrue('Your current style' in response.content)
+        self.assertTrue('/style/fat-style-as-in-phat/' in response.content)
+        self.assertTrue('/bob/style/delete/fat-style-as-in-phat/' in response.content)
+        
+        # add another one
+        response = self.client.post('/bob/style/', 
+                                    dict(style_name=u"dim (sung)"))
+        self.assertEqual(response.status_code, 302)
+        style2 = Style.objects.get(name__icontains=u'dim')
+        self.assertEqual(style2.name, u'dim (sung)')
+        self.assertEqual(style2.slug, u'dim-sung')
+        self.assertEqual(style2.get_absolute_url(), u'/style/dim-sung/')
+        
+        response = self.client.get('/bob/style/')
+        assert response.status_code == 200
+        self.assertTrue('Your current styles' in response.content)
+        self.assertTrue('/style/dim-sung/' in response.content)
+
+
     def test_signup_with_recruitment(self):
         """Image you came to the site by the URL 
         http://kungfupeople.com/?rc=1
         then that means that user with ID 1 recruited you.
         This information is kept in a session variable.
         """
-        # disable the CSRF middlware temporarily
-        mdc = list(settings.MIDDLEWARE_CLASSES)
-        try:
-            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
-            settings.MIDDLEWARE_CLASSES = tuple(mdc)
-        except ValueError:
-            # not there
-            pass
-        
         user, person = self._create_person('billy', 'billy@example.com')
         recruiter_id = user.id
         
@@ -324,15 +372,6 @@ class ViewsTestCase(TestCase):
 
     def test_newsletter_options(self):
         """test changing your newsletter options"""
-        
-        # disable the CSRF middlware temporarily
-        mdc = list(settings.MIDDLEWARE_CLASSES)
-        try:
-            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
-            settings.MIDDLEWARE_CLASSES = tuple(mdc)
-        except ValueError:
-            # not there
-            pass
         
         user, person = self._create_person('bob', 'bob@example.com')
         
@@ -391,16 +430,6 @@ class ViewsTestCase(TestCase):
         run /username/photo/upload/ with some description and some
         location.
         """
-        
-        # disable the
-        mdc = list(settings.MIDDLEWARE_CLASSES)
-        try:
-            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
-            settings.MIDDLEWARE_CLASSES = tuple(mdc)
-        except ValueError:
-            # not there
-            pass
-        
         country = Country.objects.all().order_by('?')[0]
 
         user, person = self._create_person('bob', 'bob@example.com',
@@ -474,16 +503,6 @@ class ViewsTestCase(TestCase):
         """same as test_photo_upload_multiple_basic
         but this time prefer with single.
         """
-        
-        # disable the
-        mdc = list(settings.MIDDLEWARE_CLASSES)
-        try:
-            mdc.remove('django.contrib.csrf.middleware.CsrfMiddleware')
-            settings.MIDDLEWARE_CLASSES = tuple(mdc)
-        except ValueError:
-            # not there
-            pass
-        
         country = Country.objects.all().order_by('?')[0]
 
         user, person = self._create_person('bob', 'bob@example.com',
