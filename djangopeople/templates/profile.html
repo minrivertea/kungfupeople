@@ -110,8 +110,8 @@ div.bio a.edit {
                 {% endif %}
 		
 			<div class="region">
-			<a href="/{{ person.country.iso_code|lower }}/">
-			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
+			<a href="{% url country person.country.iso_code|lower %}">
+			<img src="{{ person.country.iso_code|get_flag_image }}" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 			{{ person.location_description }}
 			</div>
 		{% if is_owner %}

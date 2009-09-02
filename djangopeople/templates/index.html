@@ -126,8 +126,10 @@ var PEOPLE = {{ people_locations_json|safe }};
 			<br clear="all"/>
                         
 			<div class="horizontal-image-list-text">
-			(located in:  {% for country in unique_countries %}<a href="{% url country country.iso_code|lower %}">{{ country }}</a>{% if not forloop.last %}, {% endif %}
-                        {% endfor %})
+			located in: 
+                        {% for country in unique_countries %}
+                        <a href="{% url country country.iso_code|lower %}">{{ country }}</a>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
 			</div>
 		</div>
 	</div>

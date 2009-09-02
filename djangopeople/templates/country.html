@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% load misc_extras %}
 {% load django_static %}
+{% load thumbnail %}
 
 {% block title %}{{ country }} |{% endblock %}
 
@@ -38,12 +39,13 @@ var bbox_east = {{ country.bbox_east }};
 
 		<div id="profile-head">
 
-       		<h2>{{ country }}</h2>
-
-		{% load thumbnail %}
+       		<h2>{{ country }}
         
-        	{% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
-
+        	{% if country.iso_code %}
+                <img src="{{ country.iso_code|get_flag_image }}" alt="{{ country }}" class="main">
+                {% endif %}
+                </h2>
+                
       		</div>
 
 		{% if people %}
