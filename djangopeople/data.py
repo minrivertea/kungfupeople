@@ -1,13 +1,17 @@
 # python
 import datetime
+import os
+import logging
 
 # django
 from django.utils.timesince import timesince
 from django.core.cache import cache
+from django.conf import settings
 
 # other
 from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
 from sorl.thumbnail.processors import dynamic_import, get_valid_options
+from django.utils.text import truncate_words
 thumbnail_processors = dynamic_import(get_thumbnail_setting('PROCESSORS'))
 try:
     from django_static import slimfile, staticfile
@@ -15,7 +19,7 @@ except ImportError:
     from django_static.templatetags.django_static import slimfile, staticfile
 
 # app
-from models import Club, Style, KungfuPerson
+from models import Club, Style, KungfuPerson, Photo
 
 ONE_MINUTE = 60
 ONE_HOUR = ONE_MINUTE * 60
@@ -37,20 +41,25 @@ def get_all_items(model, sort_by):
     qs = {'clubs': Club,
           'styles': Style,
           'people': KungfuPerson,
+          'photos': Photo,
          }[model].objects.all()
     
     if model == 'people':
         qs = qs.select_related('user')
+    elif model == 'photos':
+        qs = qs.select_related('country','user')
 
     if sort_by == 'date':
         order_by = {'clubs':'-add_date',
                     'styles':'-add_date',
                     'people':'-user__date_joined',
+                    'photos':'-date_added',
                     }[model]
     else: # by name
         order_by = {'clubs':'name',
                     'styles':'name',
                     'people':('user__first_name', 'user__last_name'),
+                    'photos':('location_description', 'country__name'),
                     }[model]
     if isinstance(order_by, basestring):
         order_by = (order_by,)
@@ -81,6 +90,32 @@ def get_all_items(model, sort_by):
             items.append(_ListItem(
                     item.get_absolute_url(),
                     item.user.get_full_name(),
+                    info=info,
+                    thumbnail_url=thumbnail_url
+                        ))
+        elif model == 'photos':
+            if not os.path.isfile(os.path.join(settings.MEDIA_ROOT, item.photo.path)):
+                logging.info("Photo id=%s is missing the photo itself!" %\
+                             item.id)
+                continue
+            thumbnail = DjangoThumbnail(item.photo, (40,40), opts=['crop'],
+                                        processors=thumbnail_processors)
+            thumbnail_url = thumbnail.absolute_url
+            if item.description:
+                _title = truncate_words(item.description, 10)
+            else:
+                _title = ''
+            _title = ' %s, %s' % (item.location_description, item.country.name)
+            #if item.description:
+            #    title = truncate_words(item.description, 10)
+            #else:
+            #    title = ''
+            info = 'Added by <a href="/%s/">%s</a>' % (item.user.username, 
+                                                         item.user.get_full_name())
+            info += ' %s ago' % timesince(item.date_added, _today)
+            items.append(_ListItem(
+                    item.get_absolute_url(),
+                    _title.strip(),
                     info=info,
                     thumbnail_url=thumbnail_url
                         ))

@@ -164,9 +164,15 @@ div.bio a.edit {
     		        {{ club.name }}{% if not forloop.last %}, {% endif %}
  		        {% endif %}
    			{% endfor %}
-		    	</span><br/>
+		    	</span><br>
 			{% endif %}
 			</div>
+			
+			{% if is_owner %}
+			<div class="profile-views">
+			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} <abbr title="Number of clicks on your profile">?</abbr>
+			</div>
+			{% endif %}
 			
 			{% if recruiter and recruiter_profile %}
 			<div class="recruitment">

@@ -49,11 +49,11 @@ google.setOnLoadCallback(function() {
    } else {
       if (typeof PAGE_LATITUDE == 'undefined' && typeof PAGE_LONGITUDE == 'undefined')
 	//var latlng = new google.maps.LatLng(19.97335, -15.8203);
-        var latlng = new google.maps.LatLng(37.97335, -15.8203);
+        var latlng = new google.maps.LatLng(27.97335, -15.8203);
       else
 	var latlng = new google.maps.LatLng(PAGE_LATITUDE, PAGE_LONGITUDE);
       if (typeof ZOOM == 'undefined')
-        gmap.setCenter(latlng, 3);
+        gmap.setCenter(latlng, 2);
       else
         gmap.setCenter(latlng, ZOOM);
    }

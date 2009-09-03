@@ -45,9 +45,9 @@ div.item img { float:left; margin-right:5px; margin-bottom:3px; }
     {% if item.thumbnail_url %}
       <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}">
     {% endif %}
-    <strong><a href="{{ item.url }}">{{ item.title }}</a></strong>
+    <strong><a href="{{ item.url }}">{{ item.title|safe }}</a></strong>
     <br>
-    {% if item.info %}{{ item.info }}{% endif %}
+    {% if item.info %}{{ item.info|safe }}{% endif %}
   </p>
 </div>
 {% endfor %}

@@ -1139,7 +1139,7 @@ def all_something(request, model, sort_by='name'):
     if sort_by not in ('date','name'):
         raise Http404("unrecognized sort-by")
     
-    if model not in ('clubs','styles','people'):
+    if model not in ('clubs','styles','people','photos'):
         raise Http404("unrecognized model")
     
     data = locals()
@@ -1151,7 +1151,7 @@ def all_something(request, model, sort_by='name'):
         _view_name = "all_something_by_date"
     else:
         _view_name = "all_something"
-    for model_name in ('people','clubs','styles'):
+    for model_name in ('people','clubs','styles','photos'):
         url = reverse(_view_name, args=(model_name,))
         list_options.append(dict(label=model_name,
                                  url=url,
