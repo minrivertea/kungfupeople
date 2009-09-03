@@ -1323,17 +1323,7 @@ div.video-full {
 	margin: 5px 0 0 40px;
 }
 
-div.counter-current {
-	float: right;
-	padding: 5px 20px 0 10px;
-	height: 45px;
-	width: auto;
-	margin: 0px 70px -45px -60px;
-	background-color: #F3CF1A;
-	color: #666;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
-}
+
 
 div.counter {
 	float: right;
@@ -1347,6 +1337,22 @@ div.counter {
 	border-top: 1px solid white;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
+}
+
+div.counter-current {
+	float: right;
+	padding: 5px 20px 0 10px;
+	height: 45px;
+	width: auto;
+	margin: 0px 70px -45px -60px;
+	background-color: #F3CF1A;
+	color: #666;
+-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+}
+div.counter-last {
+	margin: 0px 10px -45px -60px;
+
 }
 
 div.number {

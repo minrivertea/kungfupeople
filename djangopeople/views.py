@@ -1863,7 +1863,7 @@ def zoom(request):
     """zoom() is about showing a map and when the user zooms in on a region
     it finds out what's in that region and updates a list.
     """
-    
+    people_count = KungfuPerson.objects.count()
     return render(request, 'zoom.html', locals())
 
 def _get_zoom_content(left, upper, right, lower, request=None):

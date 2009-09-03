@@ -29,23 +29,36 @@ div.zoomed-content h3 {
 
 {% block js %}
 <script type="text/javascript">
-var people = [
-{% for p in country.kungfuperson_set.all %}
-  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-{% endfor %}
-];
+//var people = [
+//{% for p in country.kungfuperson_set.all %}
+//  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
+//{% endfor %}
+//];
 </script>
 <script src="{% slimfile "/js/worldmap.js" %}" type="text/javascript"></script>
 <script src="/js/zoom.js" type="text/javascript"></script>
 
 {% endblock %}
 
-
 {% block map %}
-    <div class="mapContainer major">
+
+	<div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
-    </div>
+	</div>
+
+	<div class="counter">
+	<div class="number">{{ people_count }}</div> people added so far!<br />
+	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
+	{% else %}
+	<a href="{% url wall %}">See everyone!</a>		
+	{% endif %}
+	</div>
+	<div class="counter-current counter-last">
+	<div class="number"></div><strong>ZOOM!</strong> Find clubs, styles and people<br>
+	<a href="{% url zoom %}">Try it out now.</a>
+	</div>
 {% endblock %}
+
 
 {% block content %}
 <div class="wrapper">
