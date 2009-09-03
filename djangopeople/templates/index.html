@@ -103,6 +103,8 @@ var PEOPLE = {{ people_locations_json|safe }};
 		{% for style in styles %}
 		    <a href="{{ style.get_absolute_url }}">{{ style.name }}</a>{% if not forloop.last %}<br>{% endif %}
 		{% endfor %}
+                <br>
+                <a href="{% url all_something_by_date 'styles' %}"><em>List of all styles</em></a>
 		</div>
 
 		<div class="highlight-home">
@@ -110,6 +112,8 @@ var PEOPLE = {{ people_locations_json|safe }};
 		{% for club in clubs %}
 		    <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}<br>{% endif %}
 		{% endfor %}
+                <br>
+                <a href="{% url all_something_by_date 'clubs' %}"><em>List of all clubs</em></a>
 		</div>
 
 		<div class="highlight-home-people">
@@ -122,10 +126,13 @@ var PEOPLE = {{ people_locations_json|safe }};
         	        <img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}">
 			</a>
         		{% endfor %}
+                        <br>
+                        <a href="{% url all_something_by_date 'people' %}"><em>List of all people</em></a>
 			</div>
 			<br clear="all"/>
                         
 			<div class="horizontal-image-list-text">
+                        
 			located in: 
                         {% for country in unique_countries %}
                         <a href="{% url country country.iso_code|lower %}">{{ country }}</a>{% if not forloop.last %}, {% endif %}

@@ -19,6 +19,12 @@ urlpatterns = patterns('',
     (r'^$', views.index),
     url(r'^club/([A-Za-z0-9-:]{3,})/$', views.club, name="club.view"),
     url(r'^style/([A-Za-z0-9-:]{3,})/$', views.style, name="style.view"),
+                       
+    url(r'^all/(clubs|styles|people)/$', views.all_something, 
+        name="all_something"),
+    url(r'^all/(clubs|styles|people)/by-date/$', views.all_something,
+        {'sort_by':'date'}, name="all_something_by_date"),
+                       
     (r'^login/$', views.login),
     (r'^logout/$', views.logout),
     (r'^recent/$', views.recent),

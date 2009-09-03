@@ -1,0 +1,56 @@
+{% extends "base_no_map.html" %}
+
+{% block title %}{{ page_title }} |{% endblock %}
+
+{% block extracss %}
+<style type="text/css">
+#no-map-content-box { width: 55%; }
+
+#list-options { float:right; }
+#list-options dt { font-weight:bold; margin-top:10px; }
+#list-options dd { margin-left:20px; }
+#list-options a.active { color:black; font-style:italic; }
+
+div.item { clear:left; }
+div.item img { float:left; margin-right:5px; margin-bottom:3px; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<div id="list-options">
+  <dl>
+    <dt>List</dt>
+    {% for option in list_options %}
+    <dd><a href="{{ option.url }}"
+          {% if option.active %}class="active"{% endif %}>{{ option.label }}</a></dd>
+    {% endfor %}
+    
+    <dt>Order by</dt>
+    {% for option in order_by_options %}
+    <dd><a href="{{ option.url }}"
+          {% if option.active %}class="active"{% endif %}>{{ option.label }}</a></dd>
+    {% endfor %}
+    
+    
+  </dl>
+</div>
+
+{% for item in items %}
+<div class="item">
+  <p>
+    {% if item.thumbnail_url %}
+      <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}">
+    {% endif %}
+    <strong><a href="{{ item.url }}">{{ item.title }}</a></strong>
+    <br>
+    {% if item.info %}{{ item.info }}{% endif %}
+  </p>
+</div>
+{% endfor %}
+
+{% endblock %}
+

@@ -48,7 +48,8 @@ google.setOnLoadCallback(function() {
       gmap.setCenter(bounds.getCenter());
    } else {
       if (typeof PAGE_LATITUDE == 'undefined' && typeof PAGE_LONGITUDE == 'undefined')
-	var latlng = new google.maps.LatLng(19.97335, -15.8203);
+	//var latlng = new google.maps.LatLng(19.97335, -15.8203);
+        var latlng = new google.maps.LatLng(37.97335, -15.8203);
       else
 	var latlng = new google.maps.LatLng(PAGE_LATITUDE, PAGE_LONGITUDE);
       if (typeof ZOOM == 'undefined')

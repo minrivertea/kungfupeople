@@ -34,7 +34,7 @@ from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
-
+from data import get_all_items
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
 #from googlemaps import get_person_profile_static_map
 
@@ -1133,6 +1133,52 @@ def club(request, name):
     people_locations_json = _get_people_locations_json(people)
 
     return render(request, 'club.html', locals())
+
+
+def all_something(request, model, sort_by='name'):
+    if sort_by not in ('date','name'):
+        raise Http404("unrecognized sort-by")
+    
+    if model not in ('clubs','styles','people'):
+        raise Http404("unrecognized model")
+    
+    data = locals()
+    current_url = request.build_absolute_uri()
+    
+    list_options = []
+    
+    if sort_by == 'date':
+        _view_name = "all_something_by_date"
+    else:
+        _view_name = "all_something"
+    for model_name in ('people','clubs','styles'):
+        url = reverse(_view_name, args=(model_name,))
+        list_options.append(dict(label=model_name,
+                                 url=url,
+                                 active=current_url.endswith(url)
+                            ))
+    
+    order_by_options = []
+    
+    url = reverse("all_something", args=(model,))
+    order_by_options.append(dict(label='name',
+                                 url=url,
+                                 active=current_url.endswith(url)
+                                 ))
+    
+    url = reverse("all_something_by_date", args=(model,))
+    order_by_options.append(dict(label='date',
+                                 url=url,
+                                 active=current_url.endswith(url)
+                                 ))
+    
+    data.update(dict(list_options=list_options,
+                     order_by_options=order_by_options))
+    
+    data.update(get_all_items(model, sort_by))
+    
+    return render(request, 'all_something.html', data)
+        
 
 def style(request, name):
     style = get_object_or_404(Style, slug=name)

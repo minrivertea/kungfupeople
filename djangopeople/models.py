@@ -34,7 +34,7 @@ RESERVED_USERNAMES = set((
     'photos owner maps upload geocode geocoding login logout openid openids '
     'recover lost signup reports report flickr upcoming mashups recent irc '
     'group groups bulletin bulletins messages message newsfeed events company '
-    'companies active'
+    'companies active clubs styles style club'
 ).split())
 
 
