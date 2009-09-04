@@ -36,6 +36,7 @@ from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
 from data import get_all_items
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
+
 #from googlemaps import get_person_profile_static_map
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
@@ -2192,7 +2193,7 @@ def runway_data_js(request):
     
 def crossdomain_xml(request):
     domain = "*"
-    print request.META.keys() # referer?
+    #print request.META.keys() # referer?
     xml = '<?xml version="1.0"?>\n'\
           '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/'\
           'dtds/cross-domain-policy.dtd">\n'\

@@ -2,6 +2,9 @@
 import datetime
 import os
 import logging
+from urlparse import urlparse
+import urllib
+import hashlib
 
 # django
 from django.utils.timesince import timesince
@@ -27,14 +30,34 @@ ONE_DAY = ONE_HOUR * 24
 ONE_WEEK = ONE_DAY * 7
 ONE_YEAR = ONE_WEEK * 52
 
+_default_thumbnail_urls = {
+    30: '/img/upload-a-photo-30.png',
+    40: '/img/upload-a-photo-40.png',
+    60: '/img/upload-a-photo-60.png',
+}
+_media_url = getattr(settings, 'GRAVATAR_MEDIA_URL',
+                     getattr(settings, 'DJANGO_STATIC_MEDIA_URL',
+                             'http://kungfupeople.com'))
+if _media_url.endswith('/'):
+    _media_url = _media_url[:-1]
+def gravatar_thumbnail_url(email, size=40):
+    assert int(size) in (30,40,60), "Invalid thumbnail size %r" % size
+    
+    default = _media_url + staticfile(_default_thumbnail_urls[int(size)])
+    return "http://www.gravatar.com/avatar.php?" + \
+      urllib.urlencode({'gravatar_id':hashlib.md5(email).hexdigest(),
+                        'default':default, 
+                        'size':str(size)})
+
 
 class _ListItem(object):
-    __slots__ = ('url','title','info','thumbnail_url')
-    def __init__(self, url, title, info=u'', thumbnail_url=''):
+    __slots__ = ('url','title','info','thumbnail_url', 'thumbnail_size')
+    def __init__(self, url, title, info=u'', thumbnail_url='', thumbnail_size=()):
         self.url = url
         self.title = title
         self.info = info
         self.thumbnail_url = thumbnail_url
+        self.thumbnail_size = thumbnail_size
 
 
 def get_all_items(model, sort_by):
@@ -76,6 +99,7 @@ def get_all_items(model, sort_by):
     counts_cache_key = 'all-counts-%s' % model
     counts = cache.get(counts_cache_key, {})
     
+    
     items = []
     for item in qs:
         if model == 'people':
@@ -84,14 +108,16 @@ def get_all_items(model, sort_by):
                                         processors=thumbnail_processors)
                 thumbnail_url = thumbnail.absolute_url
             else:
-                thumbnail_url = staticfile('/img/upload-a-photo-40.png')
-            
+                thumbnail_url = gravatar_thumbnail_url(item.user.email, size=40)
+                #thumbnail_url = staticfile('/img/upload-a-photo-40.png')
+            thumbnail_size = (40, 40)
             info = 'joined %s ago' % timesince(item.user.date_joined, _today)
             items.append(_ListItem(
                     item.get_absolute_url(),
                     item.user.get_full_name(),
                     info=info,
-                    thumbnail_url=thumbnail_url
+                    thumbnail_url=thumbnail_url,
+                    thumbnail_size=thumbnail_size,
                         ))
         elif model == 'photos':
             if not os.path.isfile(os.path.join(settings.MEDIA_ROOT, item.photo.path)):
@@ -101,6 +127,7 @@ def get_all_items(model, sort_by):
             thumbnail = DjangoThumbnail(item.photo, (40,40), opts=['crop'],
                                         processors=thumbnail_processors)
             thumbnail_url = thumbnail.absolute_url
+            thumbnail_size = (40,40)
             if item.description:
                 _title = truncate_words(item.description, 10)
             else:
@@ -114,10 +141,11 @@ def get_all_items(model, sort_by):
                                                          item.user.get_full_name())
             info += ' %s ago' % timesince(item.date_added, _today)
             items.append(_ListItem(
-                    item.get_absolute_url(),
-                    _title.strip(),
-                    info=info,
-                    thumbnail_url=thumbnail_url
+                                   item.get_absolute_url(),
+                                   _title.strip(),
+                                   info=info,
+                                   thumbnail_url=thumbnail_url,
+                                   thumbnail_size=thumbnail_size,
                         ))
         elif model in ('clubs','styles'):
             if item.id in counts:

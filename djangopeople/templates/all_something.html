@@ -43,7 +43,8 @@ div.item img { float:left; margin-right:5px; margin-bottom:3px; }
 <div class="item">
   <p>
     {% if item.thumbnail_url %}
-      <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}">
+      <img src="{{ item.thumbnail_url }}" alt="{{ item.title }}"
+       {% if item.thumbnail_size %}width="{{ item.thumbnail_size.0 }}" height="{{ item.thumbnail_size.1 }}"{% endif %}>
     {% endif %}
     <strong><a href="{{ item.url }}">{{ item.title|safe }}</a></strong>
     <br>

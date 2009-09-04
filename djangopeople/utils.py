@@ -11,6 +11,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
+
 def uniqify(seq, idfun=None):
     if seq is None:
         raise ValueError("Sequence can not be None")

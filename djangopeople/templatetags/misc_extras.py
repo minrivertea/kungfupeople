@@ -1,6 +1,9 @@
 ## Various templatetags for misc stuff
 ##
 
+# python
+
+# django
 from django.utils import simplejson
 from django import template
 from django.conf import settings
@@ -98,3 +101,5 @@ def _get_flag_image(country_iso_code):
     url = "/img/flags/%s.gif" % country_iso_code.lower()
     url = staticfile(url)
     return url
+
+

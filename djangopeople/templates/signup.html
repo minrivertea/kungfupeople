@@ -231,7 +231,7 @@ var LOCATION_BY_IP=false;
 
 	</div>
 
-	<div id="right-column" style="display:none">
+	<div id="right-column" {% if not form.errors %}style="display:none"{% endif %}>
 	<div class="right-box">
 	    	<h2>Where do you train?</h2>
                 {% if base_location %}
@@ -241,21 +241,23 @@ var LOCATION_BY_IP=false;
                 {% endif %}
         <fieldset>
 
-	<div id="location">
+	<div id="location" {% if not form.location_description.errors %}style="display:none"{% endif %}>
             	<label for="id_location_description">Location *</label>
             	{{ form.location_description.errors }}
-		<br/>
-		{{ form.location_description }}  <br/><span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
+		<br>
+		{{ form.location_description }}
+		<br>
+		<span class="form-hint">(You can customize this if you like - it has been guessed from the map coordinates above.)</span>
 	</div>
 
-	<div id="country">
+	<div id="country" {% if not form.country.errors %}style="display:none"{% endif %}>
             	<label for="id_country">Country</label>
             	{{ form.country.errors }}
 		<br/>
 		{{ form.country }}
 	</div>
 
-	<div class="form-field-outer" style="display: none;">
+	<div class="form-field-outer" style="display:none">
 		<div class="form-field-left">
             		{{ form.latitude.errors }}
             		<label for="id_latitude">Latitude</label>
@@ -275,7 +277,7 @@ var LOCATION_BY_IP=false;
 		</div>
 	</div>
 
-	<div class="form-field-outer" style="display: none;">
+	<div class="form-field-outer" style="display:none">
 		<div class="form-field-left">
             		{{ form.region.errors }}
             		<label for="id_region">Region</label>
