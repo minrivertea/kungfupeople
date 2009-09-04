@@ -42,7 +42,6 @@ if _media_url.endswith('/'):
     _media_url = _media_url[:-1]
 def gravatar_thumbnail_url(email, size=40):
     assert int(size) in (30,40,60), "Invalid thumbnail size %r" % size
-    logging.info("media_url=%r" % _media_url)
     default = staticfile(_default_thumbnail_urls[int(size)])
     if default.startswith('/'):
         default = _media_url + default
