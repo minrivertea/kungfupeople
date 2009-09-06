@@ -57,7 +57,7 @@ class ClubAdmin(admin.ModelAdmin):
 
 class StyleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'add_date')
+    list_display = ('name', 'add_date', 'slug')
     ordering = ('add_date', 'name')
 
 class DiaryEntryAdmin(admin.ModelAdmin):
