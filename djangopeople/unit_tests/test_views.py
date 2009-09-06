@@ -489,7 +489,7 @@ class ViewsTestCase(TestCase):
                                         ))
         self.assertEqual(response.status_code, 302)
         redirected_to = response._headers['location'][1]
-        self.assertTrue(redirected_to.endswith('/done/'))
+        self.assertTrue(redirected_to.endswith('/bob/'))
         
         self.assertEqual(Photo.objects.filter(user=user).count(), 2)
         for photo in Photo.objects.filter(user=user):
@@ -535,7 +535,7 @@ class ViewsTestCase(TestCase):
                                         ))
         self.assertEqual(response.status_code, 302)
         redirected_to = response._headers['location'][1]
-        self.assertTrue(redirected_to.endswith('/done/'))
+        self.assertTrue(redirected_to.endswith('/bob/')) # back to profile
         
     def test_find_clubs_by_location(self):
         """ by a lat,lng you should be able to find a list of possible clubs
@@ -797,5 +797,32 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response._headers['location'])
         
+    def test_add_style_whitespace_and_case_insensitive(self):
+        """you should be able to enter your style with excess whitespace
+        and in the different case and that shouldn't create a new style object
+        """
+        switzerland = Country.objects.get(name=u"Switzerland")
+        user, person = self._create_person("user1", "user1@example.com",
+                                           country=switzerland.name,
+                                           latitude=46.20217114444467,
+                                           longitude=6.142730712890625,
+                                           location_description=u"Geneva",
+                                           first_name="Userino")
+        # log in as this person because otherwise you can't edit your style
+        self.client.login(username="user1", password="secret")
+        
+        self.assertEqual(Style.objects.count(), 0)
+        # add the first style
+        response = self.client.post('/user1/style/', dict(style_name='Fat style'))
+        assert response.status_code == 302
+        self.assertEqual(Style.objects.count(), 1)
+        
+        response = self.client.post('/user1/style/', dict(style_name='fat style'))
+        assert response.status_code == 302
+        self.assertEqual(Style.objects.count(), 1)
+        
+        response = self.client.post('/user1/style/', dict(style_name='fat STYLE '))
+        assert response.status_code == 302
+        self.assertEqual(Style.objects.count(), 1)
         
         

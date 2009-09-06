@@ -452,7 +452,7 @@ def _get_or_create_club(name, url=None):
 def _get_or_create_style(name):
     # search by name
     try:
-        return Style.objects.get(name__iexact=name)
+        return Style.objects.get(name__iexact=name.strip())
     except Style.DoesNotExist:
         pass
         
@@ -1425,7 +1425,7 @@ def edit_style(request, username):
     if request.method == 'POST':
         form = StyleForm(request.POST)
         if form.is_valid():        
-            name = form.cleaned_data['style_name']
+            name = form.cleaned_data['style_name'].strip()
             slug = name.strip().replace(' ', '-')
             slug = slugify(unaccent_string(slug))
             style = _get_or_create_style(name)
