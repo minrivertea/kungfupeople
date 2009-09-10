@@ -161,7 +161,13 @@ MAP_KEYS = {'fullname':'A',
 
 # default is 2 weeks, so we can safely increase that because there's nothing
 # secure and confidential on this website
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2 * 10 # 20 weeks
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+# NOTE! SESSION_COOKIE_AGE can not be more than 30 days otherwise 
+# the django.contrib.sessions.backends.cached_db won't use memcache to store the 
+# sessions. Thanks for the tip Bruno!
+
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 try:
     from local_settings import *

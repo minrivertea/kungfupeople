@@ -18,10 +18,14 @@ from djangopeople.models import AutoLoginKey, Photo, DiaryEntry, KungfuPerson,\
 
 from djangopeople.html2plaintext import html2plaintext
 
-try:
-    from premailer import Premailer
-except ImportError:
-    Premailer = None
+import sys
+sys.path.insert(0,'/home/peterbe/dev/PYTHON/premailer/')
+from premailer import Premailer
+
+#try:
+#    from premailer import Premailer
+#except ImportError:
+#    Premailer = None
 
     
 # settings.py
@@ -82,15 +86,10 @@ def _get_context_for_all(last_send_date=None):
         new_styles = new_styles.filter(add_date__gt=last_send_date)
         
     context['new_photos'] = new_photos
-    #context['new_photos_count'] = new_photos.count()
     context['new_diary_entries'] = new_diary_entries
-    #context['new_diary_entries_count'] = new_diary_entries.count()
     context['new_people'] = new_people
-    #context['new_people_count'] = new_people.count()
     context['new_clubs'] = new_clubs
-    #context['new_clubs_count'] = new_clubs.count()
     context['new_styles'] = new_styles
-    #context['new_styles_count'] = new_styles.count()
 
     
     return context
@@ -143,7 +142,6 @@ class Newsletter(models.Model):
         return self._render_template(context, self.text_template)
 
     def _render_html_text(self, context):
-        
         html = self._render_template(context, self.html_text_template)
         # when rendering the html it put \r\n for newlines, not good.
         html = html.replace('\r\n', '\n')
@@ -152,9 +150,9 @@ class Newsletter(models.Model):
     def _render_subject(self, context):
         return self._render_template(context, self.subject_template)
     
-    def _wrap_html_template(self, body_content, template_path):
+    def _wrap_html_template(self, body_content, context, template_path):
         template = get_template(template_path)
-        context = Context(dict(body_content=body_content))
+        context['body_content'] = body_content
         return template.render(context)
         #return self._render_template(context, template)
     
@@ -328,7 +326,7 @@ class Newsletter(models.Model):
         if html:
             # now wrap this in the header and footer
             if wrap_html:
-                html = self._wrap_html_template(html,
+                html = self._wrap_html_template(html, context,
                                                 settings.NEWSLETTER_HTML_TEMPLATE_BASE)
                 
                 base_url = None
@@ -339,7 +337,10 @@ class Newsletter(models.Model):
                     import warnings
                     warnings.warn("Premailer not installed (http://pypi.python.org/pypi/premailer")
                 else:
-                    html = Premailer(html, base_url=base_url).transform()
+                    #print html
+                    html = Premailer(html, base_url=base_url,
+                                     keep_style_tags=False,
+                                    ).transform()
                 
             if dry_run:
                 return subject, text, html

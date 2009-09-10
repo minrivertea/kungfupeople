@@ -1927,12 +1927,12 @@ def zoom_content(request):
 
 def zoom_content_json(request):
     """same as zoom_content() but return it as a structure JSON string"""
-    if 1:#try:
+    try:
         left = float(request.GET['left'])
         upper = float(request.GET['upper'])
         right = float(request.GET['right'])
         lower = float(request.GET['lower'])
-    else:#except (KeyError, ValueError, TypeError):
+    except (KeyError, ValueError, TypeError):
         logging.error("Invalid zoom", exc_info=True)
         return HttpResponse("Invalid zoom!")
 

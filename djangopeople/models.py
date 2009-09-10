@@ -783,7 +783,6 @@ def prowl_new_person(sender, instance, created, **__):
             logging.error("Unabled to prowl about new person",
                           exc_info=True)
             
-        
 post_save.connect(prowl_new_person, sender=KungfuPerson)
         
     

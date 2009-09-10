@@ -80,12 +80,19 @@ def preview(request, newsletter_id):
         return render(request, 'choose_person.html', {'form':form})
     
 def iframe_preview(request, newsletter_id):
-    
-    html = request.session.get('html_preview')
-    if not html:
-        return HttpResponse('No HTML prepared for preview :(')
+    if request.GET.get('person'):
+        newsletter = get_object_or_404(Newsletter, id=newsletter_id)
+        if request.GET.get('person').isdigit():
+            person = KungfuPerson.objects.get(id=request.GET.get('person'))
+        else:
+            person = KungfuPerson.objects.get(user__username=request.GET.get('person'))
+        html = newsletter.preview(person)['html']
     else:
-        return HttpResponse(html)
+        html = request.session.get('html_preview')
+        if not html:
+            return HttpResponse('No HTML prepared for preview :(')
+        
+    return HttpResponse(html)
     
     
 @must_be_owner

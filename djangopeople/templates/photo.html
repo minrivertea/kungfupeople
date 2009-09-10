@@ -64,7 +64,7 @@ var ZOOM = 10;
 
 	<div class="right-box">
 		{% if is_owner %}
-		<a class="small-text" href="{% url profile person.user.username %}">(back to your profile)</a>
+		<a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a>
 		{% endif %}	
 
 		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  
