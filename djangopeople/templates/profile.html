@@ -168,12 +168,10 @@ div.bio a.edit {
 			{% endif %}
 			</div>
 			
-			{% if is_owner %}
-			{% if person.profile_views %}
+			{% if show_profile_views %}
 			<div class="profile-views">
 			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} <abbr title="Number of clicks on your profile">?</abbr>
 			</div>
-			{% endif %}
 			{% endif %}
 			
 			{% if recruiter and recruiter_profile %}

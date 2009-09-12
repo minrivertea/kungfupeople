@@ -946,6 +946,7 @@ def profile(request, username):
             cache.set(cache_key, 1, ONE_DAY)
     
     is_owner = request.user.username == username
+    show_profile_views = is_owner and person.profile_views > 1
     
     if is_owner:
         # First assume that we don't have to pester the poor user
@@ -1703,18 +1704,20 @@ def _club_name_from_url(url, request=None):
     except IndexError:
         pass # :(
     
-    
     return None
-    
     
 
 
 def guess_username_json(request):
-    email = request.GET.get('email')
-    first_name = request.GET.get('first_name')
-    last_name = request.GET.get('last_name')
+    email = request.GET.get('email','').strip().lower()
+    if not email:
+        # AJAX call made wrong
+        return render_json(dict(username=''))
     
-    username = base_username = email.split('@')[0].strip().lower().replace('.','')
+    first_name = request.GET.get('first_name', '').strip().lower()
+    last_name = request.GET.get('last_name', '').strip().lower()
+    
+    username = base_username = re.sub('[^\w]', '', email.split('@')[0])
     
     def is_taken(username):
         try:
@@ -1722,10 +1725,16 @@ def guess_username_json(request):
             return True
         except User.DoesNotExist:
             return False
-    if is_taken(username):
-        #for double-barrelled names, this removes the hyphen
-        username = first_name.strip().lower() + '' + last_name.strip().replace("-", "").lower()
         
+    if is_taken(username):
+        if not first_name and not last_name:
+            # not a lot we can do at this point
+            return render_json(dict(username=''))
+        
+        #for double-barrelled names, this removes the hyphen
+        username = '%s%s' % (first_name, last_name.replace("-", ""))
+        
+    # getting really desperate!
     count = 2
     while is_taken(username):
         username = "%s%s" % (base_username, count)

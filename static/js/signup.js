@@ -22,9 +22,10 @@ $(function() {
    // When you enter an email address with no username set,
    // guess a suitable username based on the email
    $('#id_email').change(function() {
-      if ($(this).val() && !$('#id_username').val())
-        $.getJSON('/guess-username.json', 
-                  {email:$(this).val(),
+      var email = $(this).val();
+      if (email && !$('#id_username').val())
+        $.getJSON('/guess-username.json',
+                  {email:email,
                      first_name:$('#id_first_name').val(),
                      last_name:$('#id_last_name').val()
                   }, function(res) {
