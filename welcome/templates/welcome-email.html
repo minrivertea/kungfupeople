@@ -1,7 +1,9 @@
 {% extends "base_welcome_email.html" %}
 
+{% block title %}Welcome to {{ PROJECT_NAME }} {{ user.first_name }}!{% endblock %}
+
 {% block content %}
-<p style="font-size:20px"><b>Welcome to {{ PROJECT_NAME }} {{ user.first_name }}!</b></p>
+<p style="font-size:20px"><strong>Welcome to {{ PROJECT_NAME }} {{ user.first_name }}!</strong></p>
 
 <p>Thank you for joining our website! We hope that you will continue to enjoy what 
 our site has to offer.</p>
