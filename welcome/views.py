@@ -30,7 +30,7 @@ def create_welcome_email(user, request):
     
     alu = AutoLoginKey.get_or_create(user)
     profile_url = reverse('person.view', args=(user.username,))
-    upload_photo_url = reverse('upload_photo', args=(user.username,))
+    upload_photo_url = reverse('upload_profile_photo', args=(user.username,))
     change_password_url = reverse("edit_password", args=(user.username,))
     edit_style_url = reverse("edit_style", args=(user.username,))
     edit_club_url = reverse("edit_club", args=(user.username,))
