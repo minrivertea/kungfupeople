@@ -115,4 +115,34 @@ class ViewsTestCase(TestCase):
         welcome_email = WelcomeEmail.objects.get(user=user)
         edit_profile_url = reverse('edit_profile', args=('bob',))
         self.assertTrue(not welcome_email.body.count(edit_profile_url))
+        
+        # Now actually send it
+        WelcomeEmail.objects.all().delete()
+        response = self.client.get('/welcome/create-welcome-emails/')
+        self.assertEqual(response.status_code, 200)
+        # if the user signed up a long time ago no welcome email should be
+        # sent
+        self.assertEqual(response.content, 'Created 1 welcome email')
+        self.assertEqual(WelcomeEmail.objects.count(), 1)
+        
+        response = self.client.get('/welcome/send-unsent-emails/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'Sent 1 email')
+        
+        self.assertEqual(len(mail.outbox), 1)
+        email_sent = mail.outbox[0]
+        self.assertEqual(email_sent.from_email, settings.WELCOME_EMAIL_SENDER)
+        self.assertTrue(u'bob@example.com' in email_sent.recipients())
+        self.assertTrue(settings.PROJECT_NAME in email_sent.subject)
 
+        # rewind and test the combined create-and-send-unsent-emails view
+        WelcomeEmail.objects.all().delete()
+        response = self.client.get('/welcome/create-and-send-unsent-emails/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'Sent 1 email')
+        
+        # Run it again
+        response = self.client.get('/welcome/create-and-send-unsent-emails/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 'No welcome emails this time')
+        

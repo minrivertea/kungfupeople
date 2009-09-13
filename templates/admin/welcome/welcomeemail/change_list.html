@@ -1,0 +1,22 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+
+<p>Creating and sending welcome emails is best done with a cron job. 
+You should direct your cron job to 
+<a href="{% url create_and_send_emails %}">{% url create_and_send_emails %}</a> 
+which creates <strong>and</strong> sends at the same time.</p>
+
+<p>
+{% if users_to_welcome %}
+<strong>At the moment there is users to welcome:
+{% for user in users_to_welcome %}
+  <a href="{% url person.view user.username %}">{{ user.get_full_name }}</a>
+{% endfor %}
+</strong>
+{% else %}
+<em>At the moment there are no users to welcome.</em>
+{% endif %}
+</p>
+
+{{ block.super }}
+{% endblock %}

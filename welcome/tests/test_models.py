@@ -11,7 +11,9 @@ class ModelTestCase(TestCase):
     
     def test_basic_creation(self):
         user, person = self._create_person('bob', 'bob@example.com')
-        welcome_email = WelcomeEmail.objects.create(user=user)
+        welcome_email = WelcomeEmail.objects.create(user=user,
+                                                    subject='Test',
+                                                    body='Test body')
         self.assertEqual(welcome_email.email, 'bob@example.com')
         self.assertEqual(welcome_email.send_date, None)
         welcome_email.send()

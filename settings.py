@@ -17,6 +17,7 @@ RECOVERY_EMAIL_FROM = 'chris@fry-it.com'
 
 ADMINS = (
     ('Chris West', 'chris@fry-it.com'),
+    ('Peter Bengtsson', 'peter@fry-it.com'),
 )
 
 MANAGERS = ADMINS
@@ -142,6 +143,9 @@ PROJECT_MARTIAL_ART = u"Kung Fu"
 # Who sends the newsletter?
 NEWSLETTER_SENDER = "%s <noreply@kungfupeople.com>" % PROJECT_NAME
 NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
+
+# Who sends the welcome email
+WELCOME_EMAIL_SENDER = NEWSLETTER_SENDER
 
 PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
 

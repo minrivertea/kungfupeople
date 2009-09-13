@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import RequestSite
+from django.db import transaction
 
 # other
 from premailer import Premailer
@@ -21,7 +22,7 @@ def create_welcome_email(user, request):
     # fish out all the relevant information about the user and
     # then create an unsent WelcomeEmail
     
-    subject = "Welcome to %s" % settings.PROJECT_NAME
+    subject = u"Welcome to %s" % settings.PROJECT_NAME
     person = user.get_profile()
     
     alu = AutoLoginKey.get_or_create(user)
@@ -54,9 +55,6 @@ def create_welcome_email(user, request):
             data[key] = url
             data[key + '_alu'] = aluify_url(url)
             
-    #profile_url_alu = alu_url(profile_url)
-    #upload_photo_url_alu = alu_url(upload_photo_url)
-    
     # now the interesting thing starts. We need to find out what they haven't
     # done with their profile and pester them about that.
     response = render(request, 'welcome-email.html', data)
@@ -66,25 +64,21 @@ def create_welcome_email(user, request):
     html = Premailer(html, base_url=base_url,
                      keep_style_tags=False,
                     ).transform()
-    print html
     
     return WelcomeEmail.objects.create(user=user,
                                        subject=subject,
                                        body=html,
                                       )
 
+    
+@transaction.commit_on_success
 def create_welcome_emails(request):
     """figure out what people to send welcome emails to and then send them.
     The people to consider for this is those who haven't received an email 
     and are younger than a day.
     """
     
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-    day_before_yesterday = yesterday-datetime.timedelta(days=1)
-    users = User.objects.filter(date_joined__gte=day_before_yesterday)
-    users = users.filter(date_joined__lte=yesterday)
-    users = [user for user in users 
-             if not WelcomeEmail.objects.filter(user=user).count()]
+    users = WelcomeEmail.get_users_to_welcome()
     
     count = 0
     for user in users:
@@ -101,5 +95,34 @@ def create_welcome_emails(request):
     return HttpResponse(msg)
                 
         
+def send_unsent_emails(request):
+    count = count_success = 0
+    for welcome_email in WelcomeEmail.objects.filter(send_date__isnull=True):
+        if welcome_email.send():
+            count_success += 1
+        count += 1
+
+    if not count:
+        return HttpResponse('No emails sent')
     
+    if count == count_success:
+        if count == 1:
+            return HttpResponse('Sent 1 email')
+        else:
+            return HttpResponse('Sent %s emails' % count)
+    else:
+        return HttpResponse('%s emails attempted, %s failed :(' % \
+                            (count, count - count_success))
+        
+        
+    
+def create_and_send_emails(request):
+    """lazy one you can use for cron jobs"""
+    count_before = WelcomeEmail.objects.filter(send_date__isnull=True).count()
+    result = create_welcome_emails(request)
+    count_after = WelcomeEmail.objects.filter(send_date__isnull=True).count()
+    if count_after == count_before:
+        return result
+    else:
+        return send_unsent_emails(request)
     
