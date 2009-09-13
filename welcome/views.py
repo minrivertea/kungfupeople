@@ -15,7 +15,7 @@ from premailer import Premailer
 # project
 from djangopeople.utils import render
 from djangopeople.models import Photo, Club, Style, DiaryEntry, Video, \
-  AutoLoginKey
+  AutoLoginKey, KungfuPerson
 from models import WelcomeEmail
 
 def create_welcome_email(user, request):
@@ -23,7 +23,10 @@ def create_welcome_email(user, request):
     # then create an unsent WelcomeEmail
     
     subject = u"Welcome to %s" % settings.PROJECT_NAME
-    person = user.get_profile()
+    try:
+        person = user.get_profile()
+    except KungfuPerson.DoesNotExist:
+        return None
     
     alu = AutoLoginKey.get_or_create(user)
     profile_url = reverse('person.view', args=(user.username,))
@@ -83,7 +86,8 @@ def create_welcome_emails(request):
     count = 0
     for user in users:
         welcome_email = create_welcome_email(user, request)
-        count += 1
+        if welcome_email is not None:
+            count += 1
         
     if count:
         if count == 1:
