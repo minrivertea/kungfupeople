@@ -77,18 +77,33 @@ def render_json(data):
     
 
 def index(request):
-    people = KungfuPerson.objects.all().select_related().order_by('-id')
-    people_count = KungfuPerson.objects.all().count()
-    clubs = Club.objects.all().order_by('-add_date')[:5]  # select_related()???
-    photos = Photo.objects.all().order_by('-date_added')[:5]
-    styles = Style.objects.all().order_by('-add_date')[:5] # select_related()???
-    #diaries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:3]
-    your_person = None
-    if request.user and not request.user.is_anonymous():
-        try:
-            your_person = request.user.get_profile()
-        except KungfuPerson.DoesNotExist:
-            pass
+    
+    cache_key = 'all_people'
+    people = cache.get(cache_key)
+    if people is None:
+        people = KungfuPerson.objects.all().select_related().order_by('-id')
+        cache.set(cache_key, people, ONE_WEEK)
+    
+    recent_people = people[:24]
+    
+    cache_key = 'people_count'
+    people_count = cache.get(cache_key)
+    if people_count is None:
+        people_count = KungfuPerson.objects.all().count()
+        cache.set(cache_key, people_count, ONE_WEEK)
+    
+    cache_key = 'clubs_recent_5'
+    clubs = cache.get(cache_key)
+    if clubs is None:
+        clubs = Club.objects.all().order_by('-add_date')[:5]  # select_related()???
+        cache.set(cache_key, clubs, ONE_WEEK)
+        
+    cache_key = 'styles_recent_5'
+    styles = cache.get(cache_key)
+    if styles is None:
+        styles = Style.objects.all().order_by('-add_date')[:5] # select_related()???
+        cache.set(cache_key, styles, ONE_WEEK)
+    
     
     people_locations_json = _get_people_locations_json(people)
     
@@ -101,14 +116,10 @@ def index(request):
         'unique_countries': unique_countries,
         'people_locations_json': people_locations_json,
         'people_count': people_count,
-        'your_person': your_person,
-        'photos': photos,
         'styles': styles,
-        #'diaries': diaries,
         'clubs': clubs,
-        'recent_people': people[:24],
+        'recent_people': recent_people,
         'total_people': people_count,
-        #'total_videos': Video.objects.filter(approved=True).count(),
     })
 
 def _get_people_locations_json(people):

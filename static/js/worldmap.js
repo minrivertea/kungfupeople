@@ -31,6 +31,7 @@ var map_type_control;
 google.setOnLoadCallback(function() {
    
    gmap = new google.maps.Map2(document.getElementById('gmap'));
+   gmap.setMapType(G_HYBRID_MAP);
     
    map_control = new google.maps.LargeMapControl3D();
    map_type_control = new google.maps.MapTypeControl();

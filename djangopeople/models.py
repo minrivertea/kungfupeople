@@ -11,6 +11,7 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.cache import cache
 from django.contrib.contenttypes import generic
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
@@ -373,6 +374,13 @@ class Club(models.Model):
             self.save()
             
         return ("club.view", (self.slug,))
+    
+def _club_saved(sender, instance, created, **__):
+    cache_key = 'clubs_recent_5'
+    cache.delete(cache_key)
+    
+post_save.connect(_club_saved, sender=Club,
+                  dispatch_uid="_club_saved")
 
 class Style(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -397,6 +405,13 @@ class Style(models.Model):
             self.slug = slugify(unaccent_string(self.name[:50]))
             self.save()
         return ("style.view", (self.slug,))
+    
+def _style_saved(sender, instance, created, **__):
+    cache_key = 'styles_recent_5'
+    cache.delete(cache_key)
+post_save.connect(_style_saved, sender=Style,
+                  dispatch_uid="_style_saved")
+    
 
 class DiaryEntry(models.Model):
     class Meta:
@@ -785,7 +800,13 @@ def prowl_new_person(sender, instance, created, **__):
                           exc_info=True)
             
 post_save.connect(prowl_new_person, sender=KungfuPerson)
-        
+
+def _kungfuperson_saved(sender, instance, created, **__):
+    for cache_key in ('all_people', 'people_count'):
+        cache.delete(cache_key)
+post_save.connect(_kungfuperson_saved, sender=KungfuPerson,
+                  dispatch_uid="_kungfuperson_saved")
+
     
 class CountrySite(models.Model):
     "Community sites for various countries"

@@ -86,15 +86,7 @@ def _optimize_nearby_person_keys(data):
 
 @register.filter("nearby_person_keys_js")
 def _nearby_person_keys_js(key_definitions):
-    import warnings
-    warnings.warn("You should not be using _nearby_person_keys_js() any more",
-                  DeprecationWarning, 2)
-    js = "var MAP_KEYS=%s;\n" % simplejson.dumps(MAP_KEYS)
-    #reversed = {}
-    #for k, v in MAP_KEYS.items():
-    #    reversed[v] = k
-    #js += "var MAP_KEYS_REVERSED=%s;\n" % simplejson.dumps(reversed)
-    return js
+    return "var MAP_KEYS=%s;\n" % simplejson.dumps(MAP_KEYS)
 
 @register.filter("get_flag_image")
 def _get_flag_image(country_iso_code):

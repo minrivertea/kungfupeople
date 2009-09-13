@@ -84,9 +84,9 @@ var PEOPLE = {{ people_locations_json|safe }};
 <div class="wrapper">
         
 
-         {% if not user.is_authenticated %}
+        {% if not user.is_authenticated %}
 	<div id="promo-text">
-	<p class="promo-title">A global map of kung fu stylists</p>
+	<p class="promo-title">Calling all kung fu people!</p>
 
 	<p><a class="promo-link" href="{% url signup %}">I do kung fu - add me to the map now!</a></p>
 	<p><a class="promo-link" href="/about/">I'm interested...tell me more</a></p>
