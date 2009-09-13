@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'newsletter',
     'stats',
-                  
+    'welcome',
 )
 
 MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')

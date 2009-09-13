@@ -8,7 +8,7 @@ You can delete them later since they all have usernames that end in
 
 To run the unit tests::
 
- $ ./manage.py test --settings=test_settings djangopeople newsletter 
+ $ ./manage.py test --settings=test_settings djangopeople newsletter welcome
  
 If you're going to run a lot of unit tests you might want to NOT test
 the YouTube API every single time. To NOT test YouTube, set an

@@ -66,7 +66,7 @@ urlpatterns = patterns('',
     url(r'^([a-z0-9]{3,})/_user-info-map.html$', views.user_info_html,
         {'include_photo':True},
         name="user_info_html"), # used by worldmap
-    (r'^([a-z0-9]{3,})/password/$', views.edit_password),
+    url(r'^([a-z0-9]{3,})/password/$', views.edit_password, name="edit_password"),
     url(r'^([a-z0-9]{3,})/videos/add/$', views.add_video, name="add_video"),
     url(r'^([a-z0-9]{3,})/video/(\d+)/$', views.video, name="video.view"),
     url('^get_youtube_video_by_id.json$', views.get_youtube_video_by_id_json),

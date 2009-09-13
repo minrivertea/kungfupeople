@@ -14,6 +14,8 @@ DIRECTORIES = (
    ('newsletter/templatetags/newsletter_extras.py',
     './manage.py test --settings=test_settings newsletter.NewsletterExtrasTestCase'),
 
+   ('welcome',
+    './manage.py test --settings=test_settings welcome'),
                
                
    ('djangopeople/unit_tests/test_utils.py',
