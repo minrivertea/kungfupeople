@@ -96,7 +96,7 @@ var LOCATION_BY_IP=false;
 
 {% block content %}
 	<div id="content-box" style="display:none">
-    		<form method="post" action="{% url signup %}">
+    		<form method="post" action="">
     		<h2>1. Create your account</h2> 
 
 
@@ -141,6 +141,9 @@ var LOCATION_BY_IP=false;
 		</div>
 	</div>
 
+        {% if initial_user %}
+          {{ form.initial_user_id }}
+        {% else %}
 	<div class="form-field-outer">
 		<div class="form-field-left">
 		            <label for="id_password1">Password *</label>
@@ -161,6 +164,7 @@ var LOCATION_BY_IP=false;
 		</div>
 	</div>
 	</fieldset>
+        {% endif %}
     
     <h2>2. Tell us about yourself</h2>
 
@@ -231,8 +235,16 @@ var LOCATION_BY_IP=false;
 
 	</div>
 
-	<div id="right-column" {% if not form.errors %}style="display:none"{% endif %}>
-	<div class="right-box">
+	<div id="right-column">
+
+        {% if not initial_user %}
+        <div class="right-box">
+        <p><a href="{% url twitter_signup %}"><img src="{% staticfile "/img/twitter/twitter-logo-small.png" %}" border="0" alt="Twitter"></a><br>
+        Alternatively, <a href="{% url twitter_signup %}">sign up using your Twitter account</a></p>
+        </div>
+        {% endif %}
+        
+	<div class="right-box" {% if not form.errors %}style="display:none"{% endif %}>
 	    	<h2>Where do you train?</h2>
                 {% if base_location %}
 	    	<p>Drag the marker on the map to correct your location.</p>

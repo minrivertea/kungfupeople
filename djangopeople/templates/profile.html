@@ -95,6 +95,18 @@ div.bio a.edit {
 		</div>
 
 	{% else %}
+            {% if is_owner %}
+               
+		<div class="profile-photo">
+		<img src="{% staticfile "/img/upload-a-photo-60.png" %}" alt="no profile photo yet">
+		<div class="change-photo">
+		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
+		<strong>Upload a photo</strong>
+		</a>
+		</div>
+		</div>               
+               
+            {% endif %}
 
 	{% endif %}
 		<div id="profile-head-title">

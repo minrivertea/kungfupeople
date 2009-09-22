@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     (r'', include('djangopeople.urls')),
     (r'^newsletters/', include('newsletter.urls')),
     (r'^welcome/', include('welcome.urls')),
+    (r'^twitter/', include('twitter.urls')),
                        
     (r'^sitemap.xml$', sitemap,
      {'sitemaps': sitemaps}),

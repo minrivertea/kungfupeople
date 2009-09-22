@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'stats',
     'welcome',
     'ab',
+    'twitter',
 )
 
 MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')
@@ -175,6 +176,12 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+
+OAUTH_SERVER = 'twitter.com'
+CONSUMER_KEY = 'nLHRls0R8oiaEm8HsNwWCg'
+CONSUMER_SECRET = 'Zr6dlwTU6RAt55IjVErsn2MfnKcAjvZ07ihXkVaWyVA'
+
 
 try:
     from local_settings import *

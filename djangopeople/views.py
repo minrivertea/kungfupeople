@@ -78,6 +78,22 @@ def render_json(data):
 
 def index(request):
     
+    # if a user is logged in, perhaps from oauth, but don't have a profile
+    # then force them to get a profile
+    if not request.user.is_anonymous() and not request.user.is_superuser:
+        try:
+            request.user.get_profile()
+        except KungfuPerson.DoesNotExist:
+            # they have to get a full profile
+            from twitter.models import TwitterUser
+            try:
+                TwitterUser.objects.get(user=request.user)
+                # exists, then use the twitter signup
+                return HttpResponseRedirect(reverse('twitter_signup'))
+            except TwitterUser.DoesNotExist:
+                # normal signup
+                return HttpResponseRedirect(reverse('signup'))
+        
     cache_key = 'all_people'
     people = cache.get(cache_key)
     if people is None:
@@ -248,10 +264,18 @@ def lost_password_recover(request, username, days, hash):
         })
 
 @transaction.commit_on_success
-def signup(request):
+def signup(request, initial_user=None):
     
     if not request.user.is_anonymous():
-        return HttpResponseRedirect('/')
+        try:
+            request.user.get_profile()
+            return HttpResponseRedirect('/')
+        except KungfuPerson.DoesNotExist:
+            pass
+        
+    if initial_user is None and request.method == 'POST' and \
+      request.POST.get('initial_user_id'):
+        initial_user = User.objects.get(pk=request.POST.get('initial_user_id'))
 
     all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()]
     all_clubs_js = simplejson.dumps(all_clubs)
@@ -260,21 +284,35 @@ def signup(request):
     
     if request.method == 'POST':
         form = SignupForm(request.POST, request.FILES)
-        if form.is_valid():
-            # First create the user
-            username = form.cleaned_data['username']
-            creation_args = {
-                'username': form.cleaned_data['username'],
-                'email': form.cleaned_data['email'],
-            }
-            if form.cleaned_data.get('password1'):
-                creation_args['password'] = form.cleaned_data['password1']
-                
-            user = User.objects.create(**creation_args)
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
+        # if there is an initial user drop the password fields
+        if initial_user:
+            del form.fields['password1']
+            del form.fields['password2']
             
+        if form.is_valid():
+            
+            # First create the user
+            if initial_user:
+                user = initial_user
+                username = user.username # needed later
+                user.email = form.cleaned_data['email']
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.save()
+            else:
+                username = form.cleaned_data['username']
+                creation_args = {
+                    'username': form.cleaned_data['username'],
+                    'email': form.cleaned_data['email'],
+                }
+                if form.cleaned_data.get('password1'):
+                    creation_args['password'] = form.cleaned_data['password1']
+                    
+                user = User.objects.create(**creation_args)
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.save()
+                
             region = None
             if form.cleaned_data['region']:
                 region = Region.objects.get(
@@ -293,6 +331,9 @@ def signup(request):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
+            
+            if request.session.get('profile_image_url'):
+                _download_profile_image(person, request.session.get('profile_image_url'))
 
             # and then add the style if provided
             style_name = form.cleaned_data['style']
@@ -319,8 +360,9 @@ def signup(request):
                 person.save()
             
             # make sure they get one of those new passwords
-            user.set_password(creation_args['password'])
-            user.save()
+            if not initial_user:
+                user.set_password(creation_args['password'])
+                user.save()
             
             # use the cookie Google Analytics gives us
             utmz = request.COOKIES.get('__utmz')
@@ -371,6 +413,16 @@ def signup(request):
     else:
         
         initial = {}
+        if initial_user is not None:
+            initial['initial_user_id'] = initial_user.id
+            initial['username'] = initial_user.username
+            if initial_user.first_name:
+                initial['first_name'] = initial_user.first_name
+            if initial_user.last_name:
+                initial['last_name'] = initial_user.last_name
+            if initial_user.email and initial_user.email != 'twitteruser@kungfupeople.com':
+                initial['email'] = initial_user.email
+
         if request.META.get('REMOTE_ADDR',''):
             ip = request.META.get('REMOTE_ADDR')
             # debugging
@@ -409,12 +461,12 @@ def signup(request):
         
         form = SignupForm(initial=initial)
         
-    
     return render(request, 'signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'base_location': base_location,
         'all_clubs_js': all_clubs_js,
+        'initial_user': initial_user,
     })
 
 def whatnext(request, username):
@@ -436,6 +488,27 @@ def diary_entry(request, username, slug):
     
     is_owner = request.user.username == username
     return render(request, 'diary_entry.html', locals())
+    
+
+def _download_profile_image(person, image_url):
+    # save the image
+    from urllib import urlopen
+    image_content = urlopen(image_url).read()
+    image = Image.open(StringIO(image_content))
+    format = image.format
+    format = format.lower().replace('jpeg', 'jpg')
+    filename = md5.new(image_content).hexdigest() + '.' + format
+    path = os.path.join(settings.MEDIA_ROOT, 'profiles', filename)
+    # check that the dir of the path exists
+    dirname = os.path.dirname(path)
+    if not os.path.isdir(dirname):
+        try:
+            os.mkdir(dirname)
+        except IOError:
+            raise IOError, "Unable to created the directory %s" % dirname
+    open(path, 'w').write(image_content)
+    person.photo = 'profiles/%s' % filename
+    person.save()
     
 
 def _get_or_create_club(name, url=None):
@@ -955,7 +1028,7 @@ def profile(request, username):
             person.profile_views += 1 # Not bothering with transactions; only a stat
             person.save()
             cache.set(cache_key, 1, ONE_DAY)
-    
+
     is_owner = request.user.username == username
     show_profile_views = is_owner and person.profile_views > 1
     

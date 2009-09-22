@@ -1,4 +1,4 @@
-{% extends "profile.html" %}
+{% extends "base_no_map.html" %}
 
 {% block title%}Upload a profile photo |{% endblock %}
 
@@ -6,8 +6,6 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-	<div class="no-map-wrapper">
-	<div id="no-map-content-box">
         <h2>{% if person.photo %}Upload a new profile photo{% else %}Add a profile photo{% endif %}</h2>
 	<p>Photos will be resized and cropped; for best results, upload a square image. </p> 
             <form enctype="multipart/form-data" method="post" action=".">
@@ -48,7 +46,7 @@
                 <a href="{% url crop_profile_photo person.user.username %}">Wanna crop this one yourself?</a>
                 </p>
 	{% else %}
-		<img class="diagram-photo" src="/img/upload-a-photo.png"/>
+		<img xxxclass="diagram-photo" src="/img/upload-a-photo.png"/>
 	{% endif %}
 	</div>
 
