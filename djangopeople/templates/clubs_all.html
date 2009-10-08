@@ -1,0 +1,38 @@
+{% extends "base_no_map.html" %}
+
+{% load thumbnail %}
+
+{% block title %} All Clubs |{% endblock %}
+
+{% block extracss %}
+
+{% endblock %}
+
+{% block content %}
+
+
+<h2>All kungfu clubs</h2>
+<div id="content-box">
+
+<ul>
+{% for club in clubs %}
+
+  <li><a href="{% url club.view club.slug %}">{{ club.name }}</a></li>
+
+{% endfor %}
+</ul>
+
+	</div>
+</div>
+
+<div id="right-column">
+	<div class="right-box">
+
+
+
+
+	</div>	
+</div>
+
+{% endblock %}
+

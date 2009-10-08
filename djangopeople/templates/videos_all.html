@@ -1,0 +1,42 @@
+{% extends "base_no_map.html" %}
+
+{% load thumbnail %}
+
+{% block title %} Videos |{% endblock %}
+
+{% block extracss %}
+
+{% endblock %}
+
+{% block content %}
+
+
+<h2>All kungfu videos</h2>
+<div id="content-box">
+
+{% for video in videos %}
+
+
+		<div class="video-thumb">
+			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}" height="60" width="60"/></a>
+			<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong>
+			<p class="meta">{{ video.description|truncatewords:20 }}</p>
+		</div>	
+
+{% endfor %}
+
+
+	</div>
+</div>
+
+<div id="right-column">
+	<div class="right-box">
+
+
+
+
+	</div>	
+</div>
+
+{% endblock %}
+
