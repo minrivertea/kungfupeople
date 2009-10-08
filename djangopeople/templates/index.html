@@ -42,15 +42,8 @@ p.promo {
 
 {% block js %}
 <script type="text/javascript">
-{# This javascript variable is going to be used in index.js #}
-{% slimcontent %}
-var people = [
-    // latitude, longitude, name, username, location description
-    {% for person in recent_people %}
-      {{ person|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-{% endslimcontent %}
+{# This javascript variable is going to be used in worldmap.js #}
+var PEOPLE = {{ people_locations_json|safe }};
 </script>
 <script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 
@@ -59,7 +52,7 @@ var people = [
 	{% block signup %}
 
 	<div id="signup">
-	<p><strong>A world-wide map of {{ PROJECT_NAME }}! <a href="/signup/">Signup today.</a></strong></p>
+	<p><strong>A world-wide map of {{ PROJECT_NAME }}! <a href="{% url signup %}">Signup today.</a></strong></p>
 	</div>
 	{% endblock %}
 
@@ -68,11 +61,11 @@ var people = [
 {% block map %}
 
 	<div class="mapContainer major">
-        		<div id="gmap">&nbsp;</div>
+        <div id="gmap">&nbsp;</div>
 	</div>
 
 	<div class="counter">
-	<div class="number"><a href="/zoom/">kungfu people ({{ people_count }})</a></div>
+	<div class="number"><a href="/wall/">kungfu people ({{ people_count }})</a></div>
 	</div>
 	<div class="counter">
 	<div class="number"><a href="/all-videos/">videos</a></div>

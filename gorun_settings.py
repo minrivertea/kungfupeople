@@ -13,6 +13,10 @@ DIRECTORIES = (
 
    ('newsletter/templatetags/newsletter_extras.py',
     './manage.py test --settings=test_settings newsletter.NewsletterExtrasTestCase'),
+
+   ('welcome',
+    './manage.py test --settings=test_settings welcome'),
+               
                
    ('djangopeople/unit_tests/test_utils.py',
     './manage.py test --settings=test_settings djangopeople.UtilsTestCase'),
@@ -20,13 +24,10 @@ DIRECTORIES = (
     './manage.py test --settings=test_settings djangopeople.UtilsTestCase'),
 
    ('djangopeople/unit_tests/test_views.py',
-    './manage.py test --settings=test_settings djangopeople.ViewsTestCase.test_lost_password'),
-
-   ('djangopeople/unit_tests/test_models.py',
-    './manage.py test --settings=test_settings djangopeople.ModelsTestCase'),
-
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
+               
    ('djangopeople/',
-    './manage.py test --settings=test_settings djangopeople.ModelsTestCase'),
+    './manage.py test --settings=test_settings djangopeople.ViewsTestCase'),
 
    ('/home/peterbe/dev/DJANGO/django-static/django_static/templatetags/django_static.py',
     './manage.py test --settings=test_settings django_static.TestDjangoStatic'),

@@ -22,6 +22,10 @@ function makeWindow(name, user_url, location, photo, iso_code, lat, lon, clubs) 
    }
      return html;
 }
+function makeWindow2(username) {
+   L("making a window");
+   return "<strong>" + username + "</strong>";
+}
 
 
 function makePhotoWindow(name, url, user_url, location, photo, iso_code, lat, lon, description) {
@@ -38,7 +42,6 @@ function makePhotoWindow(name, url, user_url, location, photo, iso_code, lat, lo
 
 
 function zoomOn(lat, lon) {
-    //gmap.closeInfoWindow();
     gmap.setCenter(new google.maps.LatLng(lat, lon), 10);
 }
 
@@ -48,14 +51,14 @@ function hideNearbyPeople(gmap) {
 function showNearbyPeople(gmap) {
    if (typeof nearby_people != "undefined")
      $.each(nearby_people, function() {
-        var lat = this[NEARBY_PERSON_KEYS['latitude']];
-        var lon = this[NEARBY_PERSON_KEYS['longitude']];
-        var name = this[NEARBY_PERSON_KEYS['fullname']];
-        var user_url = this[NEARBY_PERSON_KEYS['user_url']];
-        var location_description = this[NEARBY_PERSON_KEYS['location_description']];
-        var photo = this[NEARBY_PERSON_KEYS['photo_thumbnail_url']];
-        var iso_code = this[NEARBY_PERSON_KEYS['country_iso_code']];
-        var clubs = this[NEARBY_PERSON_KEYS['clubs']];
+        var lat = this[MAP_KEYS['latitude']];
+        var lon = this[MAP_KEYS['longitude']];
+        var name = this[MAP_KEYS['fullname']];
+        var user_url = this[MAP_KEYS['user_url']];
+        var location_description = this[MAP_KEYS['location_description']];
+        var photo = this[MAP_KEYS['photo_thumbnail_url']];
+        var iso_code = this[MAP_KEYS['country_iso_code']];
+        var clubs = this[MAP_KEYS['clubs']];
         var point = new google.maps.LatLng(lat, lon);
         var marker = new google.maps.Marker(point, getMarkerOpts());
         gmap.addOverlay(marker);

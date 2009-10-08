@@ -6,7 +6,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # Thumbnail settings
-THUMBNAIL_DEBUG = True
+THUMBNAIL_DEBUG = False # not sure what this means!
 THUMBNAIL_SUBDIR = '_thumbs'
 
 # Tagging settings
@@ -17,6 +17,7 @@ RECOVERY_EMAIL_FROM = 'chris@fry-it.com'
 
 ADMINS = (
     ('Chris West', 'chris@fry-it.com'),
+    ('Peter Bengtsson', 'peter@fry-it.com'),
 )
 
 MANAGERS = ADMINS
@@ -69,6 +70,7 @@ API_PASSWORD = 'API-PASSWORD-GOES-HERE'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+#    'ab.loaders.load_template_source',
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
 #     'django.template.loaders.eggs.load_template_source',
@@ -94,7 +96,8 @@ MIDDLEWARE_CLASSES = (
     'djangopeople.middleware.AutoLogin',
     'djangopeople.middleware.Recruitment',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    #'crashkit.CrashKitDjangoMiddleware',
+#    'ab.middleware.ABMiddleware',
+                      
 )
 
 ROOT_URLCONF = 'djangopeoplenet.urls'
@@ -122,7 +125,9 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'newsletter',
     'stats',
-                  
+    'welcome',
+#    'ab',
+    'twitter',
 )
 
 MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')
@@ -143,11 +148,14 @@ PROJECT_MARTIAL_ART = u"Kung Fu"
 NEWSLETTER_SENDER = "%s <noreply@kungfupeople.com>" % PROJECT_NAME
 NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
+# Who sends the welcome email
+WELCOME_EMAIL_SENDER = NEWSLETTER_SENDER
+
 PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
 
 CRASHKIT = None # enabled live
 
-NEARBY_PERSON_KEYS = {'fullname':'A',
+MAP_KEYS = {'fullname':'A',
                       'latitude':'B',
                       'longitude':'C',
                       'username':'D',
@@ -161,7 +169,19 @@ NEARBY_PERSON_KEYS = {'fullname':'A',
 
 # default is 2 weeks, so we can safely increase that because there's nothing
 # secure and confidential on this website
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2 * 10 # 20 weeks
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+# NOTE! SESSION_COOKIE_AGE can not be more than 30 days otherwise 
+# the django.contrib.sessions.backends.cached_db won't use memcache to store the 
+# sessions. Thanks for the tip Bruno!
+
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+
+OAUTH_SERVER = 'twitter.com'
+CONSUMER_KEY = 'nLHRls0R8oiaEm8HsNwWCg'
+CONSUMER_SECRET = 'Zr6dlwTU6RAt55IjVErsn2MfnKcAjvZ07ihXkVaWyVA'
+
 
 try:
     from local_settings import *

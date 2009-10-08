@@ -89,7 +89,7 @@
       </script>
     {% endif %}
     <script type="text/javascript" src="{% slimfile "/js/common.js" %}"></script>
-    <script type="text/javascript">{{ NEARBY_PERSON_KEYS|nearby_person_keys_js|safe }}</script>
+    <script type="text/javascript">{{ MAP_KEYS|nearby_person_keys_js|safe }}</script>
     {% if request.user.is_superuser %}
     <script type="text/javascript">
     $(function() {

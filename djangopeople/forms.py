@@ -72,6 +72,9 @@ class SignupForm(forms.Form):
     location_description = forms.CharField(max_length=50)
     
     region = GroupedChoiceField(required=False) # choices loaded later
+    
+    initial_user_id = forms.IntegerField(required=False,
+                                         widget=forms.widgets.HiddenInput())
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
@@ -108,11 +111,15 @@ class SignupForm(forms.Form):
             raise forms.ValidationError(already_taken)
         
         try:
-            user = User.objects.get(username = username)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
             pass
         else:
-            raise forms.ValidationError(already_taken)
+            try:
+                user.get_profile()
+                raise forms.ValidationError(already_taken)
+            except KungfuPerson.DoesNotExist:
+                pass
         
         return username
     
@@ -310,6 +317,13 @@ class ClubForm(forms.Form):
     
     def clean_club_url(self):
         url = self.cleaned_data['club_url']
+        
+        if not url and self.cleaned_data['club_name']:
+            try:
+                url = Club.objects.get(name__iexact=self.cleaned_data['club_name']).url
+            except Club.DoesNotExist:
+                pass
+        
         if not url.startswith('http://'):
             url = 'http://' + url
             

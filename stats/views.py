@@ -33,13 +33,15 @@ class CustomCacheMiddleware(CacheMiddleware):
 custom_cache_page = decorator_from_middleware(CustomCacheMiddleware)
 
 
-if settings.DEBUG and 0:
+if settings.DEBUG:
     def cache_page(delay):
         def rendered(view):
             def inner(request, *args, **kwargs):
                 return view(request, *args, **kwargs)
             return inner
         return rendered
+    custom_cache_page = cache_page
+    
 
 
 @custom_cache_page(60 * 60 * 1) # 1 hours
@@ -99,6 +101,35 @@ def _get_competitions_tables():
     profile_views_groups_table = _groups_table(groups,
                                        "Person",
                                        "Profile views").content
+    
+    # This below is deliberately commented out since the counts were
+    # introduced so late to clubs and styles. We'll release this later
+    # when the clicks have started to clock up a bit more.
+    # /Peter, 31 aug 09
+    if 0:
+        groups = []
+        for club in Club.objects.all():
+            count = club.clicks
+            if not count:
+                continue
+            groups.append({'object': club,
+                           'count': count})
+        groups.sort(lambda x,y: cmp(y['count'], x['count']))
+        club_clicks_groups_table = _groups_table(groups,
+                                       "Club",
+                                       "Clicks").content
+        
+        groups = []
+        for style in Style.objects.all():
+            count = style.clicks
+            if not count:
+                continue
+            groups.append({'object': style,
+                           'count': count})
+        groups.sort(lambda x,y: cmp(y['count'], x['count']))
+        style_clicks_groups_table = _groups_table(groups,
+                                       "Style",
+                                       "Clicks").content        
     
     data = locals()
     del data['groups']

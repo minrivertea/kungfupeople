@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 def send_multipart_mail(text_part, html_part, subject, recipients,
-                        sender=None, fail_silently=False):
+                        sender=None, fail_silently=False, bcc=None):
     """
     This function will send a multi-part e-mail with both HTML and
     Text parts.
@@ -35,6 +35,7 @@ def send_multipart_mail(text_part, html_part, subject, recipients,
     if type(recipients) != list:
         recipients = [recipients,]
 
-    msg = EmailMultiAlternatives(subject, text_part, sender, recipients)
+    msg = EmailMultiAlternatives(subject, text_part, sender, recipients,
+                                 bcc=bcc)
     msg.attach_alternative(html_part, "text/html")
     return msg.send(fail_silently)

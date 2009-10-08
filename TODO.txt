@@ -1,6 +1,6 @@
 TODO LIST:
 
-* (PB) put markers on the map when zooming in
+* (PB) Refactor Javascript for photo upload and diary entry (DRY!)
 * (PB) Change location on photo upload with AJAX when you select a
   diary entry.
 * (PB) Serve thumbnails from static.kungfupeople.com

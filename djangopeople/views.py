@@ -30,12 +30,13 @@ from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo, Recruitment
 import utils
 from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
-  get_previous_next
+  get_previous_next, uniqify
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
-
+from data import get_all_items
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
+
 #from googlemaps import get_person_profile_static_map
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
@@ -76,6 +77,7 @@ def render_json(data):
     
 
 def index(request):
+
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
     people_count = KungfuPerson.objects.all().count()
     clubs = Club.objects.all().order_by('-add_date')[:5]
@@ -84,18 +86,62 @@ def index(request):
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     videos = Video.objects.all().order_by('-add_date')[:1]
     your_person = None
-    if request.user and not request.user.is_anonymous():
+   
+    # if a user is logged in, perhaps from oauth, but don't have a profile
+    # then force them to get a profile
+    if not request.user.is_anonymous() and not request.user.is_superuser:
         try:
-            your_person = request.user.get_profile()
+            request.user.get_profile()
         except KungfuPerson.DoesNotExist:
-            pass
+            # they have to get a full profile
+            from twitter.models import TwitterUser
+            try:
+                TwitterUser.objects.get(user=request.user)
+                # exists, then use the twitter signup
+                return HttpResponseRedirect(reverse('twitter_signup'))
+            except TwitterUser.DoesNotExist:
+                # normal signup
+                return HttpResponseRedirect(reverse('signup'))
+        
+    cache_key = 'all_people'
+    people = cache.get(cache_key)
+    if people is None:
+        people = KungfuPerson.objects.all().select_related().order_by('-id')
+        cache.set(cache_key, people, ONE_WEEK)
+    
+    recent_people = people[:24]
+    
+    cache_key = 'people_count'
+    people_count = cache.get(cache_key)
+    if people_count is None:
+        people_count = KungfuPerson.objects.all().count()
+        cache.set(cache_key, people_count, ONE_WEEK)
+    
+    cache_key = 'clubs_recent_5'
+    clubs = cache.get(cache_key)
+    if clubs is None:
+        clubs = Club.objects.all().order_by('-add_date')[:5]  # select_related()???
+        cache.set(cache_key, clubs, ONE_WEEK)
+        
+    cache_key = 'styles_recent_5'
+    styles = cache.get(cache_key)
+    if styles is None:
+        styles = Style.objects.all().order_by('-add_date')[:5] # select_related()???
+        cache.set(cache_key, styles, ONE_WEEK)
+    
+    
+    people_locations_json = _get_people_locations_json(people)
+    
+    unique_countries = uniqify([x.country for x in people],
+                              lambda x: x.id)
+    unique_countries.sort(lambda x,y: cmp(x.name.lower(), y.name.lower()))
+    
     return render(request, 'index.html', {
-        'recent_people': recent_people,
+        'people': people,
+        'unique_countries': unique_countries,
+        'people_locations_json': people_locations_json,
         'people_count': people_count,
-        'your_person': your_person,
-        'photos': photos,
         'styles': styles,
-        'diaries': diaries,
         'clubs': clubs,
         'videos': videos,
         'recent_people_limited': recent_people[:50],
@@ -104,6 +150,21 @@ def index(request):
         'total_chris': User.objects.filter(first_name__startswith='Chris').count(),
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
+
+def _get_people_locations_json(people):
+    # turn the list of people into a JSON string but only
+    # have the user id and location
+    people_locations = [dictify_person_details(x) for x in people]
+    return simplejson.dumps(people_locations)
+
+def dictify_person_details(person):
+    _person_keys = settings.MAP_KEYS;
+    return {_person_keys.get('username','username'): person.user.username,
+            _person_keys.get('latitude','latitude'): person.latitude,
+            _person_keys.get('longitude','longitude'): person.longitude}
+
+def _get_person_location_json(person):
+    return simplejson.dumps(dictify_person_details(person))
 
 def about(request):
     return render(request, 'about.html', {
@@ -216,30 +277,55 @@ def lost_password_recover(request, username, days, hash):
         })
 
 @transaction.commit_on_success
-def signup(request):
+def signup(request, initial_user=None):
     
     if not request.user.is_anonymous():
-        return HttpResponseRedirect('/')
+        try:
+            request.user.get_profile()
+            return HttpResponseRedirect('/')
+        except KungfuPerson.DoesNotExist:
+            pass
+        
+    if initial_user is None and request.method == 'POST' and \
+      request.POST.get('initial_user_id'):
+        initial_user = User.objects.get(pk=request.POST.get('initial_user_id'))
 
+    all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()]
+    all_clubs_js = simplejson.dumps(all_clubs)
+    
     base_location = None
     
     if request.method == 'POST':
         form = SignupForm(request.POST, request.FILES)
-        if form.is_valid():
-            # First create the user
-            username = form.cleaned_data['username']
-            creation_args = {
-                'username': form.cleaned_data['username'],
-                'email': form.cleaned_data['email'],
-            }
-            if form.cleaned_data.get('password1'):
-                creation_args['password'] = form.cleaned_data['password1']
-                
-            user = User.objects.create(**creation_args)
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.save()
+        # if there is an initial user drop the password fields
+        if initial_user:
+            del form.fields['password1']
+            del form.fields['password2']
             
+        if form.is_valid():
+            
+            # First create the user
+            if initial_user:
+                user = initial_user
+                username = user.username # needed later
+                user.email = form.cleaned_data['email']
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.save()
+            else:
+                username = form.cleaned_data['username']
+                creation_args = {
+                    'username': form.cleaned_data['username'],
+                    'email': form.cleaned_data['email'],
+                }
+                if form.cleaned_data.get('password1'):
+                    creation_args['password'] = form.cleaned_data['password1']
+                    
+                user = User.objects.create(**creation_args)
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.save()
+                
             region = None
             if form.cleaned_data['region']:
                 region = Region.objects.get(
@@ -258,6 +344,9 @@ def signup(request):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
+            
+            if request.session.get('profile_image_url'):
+                _download_profile_image(person, request.session.get('profile_image_url'))
 
             # and then add the style if provided
             style_name = form.cleaned_data['style']
@@ -284,8 +373,9 @@ def signup(request):
                 person.save()
             
             # make sure they get one of those new passwords
-            user.set_password(creation_args['password'])
-            user.save()
+            if not initial_user:
+                user.set_password(creation_args['password'])
+                user.save()
             
             # use the cookie Google Analytics gives us
             utmz = request.COOKIES.get('__utmz')
@@ -336,21 +426,35 @@ def signup(request):
     else:
         
         initial = {}
+        if initial_user is not None:
+            initial['initial_user_id'] = initial_user.id
+            initial['username'] = initial_user.username
+            if initial_user.first_name:
+                initial['first_name'] = initial_user.first_name
+            if initial_user.last_name:
+                initial['last_name'] = initial_user.last_name
+            if initial_user.email and initial_user.email != 'twitteruser@kungfupeople.com':
+                initial['email'] = initial_user.email
+
         if request.META.get('REMOTE_ADDR',''):
             ip = request.META.get('REMOTE_ADDR')
             # debugging
             if settings.DEBUG and (ip == '127.0.0.1' or ip.startswith('192.168.')):
-                from random import choice
+                from random import choice, randint
                 ip = choice(['156.25.4.2','150.70.84.41','62.203.65.228','220.231.34.10',
                              '58.171.130.89','82.132.138.250',
                              '193.247.250.13','72.204.121.78','202.154.137.7',
                              '62.6.149.26','202.154.143.159','216.86.82.83'])
-                print ip
-            if not (ip == '127.0.0.1' or ip.startswith('192.168.')):
+                if randint(1,10):
+                    # pretend that sometimes we can't get the IP
+                    ip = ''
+                
+            if ip and not (ip == '127.0.0.1' or ip.startswith('192.168.')):
                 base_location = getGeolocationByIP_cached(ip)
                 if base_location['lat'] == 0.0 and base_location['lng'] == 0.0:
+                    # getGeolocationByIP_cached failed :(
                     base_location = None
-   
+
             if base_location:
                 try:
                     country = Country.objects.get(name__iexact=base_location['country'])
@@ -368,13 +472,14 @@ def signup(request):
                     # the lookup is duff
                     base_location = None
         
-        form = SignupForm(initial=initial)        
+        form = SignupForm(initial=initial)
         
-    
     return render(request, 'signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'base_location': base_location,
+        'all_clubs_js': all_clubs_js,
+        'initial_user': initial_user,
     })
 
 def whatnext(request, username):
@@ -391,14 +496,32 @@ def diary_entry(request, username, slug):
         raise Http404("You're not authorised to view this page")
     
     photos = Photo.objects.filter(diary_entry=entry).order_by('-date_added')
+    
+    diary_entry_location_json = _get_person_location_json(entry)
+    
+    is_owner = request.user.username == username
+    return render(request, 'diary_entry.html', locals())
+    
 
-    return render(request, 'diary_entry.html', {        
-        'is_owner': request.user.username == username,
-        'person': person,
-        'photos': photos,
-        'entry': entry,
-        'user': user,
-    })
+def _download_profile_image(person, image_url):
+    # save the image
+    from urllib import urlopen
+    image_content = urlopen(image_url).read()
+    image = Image.open(StringIO(image_content))
+    format = image.format
+    format = format.lower().replace('jpeg', 'jpg')
+    filename = md5.new(image_content).hexdigest() + '.' + format
+    path = os.path.join(settings.MEDIA_ROOT, 'profiles', filename)
+    # check that the dir of the path exists
+    dirname = os.path.dirname(path)
+    if not os.path.isdir(dirname):
+        try:
+            os.mkdir(dirname)
+        except IOError:
+            raise IOError, "Unable to created the directory %s" % dirname
+    open(path, 'w').write(image_content)
+    person.photo = 'profiles/%s' % filename
+    person.save()
     
 
 def _get_or_create_club(name, url=None):
@@ -426,7 +549,7 @@ def _get_or_create_club(name, url=None):
 def _get_or_create_style(name):
     # search by name
     try:
-        return Style.objects.get(name__iexact=name)
+        return Style.objects.get(name__iexact=name.strip())
     except Style.DoesNotExist:
         pass
         
@@ -682,7 +805,7 @@ def photo_upload(request, username, prefer='multiple'):
             if diary_entry:
                 url = diary_entry.get_absolute_url()
             else:
-                url = '/%s/upload/done/' % username
+                url = person.get_absolute_url()
             return HttpResponseRedirect(url)
     else:
         
@@ -862,12 +985,15 @@ def upload_profile_photo(request, username):
     
 
 def country(request, country_code):
-    country = get_object_or_404(Country, iso_code = country_code.upper())
-    people = KungfuPerson.objects.filter(country = country)
+    country = get_object_or_404(Country, iso_code=country_code.upper())
+    people = KungfuPerson.objects.filter(country=country)
+    
+    people_locations_json = _get_people_locations_json(people)
 
     return render(request, 'country.html', {
         'country': country,
         'people': people,
+        'people_locations_json': people_locations_json,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'regions': country.top_regions(),
     })
@@ -893,13 +1019,21 @@ def region(request, country_code, region_code):
     })
 
 def profile(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
-    clubs = person.club_membership.all()
-    styles = person.styles.all()
-    photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
-    videos = Video.objects.filter(user=person.user)
-    diary_entries_private = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
-    diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True).order_by('-date_added')[:5]
+    try:
+        person = KungfuPerson.objects.select_related().get(user__username=username)
+    except KungfuPerson.DoesNotExist:
+        raise Http404("No user by that username")
+        
+    clubs = person.club_membership.all().select_related()
+    styles = person.styles.all().select_related()
+    photos = Photo.objects.filter(user=person.user).order_by('-date_added')\
+      .select_related()[:8]
+    videos = Video.objects.filter(user=person.user).select_related()
+    diary_entries_private = DiaryEntry.objects.filter(user=person.user)\
+      .select_related().order_by('-date_added')[:5]
+    diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True)\
+      .select_related().order_by('-date_added')[:5]
+    people_near = person.get_nearest(within_range=50)
     
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
@@ -907,8 +1041,9 @@ def profile(request, username):
             person.profile_views += 1 # Not bothering with transactions; only a stat
             person.save()
             cache.set(cache_key, 1, ONE_DAY)
-    
+
     is_owner = request.user.username == username
+    show_profile_views = is_owner and person.profile_views > 1
     
     if is_owner:
         # First assume that we don't have to pester the poor user
@@ -956,6 +1091,39 @@ def profile(request, username):
             elif not request.COOKIES.get('close_tip_style'):
                 pester_first_style = True
             
+    cache_key = 'same_club_people-%s' % person.user.username
+    _same_club_info = cache.get(cache_key)
+    if _same_club_info is None:
+        same_club_people = []
+        same_clubs = []
+        for club in clubs:
+            for same_club_person in club.kungfuperson_set.exclude(user=person.user):
+                # found someone who also does this club
+                if same_club_person not in same_club_people:
+                    same_club_people.append(same_club_person)
+                if club not in same_clubs:
+                    same_clubs.append(club)
+        cache.set(cache_key, (same_clubs, same_club_people),
+                  ONE_WEEK)
+    else:
+        same_clubs, same_club_people = _same_club_info
+    
+    cache_key = 'same_style_people-%s' % person.user.username
+    _same_style_info = cache.get(cache_key)
+    if _same_style_info is None:
+        same_style_people = []
+        same_styles = []
+        for style in styles:
+            for same_style_person in style.kungfuperson_set.exclude(user=person.user):
+                # found someone who also does this style
+                if same_style_person not in same_style_people:
+                    same_style_people.append(same_style_person)
+                if style not in same_styles:
+                    same_styles.append(style)
+        cache.set(cache_key, (same_styles, same_style_people),
+                  ONE_WEEK)
+    else:
+        same_styles, same_style_people = _same_style_info
         
     # Prep some SEO meta tags stuff
     meta_description = "%s %s, %s %s" % (person.user.first_name,
@@ -971,18 +1139,15 @@ def profile(request, username):
     meta_keywords.append("%s %s" % (person.user.first_name, person.user.last_name))
     meta_keywords.append(person.location_description)
     meta_keywords.append(person.country.name)
-    for club in person.club_membership.all():
+    for club in clubs:
         meta_keywords.append(club.name)
-    for style in person.styles.all():
+    for style in styles:
         meta_keywords.append(style.name)
     meta_keywords = ','.join(meta_keywords)
-    
-    #static_map_url = get_person_profile_static_map(person)
     
     try:
         recruiter = Recruitment.objects.get(recruited=person.user).recruiter
         recruiter_profile = recruiter.get_profile()
-        print recruiter
     except Recruitment.DoesNotExist:
         pass
     
@@ -990,17 +1155,21 @@ def profile(request, username):
       .order_by('-add_date')
     recruited_people = [x.recruited.get_profile() for x in recruited_users]
     
-   
+    # for the world map
+    people_locations_json = _get_people_locations_json(people_near)
+    person_location_json = _get_person_location_json(person)
+    
+    
     return render(request, 'profile.html', locals())
 
-def user_info_html(request, username):
+def user_info_html(request, username, include_photo=False):
+    """render a snippet of HTML about a person"""
     person = get_object_or_404(KungfuPerson, user__username=username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
-    #photos = Photo.objects.filter(user=person.user).order_by('-date_added')[:8]
     
     return render(request, '_user-info.html', locals())
-    
+
 
 def wall(request):
     people = KungfuPerson.objects.all()
@@ -1009,7 +1178,7 @@ def wall(request):
     return render(request, 'wall.html', locals())
 
 def photo(request, username, photo_id):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     photo = get_object_or_404(Photo, id=photo_id)
     
     try:
@@ -1028,10 +1197,13 @@ def photo(request, username, photo_id):
     # diary entry, then use that. Otherwise, assume that the photo is related 
     # to a user simply and work from that. 
     if photo.diary_entry:
-        photo_set = Photo.objects.filter(diary_entry=photo.diary_entry)
+        photo_set = Photo.objects.filter(diary_entry=photo.diary_entry)\
+          .select_related()
     else:
-        photo_set = Photo.objects.filter(user=photo.user)
+        photo_set = Photo.objects.filter(user=photo.user).select_related()
     previous, next = get_previous_next(photo_set, photo)
+    
+    photo_location_json = _get_person_location_json(photo)
     
     is_owner = request.user.username == username
     return render(request, 'photo.html', locals())
@@ -1058,7 +1230,10 @@ def club(request, name):
             club.clicks += 1 # Not bothering with transactions; only a stat
             club.save()
             cache.set(cache_key, 1, ONE_DAY)
-    
+
+    # for the world map
+    people_locations_json = _get_people_locations_json(people)
+
     return render(request, 'club.html', locals())
 
 def clubs_all(request):
@@ -1067,18 +1242,66 @@ def clubs_all(request):
     return render(request, 'clubs_all.html', {
         'clubs': clubs,
         'clubs_is_current': clubs_is_current,
-    })   
+    })  
+
+
+def all_something(request, model, sort_by='name'):
+    if sort_by not in ('date','name'):
+        raise Http404("unrecognized sort-by")
+    
+    if model not in ('clubs','styles','people','photos'):
+        raise Http404("unrecognized model")
+    
+    data = locals()
+    current_url = request.build_absolute_uri()
+    
+    list_options = []
+    
+    if sort_by == 'date':
+        _view_name = "all_something_by_date"
+    else:
+        _view_name = "all_something"
+    for model_name in ('people','clubs','styles','photos'):
+        url = reverse(_view_name, args=(model_name,))
+        list_options.append(dict(label=model_name,
+                                 url=url,
+                                 active=current_url.endswith(url)
+                            ))
+    
+    order_by_options = []
+    
+    url = reverse("all_something", args=(model,))
+    order_by_options.append(dict(label='name',
+                                 url=url,
+                                 active=current_url.endswith(url)
+                                 ))
+    
+    url = reverse("all_something_by_date", args=(model,))
+    order_by_options.append(dict(label='date',
+                                 url=url,
+                                 active=current_url.endswith(url)
+                                 ))
+    
+    data.update(dict(list_options=list_options,
+                     order_by_options=order_by_options))
+    
+    data.update(get_all_items(model, sort_by))
+    
+    return render(request, 'all_something.html', data)
+        
 
 def style(request, name):
     style = get_object_or_404(Style, slug=name)
-    people = KungfuPerson.objects.filter(styles=style)
-    diaries = DiaryEntry.objects.filter(user__in=[x.id for x in people]).order_by('-date_added')
+    people = KungfuPerson.objects.filter(styles=style).select_related()
+    
+    diaries = DiaryEntry.objects.filter(is_public=True,
+                                        user__in=[x.id for x in people]).order_by('-date_added')
     count = people.count()
     
     club_ids = set()
     for person in people:
         club_ids.update([x.id for x in person.club_membership.all()])
-    clubs = Club.objects.filter(id__in=list(club_ids))
+    clubs = Club.objects.filter(id__in=list(club_ids)).select_related()
 
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "clicks-style-" + get_unique_user_cache_key(request.META)
@@ -1086,6 +1309,9 @@ def style(request, name):
             style.clicks += 1 # Not bothering with transactions; only a stat
             style.save()
             cache.set(cache_key, '1', ONE_DAY)
+            
+    # for the world map
+    people_locations_json = _get_people_locations_json(people)
             
     return render(request, 'style.html', locals())
 
@@ -1245,10 +1471,10 @@ def diary_entry_edit(request, username, slug):
 
 @must_be_owner
 def diary_entry_delete(request, username, slug):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     entry = get_object_or_404(DiaryEntry, slug=slug)
     user = person.user
-    
+    assert entry.user == user
     entry.delete()
 
     return HttpResponseRedirect('/%s/' % user.username)
@@ -1256,7 +1482,7 @@ def diary_entry_delete(request, username, slug):
 
 @must_be_owner
 def edit_club(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     clubs = person.club_membership.all()
 
     if request.method == 'POST':
@@ -1268,6 +1494,9 @@ def edit_club(request, username):
             club = _get_or_create_club(name, url=url)
             person.club_membership.add(club)
             person.save()
+            cache_key = 'same_club_people-%s' % person.user.username
+            cache.delete(cache_key)
+
             return HttpResponseRedirect('/%s/club/' % username)
         
         else:
@@ -1281,7 +1510,6 @@ def edit_club(request, username):
         all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()
                      if x.id not in current_club_ids]
         all_clubs_js = simplejson.dumps(all_clubs)
-        print all_clubs
         del current_club_ids
         
     return render(request, 'edit_club.html', locals())
@@ -1300,21 +1528,23 @@ def delete_club_membership(request, username, clubname):
 
 @must_be_owner
 def edit_style(request, username):
-    person = get_object_or_404(KungfuPerson, user__username = username)
+    person = get_object_or_404(KungfuPerson, user__username=username)
     styles = person.styles.all()
 
     if request.method == 'POST':
         form = StyleForm(request.POST)
         if form.is_valid():        
-            name = form.cleaned_data['style_name']
-            slug = name.strip().replace(' ', '-').lower()
-            if name:
-                style = _get_or_create_style(name)
-                style.slug = slug
-                style.save()
-                person.styles.add(style)
-                person.save()
-                return HttpResponseRedirect('/%s/style/' % username)
+            name = form.cleaned_data['style_name'].strip()
+            slug = name.strip().replace(' ', '-')
+            slug = slugify(unaccent_string(slug))
+            style = _get_or_create_style(name)
+            style.slug = slug
+            style.save()
+            person.styles.add(style)
+            person.save()
+            cache_key = 'same_style_people-%s' % person.user.username
+            cache.delete(cache_key)
+            return HttpResponseRedirect('/%s/style/' % username)
     else:
         form = StyleForm()
         # generate a list of all styles for the javascript autocomplete.
@@ -1368,8 +1598,6 @@ def add_video(request, username):
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
             thumbnail_url = form.cleaned_data['thumbnail_url']
-            #print locals()
-            #raise Exception
             video = Video.objects.create(user=person.user,
                                          embed_src=embed_src,
                                          title=title.strip(),
@@ -1587,18 +1815,20 @@ def _club_name_from_url(url, request=None):
     except IndexError:
         pass # :(
     
-    
     return None
-    
     
 
 
 def guess_username_json(request):
-    email = request.GET.get('email')
-    first_name = request.GET.get('first_name')
-    last_name = request.GET.get('last_name')
+    email = request.GET.get('email','').strip().lower()
+    if not email:
+        # AJAX call made wrong
+        return render_json(dict(username=''))
     
-    username = base_username = email.split('@')[0].strip().lower().replace('.','')
+    first_name = request.GET.get('first_name', '').strip().lower()
+    last_name = request.GET.get('last_name', '').strip().lower()
+    
+    username = base_username = re.sub('[^\w]', '', email.split('@')[0])
     
     def is_taken(username):
         try:
@@ -1606,10 +1836,16 @@ def guess_username_json(request):
             return True
         except User.DoesNotExist:
             return False
-    if is_taken(username):
-        #for double-barrelled names, this removes the hyphen
-        username = first_name.strip().lower() + '' + last_name.strip().replace("-", "").lower()
         
+    if is_taken(username):
+        if not first_name and not last_name:
+            # not a lot we can do at this point
+            return render_json(dict(username=''))
+        
+        #for double-barrelled names, this removes the hyphen
+        username = '%s%s' % (first_name, last_name.replace("-", ""))
+        
+    # getting really desperate!
     count = 2
     while is_taken(username):
         username = "%s%s" % (base_username, count)
@@ -1748,7 +1984,7 @@ def zoom(request):
     """zoom() is about showing a map and when the user zooms in on a region
     it finds out what's in that region and updates a list.
     """
-    
+    people_count = KungfuPerson.objects.count()
     return render(request, 'zoom.html', locals())
 
 def _get_zoom_content(left, upper, right, lower, request=None):
@@ -1811,12 +2047,12 @@ def zoom_content(request):
 
 def zoom_content_json(request):
     """same as zoom_content() but return it as a structure JSON string"""
-    if 1:#try:
+    try:
         left = float(request.GET['left'])
         upper = float(request.GET['upper'])
         right = float(request.GET['right'])
         lower = float(request.GET['lower'])
-    else:#except (KeyError, ValueError, TypeError):
+    except (KeyError, ValueError, TypeError):
         logging.error("Invalid zoom", exc_info=True)
         return HttpResponse("Invalid zoom!")
 
@@ -2077,7 +2313,7 @@ def runway_data_js(request):
     
 def crossdomain_xml(request):
     domain = "*"
-    print request.META.keys() # referer?
+    #print request.META.keys() # referer?
     xml = '<?xml version="1.0"?>\n'\
           '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/'\
           'dtds/cross-domain-policy.dtd">\n'\

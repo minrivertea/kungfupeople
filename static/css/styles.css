@@ -1337,10 +1337,13 @@ div.video-full {
 	margin: 5px 0 0 40px;
 }
 
-div.counter-current {
+
+
+div.counter {
 	float: right;
 	padding: 0px 10px 0 10px;
 	height: 45px;
+	text-align: center;
 	width: auto;
 	margin: 0px 10px 0px 0px;
 	background-color: #F3CF1A;
@@ -1350,7 +1353,7 @@ div.counter-current {
 -moz-border-radius-bottomright:10px;
 }
 
-div.counter {
+div.counter-current {
 	float: right;
 	padding: 0px 10px 0 10px;
 	height: 45px;
@@ -1362,6 +1365,10 @@ div.counter {
 	color: #666;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
+}
+div.counter-last {
+	margin: 0px 10px -45px -60px;
+
 }
 
 div.number {

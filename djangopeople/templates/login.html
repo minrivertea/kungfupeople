@@ -85,13 +85,19 @@ jQuery(function($) {
 		</div>
 	</div>
     	</fieldset>
-
-
-
-
-
-
     	</form>
+        
+        
+        <p>
+        <a href="{% url auth %}" title="Log in with your twitter account"
+        ><img src="{% staticfile "/img/twitter/twitter-logo-small.png" %}" border="0" alt="Twitter"></a>
+        <br>
+        Alternatively, if you want to you can
+        <a href="{% url auth %}">log in with your twitter account</a><br>
+        or if you haven't done so you can 
+        <a href="{% url twitter_signup %}">sign up using your twitter account</a>.
+        </p>
+        
 
        
 

@@ -16,6 +16,15 @@
 <h3>People with the most profile views</h3>
 {{ profile_views_groups_table|safe }}
 
+{% if club_clicks_groups_table %}
+<h3>Clicks on club pages</h3>
+{{ club_clicks_groups_table|safe }}
+{% endif %}
+
+{% if style_clicks_groups_table %}
+<h3>Clicks on style pages</h3>
+{{ style_clicks_groups_table|safe }}
+{% endif %}
 
 {% if not TEMPLATE_DEBUG %}
 <p>NB. These stats are only updated every 1 hour</p>

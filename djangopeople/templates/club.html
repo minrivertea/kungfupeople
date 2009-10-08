@@ -9,12 +9,7 @@
 
 {% block js %}
 <script type="text/javascript">
-var people = [
-    // latitude, longitude, name, username, location description, flag, isocode
-    {% for p in people %}
-      {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
+var PEOPLE = {{ people_locations_json|safe }};
 </script>
 <script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 {% endblock %}

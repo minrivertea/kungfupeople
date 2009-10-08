@@ -1,0 +1,46 @@
+{% extends "base_welcome_email.html" %}
+
+{% block title %}Welcome to {{ PROJECT_NAME }} {{ user.first_name }}!{% endblock %}
+
+{% block content %}
+<p style="font-size:20px"><strong>Welcome to {{ PROJECT_NAME }} {{ user.first_name }}!</strong></p>
+
+<p>Thank you for joining our website! We hope that you will continue to enjoy what 
+our site has to offer.</p>
+
+{% if person.photo %}
+  
+  {% if person.styles.count %}
+    {% if person.club_membership.count %}
+      {% if person.bio %}
+        <!--nothing to pester about-->
+      {% else %}
+        <p>You can write a bio to introduce yourself a little. You can do that here:
+        <a href="{{ edit_profile_url_alu }}">{{ edit_profile_url }}</a>
+        </p>
+      {% endif %}
+    {% else %}
+      <p>You have not entered what club you train in. You can do that here:
+      <a href="{{ edit_club_url_alu }}">{{ edit_club_url }}</a>
+      </p>
+    {% endif %}
+  {% else %}
+    <p>You have not entered what style you practice. You can do that here:
+    <a href="{{ edit_style_url_alu }}">{{ edit_style_url }}</a>
+    </p>
+  {% endif %}
+{% else %}
+  <p>You have not yet added a profile photo. You can do that here:
+  <a href="{{ upload_photo_url_alu }}">{{ upload_photo_url }}</a>
+  </p>
+{% endif %}
+
+<p>Your profile is always available here:
+<a href="{{ profile_url_alu }}">{{ profile_url }}</a>
+</p>
+
+<p>To change your password go to:
+<a href="{{ change_password_url_alu }}">{{ change_password_url }}</a>
+</p>
+
+{% endblock %}

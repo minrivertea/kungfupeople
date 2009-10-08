@@ -1,3 +1,4 @@
+// I THINK THIS IS DEPRECATED AND NOT NEEDED ANY MORE. DELETE?????
 $(function() {
     
     if ($('#uploadNewPhoto').length && $('div.header img.main').length) {

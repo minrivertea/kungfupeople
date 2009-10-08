@@ -11,6 +11,7 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.cache import cache
 from django.contrib.contenttypes import generic
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
@@ -34,7 +35,7 @@ RESERVED_USERNAMES = set((
     'photos owner maps upload geocode geocoding login logout openid openids '
     'recover lost signup reports report flickr upcoming mashups recent irc '
     'group groups bulletin bulletins messages message newsfeed events company '
-    'companies active'
+    'companies active clubs styles style club'
 ).split())
 
 
@@ -106,12 +107,14 @@ class DistanceManager(models.Manager):
             if within_range:
                 # do something
                 distance_clause = Template("""
-                AND
                 miles_between_lat_long($x,$y, 
                                     gl.latitude::numeric, gl.longitude::numeric
                                     ) < %s
                 """ % within_range
                                         ).substitute(locals())
+                
+            if extra_where_sql and distance_clause:
+                distance_clause = 'AND\n\t' + distance_clause
             
             if extra_where_sql or distance_clause:
                 extra_where_sql = 'WHERE\n\t' + extra_where_sql
@@ -142,7 +145,7 @@ class DistanceManager(models.Manager):
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
         dists = [p[1] for p in nearbys]
-        places = self.filter(id__in=ids)
+        places = self.filter(id__in=ids).select_related()
         # the QuerySet comes back in an undefined order; let's
         # order it by distance from the given point
         def order_by(objects, listing, name):
@@ -371,6 +374,13 @@ class Club(models.Model):
             self.save()
             
         return ("club.view", (self.slug,))
+    
+def _club_saved(sender, instance, created, **__):
+    cache_key = 'clubs_recent_5'
+    cache.delete(cache_key)
+    
+post_save.connect(_club_saved, sender=Club,
+                  dispatch_uid="_club_saved")
 
 class Style(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -395,6 +405,13 @@ class Style(models.Model):
             self.slug = slugify(unaccent_string(self.name[:50]))
             self.save()
         return ("style.view", (self.slug,))
+    
+def _style_saved(sender, instance, created, **__):
+    cache_key = 'styles_recent_5'
+    cache.delete(cache_key)
+post_save.connect(_style_saved, sender=Style,
+                  dispatch_uid="_style_saved")
+    
 
 class DiaryEntry(models.Model):
     class Meta:
@@ -450,7 +467,7 @@ def prowl_new_diary_entry(sender, instance, created, **__):
     description = "%s %s" % (instance.user.first_name, instance.user.last_name)
     site = Site.objects.get_current()
     description += "\nhttp://%s%s" % (site.domain, instance.get_absolute_url())
-    if created:
+    if created and instance.is_public:
         try:
             prowl("Diary entry added",
                   description=description)
@@ -574,6 +591,7 @@ class AutoLoginKey(models.Model):
             return AutoLoginKey.objects.get(uuid=uuid).user
         except AutoLoginKey.DoesNotExist:
             return None
+        
     
     
     
@@ -739,9 +757,30 @@ class KungfuPerson(models.Model):
                             self.user.username)
     
     def get_photos(self):
-        return Photo.objects.filter(user=self.user).order_by('-date_added')
+        return Photo.objects.filter(user=self.user).order_by('-date_added').select_related()
     
-        
+    
+    def get_same_club_people(self):
+        """return a queryset of people who belong to the same club"""
+        return []
+        people = []
+        for club in self.club_membership.all():
+            for person in club.kungfuperson_set.exclude(id=self.id).select_related():
+                if person not in people:
+                    people.append(person)
+        people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))
+        return people
+
+    def get_same_style_people(self):
+        """return a queryset of people who do the same style"""
+        people = []
+        for style in self.styles.all():
+            for person in style.kungfuperson_set.exclude(id=self.id).select_related():
+                if person not in people:
+                    people.append(person)
+        people.sort(lambda x,y: cmp(y.user.date_joined, x.user.date_joined))
+        return people
+
 
 
 def prowl_new_person(sender, instance, created, **__):
@@ -760,9 +799,14 @@ def prowl_new_person(sender, instance, created, **__):
             logging.error("Unabled to prowl about new person",
                           exc_info=True)
             
-        
 post_save.connect(prowl_new_person, sender=KungfuPerson)
-        
+
+def _kungfuperson_saved(sender, instance, created, **__):
+    for cache_key in ('all_people', 'people_count'):
+        cache.delete(cache_key)
+post_save.connect(_kungfuperson_saved, sender=KungfuPerson,
+                  dispatch_uid="_kungfuperson_saved")
+
     
 class CountrySite(models.Model):
     "Community sites for various countries"

@@ -1,31 +1,61 @@
+{% load newsletter_extras %}
+
 <html>
 <head>
 <title>{{ PROJECT_NAME }} Newsletter</title>
 <style type="text/css">
-body {font-family:arial, sans-serif;font-size: 18px;}
+body {font-family:arial, sans-serif;font-size: 16px;}
 span.number {font-size:30px;font-weight:bold;color:#666;margin:0 5px 0 20px;}
 ul, li {list-style-type:none;}
 ul {margin: 10px 0 30px -20px;}
-a img {border:none;text-decoration:none;margin-right: 10px;position:relative; top:10px;}
+
+a img {text-decoration:none; border:none}
+/*a img {border:none;text-decoration:none;margin-right: 10px;position:relative; top:10px;} */
 a {text-decoration: none;}
 a:visited, a:link {color:#708E20;}
 a:active, a:focus, a:hover {color:#990000;}
-td.thirty {background-color: #fefadf; width: 30px;}
-td.four-eighty {background-color: #fefadf; width: 480px; font-size: 20px;}
-td.four-eighty-two {background-color: #fefadf; width: 480px; font-size: 16px;}
 </style>
 </head>
+
+
 <body>
 <table cellspacing="0" cellpadding="0" border="0" align="center" width="600">
 	<tbody>
 		<tr>
-			<td colspan="3">
-				<img src="newsletter-logo.jpg"/>
+			<td align="center" width="600" colspan="3"><a href="{{ site_url_alu }}"><img src="/img/newsletter/newsletter-logo.jpg" alt="Kung Fu People" border="0"/></a></td>
+		</tr>
+		<tr valign="top" bgcolor="#fefadf">
+			<td width="30" bgcolor="#fefadf">&nbsp;</td>
+			<td width="480" bgcolor="#fefadf">
+		        {{ body_content|safe }} 
+			</td>
+			<td width="30" bgcolor="#fefadf">&nbsp;</td>
+		</tr>
+
+
+		<tr>
+			<td colspan="3" align="center" width="600"><img src="/img/newsletter/newsletter-bottom.jpg"/></td>
+		</tr>
+
+		<tr>
+			<td colspan="3" align="center">
+                        <p style="font-size:10px">
+                        &copy; <a href="{{ site_url_alu }}">KungFuPeople.com</a> {{ COPYRIGHT_YEAR }}
+                        
+                        &#183;
+				<a href="{{ newsletter_online_url_alu }}">View newsletter online</a>
+                        
+                        &#183;
+                        
+				<a href="{{ opt_out_url_alu }}">Unsubscribe</a>
+                        </p>
 			</td>
 		</tr>
 
 
-{{ body_content|safe }}
+
+	</tbody>
+</table>
 
 		<tr>
 			<td colspan="3" align="center" style="font-size:10px">
@@ -43,3 +73,4 @@ td.four-eighty-two {background-color: #fefadf; width: 480px; font-size: 16px;}
 
 </body>
 </html>
+

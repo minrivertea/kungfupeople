@@ -11,21 +11,18 @@
 {% block js %}
 {% if person.latitude and person.longitude %}
 <script type="text/javascript">
-var nearby_people = [
-{% for p in person.get_nearest %}
-  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-{% endfor %}
-];
-
+var PERSON = {{ person_location_json|safe }};
+var PEOPLE = {{ people_locations_json|safe }};
 var PAGE_LATITUDE = {{ person.latitude }};
 var PAGE_LONGITUDE = {{ person.longitude }};
+var ZOOM = 10;
 </script>
 {% if not OFFLINE_MODE %}
+<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 <script type="text/javascript" src="{% slimfile "/js/pagemap.js" %}"></script>
 {% endif %}
-<script type="text/javascript" src="{% slimfile "/js/profile.js" %}"></script>
 {% if pester_first_photo or pester_first_diary_entry or pester_first_style %}
-  <script type="text/javascript">
+<script type="text/javascript">
   $(function() {
     $('a.close_tip').click(function() {
       $(this).parents('div.no-photo-box').remove();
@@ -34,7 +31,7 @@ var PAGE_LONGITUDE = {{ person.longitude }};
       return false;
     });
   });
-  </script>
+</script>
 {% endif %}
 
 <style type="text/css">
@@ -100,7 +97,7 @@ div.bio a.edit {
 		<img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}">
 		{% if is_owner %}
 		<div class="change-photo">
-		<a class="small-text" href="/{{ person.user.username }}/profileupload/" id="uploadNewPhoto">
+		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
 		{% if person.photo %}Change your photo
 		{% else %}<strong>Upload a photo</strong>
 		{% endif %}
@@ -110,6 +107,18 @@ div.bio a.edit {
 		</div>
 
 	{% else %}
+            {% if is_owner %}
+               
+		<div class="profile-photo">
+		<img src="{% staticfile "/img/upload-a-photo-60.png" %}" alt="no profile photo yet">
+		<div class="change-photo">
+		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
+		<strong>Upload a photo</strong>
+		</a>
+		</div>
+		</div>               
+               
+            {% endif %}
 
 	{% endif %}
 		<div id="profile-head-title">
@@ -119,13 +128,14 @@ div.bio a.edit {
                 {% if request.user.is_superuser %}
                 <div class="admin-only">
                 <h4>Admins only</h4>
-                # profile views: <code>{{ person.profile_views }}</code>
+                # profile views: <code>{{ person.profile_views }}</code><br>
+                came from: <code>{{ person.came_from }}</code>
                 </div>
                 {% endif %}
 		
 			<div class="region">
-			<a href="/{{ person.country.iso_code|lower }}/">
-			<img src="/img/flags/{{ person.country.iso_code|lower }}.gif" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
+			<a href="{% url country person.country.iso_code|lower %}">
+			<img src="{{ person.country.iso_code|get_flag_image }}" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
 			{{ person.location_description }}
 			</div>
 
@@ -160,7 +170,7 @@ div.bio a.edit {
 			{% if is_owner %}
 				{% if pester_first_photo %}
 				{% else %}
-			<p>You haven't written a bio yet - <a href="/{{ user.username }}/profile/">why not introduce yourself a little?</a></p>
+			<p>You haven't written a bio yet - <a href="{% url edit_profile user.username %}">why not introduce yourself a little?</a></p>
 				{% endif %}
 			{% endif %}
 			{% endif %}
@@ -184,9 +194,15 @@ div.bio a.edit {
     		        {{ club.name }}{% if not forloop.last %}, {% endif %}
  		        {% endif %}
    			{% endfor %}
-		    	</span><br/>
+		    	</span><br>
 			{% endif %}
 			</div>
+			
+			{% if show_profile_views %}
+			<div class="profile-views">
+			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} <abbr title="Number of clicks on your profile">?</abbr>
+			</div>
+			{% endif %}
 			
 			{% if recruiter and recruiter_profile %}
 			<div class="recruitment">
@@ -225,6 +241,7 @@ div.bio a.edit {
 				<a class="pester-box-link" href="profileupload/">Upload a profile photo now!</a>
 		<p>*People with photos get more profile-views - FACT!</p>
 			</div>
+
 		</div>
 		{% endif %}
 
@@ -331,13 +348,12 @@ div.bio a.edit {
 
 	<div id="right-column">
 
-            {% with person.get_nearest as people %}
-            {% if people %}
+            {% if people_near %}
             <h4>People near {{ person.user.first_name }}</h4>
             
 	    <div id="horizontal-image-listing">
             <ul class="horizontal-image-list">
-                {% for person in people %}
+                {% for person in people_near %}
                 
                 <li class="horizontal-image-list">
 		<div class="list-photo">
@@ -349,9 +365,56 @@ div.bio a.edit {
                 </li>
                 {% endfor %}
             </ul>
-	</div>
+	    </div>
             {% endif %}
-            {% endwith %}
+
+            {% if same_club_people %}
+            <h4>People who also belong to
+            {% for club in clubs %}
+              {{ club.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </h4>
+            
+	    <div id="horizontal-image-listing">
+            <ul class="horizontal-image-list">
+                {% for person in same_club_people %}
+                
+                <li class="horizontal-image-list">
+		<div class="list-photo">
+                    <a href="{{ person.get_absolute_url }}"
+                       title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
+		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+
+		</div>
+                </li>
+                {% endfor %}
+            </ul>
+	    </div>
+            {% endif %}
+            
+            {% if same_style_people %}
+            <h4>People who do the same style
+            {% for style in same_styles %}
+              {{ style.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </h4>
+            
+	    <div id="horizontal-image-listing">
+            <ul class="horizontal-image-list">
+                {% for person in same_style_people %}
+                
+                <li class="horizontal-image-list">
+		<div class="list-photo">
+                    <a href="{{ person.get_absolute_url }}"
+                       title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
+		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+
+		</div>
+                </li>
+                {% endfor %}
+            </ul>
+	    </div>
+            {% endif %}
 	</div>
 	
 </div>

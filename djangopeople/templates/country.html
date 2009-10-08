@@ -1,16 +1,13 @@
 {% extends base_template %}
 {% load misc_extras %}
 {% load django_static %}
+{% load thumbnail %}
 
 {% block title %}{{ country }} |{% endblock %}
 
 {% block js %}{% load thumbnail %}
 <script type="text/javascript">
-var people = [
-{% for p in country.kungfuperson_set.all %}
-  {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-{% endfor %}
-];
+var PEOPLE = {{ people_locations_json|safe }};
 var bbox_north = {{ country.bbox_north }};
 var bbox_west = {{ country.bbox_west }};
 var bbox_south = {{ country.bbox_south }};
@@ -47,12 +44,13 @@ var bbox_east = {{ country.bbox_east }};
 
 		<div id="profile-head">
 
-       		<h2>{{ country }}</h2>
-
-		{% load thumbnail %}
+       		<h2>{{ country }}
         
-        	{% if country.iso_code or country.flag %}<img src="{% if country.iso_code %}{{ country.iso_code|get_flag_image }}{% else %}/{{ country.flag }}{% endif %}" alt="{{ country }}" class="main">{% endif %}
-
+        	{% if country.iso_code %}
+                <img src="{{ country.iso_code|get_flag_image }}" alt="{{ country }}" class="main">
+                {% endif %}
+                </h2>
+                
       		</div>
 
 		{% if people %}
