@@ -22,38 +22,30 @@ body * {
 
 .main-div {
 	margin: 0 auto;
-	width: 90%;
+	width: 100%;
 
 }
 
 .wrapper {
 	min-width: 860px;
 	width: 100%;
-	margin-top: 30px;
+	margin-top: 0px;
 	float: left;
 	/* background: url('/img/bodyback.png') top left repeat-y; */
 }
 
 .no-map-wrapper {
-	min-width: 900px;
 	width: 100%;
 	background-color: white;
 	float: left;
 	border-bottom: 20px solid #F3CF1A;
-	border-left: 5px solid #F3CF1A;
-	border-right: 5px solid #F3CF1A;
-	border-top: 5px solid #F3CF1A;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:5px;
--moz-border-radius-topright:5px;
+	border-top: 20px solid #F3CF1A;
 }
 
 #no-map-content-box {
-	width: 570px;
+	width: 50%;
     	float: left;
-	display: block;
-    	margin: 0px 0px 50px 0px;
+    	margin: 0px 0px 50px 50px;
 	padding: 30px;
     	display: block;
     	background-color: white;
@@ -64,25 +56,29 @@ body * {
 	float: left;
 	min-width: 1068px;
 	width: 100%;
-	height: 161px;
-	margin: 0px 0px -90px 0px;
-	border-bottom: 15px solid #F3CF1A;
+	height: 70px;
+	margin: 0px 0px 0px 0px;
+	border-bottom: 0px solid #F3CF1A;
 	/* background-color: #990000; */
 	/* background-color: #990000; */
-	background: url("/img/headerback.jpg") no-repeat #a10606;
+	background: url("/img/headerback2.jpg") no-repeat #a10606;
 }
 
 #nav {
-	width: 100%;
+	width: 40%;
 	float: right;
 	color: #F3CF1A;
-	height: 20px;
-	margin: 0px 0px 0px 0px;
+	height: 50px;
+	margin: 30px 30px 0px 0px;
 	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
 #nav a.bigger,#nav a.bigger:hover {
         font-weight:bold;
+}
+
+#logo {
+	float: left;	
 }
 
 #logo:hover {
@@ -96,6 +92,7 @@ body * {
 	text-decoration: none;
 	height: 66px;
 	width: 508px;
+	margin-left: 30px;
 	display: block;
 }
 
@@ -108,12 +105,6 @@ body * {
 	background: none;
 }
 
-
-a.title {
-	margin: 21px 0 0 100px;
-	height: 60px;
-	/*background: url('/img/logo.jpg') no-repeat 0 0;*/
-}
 
 #signup {
 	position: relative;
@@ -184,8 +175,7 @@ a.title {
 }
 
 .mapContainer {
-	margin: 0 auto;
-	width: 92%
+	width: 100%;
 }
 
 .mapContainer h3 {
@@ -193,17 +183,11 @@ a.title {
 }
 
 #gmap {
-	float: left;
-	min-width: 1000px;
+	float: right;
 	width: 100%;
-	border-bottom: 30px solid #F3CF1A;
+	border-bottom: 20px solid #F3CF1A;
 	border-left: 5px solid #F3CF1A;
-	border-right: 5px solid #F3CF1A;
-	border-top: 5px solid #F3CF1A;
--moz-border-radius-bottomleft:10px;
--moz-border-radius-bottomright:10px;
--moz-border-radius-topleft:5px;
--moz-border-radius-topright:5px;
+	border-top: 15px solid #F3CF1A;
 }
 
 
@@ -212,7 +196,7 @@ a.title {
 }
 
 .major #gmap {
-	height: 24em;
+	height: 340px;
 }
 
 #left-box {
@@ -326,7 +310,7 @@ a.large {
 	width: 600px;
     	float: left;
 	display: block;
-    	margin: 20px 0px 50px 0px;
+    	margin: 20px 0px 50px 50px;
 	padding-right: 20px;
     	display: block;
     	background-color: white;
@@ -688,6 +672,8 @@ ul.split li {
 #highlight {
 	float: left;
 	width: 100%;
+	background-color: #F3CF1A;
+	margin-top: 40px;
 }
 
 .highlight-home {
@@ -715,7 +701,7 @@ ul.split li {
 	margin: 0 0px 15px 0px;
 	padding-left: 120px;
 	float: left;	
-	width: 480px;
+	width: 450px;
 	background-color: white;
 }
 
@@ -727,6 +713,7 @@ ul.split li {
 	border-bottom: 1px solid #e6e6e6;
 	margin-bottom: 15px;
 	margin-left: -120px;
+	padding-left: 120px;
 }
 
 
@@ -779,7 +766,7 @@ h1 {
 }
 
 #nav a {
-	font-size: 1.1em;
+	font-size: 1.4em;
 	font-weight: normal;
 	color: white;
 	height: 15px;
@@ -824,7 +811,7 @@ div#mapWrapper {
     position: relative;
 }
 div#gmap {
-    height: 300px;
+    height: 400px;
     background-color: #ccc;
 }
 div#crosshair {
@@ -1213,31 +1200,59 @@ a.diary-title {
 	line-height: 1.2em;
 }
 
-.no-photo-box {
-	height: 80px;
-	margin-left: 20px;
-}
-
-.no-photo-box p {
-	margin: 0px;
-}
-
-.no-photo-box-main {
-	margin: 0px 20px 0px 30px;
-	padding: 10px;
-	height: auto;
+.pester-box {
+	height: 60px;
+	width: 450px;
+	margin: 0 0 30px 120px;
 	background-color: #ffdddd;
 }
 
-.no-photo-box-image {
-	float: left;
-	margin: -20px 20px 0px 0px;
+.pester-box-main {
+	padding: 10px;
 }
 
-.no-photo-box-close {
+.pester-box-image {
+	float: left;
+	position: relative;
+	top: -15px;
+	left:-20px;
+}
+
+.pester-box-link {
+	font-size: 1.4em;
+}
+
+.pester-box-close {
 	margin: 0px;
 	float: right;
-	margin-top: -5px;
+	margin: -8px 0px 0 0;
+}
+
+div.action-box {
+	height: 30px;
+	background-color: #a10606;
+	float: left;
+	width: 40%;
+	display:block;
+	margin: 0 10px 10px 0px;
+}
+
+span.plus {
+	font-size: 4em;
+	color: white;
+	font-weight: bold;
+	height: 30px;
+	margin: 5px 0 0 4px;
+}
+
+.action-box-image {
+	margin: -7px 10px 0px 0px;
+	float: left;
+}
+
+.action-box-link {
+	color: white;
+	font-size: 1em;
 }
 
 .line {
@@ -1291,18 +1306,17 @@ img.delete {
 }
 
 #footer {
-	margin-top:40px;
-	padding:10px;
-	border-top: 15px solid #F3CF1A;
-	background-color: #a10606;
+	margin-top:10px;
+	padding:0px;
+	background-color: white;
 }
 #footer p {
-	color: #F3CF1A;
+	color: #666;
   	text-align:center;
 }
 
 #footer a {
-	color: white;
+	color: #666;
 }
 
 div.video-thumb {
@@ -1325,26 +1339,27 @@ div.video-full {
 
 div.counter-current {
 	float: right;
-	padding: 5px 20px 0 10px;
+	padding: 0px 10px 0 10px;
 	height: 45px;
 	width: auto;
-	margin: 0px 70px -45px -60px;
+	margin: 0px 10px 0px 0px;
 	background-color: #F3CF1A;
 	color: #666;
+	text-align: center;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 }
 
 div.counter {
 	float: right;
-	padding: 5px 20px 0 10px;
+	padding: 0px 10px 0 10px;
 	height: 45px;
+	font-size: 0.6em;
 	text-align: center;
 	width: auto;
-	margin: 0px 70px -45px 0px;
+	margin: 0px 10px 0px 0px;
 	background: url('/img/counterback.png') repeat-x #f3dd76;
 	color: #666;
-	border-top: 1px solid white;
 -moz-border-radius-bottomleft:10px;
 -moz-border-radius-bottomright:10px;
 }
@@ -1355,10 +1370,15 @@ div.number {
 	padding-top: 10px;
 	margin-right: 5px;
 	float: left;
-	font-size: 3.2em;
+	text-align: center;
+	font-size: 2.2em;
 	font-family: Helvetica, sans-serif;
 	font-weight: bold;
 	color: #666;
+}
+
+div.number a {
+	font-size: 1.2em;
 }
 
 div.code {
@@ -1416,3 +1436,24 @@ img.video-thumbnail {
   display:inline;
   color:rgb(150,150,150);
 }
+
+div.photo-left {
+	float: left;
+	margin-right: 20px;
+	margin-top: -10px;
+}
+
+div.home-text {
+	position: relative;
+	top: -60px;
+	font-size: 1.8em;
+	line-height: 1.2em;
+	color: #666;
+	padding: 30px;
+	width: 500px;
+}
+
+div.home-text a {
+	font-size: 1.1em;
+}
+

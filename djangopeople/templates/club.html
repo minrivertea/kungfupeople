@@ -42,13 +42,20 @@ div.bio a.edit {
         <div id="gmap">&nbsp;</div>
     </div>
 
-	<div class="counter">
-	<div class="number">{{ count }}</div> {% ifequal count 1 %}person is a member {% else %}people are members {% endifequal %}of this club!<br />
-	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
-	{% else %}
-	<a href="/wall">See everyone!</a>		
-	{% endif %}
+	<div class="counter{% if people_is_current %}-current{% endif %}">
+	<div class="number"><a href="/wall/">people</a></div>
 	</div>
+	<div class="counter{% if videos_is_current %}-current{% endif %}">
+	<div class="number"><a href="/all-videos/">videos</a></div>
+	</div>
+	<div class="counter{% if clubs_is_current %}-current{% endif %}">
+	<div class="number"><a href="/clubs/">clubs</a></div>
+	</div>
+	<div class="counter">
+	<div class="number"><a href="/zoom/">map</a></div>
+	</div>
+
+
 {% endblock %}
 
 {% block content %}

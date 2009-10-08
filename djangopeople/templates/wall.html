@@ -21,6 +21,7 @@ p.promo {
 
 
 {% block content %}
+	<div id="main-content-area">
 	<h2>the wall</h2>
 	<p class="promo">Showing all current users ({{ people.count }})</p>
 	<div class="horizontal-photos">
@@ -29,6 +30,17 @@ p.promo {
 	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
 	</a>	
 	{% endfor %} 
-	</div>    
+	</div>  
+	</div>
+	</div>
+
+<div id="right-column">
+	<h3>Recent blog entries</h3>
+	<ul>
+	{% for entry in blog_entries %}
+	<li><a href="{% url diaryentry.view entry.user entry.slug %}">{{ entry.title }}</a></li>
+	{% endfor %}
+	</ul>
+</div>  
 
 {% endblock %}

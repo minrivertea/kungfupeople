@@ -1,4 +1,4 @@
-{% extends "profile.html" %}
+{% extends "base_no_map.html" %}
 
 {% block title%}Congratulations |{% endblock %}
 
@@ -6,30 +6,20 @@
 {% block map %}{% endblock %}
 
     {% block content %}
-	<div class="no-map-wrapper">
-        <div id="no-map-content-box">
+
             <h2>Congratulations!</h2>
 
 	    <p><strong>You've successfully created a profile on {{ PROJECT_NAME }}!</strong></p>
 
-
-		<br/>
-		<div class="no-photo-box">
-		<div class="no-photo-box-image"><img src="/static/img/upload-a-photo.png"/></div>
-		<div class="no-photo-box-main">
-
-		<p>*More people will look at your profile if you add an image - fact!</p>
+	<br clear="all"/>
+		
+		<div class="photo-left"><img src="/static/img/upload-a-photo.png"/></div>
+		*More people will look at your profile if you add an image - fact!<br/>
 		<a class="major-notice" href="/{{ person.user.username }}/profileupload/">Upload a profile photo now!</a>
-		</div>
-		</div>
-		<br/>
+		<br clear="all"/>
 
 
 <p><em><a href="/{{ person.user.username }}/">(or just click here to view your profile)</a></em></p>
 
 
-
-
-	</div>
-	</div>
     {% endblock %}

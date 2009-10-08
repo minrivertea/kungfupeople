@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 {% load django_static %}
 {% load misc_extras %}
 {% load thumbnail %}
@@ -8,15 +8,6 @@
 {% block nav_li_class_profile %}{% if is_owner %} class="current"{% endif %}{% endblock %}
 
 {% block js %}
-<script type="text/javascript">
-var people = [
-    // latitude, longitude, name, username, location description, flag, isocode
-    {% for p in people %}
-      {{ p|nearby_people_escape|safe }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
-</script>
-<script type="text/javascript" src="{% slimfile "/js/worldmap.js" %}"></script>
 {% endblock %}  
 
 {% block css %}
@@ -36,29 +27,12 @@ div.bio a.edit {
 {% endblock %}
 
 {% block map %}
-    <div class="mapContainer major">
-        <div id="gmap">&nbsp;</div>
-    </div>
 
-	<div class="counter-current">
-	<div class="number">{{ count }}</div> {% ifequal count 1 %}person does {% else %}people do {% endifequal %}{{ style }}!<br />
-	{% if not user.is_authenticated %}<a href="signup">Add yourself now!</a>
-	{% else %}
-	<a href="/wall">See everyone!</a>		
-	{% endif %}
-	</div>
 
-	<div class="counter">
-	<div class="number"></div><strong>ZOOM!</strong> Find clubs, styles and people<br />
-	<a href="/zoom">Try it out now.</a>
-	</div>
 {% endblock %}
 
 {% block content %}
-<div class="wrapper">
 
-
-	<div id="content-box">
 
 		<div id="profile-head">
 

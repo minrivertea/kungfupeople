@@ -2,44 +2,44 @@
 <head>
 <title>{{ PROJECT_NAME }} Newsletter</title>
 <style type="text/css">
-body {
-	color: #000;
-	font-family: Helvetica,Arial,sans-serif;
-	line-height: 1.2em;
-}
-
-
-h2 {
-	font-family: Helvetica, sans-serif;
-	margin: 0px 0 5px 0;
-	font-size: 3em;
-	font-weight: normal;
-	line-height: 1em;
-	color: #95CFD1;
-}
-
-h3 {
-	font-family: Helvetica, sans-serif;
-	font-size: 1.4em;
-	font-weight: normal;
-	color: #60A8AA;
-	margin-bottom: 10px;
-}
-
-a {
-	color: #708e20;
-        }
-
-p.footer {
-  font-size:9px;
-  text-align:center;
-}
-
+body {font-family:arial, sans-serif;font-size: 18px;}
+span.number {font-size:30px;font-weight:bold;color:#666;margin:0 5px 0 20px;}
+ul, li {list-style-type:none;}
+ul {margin: 10px 0 30px -20px;}
+a img {border:none;text-decoration:none;margin-right: 10px;position:relative; top:10px;}
+a {text-decoration: none;}
+a:visited, a:link {color:#708E20;}
+a:active, a:focus, a:hover {color:#990000;}
+td.thirty {background-color: #fefadf; width: 30px;}
+td.four-eighty {background-color: #fefadf; width: 480px; font-size: 20px;}
+td.four-eighty-two {background-color: #fefadf; width: 480px; font-size: 16px;}
 </style>
 </head>
 <body>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="600">
+	<tbody>
+		<tr>
+			<td colspan="3">
+				<img src="newsletter-logo.jpg"/>
+			</td>
+		</tr>
+
 
 {{ body_content|safe }}
+
+		<tr>
+			<td colspan="3" align="center" style="font-size:10px">
+				<img src="newsletter-bottom.jpg"/>
+				<a href="unsub">unsubscribe</a>
+
+			</td>
+		</tr>
+		
+
+
+	</tbody>
+</table>
+
 
 </body>
 </html>

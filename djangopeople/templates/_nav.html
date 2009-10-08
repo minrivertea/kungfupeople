@@ -1,4 +1,6 @@
 	        <ul>
+		    <li><a href="/">home</a></li>
+	            <li><a href="/about/">about</a></li>
 			{% if not user.is_authenticated %}
 	            <!-- not logged in -->
 	            <li><a href="/signup/" class="bigger">add yourself to the map</a></li>
@@ -8,8 +10,7 @@
 	            <li>logged in as <strong><a href="/{{ user.username }}/">{{ user.username }}</a></strong> (<a href="/logout/">log out</a>)</li>
 
 	            {% endif %}
-		    <li><a href="/">home</a></li>
-	            <li><a href="/about/">about</a></li>
+
 
 		    <!--<li><a href="/contact/">contact</a></li>-->
 		    <!--<li><a href="/promote-my-club/">promote your club</a></li>-->

@@ -56,10 +56,34 @@ currently looks like <strong>cropped to a square</strong> of 60x60 pixels.</p>
         {{ form.h }}
 	
 	<img src="{% thumbnail person.photo 500x500  %}" id="cropbox">
-	
-	<br><input type="submit" value="Crop and save your profile photo">
-        <br><br>
-        <a href="{{ person.get_absolute_url }}">Cancel</a>
+	<br/>
+	<div class="form-field-outer">
+		<div class="form-field-left">
+ 
+		</div>
+		<div class="form-field-submit">
+			<div class="button-outer">
+    			<div class="buttonContainer">
+    	    		<input type="submit" value="Crop and save image">
+    			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-field-outer">
+		<div class="form-field-left">
+ 
+		</div>
+		<div class="form-field-submit">
+
+    			<div class="buttonContainer">
+    	    		<a href="{{ person.get_absolute_url }}">Cancel</a>
+			</div>
+		</div>
+	</div>
+
+
+
 	
 	</form>
 </div>        

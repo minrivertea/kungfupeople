@@ -29,9 +29,17 @@ var PAGE_LONGITUDE = {{ entry.longitude }};
         {% endif %}
         </div>
     </div>
+	<div class="counter-current">
+	<div class="number"><a href="/wall/">people</a></div>
+	</div>
 	<div class="counter">
-	<div class="number"></div>Tagged in <strong>{{ entry.location_description }} ({{ entry.country.name }}) </strong><br/>
-	Click the map for more detail
+	<div class="number"><a href="/all-videos/">videos</a></div>
+	</div>
+	<div class="counter">
+	<div class="number"><a href="/clubs/">clubs</a></div>
+	</div>
+	<div class="counter">
+	<div class="number"><a href="/zoom/">map</a></div>
 	</div>
 {% endblock %}
 

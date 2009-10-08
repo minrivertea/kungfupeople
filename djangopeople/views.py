@@ -82,6 +82,7 @@ def index(request):
     photos = Photo.objects.all().order_by('-date_added')[:5]
     styles = Style.objects.all().order_by('-add_date')[:5]
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
+    videos = Video.objects.all().order_by('-add_date')[:1]
     your_person = None
     if request.user and not request.user.is_anonymous():
         try:
@@ -96,6 +97,7 @@ def index(request):
         'styles': styles,
         'diaries': diaries,
         'clubs': clubs,
+        'videos': videos,
         'recent_people_limited': recent_people[:50],
         'total_people': KungfuPerson.objects.count(),
         'total_videos': Video.objects.filter(approved=True).count(),
@@ -348,7 +350,7 @@ def signup(request):
                 base_location = getGeolocationByIP_cached(ip)
                 if base_location['lat'] == 0.0 and base_location['lng'] == 0.0:
                     base_location = None
-                    
+   
             if base_location:
                 try:
                     country = Country.objects.get(name__iexact=base_location['country'])
@@ -1002,6 +1004,8 @@ def user_info_html(request, username):
 
 def wall(request):
     people = KungfuPerson.objects.all()
+    blog_entries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:5]
+    people_is_current = True
     return render(request, 'wall.html', locals())
 
 def photo(request, username, photo_id):
@@ -1045,6 +1049,7 @@ def viewallphotos(request, username):
 def club(request, name):
     club = get_object_or_404(Club, slug=name)
     people = members = KungfuPerson.objects.filter(club_membership=club)
+    clubs_is_current = True
     count = members.count()
     
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
@@ -1054,8 +1059,15 @@ def club(request, name):
             club.save()
             cache.set(cache_key, 1, ONE_DAY)
     
-
     return render(request, 'club.html', locals())
+
+def clubs_all(request):
+    clubs = Club.objects.all().order_by('-add_date')
+    clubs_is_current = True
+    return render(request, 'clubs_all.html', {
+        'clubs': clubs,
+        'clubs_is_current': clubs_is_current,
+    })   
 
 def style(request, name):
     style = get_object_or_404(Style, slug=name)
@@ -1324,22 +1336,25 @@ def delete_style(request, username, style):
     person.styles.remove(style)
     
     return HttpResponseRedirect('/%s/style/' % user.username)
-   
-
-
 
 def video(request, username, video_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
     video = get_object_or_404(Video, user=person.user, id=video_id)
     recent = Video.objects.all().order_by('-add_date').exclude(id=video.id)[:5]
-
     return render(request, 'videos.html', {
         'person': person,
         'video': video,
         'is_owner': request.user.username == username,
         'recent': recent,
     })
-    
+
+def videos_all(request):
+    videos = Video.objects.all().order_by('-add_date')
+    videos_is_current = True
+    return render(request, 'videos_all.html', {
+        'videos': videos,
+        'videos_is_current': videos_is_current,
+    })    
 
 @must_be_owner
 @transaction.commit_on_success

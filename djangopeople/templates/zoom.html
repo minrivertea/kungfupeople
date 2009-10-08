@@ -45,18 +45,35 @@ var people = [
     <div class="mapContainer major">
         <div id="gmap">&nbsp;</div>
     </div>
+
+	<div class="counter">
+	<div class="number"><a href="/wall/">people</a></div>
+	</div>
+	<div class="counter">
+	<div class="number"><a href="/all-videos/">videos</a></div>
+	</div>
+	<div class="counter">
+	<div class="number"><a href="/clubs/">clubs</a></div>
+	</div>
+	<div class="counter-current">
+	<div class="number"><a href="/zoom/">map</a></div>
+	</div>
 {% endblock %}
 
 {% block content %}
+	<br clear="all"/>
+
+	<div class="home-text">
+		Zoom in on a region to see clubs, styles and people in that area (double-click to zoom in).
+	</div>
 <div class="wrapper">
+<div id="content-box">
 
     <div id="zoom-content-outer">
       <div align="center" style="text-align:center; padding:40px">
-      <h4>Zoom in on a region on the map to see clubs, styles and people in that area.</h4>
-	<p><strong>(hint - double click to zoom in)</strong></p>
       </div>
     </div>
 		
-		
+		</div>
 </div>	
 {% endblock %}
