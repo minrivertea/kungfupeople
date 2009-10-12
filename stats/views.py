@@ -33,7 +33,7 @@ class CustomCacheMiddleware(CacheMiddleware):
 custom_cache_page = decorator_from_middleware(CustomCacheMiddleware)
 
 
-if settings.DEBUG:
+if 1 or settings.DEBUG:
     def cache_page(delay):
         def rendered(view):
             def inner(request, *args, **kwargs):
