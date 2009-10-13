@@ -308,7 +308,7 @@ a.large {
 }
 
 #content-box {
-	width: 600px;
+	width: 550px;
     	float: left;
 	display: block;
     	margin: 20px 0px 50px 50px;
@@ -451,13 +451,13 @@ a:hover img {
 
 #right-column a:link,
 #right-column a:visited {
-	color: #990000;
+	color: #708E20;
 }
 
 #right-column a:hover,
 #right-column a:active,
 #right-column a:focus {
-	color: #708e20;
+	color: #990000;
 }
 
 #related-photos a:link,
@@ -702,7 +702,7 @@ ul.split li {
 	margin: 0 0px 15px 0px;
 	padding-left: 120px;
 	float: left;	
-	width: 450px;
+	width: 430px;
 	background-color: white;
 }
 
@@ -1034,7 +1034,7 @@ div.horizontal-photos {
 
 .profile-text {
 	float: left;
-	width: 80%;
+	width: 400px;
 	margin: 0 0 10px 0px;	
 }
 
@@ -1310,7 +1310,6 @@ img.delete {
 	margin-top:10px;
 	padding:0px;
 	background-color: white;
-	height: 30px;
 }
 #footer p {
 	color: #666;
@@ -1464,5 +1463,24 @@ div.home-text {
 
 div.home-text a {
 	font-size: 1.1em;
+}
+
+div.person-listing {
+	display: block;
+	float: left; 
+	height: 40px;
+	width: 300px;
+	margin: 0 0 10px 20px;
+}
+
+div.person-listing-photo {
+	float: left;
+	height: 40px;
+	margin-right: 10px;
+}
+
+div.person-listing-info {
+	float: left;
+	height: 40px;
 }
 
