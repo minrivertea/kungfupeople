@@ -21,8 +21,9 @@ body * {
 }
 
 .main-div {
-	margin: 0 auto;
+	margin: 0;
 	width: 100%;
+	height: auto;
 
 }
 
@@ -54,22 +55,21 @@ body * {
 #header {
 	display: block;
 	float: left;
-	min-width: 1068px;
 	width: 100%;
 	height: 70px;
-	margin: 0px 0px 0px 0px;
-	border-bottom: 0px solid #F3CF1A;
+	margin: 0;
+	padding: 0;
 	/* background-color: #990000; */
 	/* background-color: #990000; */
 	background: url("/img/headerback2.jpg") no-repeat #a10606;
 }
 
 #nav {
-	width: 40%;
+	width: 450px;
 	float: right;
 	color: #F3CF1A;
-	height: 50px;
-	margin: 30px 30px 0px 0px;
+	height: 40px;
+	margin: 30px 0px 0px 0px;
 	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
@@ -78,6 +78,7 @@ body * {
 }
 
 #logo {
+	height: 70px;
 	float: left;	
 }
 
@@ -307,7 +308,7 @@ a.large {
 }
 
 #content-box {
-	width: 600px;
+	width: 550px;
     	float: left;
 	display: block;
     	margin: 20px 0px 50px 50px;
@@ -450,13 +451,13 @@ a:hover img {
 
 #right-column a:link,
 #right-column a:visited {
-	color: #990000;
+	color: #708E20;
 }
 
 #right-column a:hover,
 #right-column a:active,
 #right-column a:focus {
-	color: #708e20;
+	color: #990000;
 }
 
 #related-photos a:link,
@@ -701,7 +702,7 @@ ul.split li {
 	margin: 0 0px 15px 0px;
 	padding-left: 120px;
 	float: left;	
-	width: 450px;
+	width: 430px;
 	background-color: white;
 }
 
@@ -1033,7 +1034,7 @@ div.horizontal-photos {
 
 .profile-text {
 	float: left;
-	width: 80%;
+	width: 400px;
 	margin: 0 0 10px 0px;	
 }
 
@@ -1457,10 +1458,30 @@ div.home-text {
 	line-height: 1.2em;
 	color: #666;
 	padding: 30px;
-	width: 500px;
+	width: 430px;
 }
 
 div.home-text a {
 	font-size: 1.1em;
+}
+
+div.person-listing {
+	display: block;
+	float: left; 
+	height: auto;
+	width: 300px;
+	margin: 0 0 10px 20px;
+}
+
+div.person-listing-photo {
+	float: left;
+	height: 40px;
+	margin-right: 10px;
+}
+
+div.person-listing-info {
+	float: left;
+	height: auto;
+	width: 150px;
 }
 

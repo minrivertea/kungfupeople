@@ -3,30 +3,24 @@
 {% block content_outer %}
 
 <div class="no-map-wrapper">
+
 	<div class="counter{% if people_is_current %}-current{% endif %}">
-	<div class="number"><a href="/wall/">people</a></div>
+		<div class="number"><a href="/wall/">people</a></div>
 	</div>
 	<div class="counter{% if videos_is_current %}-current{% endif %}">
-	<div class="number"><a href="/all-videos/">videos</a></div>
+		<div class="number"><a href="/all-videos/">videos</a></div>
 	</div>
 	<div class="counter{% if clubs_is_current %}-current{% endif %}">
-	<div class="number"><a href="/clubs/">clubs</a></div>
+		<div class="number"><a href="/clubs/">clubs</a></div>
 	</div>
 	<div class="counter">
-	<div class="number"><a href="/zoom/">map</a></div>
-	</div>
-<div id="no-map-content-box">
-{% block content %}
-
-{% endblock %}
-</div>
-
-	<div id="right-column">
-        {% block right_column %}
-	
-        {% endblock %}
+		<div class="number"><a href="/zoom/">map</a></div>
 	</div>
 
+	<div id="no-map-content-box">
+	{% block content %}
+	{% endblock %}
+	</div>
 
 </div>
 {% endblock %}
