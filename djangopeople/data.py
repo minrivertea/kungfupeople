@@ -74,8 +74,8 @@ def get_all_items(model, sort_by):
         qs = qs.select_related('country','user')
 
     if sort_by == 'date':
-        order_by = {'clubs':'-add_date',
-                    'styles':'-add_date',
+        order_by = {'clubs':'-date_added',
+                    'styles':'-date_added',
                     'people':'-user__date_joined',
                     'photos':'-date_added',
                     }[model]
@@ -160,7 +160,7 @@ def get_all_items(model, sort_by):
                 else:
                     info = '1 person'
             else:
-                info = 'added %s ago' % timesince(item.add_date, _today)
+                info = 'added %s ago' % timesince(item.date_added, _today)
             items.append(_ListItem(
                     item.get_absolute_url(),
                     item.name,

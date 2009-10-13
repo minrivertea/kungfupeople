@@ -80,11 +80,11 @@ def index(request):
 
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
     people_count = KungfuPerson.objects.all().count()
-    clubs = Club.objects.all().order_by('-add_date')[:5]
+    clubs = Club.objects.all().order_by('-date_added')[:5]
     photos = Photo.objects.all().order_by('-date_added')[:5]
-    styles = Style.objects.all().order_by('-add_date')[:5]
+    styles = Style.objects.all().order_by('-date_added')[:5]
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
-    videos = Video.objects.all().order_by('-add_date')[:1]
+    videos = Video.objects.all().order_by('-date_added')[:1]
     your_person = None
    
     # if a user is logged in, perhaps from oauth, but don't have a profile
@@ -120,13 +120,13 @@ def index(request):
     cache_key = 'clubs_recent_5'
     clubs = cache.get(cache_key)
     if clubs is None:
-        clubs = Club.objects.all().order_by('-add_date')[:5]  # select_related()???
+        clubs = Club.objects.all().order_by('-date_added')[:5]  # select_related()???
         cache.set(cache_key, clubs, ONE_WEEK)
         
     cache_key = 'styles_recent_5'
     styles = cache.get(cache_key)
     if styles is None:
-        styles = Style.objects.all().order_by('-add_date')[:5] # select_related()???
+        styles = Style.objects.all().order_by('-date_added')[:5] # select_related()???
         cache.set(cache_key, styles, ONE_WEEK)
     
     
@@ -1152,7 +1152,7 @@ def profile(request, username):
         pass
     
     recruited_users = Recruitment.objects.filter(recruiter=person.user)\
-      .order_by('-add_date')
+      .order_by('-date_added')
     recruited_people = [x.recruited.get_profile() for x in recruited_users]
     
     # for the world map
@@ -1237,7 +1237,7 @@ def club(request, name):
     return render(request, 'club.html', locals())
 
 def clubs_all(request):
-    clubs = Club.objects.all().order_by('-add_date')
+    clubs = Club.objects.all().order_by('-date_added')
     clubs_is_current = True
     return render(request, 'clubs_all.html', {
         'clubs': clubs,
@@ -1570,7 +1570,7 @@ def delete_style(request, username, style):
 def video(request, username, video_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
     video = get_object_or_404(Video, user=person.user, id=video_id)
-    recent = Video.objects.all().order_by('-add_date').exclude(id=video.id)[:5]
+    recent = Video.objects.all().order_by('-date_added').exclude(id=video.id)[:5]
     return render(request, 'videos.html', {
         'person': person,
         'video': video,
@@ -1579,7 +1579,7 @@ def video(request, username, video_id):
     })
 
 def videos_all(request):
-    videos = Video.objects.all().order_by('-add_date')
+    videos = Video.objects.all().order_by('-date_added')
     videos_is_current = True
     return render(request, 'videos_all.html', {
         'videos': videos,
@@ -1756,7 +1756,7 @@ def guess_club_name_json(request):
             pass
         
     else:
-        for club in Club.objects.filter(url__icontains=domain).order_by('-add_date'):
+        for club in Club.objects.filter(url__icontains=domain).order_by('-date_added'):
             data = {'club_name': club.name, 'readonly': True}
             # easy!
             return render_json(data)

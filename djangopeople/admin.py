@@ -52,13 +52,13 @@ class KungfuPersonAdmin(admin.ModelAdmin):
 
 class ClubAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'url', 'add_date', 'slug')
-    ordering = ('add_date', 'name')    
+    list_display = ('name', 'url', 'date_added', 'slug')
+    ordering = ('date_added', 'name')    
 
 class StyleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'add_date', 'slug')
-    ordering = ('add_date', 'name')
+    list_display = ('name', 'date_added', 'slug')
+    ordering = ('date_added', 'name')
 
 class DiaryEntryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}

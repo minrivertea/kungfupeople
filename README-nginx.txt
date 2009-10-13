@@ -10,7 +10,7 @@ see that it works for you.
 
 To kill the fcgi thread delete the PID file::
 
- $ rm /tmp/djangopeoplenet.pid
+ $ ./kill_djangopeople_fcgi.sh
 
 Edit /etc/hosts so that kungfupeople.local points to 127.0.0.1. E.g.::
 
