@@ -1481,7 +1481,7 @@ div.person-listing-photo {
 
 div.person-listing-info {
 	float: left;
-	height: 40px;
+	height: auto;
 	width: 150px;
 }
 
