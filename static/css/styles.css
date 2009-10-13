@@ -1468,7 +1468,7 @@ div.home-text a {
 div.person-listing {
 	display: block;
 	float: left; 
-	height: 40px;
+	height: auto;
 	width: 300px;
 	margin: 0 0 10px 20px;
 }
