@@ -30,8 +30,8 @@ p.promo {
 	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
 	</a>	
 	{% endfor %}
+
 	<p></p>
-	<br clear="all"/>
 	<h3>All other members ({{ other_people.count }})</h3>
 	<div class="horizontal-photos">
 	{% for person in other_people %}

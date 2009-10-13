@@ -21,8 +21,9 @@ body * {
 }
 
 .main-div {
-	margin: 0 auto;
+	margin: 0;
 	width: 100%;
+	height: auto;
 
 }
 
@@ -64,10 +65,10 @@ body * {
 }
 
 #nav {
-	width: 45%;
+	width: 450px;
 	float: right;
 	color: #F3CF1A;
-	height: 50px;
+	height: 40px;
 	margin: 30px 0px 0px 0px;
 	background-color: none
 	border-bottom: 1px solid #DA5858;
@@ -77,6 +78,7 @@ body * {
 }
 
 #logo {
+	height: 70px;
 	float: left;	
 }
 
@@ -1308,6 +1310,7 @@ img.delete {
 	margin-top:10px;
 	padding:0px;
 	background-color: white;
+	height: 30px;
 }
 #footer p {
 	color: #666;

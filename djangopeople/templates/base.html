@@ -16,31 +16,14 @@
 <body{% block bodymeta %}{% endblock %}>
 
 	<div id="header">
-	<div id="nav">
+		<div id="nav">
                 {% include "_nav.html" %}
-   	</div>
+   		</div>
 
-
-	<div id="logo">
-	<a class="title" href="/">
-	</a>
-	</div>
-
-        {% if show_signup_notice %}
-	  <div id="signup">
-          <a class="signup" href="/signup/">
-          Add yourself to the map now!
-	  </a>
-          </div>
-        {% else %}
-          {% if show_notice %}
-            <div id="notice">
-            <a href="{{ show_notice.url }}">{% if show_notice.leadin %}<strong>{{ show_notice.leadin }}</strong>,{% endif %}
-            {{ show_notice.text|safe }}
-	    </a>
-            </div>
-          {% endif %}
-        {% endif %}
+		<div id="logo">
+			<a class="title" href="/">
+			</a>
+		</div>
 
 	</div>
 
