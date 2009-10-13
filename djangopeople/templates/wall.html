@@ -23,9 +23,18 @@ p.promo {
 {% block content %}
 	<div id="main-content-area">
 	<h2>the wall</h2>
-	<p class="promo">Showing all current users ({{ people.count }})</p>
+
+	<h3>Latest new members</h3>
+	{% for person in latest_five %}
+	<a href="{{ person.get_absolute_url }}">
+	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
+	</a>	
+	{% endfor %}
+	<p></p>
+	<br clear="all"/>
+	<h3>All other members ({{ other_people.count }})</h3>
 	<div class="horizontal-photos">
-	{% for person in people %}
+	{% for person in other_people %}
 	<a href="{{ person.get_absolute_url }}">
 	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
 	</a>	

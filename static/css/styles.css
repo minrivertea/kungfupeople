@@ -54,22 +54,21 @@ body * {
 #header {
 	display: block;
 	float: left;
-	min-width: 1068px;
 	width: 100%;
 	height: 70px;
-	margin: 0px 0px 0px 0px;
-	border-bottom: 0px solid #F3CF1A;
+	margin: 0;
+	padding: 0;
 	/* background-color: #990000; */
 	/* background-color: #990000; */
 	background: url("/img/headerback2.jpg") no-repeat #a10606;
 }
 
 #nav {
-	width: 40%;
+	width: 45%;
 	float: right;
 	color: #F3CF1A;
 	height: 50px;
-	margin: 30px 30px 0px 0px;
+	margin: 30px 0px 0px 0px;
 	background-color: none
 	border-bottom: 1px solid #DA5858;
 }
@@ -1457,7 +1456,7 @@ div.home-text {
 	line-height: 1.2em;
 	color: #666;
 	padding: 30px;
-	width: 500px;
+	width: 430px;
 }
 
 div.home-text a {
