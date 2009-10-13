@@ -1172,7 +1172,7 @@ def user_info_html(request, username, include_photo=False):
 
 
 def wall(request):
-    people = KungfuPerson.objects.all()
+    people = KungfuPerson.objects.all().order_by('-id')
     latest_five = people[0:7]
     other_people = people.all()[7:100]
     blog_entries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:5]
