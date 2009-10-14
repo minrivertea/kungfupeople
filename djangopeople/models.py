@@ -350,7 +350,7 @@ class Club(models.Model):
     url = models.URLField()
     description = models.TextField(blank=True)
     logo = models.ImageField(blank=True, upload_to='clubs')
-    add_date = models.DateField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
     clicks = models.IntegerField(default=0)
     
     def __unicode__(self):
@@ -386,7 +386,7 @@ class Style(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     description = models.TextField()
-    add_date = models.DateField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
     clicks = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -438,6 +438,12 @@ class DiaryEntry(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def get_content(self):
+        return self.content
+
+    class Meta:
+        verbose_name = "DiaryEntry"
 
     @models.permalink
     def get_absolute_url(self):
@@ -497,7 +503,13 @@ class Photo(models.Model):
     objects = DistanceManager()
 
     def __unicode__(self):
+        return self.description
+
+    def get_content(self):
         return self.photo
+
+    class Meta:
+        verbose_name = "Photo"
     
     def __repr__(self):
         return '<%s: %s %r>' % (self.__class__.__name__, self.photo.name, self.slug)
@@ -548,11 +560,17 @@ class Video(models.Model):
     description = models.TextField(blank=True)
     youtube_video_id = models.CharField(max_length=100, blank=True, null=True)
     thumbnail_url = models.CharField(max_length=250, blank=True, null=True)
-    add_date = models.DateField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
     approved = models.BooleanField(default=True)
     
     class Meta:
-        ordering = ('-add_date',)
+        ordering = ('-date_added',)
+
+    class Meta:
+        verbose_name = "Video"
+
+    def get_content(self):
+        return self.embed_src
         
     def __unicode__(self):
         return self.description and self.description.replace('\n', ' ')\
@@ -572,7 +590,7 @@ class AutoLoginKey(models.Model):
     """
     user = models.ForeignKey(User)
     uuid = models.CharField(max_length=128, db_index=True)
-    add_date = models.DateTimeField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
     
     def __unicode__(self):
         return "%s (%s)" % (self.uuid, self.user.username)
@@ -825,7 +843,7 @@ class Recruitment(models.Model):
     """when one user recruits another user"""
     recruiter = models.ForeignKey(User, related_name='recruiter')
     recruited = models.ForeignKey(User, related_name='recruited')
-    add_date = models.DateTimeField('date added', default=datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.now)
     
     def __unicode__(self):
         return u"%s recruited %s" % (self.recruiter, self.recruited)

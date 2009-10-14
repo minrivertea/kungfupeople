@@ -44,10 +44,25 @@ p.promo {
 	</div>
 
 <div id="right-column">
-	<h3>Recent blog entries</h3>
+	<h3>Recent activity</h3>
 	<ul>
-	{% for entry in blog_entries %}
-	<li><a href="{% url diaryentry.view entry.user entry.slug %}">{{ entry.title }}</a></li>
+	{% for thing in latest_things %}
+		{% ifequal thing.type "Video"%}
+		{{ thing.person }} just linked a new video
+		{% endifequal %}
+
+		{% ifequal thing.type "photo"%}
+		{{ thing.person }} just uploaded some new photos
+		{% endifequal %}
+
+		{% ifequal thing.type "DiaryEntry"%}
+		<a href="{{ thing.url }}">{{ thing.person }} just wrote a new a new blog</a>
+		{% endifequal %}
+		<br/>
+
+
+	<br/>
+
 	{% endfor %}
 	</ul>
 </div>  
