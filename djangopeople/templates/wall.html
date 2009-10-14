@@ -46,24 +46,39 @@ p.promo {
 <div id="right-column">
 	<h3>Recent activity</h3>
 
+	<div class="latest-list">
 	{% for thing in latest_things %}
+		<div class="latest-list-item{% ifequal thing.type "Video"%}-video{% endifequal %}">
 		{% ifequal thing.type "Video"%}
-		<img class="small-icon" src="{% staticfile "/img/movie_play.png" %}"> {{ thing.person }} just linked a new video
-		{{ thing.content|safe}}
+			<div class="latest-list-icon">
+				<img width="30px" src="{{ thing.content|safe }}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} just linked a new video</a>
+			</div>
 		{% endifequal %}
 
 		{% ifequal thing.type "Photo"%}
-		<img class="small-icon" src="{% staticfile "/img/photo.png" %}"> {{ thing.person }} just uploaded some new photos<br/>
-		<img src="{{ thing.content }}">
+			<div class="latest-list-icon">
+				<img src="{% thumbnail thing.content 30x30 crop %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} just uploaded a new photo</a>
+			</div>
 		{% endifequal %}
 
 		{% ifequal thing.type "DiaryEntry"%}
-		<img class="small-icon" src="{% staticfile "/img/new_diary.png" %}"> <a href="{{ thing.url }}">{{ thing.person }} just wrote a new a new blog</a>
+			<div class="latest-list-icon">
+				<img src="{% staticfile "/img/blog.png" %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} just wrote a new blog entry</a>
+			</div>
 		{% endifequal %}
-		<br/>
-
+		</div>
 
 	{% endfor %}
+	</div>
 
 </div>  
 

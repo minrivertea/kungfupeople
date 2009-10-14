@@ -1203,7 +1203,7 @@ a.diary-title {
 
 .pester-box {
 	height: 60px;
-	width: 450px;
+	width: 420px;
 	margin: 0 0 30px 120px;
 	background-color: #ffdddd;
 }
@@ -1485,3 +1485,35 @@ div.person-listing-info {
 	width: 150px;
 }
 
+div.latest-list {
+	float: left;
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-bottom: 30px;
+}
+
+div.latest-list-item {
+	display: block;
+	height: 30px;
+	padding: 5px;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+div.latest-list-item-video {
+	display: block;
+	height: 30px;
+	padding: 5px;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+div.latest-list-icon {
+	float: left;
+	height: auto;
+	margin-right: 10px;
+}
+
+div.latest-list-info {
+	float: left;
+	height: auto;
+}

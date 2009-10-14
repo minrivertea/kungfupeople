@@ -1193,7 +1193,7 @@ def wall(request):
                                person=unicode(instance.user.get_full_name()), 
                                id=instance.id)
                                ) 
-    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])
+    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
 
 
     return render(request, 'wall.html', locals())
