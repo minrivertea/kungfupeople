@@ -318,6 +318,9 @@ class Country(models.Model):
         return ("country", (self.iso_code.lower(),))
 
 class Region(models.Model):
+    class Meta:
+        ordering = ('name',)
+        
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     country = models.ForeignKey(Country)
@@ -338,13 +341,13 @@ class Region(models.Model):
     def __unicode__(self):
         return self.name
     
-    class Meta:
-        ordering = ('name',)
     
-    class Admin:
-        pass
 
 class Club(models.Model):
+    class Meta:
+        verbose_name_plural = "Clubs"
+        ordering = ('-date_added',)
+        
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     url = models.URLField()
@@ -355,9 +358,6 @@ class Club(models.Model):
     
     def __unicode__(self):
         return self.name
-
-    class Meta:
-        verbose_name_plural = "Clubs"
 
     def get_members(self):
         members = KungfuPerson.objects.filter(club_membership=self)
@@ -383,6 +383,10 @@ post_save.connect(_club_saved, sender=Club,
                   dispatch_uid="_club_saved")
 
 class Style(models.Model):
+    class Meta:
+        verbose_name_plural = "Styles"
+        ordering = ('-date_added',)
+        
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     description = models.TextField()
@@ -392,9 +396,6 @@ class Style(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
-        verbose_name_plural = "Styles"
-        
     @models.permalink 
     def get_absolute_url(self):
         if not self.slug:
@@ -416,6 +417,7 @@ post_save.connect(_style_saved, sender=Style,
 class DiaryEntry(models.Model):
     class Meta:
         verbose_name_plural = "Diary entries"
+        ordering = ('-date_added',)
         
     user = models.ForeignKey(User)
     
@@ -486,6 +488,10 @@ post_save.connect(prowl_new_diary_entry, sender=DiaryEntry,
 
 
 class Photo(models.Model):
+    class Meta:
+        verbose_name_plural = "Photos"
+        ordering = ('-date_added',)
+        
     user = models.ForeignKey(User)
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
     slug = models.SlugField()
@@ -513,9 +519,6 @@ class Photo(models.Model):
     
     def __repr__(self):
         return '<%s: %s %r>' % (self.__class__.__name__, self.photo.name, self.slug)
-
-    class Meta:
-        verbose_name_plural = "Photos"
 
     @models.permalink
     def get_absolute_url(self):
@@ -554,6 +557,9 @@ post_save.connect(prowl_new_photo, sender=Photo)
 
     
 class Video(models.Model):
+    class Meta:
+        ordering = ('-date_added',)
+        
     user = models.ForeignKey(User)
     embed_src = models.TextField()
     title = models.CharField(max_length=250, blank=True)
@@ -616,6 +622,9 @@ class AutoLoginKey(models.Model):
     
     
 class KungfuPerson(models.Model):
+    class Meta:
+        verbose_name_plural = 'Kung fu people'
+
     
     NEWSLETTER_CHOICES = (('', 'Opt out'),
                           ('plain', 'Plain text'),
@@ -651,12 +660,6 @@ class KungfuPerson(models.Model):
     
     objects = DistanceManager()
 
-    class Meta:
-        verbose_name_plural = 'Kung fu people'
-
-    class Admin:
-        list_display = ('user', 'profile_views')
-        
     def __unicode__(self):
         return unicode(self.user.get_full_name())
     
@@ -835,8 +838,6 @@ class CountrySite(models.Model):
     def __unicode__(self):
         return '%s <%s>' % (self.title, self.url)
    
-    class Admin:
-        pass
 
 
 class Recruitment(models.Model):

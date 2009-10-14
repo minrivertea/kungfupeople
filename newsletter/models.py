@@ -82,8 +82,8 @@ def _get_context_for_all(last_send_date=None):
         new_photos = new_photos.filter(date_added__gt=last_send_date)
         new_diary_entries = new_diary_entries.filter(date_added__gt=last_send_date)
         new_people = new_people.filter(user__date_joined__gt=last_send_date)
-        new_clubs = new_clubs.filter(add_date__gt=last_send_date)
-        new_styles = new_styles.filter(add_date__gt=last_send_date)
+        new_clubs = new_clubs.filter(date_added__gt=last_send_date)
+        new_styles = new_styles.filter(date_added__gt=last_send_date)
         
     context['new_photos'] = new_photos
     context['new_diary_entries'] = new_diary_entries
@@ -121,7 +121,8 @@ class Newsletter(models.Model):
 
     sent_date = models.DateTimeField(null=True, blank=True)
     author = models.ForeignKey(User, null=True, blank=True)
-    add_date = models.DateTimeField('date added', default=datetime.datetime.now)
+    #add_date = models.DateTimeField('date added', default=datetime.datetime.now)
+    date_added = models.DateTimeField('date added', default=datetime.datetime.now)
     modify_date = models.DateTimeField('date modified', auto_now=True)
     
     def __unicode__(self):

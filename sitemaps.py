@@ -126,12 +126,12 @@ class CustomSitemap(Sitemap):
             all.append(Page(entry.get_absolute_url(), changefreq=changefreq))
             
         # All clubs
-        for club in Club.objects.all().order_by('-add_date'):
+        for club in Club.objects.all():
             changefreq = 'weekly'
             all.append(Page(club.get_absolute_url(), changefreq=changefreq))
             
         # All styles
-        for style in Style.objects.all().order_by('-add_date'):
+        for style in Style.objects.all():
             changefreq = 'weekly'
             all.append(Page(style.get_absolute_url(), changefreq=changefreq))
             

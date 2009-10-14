@@ -329,7 +329,7 @@ div.bio a.edit {
 			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}"/></a>
         		<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br/>
         		{{ video.description|truncatewords:25 }}<br/>
-			<p class="meta">{{ video.add_date|date:"d M Y" }} 
+			<p class="meta">{{ video.date_added|date:"d M Y" }} 
 		{% if is_owner %} 
                 |
 		<a href="{% url delete_video person.user.username video.id %}">Delete</a>
