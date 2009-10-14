@@ -1177,23 +1177,23 @@ def wall(request):
     other_people = people.all()[7:100]
     blog_entries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:5]
     people_is_current = True
-    latest_things = []
+    latest = []
     for model, field_name in ((Photo, 'date_added'),
                               (Video, 'date_added'),
                               (DiaryEntry, 'date_added')):
                         
         for instance in model.objects.all():
 
-            latest_things.append(dict(
+            latest.append(dict(
                                date=instance.date_added,
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
-
                                content=instance.get_content(),
                                title=unicode(instance), 
                                person=unicode(instance.user.get_full_name()), 
                                id=instance.id)
                                ) 
+    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])
 
 
     return render(request, 'wall.html', locals())
