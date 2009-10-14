@@ -1191,6 +1191,7 @@ def wall(request):
                                content=instance.get_content(),
                                title=unicode(instance), 
                                person=unicode(instance.user.get_full_name()), 
+                               person_url=unicode(instance.user.get_absolute_url()), 
                                id=instance.id)
                                ) 
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]

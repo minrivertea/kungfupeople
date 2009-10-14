@@ -576,8 +576,7 @@ class Video(models.Model):
         return self.thumbnail_url
         
     def __unicode__(self):
-        return self.description and self.description.replace('\n', ' ')\
-          or self.embed_src[:40]
+        return self.title
 
     @models.permalink
     def get_absolute_url(self):

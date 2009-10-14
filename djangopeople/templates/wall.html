@@ -54,7 +54,9 @@ p.promo {
 				<img width="30px" src="{{ thing.content|safe }}">
 			</div> 
 			<div class="latest-list-info">
-				<a href="{{ thing.url }}">{{ thing.person }} just linked a new video</a>
+				<a href="{{ thing.url }}">{{ thing.person }} linked to a new video</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+				
 			</div>
 		{% endifequal %}
 
@@ -72,7 +74,8 @@ p.promo {
 				<img src="{% staticfile "/img/blog.png" %}">
 			</div> 
 			<div class="latest-list-info">
-				<a href="{{ thing.url }}">{{ thing.person }} just wrote a new blog entry</a>
+				<a href="{{ thing.url }}">{{ thing.person }} just wrote a new blog entry</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
 			</div>
 		{% endifequal %}
 		</div>

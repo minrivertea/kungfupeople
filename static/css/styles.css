@@ -1496,13 +1496,13 @@ div.latest-list {
 div.latest-list-item {
 	display: block;
 	height: 30px;
-	padding: 5px;
+	padding: 5px 5px 15px 5px;
 	border-bottom: 1px solid #e6e6e6;
 }
 
 div.latest-list-item-video {
 	display: block;
-	height: 30px;
+	height: 40px;
 	padding: 5px;
 	border-bottom: 1px solid #e6e6e6;
 }
@@ -1511,9 +1511,11 @@ div.latest-list-icon {
 	float: left;
 	height: auto;
 	margin-right: 10px;
+	padding-top: 5px;
 }
 
 div.latest-list-info {
 	float: left;
 	height: auto;
+
 }
