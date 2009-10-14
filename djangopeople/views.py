@@ -1183,17 +1183,18 @@ def wall(request):
                               (DiaryEntry, 'date_added')):
                         
         for instance in model.objects.all():
+
             latest_things.append(dict(
+                               date=instance.date_added,
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
-                               date=instance.date_added,
+
                                content=instance.get_content(),
                                title=unicode(instance), 
                                person=unicode(instance.user.get_full_name()), 
                                id=instance.id)
                                ) 
 
-    latest_things.sort(reverse=True)
 
     return render(request, 'wall.html', locals())
 

@@ -45,26 +45,26 @@ p.promo {
 
 <div id="right-column">
 	<h3>Recent activity</h3>
-	<ul>
+
 	{% for thing in latest_things %}
 		{% ifequal thing.type "Video"%}
-		{{ thing.person }} just linked a new video
+		<img class="small-icon" src="{% staticfile "/img/movie_play.png" %}"> {{ thing.person }} just linked a new video
+		{{ thing.content|safe}}
 		{% endifequal %}
 
-		{% ifequal thing.type "photo"%}
-		{{ thing.person }} just uploaded some new photos
+		{% ifequal thing.type "Photo"%}
+		<img class="small-icon" src="{% staticfile "/img/photo.png" %}"> {{ thing.person }} just uploaded some new photos<br/>
+		<img src="{{ thing.content }}">
 		{% endifequal %}
 
 		{% ifequal thing.type "DiaryEntry"%}
-		<a href="{{ thing.url }}">{{ thing.person }} just wrote a new a new blog</a>
+		<img class="small-icon" src="{% staticfile "/img/new_diary.png" %}"> <a href="{{ thing.url }}">{{ thing.person }} just wrote a new a new blog</a>
 		{% endifequal %}
 		<br/>
 
 
-	<br/>
-
 	{% endfor %}
-	</ul>
+
 </div>  
 
 {% endblock %}

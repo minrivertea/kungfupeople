@@ -488,10 +488,6 @@ post_save.connect(prowl_new_diary_entry, sender=DiaryEntry,
 
 
 class Photo(models.Model):
-    class Meta:
-        verbose_name_plural = "Photos"
-        ordering = ('-date_added',)
-        
     user = models.ForeignKey(User)
     diary_entry = models.ForeignKey(DiaryEntry, blank=True, null=True)
     slug = models.SlugField()
@@ -507,6 +503,10 @@ class Photo(models.Model):
     location_description = models.CharField(max_length=50)
 
     objects = DistanceManager()
+
+    class Meta:
+        verbose_name_plural = "Photos"
+        ordering = ('-date_added',)
 
     def __unicode__(self):
         return self.description
@@ -556,10 +556,7 @@ def prowl_new_photo(sender, instance, created, **__):
 post_save.connect(prowl_new_photo, sender=Photo)
 
     
-class Video(models.Model):
-    class Meta:
-        ordering = ('-date_added',)
-        
+class Video(models.Model):   
     user = models.ForeignKey(User)
     embed_src = models.TextField()
     title = models.CharField(max_length=250, blank=True)
@@ -576,7 +573,7 @@ class Video(models.Model):
         verbose_name = "Video"
 
     def get_content(self):
-        return self.embed_src
+        return self.thumbnail_url
         
     def __unicode__(self):
         return self.description and self.description.replace('\n', ' ')\
