@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends "base_no_map.html" %}
 {% load django_static %}
 
 {% block title%}{% if html_title %}{{ html_title }}{% else %}Photo{% endif %} |{% endblock %}
@@ -24,48 +24,19 @@ var ZOOM = 10;
 {% endblock %}  
 
 
-{% block map %}
-    <div class="mapContainer minor">
-        <div id="gmap">&nbsp;
-        {% if OFFLINE_MODE %}
-        <img src="/static/img/map-short-placeholder.png" />
-        {% endif %}
-        </div>
-    </div>
-
-	<div class="counter-current">
-	<div class="number"><a href="/zoom/">people</a></div>
-	</div>
-	<div class="counter">
-	<div class="number"><a href="/all-videos/">videos</a></div>
-	</div>
-	<div class="counter">
-	<div class="number"><a href="/clubs/">clubs</a></div>
-	</div>
-
-
-{% endblock %}
-
 {% block content %}
 
-	<div id="content-box">
-
-		{% if club.photo %}
-		    <img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
-		{% else %}
-		{% endif %}
+	<div id="profile-head">
+	<h2>{{ person.user.get_full_name }}'s photos</h2>
+		<p><em>{{ photo.description|linebreaks }}</em></p>
 
 		<div class="large-photo-container">
-                {% thumbnail photo.photo 600x600 as thumb %}
-      		<p><img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}"></p>
-			<div style="width:{{ thumb.width }}px">
-                          <div style="float:right">
-                          
-                          </div>
-			</div>
+                {% thumbnail photo.photo 470x470 as thumb %}
+      		<img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}">
 		</div>
-
 	</div>
+</div>
+
 
 <div id="right-column">
 
@@ -81,34 +52,22 @@ var ZOOM = 10;
 		{% else %}
 		<a href="/{{ person.user.username }}">{{ person.user.get_full_name }}</a>
 		{% endif %}
+
 		</p>
 
-		<div class="next-previous">
-                {% if previous %}
-			<div class="photo-previous">
-                	{% thumbnail previous.photo 60x60 crop as previous_thumb %}
-                        <a title="next" href="{{ previous.get_absolute_url }}">
-			<img src="{{ previous_thumb }}" width="{{ previous_thumb.width }}" height="{{ previous_thumb.height }}" border="0">
-			</a>
-			</div>
-                 {% endif %}
-		<div class="photo-current">
-		{% thumbnail photo.photo 60x60 crop as current_thumb %}
-		<img src="{{ current_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0">
+		<br clear="all"/>
+		<h3>Other photos by {{ person.user.first_name }}</h3>
+		{% for photo in person.get_photos %}
+		<div class="person-listing-photo">
+		<a href="{{ photo.get_absolute_url }}" title="{{ photo.description }}">
+		<img src="{% thumbnail photo.photo 40x40 crop %}" alt="{{ photo.description }}">
+		</a>
 		</div>
-		{% if next %}
-			<div class="photo-next">
-                	{% thumbnail next.photo 60x60 crop as next_thumb %}
-                        <a title="next" href="{{ next.get_absolute_url }}">
-			<img src="{{ next_thumb }}" width="{{ next_thumb.width }}" height="{{ next_thumb.height }}" border="0">
-			</a>
-			</div>
-                {% endif %}
-		</div>
+		{% endfor %}
 
 		<br clear="all"/>
 	
-		{{ photo.description|linebreaks }}
+
 
         	{% if photo.diary_entry %}
         	<p>Related to diary entry

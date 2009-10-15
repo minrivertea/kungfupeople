@@ -1177,8 +1177,12 @@ diaries ul {
 }
 
 .large-photo-container {
+	height: auto;
+	width: 470px;
 	margin-top: 15px;
-	text-align: left;
+	text-align: center;
+	padding: 15px;
+	border: 1px solid #e6e6e6;
 }
 
 a.diary-title {
