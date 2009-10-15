@@ -107,18 +107,19 @@ div.bio a.edit {
 		</div>
 
 	{% else %}
-            {% if is_owner %}
+
                
 		<div class="profile-photo">
-		<img src="{% staticfile "/img/upload-a-photo-60.png" %}" alt="no profile photo yet">
+        	{% if is_owner %}
 		<div class="change-photo">
 		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
 		<strong>Upload a photo</strong>
 		</a>
 		</div>
+		{% endif %}
 		</div>               
                
-            {% endif %}
+
 
 	{% endif %}
 		<div id="profile-head-title">
@@ -143,9 +144,9 @@ div.bio a.edit {
 		<div class="profile-head-toolbar">
 		<p class="meta">
 
-		<a href="{% url add_video person.user.username %}">Link to a video</a>
-		|
 		<a href="{% url edit_profile person.user.username %}">Edit your profile</a>
+		|
+		<a href="{% url add_video person.user.username %}">Link to a video</a>
 		|
 		<a href="{% url add_diary_entry person.user.username %}">Add a blog post</a>
 		|
@@ -159,11 +160,15 @@ div.bio a.edit {
 		</div>
 		{% endif %}
 
+		<div id="profile-box-top">
+		</div>
+	<div id="profile-box">
 
-		<div class="profile-text">
+		{% if not person.bio and not styles and not clubs %}
+		<em>{% if is_owner %}You have{% else %}{{ person.user.get_full_name }} has{% endif %} not added any clubs, styles or personal information</em>
+		{% endif %}
 
-
-			<div class="bio">
+		<div class="bio">
 			{% if person.bio %}
         	      	{% filter linebreaks %}{{ person.bio|urlize }}{% endfilter %}
 			{% else %}
@@ -174,15 +179,18 @@ div.bio a.edit {
 				{% endif %}
 			{% endif %}
 			{% endif %}
-			</div>
+		</div>
 
-			<div class="styles-clubs">
+		<div class="styles-clubs">
 			{% if styles %}
-			<span class="small-text"><strong><span class="dark-grey">Style{{ styles.count|pluralize }}: </span></strong>
+			<span class="small-text">
+			<strong><span class="dark-grey">Style{{ styles.count|pluralize }}: </span></strong>
 			{% for style in styles %}
-			<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>{% if not forloop.last %}, {% endif %}
+			<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>
+				{% if not forloop.last %}, 
+				{% endif %}
 			{% endfor %}
-			</span><br>
+			</span><br/>
 			{% endif %}
  
 			{% if clubs %}
@@ -197,17 +205,19 @@ div.bio a.edit {
 		    	</span><br>
 			{% endif %}
 			</div>
-			
+
 			{% if show_profile_views %}
 			<div class="profile-views">
-			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} <abbr title="Number of clicks on your profile">?</abbr>
+			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} 
+			<abbr title="Number of clicks on your profile">?</abbr>
 			</div>
 			{% endif %}
-			
+
 			{% if recruiter and recruiter_profile %}
 			<div class="recruitment">
 			{{ person.user.first_name }} was recruited to this site by
-			<a href="{% url person.view recruiter.username %}">{{ recruiter.first_name }} {{ recruiter.last_name }}</a>
+			<a href="{% url person.view recruiter.username %}">{{ recruiter.first_name }} 			
+			{{ recruiter.last_name }}</a>
 			<img src="{% staticfile "/img/star.png" %}" alt="Star">
 			</div>
 			{% endif %}
@@ -222,9 +232,12 @@ div.bio a.edit {
                         {% endfor %}
 			
 			</div>
-			{% endif %}                        
+			{% endif %} 
 
+	</div>
+		<div id="profile-box-bottom">
 		</div>
+
 
 	</div>
 
@@ -269,77 +282,52 @@ div.bio a.edit {
 		<br/>
 		{% endif %}
                 
-{% endif %}
+	{% endif %}
 
+	<div class="latest-list-left">
+	{% for thing in latest_things %}
+		<div class="latest-list-item{% ifequal thing.type "Video" %}-video{% endifequal %}">
+		{% ifequal thing.type "Video"%}
+			<div class="latest-list-icon">
+				<img width="30px" src="{{ thing.content|safe }}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} linked to a new video</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+				
+			</div>
+		{% endifequal %}
 
+		{% ifequal thing.type "Photo"%}
+			<div class="latest-list-icon">
+				<img src="{% thumbnail thing.content 30x30 crop %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} uploaded a new photo</a>
+			</div>
+		{% endifequal %}
 
-	{% if photos %}
-	<div class="highlight-profile">
-	<h3>photos {% if is_owner %}<a href="/{{ user.username }}/photo/upload/">(add more photos)</a>{% endif %}   <a href="viewallphotos/"> (view all)</a></h3>
-	{% for photo in photos %}
-	<a href="{{ photo.get_absolute_url }}"><img src="{% thumbnail photo.photo 60x60 crop %}"></a>
+		{% ifequal thing.type "DiaryEntry"%}
+			<div class="latest-list-icon">
+				<img src="{% staticfile "/img/blog.png" %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} wrote a new blog entry</a> ({{ thing.date|date:"d M Y" }})<br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+				{% if is_owner %}
+				<span class="meta">
+				(<a href="{{ thing.url }}/delete">Delete</a>  |
+				<a href="{{ thing.url }}/edit">Edit</a>)
+				</span> 
+				{% endif %}
+				</p>
+			</div>
+		{% endifequal %}
+		</div>
+
 	{% endfor %}
 	</div>
-	{% endif %}
 
-		{% if diary_entries_private %}
-		<div class="highlight-profile">
-		<h3>blog posts{% if is_owner %} <span class="small-text"><a href="/{{ user.username }}/diary/add">(add another post)</a>{% endif %}</span></h3>	
-		{% if is_owner %}
-			<ul class="diary-list">
-			{% for entry in diary_entries_private %}
-				<li class="diary-list">
-				<a href="diary/{{ entry.slug }}/">
-				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}
-				{{ entry.title }}
-				</a> 
-				<br />
-				<p class="meta">{{ entry.date_added|date:"d M Y" }}  |
-				<a href="diary/{{ entry.slug }}/delete">Delete</a>  |
-				<a href="diary/{{ entry.slug }}/edit">Edit</a>  
-				</p>
-				</li>
-			{% endfor %}
-			</ul>
-	
-		{% else %}
-
-			<ul class="diary-list">
-			{% for entry in diary_entries_public %}
-				<li class="diary-list">
-				<a class="diary-title" href="diary/{{ entry.slug }}/">
-				{% if forloop.first %}<span class="red">[NEW] </span>{% endif %}{{ entry.title }}
-				</a>
-				<br>
-				<p class="meta">({{ entry.date_added|date:"d M Y" }})
-				</p>
-
-				</li>
-			{% endfor %}
-			</ul>
-		{% endif %}
-		</div>
-	{% endif %}
-
-	{% if videos %}
-	<div class="highlight-profile">
-	<h3>videos</h3>
-	{% for video in videos %}
-		<div class="video-thumb">
-			<a href="{{ video.get_absolute_url }}"><img src="{% if video.thumbnail_url %}{{ video.thumbnail_url }}{% else %}/img/nothumb.png{% endif %}"/></a>
-        		<strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br/>
-        		{{ video.description|truncatewords:25 }}<br/>
-			<p class="meta">{{ video.date_added|date:"d M Y" }} 
-		{% if is_owner %} 
-                |
-		<a href="{% url delete_video person.user.username video.id %}">Delete</a>
-		{% endif %}
-		</p>
-	
-		</div>
-	{% endfor %}
-	</div>
-	{% endif %}
 
 
 	</div>
@@ -356,7 +344,7 @@ div.bio a.edit {
 		    <div class="person-listing-photo">
                     <a href="{{ person.get_absolute_url }}"
                        title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
-		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+		       >{% if person.photo %}<img src="{% thumbnail person.photo 40x40 crop %}" alt="{{ person }}">{% endif %}</a>
 		</div>
 		<div class="person-listing-info">
 		<a href="{{ person.get_absolute_url}}">{{ person }}</a><br/>
@@ -381,7 +369,7 @@ div.bio a.edit {
 		    <div class="person-listing-photo">
                     <a href="{{ person.get_absolute_url }}"
                        title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
-		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+		       >{% if person.photo %}<img src="{% thumbnail person.photo 40x40 crop %}" alt="{{ person }}">{% endif %}</a>
 		</div>
 		<div class="person-listing-info">
 		<a href="{{ person.get_absolute_url}}">{{ person }}</a><br/>
@@ -404,7 +392,7 @@ div.bio a.edit {
 		    <div class="person-listing-photo">
                     <a href="{{ person.get_absolute_url }}"
                        title="{{ person }}{% if person.distance_miles %} (about {{ person.distance_miles|floatformat:0 }} miles){% endif %}"
-		       ><img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/upload-a-photo-40.png" %}{% endif %}" alt="{{ person }}"></a>
+		       >{% if person.photo %}<img src="{% thumbnail person.photo 40x40 crop %}" alt="{{ person }}">{% endif %}</a>
 		</div>
 		<div class="person-listing-info">
 		<a href="{{ person.get_absolute_url}}">{{ person }}</a><br/>

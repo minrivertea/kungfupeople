@@ -425,7 +425,6 @@ class DiaryEntry(models.Model):
     slug = models.SlugField()
     content = models.TextField()
     date_added = models.DateTimeField('date added', default=datetime.now)
-    #tags = 
     is_public = models.BooleanField(default=False)
 
     # Location stuff - all location fields are required
@@ -437,7 +436,6 @@ class DiaryEntry(models.Model):
     
     objects = DistanceManager()
     
-
     def __unicode__(self):
         return self.title
 

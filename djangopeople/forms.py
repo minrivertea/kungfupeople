@@ -224,7 +224,6 @@ class ProfilePhotoUploadForm(forms.Form):
 class DiaryEntryForm(forms.Form):
     title = forms.CharField(max_length=200, widget=forms.widgets.TextInput(attrs=dict(size=40)))
     content = forms.CharField(widget = forms.Textarea)
-    is_public = forms.BooleanField(widget = forms.CheckboxInput, required=False)
     country = forms.ChoiceField(required=False)
     latitude = forms.FloatField(required=False, min_value=-90, max_value=90)
     longitude = forms.FloatField(required=False, min_value=-180, max_value=180)

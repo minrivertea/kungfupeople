@@ -314,7 +314,6 @@ a.large {
     	margin: 20px 0px 50px 50px;
 	padding-right: 20px;
     	display: block;
-    	background-color: white;
 }
 
 #right-column {
@@ -1019,17 +1018,24 @@ div.horizontal-photos {
 
 .profile-photo {
 	display: block;
-	height: 120px;
-	width: auto;
-	margin: 0px 20px 0px 0px;
+	height: 130px;
+	width: 130px;
+	margin: 0px 0px 0px 0px;
 	float: left;
+	background: url(/img/photo-background-119.png) no-repeat white;
 }
 
-.change-photo {
-	margin-top: -5px;
+.profile-photo img {
+	position: relative;
+	top: 5px;
+	left: 5px;
+}
+
+div.change-photo {
+	margin-top: 40px;
 	text-align: center;
 	height: 10px;
-	width: 90px;
+	width: 110px;
 }
 
 .profile-text {
@@ -1203,8 +1209,8 @@ a.diary-title {
 
 .pester-box {
 	height: 60px;
-	width: 420px;
-	margin: 0 0 30px 120px;
+	width: 500px;
+	margin: 0 0 30px 20px;
 	background-color: #ffdddd;
 }
 
@@ -1288,10 +1294,10 @@ img.delete {
 	margin: -10px 0 10px 37px;
 }
 
-.bio {
+div.bio {
 	font-family: Georgia, serif;
 	font-size: 14px;
-	margin-bottom: -10px;
+	margin-bottom: 5px;
 	height: auto;
 }
 
@@ -1474,9 +1480,19 @@ div.person-listing {
 }
 
 div.person-listing-photo {
+	background: url(/img/photo-background-40.png) -5px -5px no-repeat white;
 	float: left;
-	height: 40px;
+	height: 55px;
+	width: 62px;
 	margin-right: 10px;
+}
+
+div.person-listing-photo img {
+	position: relative;
+	left: 5px;
+	top: 2px;
+
+
 }
 
 div.person-listing-info {
@@ -1491,6 +1507,14 @@ div.latest-list {
 	width: 100%;
 	height: auto;
 	margin-bottom: 30px;
+}
+
+div.latest-list-left {
+	float: left;
+	display: block;
+	width: 500px;
+	height: auto;
+	margin: 0 0 30px 20px;
 }
 
 div.latest-list-item {
@@ -1509,6 +1533,7 @@ div.latest-list-item-video {
 
 div.latest-list-icon {
 	float: left;
+	width: 30px;
 	height: auto;
 	margin-right: 10px;
 	padding-top: 5px;
@@ -1517,5 +1542,31 @@ div.latest-list-icon {
 div.latest-list-info {
 	float: left;
 	height: auto;
+}
 
+
+
+div#profile-box {
+	height: auto;
+	width: 480px;
+	padding: 20px;
+	float: left;
+	background-color: #f8efc5;
+	border-bottom: 2px #F3CF1A solid;
+	border-top: 2px #F3CF1A solid;
+}
+
+div#profile-box-top {
+	float: left;
+	margin-bottom: 0px;
+	height: 20px;
+	width: 520px;
+	background: url(/img/profile-box-top.png) no-repeat white;
+}
+
+div#profile-box-bottom {
+	float: left;
+	height: 20px;
+	width: 520px;
+	background: url(/img/profile-box-bottom.png) no-repeat white;
 }

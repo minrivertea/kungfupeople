@@ -1029,9 +1029,7 @@ def profile(request, username):
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')\
       .select_related()[:8]
     videos = Video.objects.filter(user=person.user).select_related()
-    diary_entries_private = DiaryEntry.objects.filter(user=person.user)\
-      .select_related().order_by('-date_added')[:5]
-    diary_entries_public = DiaryEntry.objects.filter(user=person.user, is_public=True)\
+    diary_entries = DiaryEntry.objects.filter(user=person.user)\
       .select_related().order_by('-date_added')[:5]
     people_near = person.get_nearest(within_range=50)
     
@@ -1064,7 +1062,7 @@ def profile(request, username):
                 
         # Same thing for the first diary entry
         pester_first_diary_entry = False
-        if not diary_entries_private:
+        if not diary_entries:
             if request.GET.get('close_tip_first_diary_entry'):
                 if request.is_ajax():
                     response = HttpResponse('Hidden!')
@@ -1158,6 +1156,25 @@ def profile(request, username):
     # for the world map
     people_locations_json = _get_people_locations_json(people_near)
     person_location_json = _get_person_location_json(person)
+
+    latest = []
+    for model, field_name in ((Photo, 'date_added'),
+                              (Video, 'date_added'),
+                              (DiaryEntry, 'date_added')):
+                        
+        for instance in model.objects.filter(user=person.user):
+
+            latest.append(dict(
+                               date=instance.date_added,
+                               url=instance.get_absolute_url(),
+                               type=model._meta.verbose_name,
+                               content=instance.get_content(),
+                               title=unicode(instance), 
+                               person=unicode(instance.user.get_full_name()), 
+                               person_url=unicode(instance.user.get_absolute_url()), 
+                               id=instance.id)
+                               ) 
+    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
     
     
     return render(request, 'profile.html', locals())
@@ -1383,7 +1400,7 @@ def diary_entry_add(request, username):
             user = person.user
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            is_public = form.cleaned_data['is_public']
+            is_public = False
             slug = slugify(unaccent_string(title).replace('&','and')[:50])
             region = None
 
