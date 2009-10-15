@@ -41,12 +41,14 @@
 	<div class="right-box">
 	<h3>Your current photo</h3>
 	{% if person.photo %}
- 		<img class="diagram-photo" src="{% thumbnail person.photo 100x100 crop %}">
+		<div class="profile-photo">
+ 		<img class="photo-left" src="{% thumbnail person.photo 100x100 crop %}">
+		</div>
                 <p>
-                <a href="{% url crop_profile_photo person.user.username %}">Wanna crop this one yourself?</a>
+                <a href="{% url crop_profile_photo person.user.username %}">Want to crop this one again?</a>
                 </p>
 	{% else %}
-		<img xxxclass="diagram-photo" src="/img/upload-a-photo.png"/>
+		<img xxxclass="photo-left" src="/img/photo-background-119.png"/>
 	{% endif %}
 	</div>
 

@@ -1,4 +1,5 @@
 {% extends "base_no_map.html" %}
+{% load django_static %}
 
 {% block title%}Congratulations |{% endblock %}
 
@@ -13,10 +14,9 @@
 
 	<br clear="all"/>
 		
-		<div class="photo-left"><img src="/static/img/upload-a-photo.png"/></div>
+		<div class="photo-left"><img src="{% staticfile "/img/photo-background-119.png" %}"/></div>
 		*More people will look at your profile if you add an image - fact!<br/>
 		<a class="major-notice" href="/{{ person.user.username }}/profileupload/">Upload a profile photo now!</a>
-		<br clear="all"/>
 
 
 <p><em><a href="/{{ person.user.username }}/">(or just click here to view your profile)</a></em></p>

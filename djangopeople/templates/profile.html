@@ -96,19 +96,14 @@ div.bio a.edit {
 		<div class="profile-photo">
 		<img src="{% thumbnail person.photo 100x100 crop %}" alt="{{ person }}">
 		{% if is_owner %}
-		<div class="change-photo">
 		<a class="small-text" href="/{{ person.user.username }}/profileupload/">
-		{% if person.photo %}Change your photo
-		{% else %}<strong>Upload a photo</strong>
-		{% endif %}
+		Change your photo
 		</a>
-		</div>
 		{% endif %}
 		</div>
 
 	{% else %}
-
-               
+          
 		<div class="profile-photo">
         	{% if is_owner %}
 		<div class="change-photo">
@@ -118,10 +113,9 @@ div.bio a.edit {
 		</div>
 		{% endif %}
 		</div>               
-               
-
-
+            
 	{% endif %}
+
 		<div id="profile-head-title">
        		<h2>{{ person.user.get_full_name }}</h2>
 		</div>

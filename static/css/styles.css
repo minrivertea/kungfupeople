@@ -1032,7 +1032,7 @@ div.horizontal-photos {
 }
 
 div.change-photo {
-	margin-top: 40px;
+	margin-top: -10px;
 	text-align: center;
 	height: 10px;
 	width: 110px;
@@ -1476,7 +1476,7 @@ div.person-listing {
 	float: left; 
 	height: auto;
 	width: 300px;
-	margin: 0 0 10px 20px;
+	margin: 0 0 0px 20px;
 }
 
 div.person-listing-photo {
