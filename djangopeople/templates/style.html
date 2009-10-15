@@ -96,7 +96,7 @@ div.bio a.edit {
     
     {% if latest_things %}
     <h3>News related to {{ style }}</h3>
-	<div class="latest-list">
+	<div class="latest-list-left">
 	{% for thing in latest_things %}
 		<div class="latest-list-item{% ifequal thing.type "Video"%}-video{% endifequal %}">
 		{% ifequal thing.type "Video"%}
@@ -115,7 +115,7 @@ div.bio a.edit {
 				<img src="{% thumbnail thing.content 30x30 crop %}">
 			</div> 
 			<div class="latest-list-info">
-				<a href="{{ thing.url }}">{{ thing.person }} just uploaded a new photo</a>
+				<a href="{{ thing.url }}">{{ thing.person }} uploaded a new photo</a>
 			</div>
 		{% endifequal %}
 
@@ -124,7 +124,7 @@ div.bio a.edit {
 				<img src="{% staticfile "/img/blog.png" %}">
 			</div> 
 			<div class="latest-list-info">
-				<a href="{{ thing.url }}">{{ thing.person }} just wrote a new blog entry</a><br/>
+				<a href="{{ thing.url }}">{{ thing.person }} wrote a new blog entry</a><br/>
 				<span class="dark-grey">{{ thing.title }}</span>
 			</div>
 		{% endifequal %}
