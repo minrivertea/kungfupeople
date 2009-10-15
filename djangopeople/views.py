@@ -30,7 +30,7 @@ from models import KungfuPerson, Country, User, Region, Club, Video, Style, \
   DiaryEntry, Photo, Recruitment
 import utils
 from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
-  get_previous_next, uniqify
+  get_previous_next, uniqify, anyTrue
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
   PhotoEditForm, NewsletterOptionsForm, CropForm
@@ -1157,6 +1157,7 @@ def profile(request, username):
     people_locations_json = _get_people_locations_json(people_near)
     person_location_json = _get_person_location_json(person)
 
+    # generate the personal news feed 
     latest = []
     for model, field_name in ((Photo, 'date_added'),
                               (Video, 'date_added'),
@@ -1194,6 +1195,8 @@ def wall(request):
     other_people = people.all()[7:100]
     blog_entries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:5]
     people_is_current = True
+
+    # generate the news feed 
     latest = []
     for model, field_name in ((Photo, 'date_added'),
                               (Video, 'date_added'),
@@ -1332,11 +1335,8 @@ def all_something(request, model, sort_by='name'):
 def style(request, name):
     style = get_object_or_404(Style, slug=name)
     people = KungfuPerson.objects.filter(styles=style).select_related()
-    
     diaries = DiaryEntry.objects.filter(is_public=True,
                                         user__in=[x.id for x in people]).order_by('-date_added')
-    count = people.count()
-    
     club_ids = set()
     for person in people:
         club_ids.update([x.id for x in person.club_membership.all()])
@@ -1351,6 +1351,28 @@ def style(request, name):
             
     # for the world map
     people_locations_json = _get_people_locations_json(people)
+
+    # generate the style based news feed 
+    term = style
+    latest = []
+
+    # first, check if it's a search on a code
+    for model, field_name in ((Photo, 'description'),
+                              (Video, 'description'),
+                              (DiaryEntry, 'content')):
+        for instance in model.objects.filter(**{'%s__icontains' % field_name:term}):
+            latest.append(dict(
+                               date=instance.date_added,
+                               url=instance.get_absolute_url(),
+                               type=model._meta.verbose_name,
+                               content=instance.get_content(),
+                               title=unicode(instance), 
+                               person=unicode(instance.user.get_full_name()), 
+                               person_url=unicode(instance.user.get_absolute_url()), 
+                               id=instance.id)
+                               ) 
+
+    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
             
     return render(request, 'style.html', locals())
 

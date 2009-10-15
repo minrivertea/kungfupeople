@@ -55,12 +55,8 @@ div.bio a.edit {
 
 {% block content %}
 <div class="wrapper">
-
-
-	<div id="content-box">
-
-		<div id="profile-head">
-
+    <div id="content-box">
+	<div id="profile-head">
 
 		{% if club.photo %}
 		    <img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ person }}" class="profile-photo">
@@ -69,42 +65,41 @@ div.bio a.edit {
 
        		<h2>{{ club.name }}</h2>
 
+		<p><a href="{{ club.url }}">Visit {{ club.name }}'s website</a></p>		
 
+		<div id="profile-box-top">
+    		</div>
 
-		<p><a href="{{ club.url }}">Visit {{ club.name }}'s website</a></p>
-		
-		{% if club.description %}
-		{{ club.description|safe }}
-		{% endif %}
-        	
+    		<div id="profile-box">
+			{% if club.description %}
+			{{ club.description|safe }}
+			{% endif %}
+
+			{% if members %}
+				<h3>members</h3>
+				<div class="horizontal-image-list-text">
+				Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+				</div>
+				<ul class="horizontal-image-list">
+				{% for person in members %}
+        			<li class="horizontal-image-list">
+		       	        <div class="list-photo">
+        	        	<a href="{{ person.get_absolute_url }}">
+				<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person.user.get_full_name }}">
+				</a>
+				</div>
+				</li>
+        			{% endfor %}
+				</ul>
+			{% endif %}
 		</div>
-
-	{% if members %}
-		<div class="highlight-profile">
-		<h3>members</h3>
-	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">Showing {{ count }} member{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for members in members|uniqify_on:"country" %}<a href="/{{ members.country.iso_code|lower }}/">{{ members.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-		<ul class="horizontal-image-list">
-		{% for person in members %}
-        	<li class="horizontal-image-list">
-       	        <div class="list-photo">
-                <a href="{{ person.get_absolute_url }}">
-
-		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person.user.get_full_name }}">
-
-		</a>
-		</li>
-        	{% endfor %}
-		</ul>
+    		<div id="profile-box-bottom">
+    		</div>
 	</div>
-	</div>
-	{% endif %}
-       
-	</div>
+    </div>
 
 
-	<div id="right-column">
-
+    <div id="right-column">
 	<div class="right-box">
 
 		<h4>Are you a member of this club?</h4><p>You can easily add your profile to the site and join the club - increase the numbers and be proud of where you train! <a href="/signup/">Signup now</a></p>

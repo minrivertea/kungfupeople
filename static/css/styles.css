@@ -46,7 +46,7 @@ body * {
 #no-map-content-box {
 	width: 50%;
     	float: left;
-    	margin: 0px 0px 50px 50px;
+    	margin: 20px 0px 50px 20px;
 	padding: 30px;
     	display: block;
     	background-color: white;
@@ -65,7 +65,7 @@ body * {
 }
 
 #nav {
-	width: 450px;
+	width: 420px;
 	float: right;
 	color: #F3CF1A;
 	height: 40px;
@@ -1002,6 +1002,7 @@ div.horizontal-photos {
 	height: auto;
 	float: left;
 	margin-bottom: 20px;
+	margin-top: -20px;
 }
 
 #profile-head-title {
@@ -1491,14 +1492,12 @@ div.person-listing-photo img {
 	position: relative;
 	left: 5px;
 	top: 2px;
-
-
 }
 
 div.person-listing-info {
 	float: left;
 	height: auto;
-	width: 150px;
+	width: 220px;
 }
 
 div.latest-list {
@@ -1556,6 +1555,11 @@ div#profile-box {
 	border-top: 2px #F3CF1A solid;
 }
 
+div#profile-box h3 {
+	margin-top: 10px;
+	margin-bottom: 0px;
+}
+
 div#profile-box-top {
 	float: left;
 	margin-bottom: 0px;
@@ -1569,4 +1573,18 @@ div#profile-box-bottom {
 	height: 20px;
 	width: 520px;
 	background: url(/img/profile-box-bottom.png) no-repeat white;
+}
+
+div#rss {
+	position: relative;
+	right: 30px;
+	top: 20px;
+	float: right;
+	height: 30px;
+	width: 30px;
+}
+
+div#rss a:hover {
+	border: 0 none;
+	padding: 0;
 }

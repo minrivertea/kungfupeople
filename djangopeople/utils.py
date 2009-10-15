@@ -40,6 +40,10 @@ def render(request, template, context_dict=None, **kwargs):
                               **kwargs
     )
 
+import itertools
+def anyTrue(pred, seq):
+    return True in itertools.imap(pred, seq)
+
 def render_basic(template, context_dict=None, **kwargs):
     return render_to_response(
         template, context_dict or {}, **kwargs

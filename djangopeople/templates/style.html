@@ -33,74 +33,116 @@ div.bio a.edit {
 {% block content %}
 
 
-		<div id="profile-head">
 
+    <div id="profile-head">
 
-		{% if style.photo %}
-		    <img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ style }}" class="profile-photo">
-		{% else %}
-		{% endif %}
+	{% if style.photo %}
+		<img src="{% thumbnail club.photo 100x100 crop %}" alt="{{ style }}" class="profile-photo">
+	{% endif %}
 
-       		<h2>{{ style.name }}</h2>
+       	<h2>{{ style.name }}</h2>
                 
-                {% if request.user.is_superuser %}
+        {% if request.user.is_superuser %}
                 <div class="admin-only">
                 <h4>Admins only</h4>
                 # clicks: <code>{{ style.clicks }}</code>
                 </div>
-                {% endif %}
+        {% endif %}
 
+
+
+
+    <div id="profile-box-top">
+    </div>
+
+    <div id="profile-box">
+	{% if style.description %}{{ style.description }}{% endif %}
+
+	<h3>Stylists</h3>
+		<div class="horizontal-image-list-text">
+		{{ count }} {% ifequal count 1 %}person practices{% else %}people practice{% endifequal %} this style in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
 		</div>
-
-		<div class="highlight-profile">
-		<h3>stylists</h3>
-	<div id="horizontal-image-listing">
-		<div class="horizontal-image-list-text">This style has {{ count }} stylist{% ifequal count 1 %}{% else %}s{% endifequal %} located in: {% for person in people|uniqify_on:"country" %}<a href="/{{ person.country.iso_code|lower }}/">{{ person.country }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 		<ul class="horizontal-image-list">
-		{% for person in people %}
-        	<li class="horizontal-image-list">
-       	        <div class="list-photo">
-                <a href="{{ person.get_absolute_url }}">
-		<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person.user.get_full_name }}">
-		</a>
-		</li>
-        	{% endfor %}
+			{% for person in people %}
+        		<li class="horizontal-image-list">
+       	        		<div class="list-photo">
+                		<a href="{{ person.get_absolute_url }}">
+				<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" alt="{{ person }}" title="{{ person.user.get_full_name }}">
+				</a>
+				</li>
+        		{% endfor %}
 		</ul>
-	</div>
+
+	<br clear="all"/>
+
+    	{% if clubs %}
+	   	<h3>Clubs</h3>
+		<div class="horizontal-image-list-text">
+		{{ clubs.count }} club{% ifequal clubs.count 1 %}{% else %}s{% endifequal %} has stylists that practice {{ style }}:
 		</div>
-                
-                {% if clubs %}
-                <div class="highlight-profile">
-		<h3>Clubs where stylists do {{ style }}</h3>
                 <ul class="club-list">
-		{% for club in clubs %}
-		<li class="club-list">
-		<a class="club-name" href="{{ club.get_absolute_url }}">{{ club.name }}</a>
-		</li>
-		{% endfor %}
+			{% for club in clubs %}
+			<li class="club-list">
+			<a class="club-name" href="{{ club.get_absolute_url }}">{{ club.name }}</a>
+			</li>
+			{% endfor %}
                 </ul>
-                </div>
-                {% endif %}
+    	{% endif %}
+    </div>
 
+    <div id="profile-box-bottom">
+    </div>
+    </div>
+    
+    {% if latest_things %}
+    <h3>News related to {{ style }}</h3>
+	<div class="latest-list">
+	{% for thing in latest_things %}
+		<div class="latest-list-item{% ifequal thing.type "Video"%}-video{% endifequal %}">
+		{% ifequal thing.type "Video"%}
+			<div class="latest-list-icon">
+				<img width="30px" src="{{ thing.content|safe }}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} linked to a new video</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+				
+			</div>
+		{% endifequal %}
 
-	
+		{% ifequal thing.type "Photo"%}
+			<div class="latest-list-icon">
+				<img src="{% thumbnail thing.content 30x30 crop %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} just uploaded a new photo</a>
+			</div>
+		{% endifequal %}
+
+		{% ifequal thing.type "DiaryEntry"%}
+			<div class="latest-list-icon">
+				<img src="{% staticfile "/img/blog.png" %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} just wrote a new blog entry</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+			</div>
+		{% endifequal %}
+		</div>
+
+	{% endfor %}
+	</div>
+	{% endif %}
+                
+
        
-	</div>
+</div>
 
-	
-	<div id="right-column">
 
-	<div class="right-box">
+    <div id="right-column">
 
-	</div>
 
-	<div class="right-box">
-
-		<h4>Want to learn kung fu?</h4><p>Thinking about joining a kung fu club? Read some of <a href="/join-kungfu-club-tips/">our tips for joining a club...</a></p>
-		
-   	</div>
-
-	</div>
+    </div>
 
 </div>
 
