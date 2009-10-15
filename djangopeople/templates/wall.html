@@ -26,18 +26,24 @@ p.promo {
 
 	<h3>Latest new members</h3>
 	{% for person in latest_five %}
+	<div class="person-listing-photo">
 	<a href="{{ person.get_absolute_url }}">
-	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
-	</a>	
+	<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
+	</a>
+	</div>	
 	{% endfor %}
+	<br clear="all"/>
 
 	<p></p>
 	<h3>All other members ({{ other_people.count }})</h3>
 	<div class="horizontal-photos">
+
 	{% for person in other_people %}
+	<div class="person-listing-photo">
 	<a href="{{ person.get_absolute_url }}">
-	<img src="{% if person.photo %}{% thumbnail person.photo 60x60 crop %}{% else %}{% staticfile "/img/upload-a-photo-60.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
-	</a>	
+	<img src="{% if person.photo %}{% thumbnail person.photo 40x40 crop %}{% else %}{% staticfile "/img/no-photo-background-40.png" %}{% endif %}" title="{{ person.user.get_full_name }}">
+	</a>
+	</div>	
 	{% endfor %} 
 	</div>  
 	</div>
