@@ -124,7 +124,7 @@ $(function() {
         xaxis: { mode: "time" },
         selection: { mode: "x" },
 	shadowSize: 4,
-        grid: { markings: weekendAreas, clickable:true, hoverable:true }
+        grid: { markings: weekendAreas, clickable:false, hoverable:false }
     };
     
     var plot = $.plot($("#placeholder"),[
@@ -157,41 +157,6 @@ $(function() {
           alert("You clicked a point!");
         }
     });
-
-    
-    /*
-    var overview = $.plot($("#overview"), [d], {
-        lines: { show: true, lineWidth: 1 },
-        shadowSize: 0,
-        xaxis: { ticks: [], mode: "time" },
-        yaxis: { ticks: [], min: 0, max: 4000 },
-        selection: { mode: "x" }
-    })
-    */;
-
-    // now connect the two
-    
-    $("#placeholder").bind("plotselected", function (event, ranges) {
-        // do the zooming
-        plot = $.plot($("#placeholder"), [d],
-                      $.extend(true, {}, options, {
-                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
-                      }));
-        /*
-        // don't fire event on the overview to prevent eternal loop
-        overview.setSelection(ranges, true);
-        */
-    });
-    
-    /*
-    $("#overview").bind("plotselected", function (event, ranges) {
-        plot.setSelection(ranges);
-    });
-    */
-    
-    
-    
-
 });
 </script>
 
