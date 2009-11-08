@@ -39,12 +39,11 @@ body * {
 	width: 100%;
 	background-color: white;
 	float: left;
-	border-bottom: 20px solid #F3CF1A;
 	border-top: 20px solid #F3CF1A;
 }
 
 #no-map-content-box {
-	width: 50%;
+	width: 550px;
     	float: left;
     	margin: 20px 0px 50px 20px;
 	padding: 30px;
@@ -532,10 +531,11 @@ ul.errorlist li {
 	clear: left;
 	float: left;
 	text-align: right;
-	margin-bottom: 0.6em;
-	margin-right: 0px;
-	font-weight: bold;
-	font-size: 0.9em;
+	font-weight: normal;
+	font-size: 1.4em;
+	color: #666;
+	position: relative;
+	top: 6px;
 }
 
 input.submit {
@@ -1058,33 +1058,36 @@ div.change-photo {
 .form-field-outer {
 	display: block;
 	float: left;
-	width: 100%;
+	width: 550px;
 	height: auto;
 	margin-bottom: 5px;
 }
 
 .form-field-left {
 	float: left;
-	width: 130px;
+	width: 120px;
 	text-align: right;
-	margin-right: 0px;
 }
 
 .form-field-right {
 	float: left;
-	width: 60%;
-	background-color: white;
+	width: 420px;
 }
 
 .form-field-right input, .form-field-right textarea {
 	margin-bottom: 0.6em;
-	border: 1px inset #326342;
+	border: 1px solid #b6b6b6;
 	background: none white;
+	height: auto;
+	padding: 5px;
+	width: 330px;
+	font-size: 2em;
+	color: #666;
 }
 
 .form-field-submit {
 	float: left;
-	margin-left: 160px;
+	margin-left: 130px;
 }
 
 .diaries {

@@ -1276,6 +1276,28 @@ def club(request, name):
     # for the world map
     people_locations_json = _get_people_locations_json(people)
 
+    # generate the style based news feed 
+    term = club
+    latest = []
+
+    # checks any resources that belong to club members
+    for model, field_name in ((Photo, 'description'),
+                              (Video, 'description'),
+                              (DiaryEntry, 'content')):
+        for instance in model.objects.filter(**{'%s__icontains' % field_name:term}):
+            latest.append(dict(
+                               date=instance.date_added,
+                               url=instance.get_absolute_url(),
+                               type=model._meta.verbose_name,
+                               content=instance.get_content(),
+                               title=unicode(instance), 
+                               person=unicode(instance.user.get_full_name()), 
+                               person_url=unicode(instance.user.get_absolute_url()), 
+                               id=instance.id)
+                               ) 
+
+    latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
+
     return render(request, 'club.html', locals())
 
 def clubs_all(request):
@@ -1356,7 +1378,7 @@ def style(request, name):
     term = style
     latest = []
 
-    # first, check if it's a search on a code
+    # checks if the models, fields icontain the style name
     for model, field_name in ((Photo, 'description'),
                               (Video, 'description'),
                               (DiaryEntry, 'content')):

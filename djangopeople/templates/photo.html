@@ -28,7 +28,10 @@ var ZOOM = 10;
 
 	<div id="profile-head">
 	<h2>{{ person.user.get_full_name }}'s photos</h2>
-		<p><em>{{ photo.description|linebreaks }}</em></p>
+		{% if is_owner %}
+		<a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a>
+		{% endif %}
+
 
 		<div class="large-photo-container">
                 {% thumbnail photo.photo 470x470 as thumb %}
@@ -41,9 +44,10 @@ var ZOOM = 10;
 <div id="right-column">
 
 	<div class="right-box">
-		{% if is_owner %}
-		<a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a>
-		{% endif %}	
+
+		<h3>This photo</h3>
+	
+		<p><em>{{ photo.description|linebreaks }}</em></p>
 
 		<p class="meta">{{ photo.date_added|date:"d M Y" }} | {{ photo.location_description }} ({{ photo.country.iso_code }})  |  
 		{% if is_owner %} 

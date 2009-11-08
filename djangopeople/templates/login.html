@@ -45,60 +45,77 @@ jQuery(function($) {
 
 {% block content %}
 	<h2>login</h2>
-	<p>If you haven't already created an account, <a href="/signup/">signup now!</a></p>
-    	<form method="post" action="/login/">
-    	{% if is_invalid %}
-    	    <p class="invalid">Your login attempt has failed. Please check your details and try again.</p>
-    	{% endif %}
 
-	<fieldset>
-	<div class="form-field-outer">
-		<div class="form-field-left">
-            		<label for="id_username">Username</label>
-		</div>
-		<div class="form-field-right">
-			<input type="text" name="username" id="id_username" value="{{ username }}">
-		</div>
+	<div id="profile-box-top">
 	</div>
+	<div id="profile-box">
+    		<form method="post" action="/login/">
+    		{% if is_invalid %}
+    		    <p class="invalid">Your login attempt has failed. Please check your details and try again.</p>
+    		{% endif %}
 
-	<div class="form-field-outer">
-		<div class="form-field-left">
-        	    <label for="id_password">Password</label>
-		</div>
-		<div class="form-field-right">
-		    <input type="password" name="password" id="id_password">
- <p class="small-text"><a href="/recover/">Lost your password?</a></p>
-        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-		</div>
-	</div>
-
-	<div class="form-field-outer">
-		<div class="form-field-left">
- 
-		</div>
-		<div class="form-field-submit">
-			<div class="button-outer">
-    			<div class="buttonContainer">
-    	    		<input type="submit" value="Log in">
-    			</div>
+		<fieldset>
+		<div class="form-field-outer">
+			<div class="form-field-left">
+        	    		<label for="id_username">Username</label>
+			</div>
+			<div class="form-field-right">
+				<input type="text" name="username" id="id_username" value="{{ username }}">
 			</div>
 		</div>
+
+		<div class="form-field-outer">
+			<div class="form-field-left">
+        		    <label for="id_password">Password</label>
+			</div>
+			<div class="form-field-right">
+			    <input type="password" name="password" id="id_password">
+        		{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+			</div>
+		</div>
+	
+		<div class="form-field-outer">
+			<div class="form-field-left">
+ 	
+			</div>
+			<div class="form-field-submit">
+				<div class="button-outer">
+	    			<div class="buttonContainer">
+	    	    		<input type="submit" value="Log in">
+	    			</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-field-outer">
+			<div class="form-field-left">
+			</div>
+			<div class="form-field-submit">
+ 			    <p class="small-text"><a href="/recover/">Lost your password?</a><br/>
+			    <a href="/signup/">Signup now if you don't have an account</a> </p>
+			</div>
+		</div>
+
+    	    </fieldset>
+    	    </form>
+        </div>
+	<div id="profile-box-bottom">
 	</div>
-    	</fieldset>
-    	</form>
-        
+    </div>
+
+    <div id="right-column">
+	<div class="right-box">
         
         <p>
         <a href="{% url auth %}" title="Log in with your twitter account"
         ><img src="{% staticfile "/img/twitter/twitter-logo-small.png" %}" border="0" alt="Twitter"></a>
-        <br>
-        Alternatively, if you want to you can
-        <a href="{% url auth %}">log in with your twitter account</a><br>
-        or if you haven't done so you can 
-        <a href="{% url twitter_signup %}">sign up using your twitter account</a>.
+        <br/>
+        <a href="{% url auth %}">Log in with your twitter account</a><br/>
+        <a href="{% url twitter_signup %}">Sign up using your twitter account</a>.
         </p>
-        
-
+	
+	</div>        
+    </div>
        
 
 {% endblock %}

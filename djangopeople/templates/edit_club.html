@@ -67,6 +67,9 @@ $(function () {
     	<h2>Add a new club</h2>
 	<a class="small-text" href="/{{ person.user.username }}">(back to your profile)</a>
         
+	<div id="profile-box-top">
+	</div>
+	<div id="profile-box">
         {% if non_field_errors %}
           {{ non_field_errors }}
         {% endif %}
@@ -107,20 +110,31 @@ $(function () {
 
     </form>
 
+    </div>
+	<div id="profile-box-bottom">
+	</div>
 
+    </div>
+
+
+    <div id="right-column">
+	<div class="right-box">
+
+	<h3>Your current club{{ clubs|pluralize }}</h3>
+	{% for club in clubs %}
+	<p><a href="/club/{{ club.slug }}">{{ club }}</a> - <a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/" title="remove this club">(delete)</a>
+	</p>
+	{% endfor %}
+
+
+	</div>
+    </div>
 
 
 
 {% endblock %}
 
 {% block right_column %}
-	<h3>Your current club{{ clubs|pluralize }}</h3>
-	{% for club in clubs %}
-	<p>(<a class="small-text" href="/{{ person.user.username }}/club/delete/{{ club.slug }}/"
-             title="remove this club"
-             ><img class="small-icon" src="/img/delete.png" alt="delete"></a>)
-             <a href="/club/{{ club.slug }}">{{ club }}</a>
-	</p>
-	{% endfor %}
+
 
 {% endblock %}

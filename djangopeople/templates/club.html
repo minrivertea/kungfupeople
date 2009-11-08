@@ -95,6 +95,49 @@ div.bio a.edit {
 		</div>
     		<div id="profile-box-bottom">
     		</div>
+
+   
+    {% if latest_things %}
+    <h3>News related to {{ style }}</h3>
+	<div class="latest-list-left">
+	{% for thing in latest_things %}
+		<div class="latest-list-item{% ifequal thing.type "Video"%}-video{% endifequal %}">
+		{% ifequal thing.type "Video"%}
+			<div class="latest-list-icon">
+				<img width="30px" src="{{ thing.content|safe }}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} linked to a new video</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+				
+			</div>
+		{% endifequal %}
+
+		{% ifequal thing.type "Photo"%}
+			<div class="latest-list-icon">
+				<img src="{% thumbnail thing.content 30x30 crop %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} uploaded a new photo</a>
+			</div>
+		{% endifequal %}
+
+		{% ifequal thing.type "DiaryEntry"%}
+			<div class="latest-list-icon">
+				<img src="{% staticfile "/img/blog.png" %}">
+			</div> 
+			<div class="latest-list-info">
+				<a href="{{ thing.url }}">{{ thing.person }} wrote a new blog entry</a><br/>
+				<span class="dark-grey">{{ thing.title }}</span>
+			</div>
+		{% endifequal %}
+		</div>
+
+	{% endfor %}
+	</div>
+	{% endif %}
+                
+
 	</div>
     </div>
 
