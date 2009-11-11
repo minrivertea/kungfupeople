@@ -241,7 +241,7 @@ def list_new_people_html(request):
         to_timestamp = float(request.GET.get('to'))
         if from_timestamp > to_timestamp:
             raise Http404("to timestamp less than from")
-    except ValueError:
+    except (ValueError, TypeError):
         raise Http404("Invalid timestamps")
     
     from_datetime = datetime.datetime.utcfromtimestamp(from_timestamp/ 1000)
