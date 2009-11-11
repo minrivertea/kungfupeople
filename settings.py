@@ -149,7 +149,7 @@ NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 # Who sends the welcome email
 WELCOME_EMAIL_SENDER = NEWSLETTER_SENDER
 
-PROWL_API_KEY = open('prowl-peterbe.key').read().strip()
+PROWL_API_KEY = open(os.path.join(OUR_ROOT, 'prowl-peterbe.key')).read().strip()
 
 CRASHKIT = None # enabled live
 
