@@ -29,8 +29,6 @@ DATABASE_PASSWORD = 'gumball'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-GOOGLE_MAPS_API_KEY = open('localhost_googlemaps_api.key').read().strip()
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be avilable on all operating systems.
