@@ -136,7 +136,7 @@ CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
 
 GOOGLE_ANALYTICS_TRACKER_ID = "" # set to something when you have set up an account
 
-OFFLINE_MODE = False
+OFFLINE_MODE = True
 
 # Putting these here will not suffice but for now, by putting it here it will work.
 # It will work in context_processors.py for the templates but also accessible

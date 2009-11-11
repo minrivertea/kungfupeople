@@ -5,11 +5,14 @@
 
 {% block content %}
 
-    <p><a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a></p>
-
     <form method="post" action="{% url edit_profile person.user.username %}">
     	<h2>Edit your details</h2>
+    <p><a class="small-text" href="{% url person.view person.user.username %}">(back to your profile)</a></p>
 
+
+	<div id="profile-box-top">
+	</div>
+	<div id="profile-box">
 	<div class="form-field-outer">
 		<div class="form-field-left">
     	        {{ form.email.errors }}
@@ -42,6 +45,10 @@
 	</div>
 
     </form>
+
+        </div>
+	<div id="profile-box-bottom">
+	</div>
 
 
 
