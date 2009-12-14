@@ -66,16 +66,16 @@ function __fetch_video_details(video_id) {
 
 $(function() {
   
-  if (!$('#id_youtube_video_id').val() && !$('#id_embed_src').val()) {
-    $('#video-details:visible').hide();//fadeTo(0, 0.3);
-    $('#video-youtube').append(
-      $('<a href="#"></a>').bind('click', function() {
-        __not_youtube_video();
-        return false;
-      }).append($("<span>(No, it's not a YouTube video)</span>").addClass('not-youtube'))
-    );
-  }
-  
+   if (!$('#id_youtube_video_id').val() && !$('#id_embed_src').val()) {
+      $('#video-details:visible').hide();//fadeTo(0, 0.3);
+      $('#video-youtube').append(
+				 $('<a href="#"></a>').bind('click', function() {
+				    __not_youtube_video();
+				    return false;
+				 }).append($("<span>(No, it's not a YouTube video)</span>").addClass('not-youtube')));
+   }
+   
+   
   function update_by_video_id(video_id) {
      if (!$.trim(video_id).length) return;
      if (_youtube_video_id_lookup && _youtube_video_id_lookup == video_id)
@@ -101,10 +101,6 @@ $(function() {
       alert("Video title missing");
       return false;
     }    
-      
     return true;
-    
   });
-  
-    
 });
