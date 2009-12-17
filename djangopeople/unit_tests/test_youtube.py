@@ -40,7 +40,7 @@ class YouTubeTestCase(TestCase):
         
         data = func(url)
         self.assertTrue(data.get('embed_src'))
-        self.assertTrue('http://www.youtube.com/v/vcdgLclFWOU&f=videos&app=youtube_gdata' \
+        self.assertTrue('http://www.youtube.com/v/vcdgLclFWOU?f=videos&app=youtube_gdata' \
                         in data['embed_src'])
         self.assertTrue(data.get('title'))
         self.assertEqual(data['title'], 'Dengue Fever - One Thousand Tears Of A Tarantula')

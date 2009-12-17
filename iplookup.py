@@ -8,7 +8,10 @@ def getGeolocationByIP(ip):
     encoded_args = urllib.urlencode(query_args)
     
     url = 'http://ipinfodb.com/ip_query.php?' + encoded_args
-    content = urllib2.urlopen(url).read()
+    try:
+        content = urllib2.urlopen(url).read()
+    except urllib2.URLError, msg:
+        raise urllib2.URLError(str(msg) + " URL trying to open: %s" % url)
     
     t = etree.ElementTree().parse(StringIO(content))
     return {'country': t.find("CountryName").text or '',

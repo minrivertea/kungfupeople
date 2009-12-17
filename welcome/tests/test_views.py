@@ -59,7 +59,7 @@ class ViewsTestCase(TestCase):
         edit_password_url = reverse('edit_password', args=('bob',))
         self.assertTrue(welcome_email.body.count(edit_password_url))
         # since the user hasn't uploaded a photo
-        upload_photo_url = reverse('upload_photo', args=('bob',))
+        upload_photo_url = reverse('upload_profile_photo', args=('bob',))
         self.assertTrue(welcome_email.body.count(upload_photo_url))
         
         # rewind and this add a profile photo
