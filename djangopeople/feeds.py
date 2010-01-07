@@ -12,7 +12,7 @@ class LatestPeople(Feed):
     feed_type = Atom1Feed
     
     title = "%s (Latest people added)" % settings.PROJECT_NAME
-    link = "/"
+    link = "http://kungfupeople.com/"
     subtitle = "Latest people who have signed up"
     
     author_name = settings.PROJECT_NAME
@@ -29,6 +29,7 @@ class LatestAll(Feed):
     """Combining new signups, new photos, new diary entries, ...
     """
     feed_type = Atom1Feed
+    link = "http://kungfupeople.com/"
     
     title = settings.PROJECT_NAME
     subtitle = "All latest activity on %s" % settings.PROJECT_NAME
