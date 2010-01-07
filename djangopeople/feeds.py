@@ -31,7 +31,6 @@ class LatestAll(Feed):
     feed_type = Atom1Feed
     
     title = settings.PROJECT_NAME
-    link = "/"
     subtitle = "All latest activity on %s" % settings.PROJECT_NAME
     
     author_name = settings.PROJECT_NAME
