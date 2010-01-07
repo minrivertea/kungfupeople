@@ -349,7 +349,7 @@ class Club(models.Model):
         ordering = ('-date_added',)
         
     name = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=200)
     url = models.URLField()
     description = models.TextField(blank=True)
     logo = models.ImageField(blank=True, upload_to='clubs')
@@ -432,7 +432,7 @@ class DiaryEntry(models.Model):
     region = models.ForeignKey(Region, blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    location_description = models.CharField(max_length=50)
+    location_description = models.CharField(max_length=100)
     
     objects = DistanceManager()
     
