@@ -1,5 +1,5 @@
 {% extends "base_no_map.html" %}
-
+{% load django_static %}
 {% block title%}Webcam a profile photo |{% endblock %}
 
 {% block js %}{% load thumbnail %}{% endblock %}
@@ -8,10 +8,10 @@
     {% block content %}
         <script type="text/javascript" src="/webcam/webcam.js"></script>
 	<script language="JavaScript">
-		webcam.set_quality( 85 ); // JPEG quality (1 - 100)
+		webcam.set_quality( 95 ); // JPEG quality (1 - 100)
 		webcam.set_shutter_sound( true ); // play shutter click sound
-                webcam.swf_url = '/webcam/webcam.swf';
-                webcam.shutter_url = '/webcam/shutter.mp3';
+                webcam.swf_url = '{% staticfile "/webcam/webcam.swf" %}';
+                webcam.shutter_url = '{% staticfile "/webcam/shutter.mp3" %}';
 	</script>
 
 	<script language="JavaScript">
@@ -35,21 +35,6 @@
                     
                 }
 		
-		function do_capture() {
-			webcam.freeze();
-			document.getElementById('capture_button').disabled = true;
-			document.getElementById('dump_button').disabled = false;
-		}
-		
-		function do_dump() {
-			webcam.dump();
-		}
-
-		function do_reset() {
-			webcam.reset();
-			document.getElementById('capture_button').disabled = false;
-			document.getElementById('dump_button').disabled = true;
-		}
 		
 		function my_completion_handler(base64) {
                         $('#preview-new-photo img').attr('src', 'data:image/jpeg;base64,' + base64);
@@ -59,9 +44,6 @@
                         $('#snap_button').val("Snap again!");
                         $('#id_image_data').val(base64);
                         
-			//document.getElementById('img_data').value = base64;
-			//document.getElementById('submit_button').disabled = false;
-			//do_reset();
 		}
 	</script>
 
@@ -114,34 +96,6 @@
           </tr>
         </table>
             
-
-
-        
-	
-             {% comment %}
-	<div class="form-field-outer">
-		<div class="form-field-left">
-                    {{ form.photo.errors }}
-                    <!--<label for="id_photo">Photo</label>-->
-		    <input type="button" value="Configure..." onclick="webcam.configure()">
-		    <br>
-		    <input id="capture_button" type="button" value="Capture" onclick="do_capture()">
-                    <input id="snap_button" type="button" value="Snap!" onclick="capture_and_dump()">
-                    
-		    <br>
-		    <input id="dump_button" type="button" value="Insert" onclick="do_dump()" disabled="true">
-		    <br>
-		    <input type="button" value="Reset" onClick="do_reset()">
-		</div>
-
-		<div class="form-field-right">
-			
-		</div>
-	</div>
-                {% endcomment %}
-
-           
-	
 
 
 
