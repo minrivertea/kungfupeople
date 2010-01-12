@@ -1,6 +1,9 @@
 # python
+import os
 import re
+import base64
 from urlparse import urlparse
+import tempfile
 
 # django
 from django import forms
@@ -12,6 +15,7 @@ from groupedselect import GroupedChoiceField
 from models import KungfuPerson, Country, Region, User, RESERVED_USERNAMES, Club, DiaryEntry, Photo
 
 from youtube import YouTubeVideoError, get_youtube_video_by_id, video_url_or_id
+from utils import is_jpeg
 
 
 try:
@@ -220,6 +224,20 @@ class PhotoEditForm(forms.Form):
 
 class ProfilePhotoUploadForm(forms.Form):
     photo = forms.ImageField()
+
+class ProfilePhotoWebcamForm(forms.Form):
+    image_data = forms.CharField(widget=forms.widgets.HiddenInput())
+    
+    def clean_image_data(self):
+        v = self.cleaned_data['image_data']
+        tmp_file_path = os.path.join(tempfile.mkdtemp(), 'webcam.jpg')
+        open(tmp_file_path, 'wb').write(base64.b64decode(v))
+        if not is_jpeg(tmp_file_path):
+            raise forms.ValidationError("Not valid JPEG file")
+        else:
+            os.remove(tmp_file_path)
+        return self.cleaned_data['image_data']
+    
 
 class DiaryEntryForm(forms.Form):
     title = forms.CharField(max_length=200, widget=forms.widgets.TextInput(attrs=dict(size=40)))

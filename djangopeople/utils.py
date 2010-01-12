@@ -1,8 +1,10 @@
 # python
+import os
 import re
 import logging
 import md5, datetime
 from time import time
+import imghdr
 
 # django
 from django.conf import settings
@@ -212,3 +214,6 @@ def prowlpy_wrapper(event, description="",
             
         cache.set(cache_key, time(), 10)
                         
+def is_jpeg(filename):
+    assert os.path.isfile(filename), "Not a file"
+    return imghdr.what(filename) == 'jpeg'

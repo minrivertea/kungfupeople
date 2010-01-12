@@ -51,6 +51,9 @@ if settings.DEBUG:
     urlpatterns += patterns('', 
                             
         # CSS, Javascript and IMages
+        (r'^webcam/(?P<path>.*)$', django.views.static.serve,
+         {'document_root': settings.MEDIA_ROOT + '/webcam',
+           'show_indexes': False}),                       
         (r'^img/(?P<path>.*)$', django.views.static.serve,
          {'document_root': settings.MEDIA_ROOT + '/img',
            'show_indexes': False}),                       

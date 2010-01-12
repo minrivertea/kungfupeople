@@ -1,5 +1,6 @@
 {% extends "base_no_map.html" %}
 
+{% load django_static %}
 {% block title%}Upload a profile photo |{% endblock %}
 
 {% block js %}{% load thumbnail %}{% endblock %}
@@ -35,6 +36,14 @@
 
 
             </form>
+            
+            <div id="webcam-upload-option" style="padding-top:40px">
+            <a href="{% url webcam_profile_photo person.user.username %}"
+               style="float:left"><img src="{% staticfile "/img/webcam-100x100.png" %}" alt="Webcam a new profile photo"></a>
+            <h4>Have you got a fancy web camera on your computer?</h4>
+            <p><a href="{% url webcam_profile_photo person.user.username %}">Try the webcam profile photo upload</a></p>
+            </div>
+            
         </div>
 
 	<div id="right-column">
@@ -48,7 +57,7 @@
                 <a href="{% url crop_profile_photo person.user.username %}">Want to crop this one again?</a>
                 </p>
 	{% else %}
-		<img xxxclass="photo-left" src="/img/photo-background-119.png"/>
+		<img xxxclass="photo-left" src="{% staticfile "/img/photo-background-119.png" %}"/>
 	{% endif %}
 	</div>
 

@@ -1,6 +1,7 @@
 # python
 import logging
 import os, md5, datetime
+import base64
 import re
 from urlparse import urlparse
 from PIL import Image
@@ -33,7 +34,7 @@ from utils import unaccent_string, must_be_owner, get_unique_user_cache_key, \
   get_previous_next, uniqify, anyTrue
 from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
   StyleForm, DiaryEntryForm, PhotoUploadForm, ProfilePhotoUploadForm, \
-  PhotoEditForm, NewsletterOptionsForm, CropForm
+  PhotoEditForm, NewsletterOptionsForm, CropForm, ProfilePhotoWebcamForm
 from data import get_all_items
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
 
@@ -978,6 +979,52 @@ def upload_profile_photo(request, username):
         'form': form,
         'person': person,
     })
+
+@must_be_owner
+def webcam_profile_photo(request, username):
+    person = get_object_or_404(KungfuPerson, user__username=username)
+    
+    if request.method == "POST":
+        form = ProfilePhotoWebcamForm(data=request.POST)
+        if form.is_valid():
+            image_data_base64 = form.cleaned_data['image_data']
+            image_content = base64.b64decode(image_data_base64)
+            image = Image.open(StringIO(image_content))
+            format = image.format
+            format = format.lower().replace('jpeg', 'jpg')
+            filename = md5.new(image_content).hexdigest() + '.' + format
+            # Save the image
+            path = os.path.join(settings.MEDIA_ROOT, 'profiles', filename)
+            # check that the dir of the path exists
+            dirname = os.path.dirname(path)
+            if not os.path.isdir(dirname):
+                try:
+                    os.mkdir(dirname)
+                except IOError:
+                    raise IOError, "Unable to created the directory %s" % dirname
+            open(path, 'w').write(image_content)
+            person.photo = 'profiles/%s' % filename
+            person.save()
+            
+            # if the image is more than 10% away from being a square, encourage 
+            # them to crop it
+            (width, height) = image.size
+            r = float(width)/height
+            if r > 1.1 or r < 0.9:
+                return HttpResponseRedirect(reverse("crop_profile_photo", 
+                                                    args=(person.user.username,)))
+            else:
+                return HttpResponseRedirect(person.get_absolute_url())
+        else:
+            print form.errors
+    
+    form = ProfilePhotoWebcamForm()
+    
+    return render(request, 'webcam_profile_photo.html', {
+        'form': form,
+        'person': person,
+    })
+
 
 #@must_be_owner
 #def upload_done(request, username):
