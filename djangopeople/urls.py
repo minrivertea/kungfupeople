@@ -16,7 +16,7 @@ feeds = {
 }
 
 urlpatterns = patterns('',
-    (r'^$', views.index),
+    url(r'^$', views.index, name="index"),
     url(r'^club/([A-Za-z0-9-:]{3,})/$', views.club, name="club.view"),
     url(r'^clubs/$', views.clubs_all, name="clubs_all"),
     url(r'^style/([A-Za-z0-9-:]{3,})/$', views.style, name="style.view"),

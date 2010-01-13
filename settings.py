@@ -180,6 +180,8 @@ OAUTH_SERVER = 'twitter.com'
 CONSUMER_KEY = 'nLHRls0R8oiaEm8HsNwWCg'
 CONSUMER_SECRET = 'Zr6dlwTU6RAt55IjVErsn2MfnKcAjvZ07ihXkVaWyVA'
 
+# Anonymous view renderings are cached for an hour
+USE_CACHE_PAGE = True
 
 try:
     from local_settings import *

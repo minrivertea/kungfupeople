@@ -25,7 +25,8 @@ from django.utils.safestring import mark_safe
 class GroupedSelect(forms.Select): 
     def render(self, name, value, attrs=None, choices=()):
         from django.utils.html import escape
-        from django.forms.util import flatatt, smart_unicode 
+        from django.forms.util import flatatt
+        from django.utils.encoding import smart_unicode
         if value is None: value = '' 
         final_attrs = self.build_attrs(attrs, name=name) 
         output = [u'<select%s>' % flatatt(final_attrs)] 
@@ -57,7 +58,9 @@ class GroupedChoiceField(forms.ChoiceField):
         value = super(forms.ChoiceField, self).clean(value)
         if value in (None, ''):
             value = u''
-        value = forms.util.smart_unicode(value)
+        from django.utils.encoding import smart_unicode
+            
+        value = smart_unicode(value)
         if value == u'':
             return value
         valid_values = []

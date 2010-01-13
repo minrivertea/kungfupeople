@@ -579,7 +579,8 @@ class Video(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ("video.view", (self.user.username, self.id))
-    
+
+
     
 class AutoLoginKey(models.Model):
     """AutoLoginKey objects makes it possible for a user to log in
@@ -736,9 +737,11 @@ class KungfuPerson(models.Model):
             return self.location_description
     
     
-    def save(self, force_insert=False, force_update=False): # TODO: Put in transaction
+    def save(self, force_insert=False, force_update=False, using=None): # TODO: Put in transaction
         # Update country and region counters
-        super(KungfuPerson, self).save(force_insert=force_insert, force_update=force_update)
+        super(KungfuPerson, self).save(force_insert=force_insert, 
+                                       force_update=force_update, 
+                                       using=using)
         self.country.num_people = self.country.kungfuperson_set.count()
         self.country.save()
         if self.region:
@@ -845,4 +848,30 @@ class Recruitment(models.Model):
     
     
     
-    
+from clever_cache import expire_page
+from django.core.urlresolvers import reverse
+
+def reset_cached_pages(sender, instance, **kwargs):
+    if sender is Video:
+        expire_page(reverse('videos_all'))
+    elif sender is KungfuPerson:
+        expire_page(reverse('wall'))
+        expire_page(reverse('zoom'))
+    elif sender is Club:
+        expire_page(reverse('clubs_all'))
+        
+    if hasattr(instance, 'get_absolute_url'):
+        url = instance.get_absolute_url()
+        expire_page(url)
+        
+    # expire the home page because of the little counters on it
+    expire_page(reverse('index'))
+        
+post_save.connect(reset_cached_pages, sender=Video,
+                  dispatch_uid="reset_cached_pages__Video")
+post_save.connect(reset_cached_pages, sender=KungfuPerson,
+                  dispatch_uid="reset_cached_pages__KungfuPerson")
+post_save.connect(reset_cached_pages, sender=Club,
+                  dispatch_uid="reset_cached_pages__Club")
+post_save.connect(reset_cached_pages, sender=Style,
+                  dispatch_uid="reset_cached_pages__Style")
