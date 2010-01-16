@@ -45,9 +45,9 @@ class AutoLogin(object):
             new_full_path = request.get_full_path().replace('alu=%s' % uuid, '')
             new_full_path = new_full_path.replace('?&','?').replace('&&','&')
             return HttpResponsePermanentRedirect(new_full_path)
-                
+
         return None
-    
+
 class Recruitment(object):
     def process_request(self, request):
         if request.GET.get('rc') and request.GET.get('rc').isdigit():
@@ -56,5 +56,17 @@ class Recruitment(object):
                 request.session['recruiter'] = recruiter.id
             except User.DoesNotExist:
                 pass
-                
-        return None    
+
+        return None
+
+
+class SWFUploadFileMiddleware(object):
+    def process_request(self, request):
+        if request.method == 'POST':
+            if 'Filename' in request.POST:
+                # Not terribly secure but works
+                # See http://code.google.com/p/django-filebrowser/issues/detail?id=222
+                # for a possibly more sustainable solution
+                request._dont_enforce_csrf_checks = True
+
+        return None

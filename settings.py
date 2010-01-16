@@ -86,7 +86,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'djangopeople.middleware.RemoveWWW',
-    'django.contrib.csrf.middleware.CsrfMiddleware',
+    'djangopeople.middleware.SWFUploadFileMiddleware',
+    'django.middleware.csrf.CsrfMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
@@ -105,7 +106,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(OUR_ROOT, 'templates'),
-    os.path.join(OUR_ROOT, 'djangopeople/templates'),
+#    os.path.join(OUR_ROOT, 'djangopeople/templates'),
                  
 )
 

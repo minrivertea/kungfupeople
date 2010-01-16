@@ -137,7 +137,7 @@ def index(request):
                               lambda x: x.id)
     unique_countries.sort(lambda x,y: cmp(x.name.lower(), y.name.lower()))
     
-    return render(request, 'index.html', {
+    return render(request, 'djangopeople/index.html', {
         'people': people,
         'unique_countries': unique_countries,
         'people_locations_json': people_locations_json,
@@ -168,20 +168,20 @@ def _get_person_location_json(person):
     return simplejson.dumps(dictify_person_details(person))
 
 def about(request):
-    return render(request, 'about.html', {
+    return render(request, 'djangopeople/about.html', {
         'total_people': KungfuPerson.objects.count(),
         'countries': Country.objects.top_countries(),
     })
 
 def about_new(request):
-    return render(request, 'about_new.html')
+    return render(request, 'djangopeople/about_new.html')
 
 def about_what(request):
-    return render(request, 'about_what.html')
+    return render(request, 'djangopeople/about_what.html')
 
 
 def recent(request):
-    return render(request, 'recent.html', {
+    return render(request, 'djangopeople/recent.html', {
         'people': KungfuPerson.objects.all().select_related().order_by('-auth_user.date_joined')[:50],
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
@@ -189,7 +189,7 @@ def recent(request):
 from django.contrib import auth
 def login(request):
     if request.method != 'POST':
-        return render(request, 'login.html', {
+        return render(request, 'djangopeople/login.html', {
             'next': request.REQUEST.get('next', ''),
         })
     username = request.POST.get('username')
@@ -202,7 +202,7 @@ def login(request):
             request.POST.get('next', '/%s/' % user.username)
         )
     else:
-        return render(request, 'login.html', {
+        return render(request, 'djangopeople/login.html', {
             'is_invalid': True,
             'username': username, # Populate form
             'next': request.REQUEST.get('next', ''),
@@ -222,7 +222,7 @@ def lost_password(request):
             except KungfuPerson.DoesNotExist:
                 person = KungfuPerson.objects.get(user__email__iexact=username)
         except KungfuPerson.DoesNotExist:
-            return render(request, 'lost_password.html', {
+            return render(request, 'djangopeople/lost_password.html', {
                 'message': 'That was not a valid username.'
             })
         username = person.user.username
@@ -237,7 +237,7 @@ def lost_password(request):
         from django.core.mail import send_mail
         import smtplib
         current_url = request.build_absolute_uri()
-        body = render_to_string('recovery_email.txt', {
+        body = render_to_string('djangopeople/recovery_email.txt', {
             'path': path,
             'person': person,
             'site_url': 'http://' + urlparse(current_url)[1],
@@ -252,19 +252,19 @@ def lost_password(request):
                 fail_silently=False
             )
         except smtplib.SMTPException:
-            return render(request, 'lost_password.html', {
+            return render(request, 'djangopeople/lost_password.html', {
                 'message': 'Could not e-mail you a recovery link.',
             })
         
         
         cache.set(cache_key, 1, 60)
         
-        return render(request, 'lost_password.html', {
+        return render(request, 'djangopeople/lost_password.html', {
             'message': ('An e-mail has been sent to %s with instructions for '
                 "recovering your password. Don't forget to check your spam "
                 'folder!' % person.user.email)
         })
-    return render(request, 'lost_password.html')
+    return render(request, 'djangopeople/lost_password.html')
 
 def lost_password_recover(request, username, days, hash):
     user = get_object_or_404(User, username=username)
@@ -273,7 +273,7 @@ def lost_password_recover(request, username, days, hash):
         auth.login(request, user)
         return HttpResponseRedirect('/%s/password/' % username)
     else:
-        return render(request, 'lost_password.html', {
+        return render(request, 'djangopeople/lost_password.html', {
             'message': 'That was not a valid account recovery link'
         })
 
@@ -475,7 +475,7 @@ def signup(request, initial_user=None):
         
         form = SignupForm(initial=initial)
         
-    return render(request, 'signup.html', {
+    return render(request, 'djangopeople/signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
         'base_location': base_location,
@@ -486,7 +486,7 @@ def signup(request, initial_user=None):
 def whatnext(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
 
-    return render(request, 'whatnext.html', locals())
+    return render(request, 'djangopeople/whatnext.html', locals())
 
 
 def diary_entry(request, username, slug):
@@ -501,7 +501,7 @@ def diary_entry(request, username, slug):
     diary_entry_location_json = _get_person_location_json(entry)
     
     is_owner = request.user.username == username
-    return render(request, 'diary_entry.html', locals())
+    return render(request, 'djangopeople/diary_entry.html', locals())
     
 
 def _download_profile_image(person, image_url):
@@ -640,7 +640,7 @@ def swf_upload_test(request):
         image.save(thumbnail_path, image.format)
         return HttpResponse(thumbnail_path.replace(settings.MEDIA_ROOT, '/static'))
     else:
-        return render(request, 'swf_upload_test.html', {})
+        return render(request, 'djangopeople/swf_upload_test.html', {})
 
     
         
@@ -840,7 +840,7 @@ def photo_upload(request, username, prefer='multiple'):
             
     prefer_multiple = prefer == 'multiple'
     
-    response = render(request, 'photo_upload_form.html', {
+    response = render(request, 'djangopeople/photo_upload_form.html', {
         'form': form,
         'person': person,
         'prefer_multiple': prefer == 'multiple'
@@ -925,7 +925,7 @@ def photo_edit(request, username, photo_id):
         else:
             del form.fields['diary_entry']
             
-    return render(request, 'photo_upload_form.html', locals())
+    return render(request, 'djangopeople/photo_upload_form.html', locals())
 
 @must_be_owner
 def photo_delete(request, username, photo_id):
@@ -975,7 +975,7 @@ def upload_profile_photo(request, username):
                 return HttpResponseRedirect(person.get_absolute_url())
     else:
         form = ProfilePhotoUploadForm()
-    return render(request, 'upload_profile_photo.html', {
+    return render(request, 'djangopeople/upload_profile_photo.html', {
         'form': form,
         'person': person,
     })
@@ -1020,7 +1020,7 @@ def webcam_profile_photo(request, username):
     
     form = ProfilePhotoWebcamForm()
     
-    return render(request, 'webcam_profile_photo.html', {
+    return render(request, 'djangopeople/webcam_profile_photo.html', {
         'form': form,
         'person': person,
     })
@@ -1037,7 +1037,7 @@ def country(request, country_code):
     
     people_locations_json = _get_people_locations_json(people)
 
-    return render(request, 'country.html', {
+    return render(request, 'djangopeople/country.html', {
         'country': country,
         'people': people,
         'people_locations_json': people_locations_json,
@@ -1050,7 +1050,7 @@ def country_sites(request, country_code):
     sites = PortfolioSite.objects.select_related().filter(
         contributor__country = country
     ).order_by('contributor')
-    return render(request, 'country_sites.html', {
+    return render(request, 'djangopeople/country_sites.html', {
         'country': country,
         'sites': sites,
     })
@@ -1060,7 +1060,7 @@ def region(request, country_code, region_code):
         country__iso_code = country_code.upper(),
         code = region_code.upper()
     )
-    return render(request, 'country.html', {
+    return render(request, 'djangopeople/country.html', {
         'country': region,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
@@ -1225,7 +1225,7 @@ def profile(request, username):
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
     
     
-    return render(request, 'profile.html', locals())
+    return render(request, 'djangopeople/profile.html', locals())
 
 def user_info_html(request, username, include_photo=False):
     """render a snippet of HTML about a person"""
@@ -1233,7 +1233,7 @@ def user_info_html(request, username, include_photo=False):
     clubs = person.club_membership.all()
     styles = person.styles.all()
     
-    return render(request, '_user-info.html', locals())
+    return render(request, 'djangopeople/_user-info.html', locals())
 
 
 @cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
@@ -1265,7 +1265,7 @@ def wall(request):
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
 
 
-    return render(request, 'wall.html', locals())
+    return render(request, 'djangopeople/wall.html', locals())
 
 def photo(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
@@ -1296,13 +1296,13 @@ def photo(request, username, photo_id):
     photo_location_json = _get_person_location_json(photo)
     
     is_owner = request.user.username == username
-    return render(request, 'photo.html', locals())
+    return render(request, 'djangopeople/photo.html', locals())
 
 def viewallphotos(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')
 
-    return render(request, 'photos_all.html', {
+    return render(request, 'djangopeople/photos_all.html', {
         'person': person,
         'photos': photos,
         'is_owner': request.user.username == username,
@@ -1346,7 +1346,7 @@ def club(request, name):
 
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
 
-    return render(request, 'club.html', locals())
+    return render(request, 'djangopeople/club.html', locals())
 
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import cache_page
@@ -1359,7 +1359,7 @@ def clubs_all(request):
     clubs_is_current = True
     print "Clubs_all()!"
     #open('/tmp/clubs_all.log','a').write("%s\n" % datetime.datetime.now().strftime('%H:%M:%S'))
-    return render(request, 'clubs_all.html', {
+    return render(request, 'djangopeople/clubs_all.html', {
         'clubs': clubs,
         'clubs_is_current': clubs_is_current,
     })  
@@ -1407,7 +1407,7 @@ def all_something(request, model, sort_by='name'):
     
     data.update(get_all_items(model, sort_by))
     
-    return render(request, 'all_something.html', data)
+    return render(request, 'djangopeople/all_something.html', data)
         
 
 def style(request, name):
@@ -1452,7 +1452,7 @@ def style(request, name):
 
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
             
-    return render(request, 'style.html', locals())
+    return render(request, 'djangopeople/style.html', locals())
 
 
 @must_be_owner
@@ -1482,7 +1482,7 @@ def edit_profile(request, username):
             'email': person.user.email,
         }
         form = ProfileForm(initial=initial, person=person)
-    return render(request, 'edit_profile.html', {
+    return render(request, 'djangopeople/edit_profile.html', {
         'form': form,
         'person': person,
         'example': example,
@@ -1563,7 +1563,7 @@ def diary_entry_add(request, username):
                    'is_public': is_public,
                   }
         form = DiaryEntryForm(initial=initial)
-    return render(request, 'diary_entry_add.html', locals())
+    return render(request, 'djangopeople/diary_entry_add.html', locals())
 
 
 @must_be_owner
@@ -1606,7 +1606,7 @@ def diary_entry_edit(request, username, slug):
             'longitude': entry.longitude,
         }
         form = DiaryEntryForm(initial=initial)
-    return render(request, 'diary_entry_add.html', locals())
+    return render(request, 'djangopeople/diary_entry_add.html', locals())
 
 @must_be_owner
 def diary_entry_delete(request, username, slug):
@@ -1651,7 +1651,7 @@ def edit_club(request, username):
         all_clubs_js = simplejson.dumps(all_clubs)
         del current_club_ids
         
-    return render(request, 'edit_club.html', locals())
+    return render(request, 'djangopeople/edit_club.html', locals())
 
 @must_be_owner
 def delete_club_membership(request, username, clubname):
@@ -1692,7 +1692,7 @@ def edit_style(request, username):
         all_styles = [x.name for x in Style.objects.all()]
         all_styles_js = simplejson.dumps(all_styles)
         
-    return render(request, 'edit_style.html', locals())
+    return render(request, 'djangopeople/edit_style.html', locals())
 
 @must_be_owner
 def delete_style(request, username, style):
@@ -1712,7 +1712,7 @@ def video(request, username, video_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
     video = get_object_or_404(Video, user=person.user, id=video_id)
     recent = Video.objects.all().order_by('-date_added').exclude(id=video.id)[:5]
-    return render(request, 'videos.html', {
+    return render(request, 'djangopeople/videos.html', {
         'person': person,
         'video': video,
         'is_owner': request.user.username == username,
@@ -1724,7 +1724,7 @@ def video(request, username, video_id):
 def videos_all(request):
     videos = Video.objects.all().order_by('-date_added')
     videos_is_current = True
-    return render(request, 'videos_all.html', {
+    return render(request, 'djangopeople/videos_all.html', {
         'videos': videos,
         'videos_is_current': videos_is_current,
     })    
@@ -1752,7 +1752,7 @@ def add_video(request, username):
             print form.errors
     else:
         form = VideoForm()
-    return render(request, 'add_video.html', {
+    return render(request, 'djangopeople/add_video.html', {
         'form': form,
         'person': person,
         'user': person.user,
@@ -1781,7 +1781,7 @@ def edit_account(request, username):
             return HttpResponseRedirect('/%s/' % username)
     else:
         form = AccountForm()
-    return render(request, 'edit_account.html', {
+    return render(request, 'djangopeople/edit_account.html', {
         'form': form,
         'person': person,
         'user': person.user,
@@ -1797,7 +1797,7 @@ def edit_password(request, username):
         user.save()
         return HttpResponseRedirect('/%s/' % username)
     else:
-        return render(request, 'edit_password.html')
+        return render(request, 'djangopeople/edit_password.html')
 
 @must_be_owner
 def edit_location(request, username):
@@ -1832,7 +1832,7 @@ def edit_location(request, username):
                            longitude=person.longitude)
             
         form = LocationForm(initial=initial)
-    return render(request, 'edit_location.html', {
+    return render(request, 'djangopeople/edit_location.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
     })
@@ -1863,14 +1863,14 @@ def search(request):
     ]
     if q:
         people = search_people(q)
-        return render(request, 'search.html', {
+        return render(request, 'djangopeople/search.html', {
             'q': q,
             'results': people,
             'api_key': settings.GOOGLE_MAPS_API_KEY,
             'has_badwords': has_badwords,
         })
     else:
-        return render(request, 'search.html')
+        return render(request, 'djangopeople/search.html')
 
 
 
@@ -2011,7 +2011,7 @@ def newsletter_options(request, username):
     else:
         form = NewsletterOptionsForm(initial=dict(newsletter=person.newsletter))
 
-    return render(request, 'newsletter_options.html', locals())
+    return render(request, 'djangopeople/newsletter_options.html', locals())
         
 
 def find_clubs_by_location_json(request):
@@ -2129,7 +2129,7 @@ def zoom(request):
     it finds out what's in that region and updates a list.
     """
     people_count = KungfuPerson.objects.count()
-    return render(request, 'zoom.html', locals())
+    return render(request, 'djangopeople/zoom.html', locals())
 
 def _get_zoom_content(left, upper, right, lower, request=None):
 
@@ -2185,7 +2185,7 @@ def zoom_content(request):
     
     content_data = _get_zoom_content(left, upper, right, lower)
     
-    return render(request, 'zoom-content.html', content_data)
+    return render(request, 'djangopeople/zoom-content.html', content_data)
 
 
 
@@ -2369,7 +2369,7 @@ def crop_profile_photo(request, username):
                                 ))
     
     
-    return render(request, 'crop-profile-photo.html', locals())
+    return render(request, 'djangopeople/crop-profile-photo.html', locals())
     
 
 def tinymce_filebrowser(request):
@@ -2387,7 +2387,7 @@ def nav_html(request):
     """return the piece of HTML that shows the nav,
     i.e. the content inside the tag <div id="nav"></div>
     """
-    return render(request, '_nav.html', dict())
+    return render(request, 'djangopeople/_nav.html', dict())
 
 
 from youtube import YouTubeVideoError, get_youtube_video_by_id
@@ -2405,7 +2405,7 @@ def get_youtube_video_by_id_json(request):
     return render_json(data)
 
 def runway(request):
-    return render(request, 'runway.html', locals())
+    return render(request, 'djangopeople/runway.html', locals())
 
 def runway_data_js(request):
     cache_key = 'runway_data_js'
