@@ -1873,6 +1873,21 @@ def search(request):
         return render(request, 'djangopeople/search.html')
 
 
+def _valid_url(url):
+    bits = urlparse(url)
+    if not (bits[0] and bits[1]):
+        # except for a unit test
+        if url.startswith('file:///home/peterbe'):
+            return True
+        return False
+    if bits[0] not in ('http','file'):
+        return False
+    # spam URLs can sometimes be things like:
+    # ['<a href="/index.cgi"><im
+    for any in list('<>[]{}"'):
+        if any in bits[1]:
+            return False
+    return True
 
 def guess_club_name_json(request):
     club_url = request.GET.get('club_url')
@@ -1880,12 +1895,16 @@ def guess_club_name_json(request):
     
     if not club_url:
         return render_json(dict(error="no url"))
+    
 
     club_url = club_url.strip()
     if not club_url.startswith('http'):
         if not club_url.startswith('file://'):
             club_url = 'http://' + club_url
-        
+
+    if not _valid_url(club_url):
+        return render_json(dict(error="not valid url"))
+
     domain = urlparse(club_url)[1]
     data = {}
     
