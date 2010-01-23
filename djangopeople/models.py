@@ -498,7 +498,7 @@ class Photo(models.Model):
     region = models.ForeignKey(Region, blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    location_description = models.CharField(max_length=50)
+    location_description = models.CharField(max_length=100)
 
     objects = DistanceManager()
 
@@ -637,7 +637,7 @@ class KungfuPerson(models.Model):
     region = models.ForeignKey(Region, blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    location_description = models.CharField(max_length=50)
+    location_description = models.CharField(max_length=100)
     
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')

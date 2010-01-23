@@ -15,7 +15,7 @@ from djangopeople.models import KungfuPerson
 def redirect(url):
     return lambda res: HttpResponseRedirect(url)
 
-from sitemaps import FlatPageSitemap, sitemap, CustomSitemap
+from djangopeople.sitemaps import FlatPageSitemap, sitemap, CustomSitemap
 
 sitemaps = {
     'flatpages': FlatPageSitemap,

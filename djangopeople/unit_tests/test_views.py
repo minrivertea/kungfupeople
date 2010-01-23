@@ -43,6 +43,9 @@ class ViewsTestCase(TestCase):
                 if not os.listdir(dir_):
                     os.rmdir(dir_)
         
+        # Delete any photos so their their uploaded mock photos are deleted
+        Photo.objects.all().delete()
+        
         super(ViewsTestCase, self).tearDown()
     
     

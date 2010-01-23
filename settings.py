@@ -95,6 +95,7 @@ MIDDLEWARE_CLASSES = (
     'djangopeople.middleware.AutoLogin',
     'djangopeople.middleware.Recruitment',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'hoptoad.middleware.HoptoadNotifierMiddleware',
 #    'ab.middleware.ABMiddleware',
                       
 )
@@ -128,6 +129,8 @@ INSTALLED_APPS = (
 #    'ab',
     'twitter',
 )
+
+HOPTOAD_API_KEY = '0f57bc180f1bf1f3be224a24f5c52be7'
 
 MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')
 
