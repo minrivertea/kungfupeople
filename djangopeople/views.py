@@ -78,7 +78,8 @@ def render_json(data):
     
 
 def index(request):
-
+    
+    
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
     people_count = KungfuPerson.objects.all().count()
     clubs = Club.objects.all().order_by('-date_added')[:5]
@@ -1577,7 +1578,7 @@ def diary_entry_edit(request, username, slug):
         if form.is_valid():  
             entry.title = form.cleaned_data['title']
             entry.content = form.cleaned_data['content']
-            entry.is_public = form.cleaned_data['is_public']
+            entry.is_public = form.cleaned_data.get('is_public', True)
             entry.slug = entry.title.strip().replace(' ', '-').lower()
             if form.cleaned_data['region']:
                 region = Region.objects.get(
