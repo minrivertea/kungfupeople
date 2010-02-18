@@ -1578,7 +1578,7 @@ def diary_entry_edit(request, username, slug):
         if form.is_valid():  
             entry.title = form.cleaned_data['title']
             entry.content = form.cleaned_data['content']
-            entry.is_public = form.cleaned_data.get('is_public', True)
+            entry.is_public = form.cleaned_data.get('is_public', entry.is_public)
             entry.slug = entry.title.strip().replace(' ', '-').lower()
             if form.cleaned_data['region']:
                 region = Region.objects.get(
