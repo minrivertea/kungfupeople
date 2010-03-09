@@ -425,7 +425,7 @@ class DiaryEntry(models.Model):
     slug = models.SlugField()
     content = models.TextField()
     date_added = models.DateTimeField('date added', default=datetime.now)
-    is_public = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=True)
 
     # Location stuff - all location fields are required
     country = models.ForeignKey(Country)
