@@ -38,6 +38,7 @@ from forms import SignupForm, LocationForm, ProfileForm, VideoForm, ClubForm, \
 from data import get_all_items
 from iplookup import getGeolocationByIP, getGeolocationByIP_cached
 from clever_cache import loggedin_aware_key_prefix, cache_page_with_prefix
+from view_cache_utils import cache_page_with_prefix
 #from googlemaps import get_person_profile_static_map
 
 from constants import MACHINETAGS_FROM_FIELDS, IMPROVIDERS_DICT, SERVICES_DICT
@@ -75,10 +76,27 @@ def render(request, template, context_dict=None, **kwargs):
 def render_json(data):
     return HttpResponse(simplejson.dumps(data),
                         mimetype='application/javascript')
-    
 
-def index(request):
+
+def _base_key_prefixer(request):
+    if request.GET.keys():
+        # really worried
+        return None
+
+    if request.user.is_authenticated():
+        return None
     
+    key = request.get_host().split(':')[0]
+    
+    return key
+
+    
+def basic_key_prefixer(request):
+    return _base_key_prefixer(request)
+
+
+@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+def index(request):
     
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
     people_count = KungfuPerson.objects.all().count()
@@ -1237,7 +1255,7 @@ def user_info_html(request, username, include_photo=False):
     return render(request, 'djangopeople/_user-info.html', locals())
 
 
-@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+@cache_page_with_prefix(ONE_DAY, loggedin_aware_key_prefix)
 def wall(request):
     people = KungfuPerson.objects.all().order_by('-id')
     latest_five = people[0:7]
@@ -1354,7 +1372,7 @@ from django.views.decorators.cache import cache_page
 #@cache_control(max_age=ONE_HOUR)
 #@cache_page(60*2)
 
-@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+@cache_page_with_prefix(ONE_DAY, loggedin_aware_key_prefix)
 def clubs_all(request):
     clubs = Club.objects.all().order_by('-date_added')
     clubs_is_current = True
@@ -1708,7 +1726,7 @@ def delete_style(request, username, style):
     return HttpResponseRedirect('/%s/style/' % user.username)
 
 
-@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+@cache_page_with_prefix(ONE_HOUR * 3, loggedin_aware_key_prefix)
 def video(request, username, video_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
     video = get_object_or_404(Video, user=person.user, id=video_id)
@@ -1721,7 +1739,7 @@ def video(request, username, video_id):
     })
 
 
-@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+@cache_page_with_prefix(ONE_HOUR * 3, loggedin_aware_key_prefix)
 def videos_all(request):
     videos = Video.objects.all().order_by('-date_added')
     videos_is_current = True
@@ -2143,7 +2161,7 @@ def _find_clubs_by_location(location,
     return clubs
 
 
-@cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
+@cache_page_with_prefix(ONE_DAY, loggedin_aware_key_prefix)
 def zoom(request):
     """zoom() is about showing a map and when the user zooms in on a region
     it finds out what's in that region and updates a list.

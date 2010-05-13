@@ -21,7 +21,9 @@ def loggedin_aware_key_prefix(request):
     if request.POST:
         return None
     
-    return ""
+    key = request.get_host().split(':')[0]
+
+    return key
     
     
 

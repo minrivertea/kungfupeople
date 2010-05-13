@@ -25,7 +25,7 @@ class NewsletterAdmin(admin.ModelAdmin):
                     'send_count',)
     list_filter = ('language',)
     ordering = ('-send_date',)
-    exclude = ('date_added', 'modify_date', 'author', 'sent_date')
+    exclude = ('date_added', 'author', 'sent_date')
     
     def sent(self, obj):
         return obj.sent_date is not None
