@@ -1519,7 +1519,7 @@ def diary_entry_add(request, username):
             user = person.user
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            is_public = False
+            is_public = True
             slug = slugify(unaccent_string(title).replace('&','and')[:50])
             region = None
 
@@ -1565,15 +1565,6 @@ def diary_entry_add(request, username):
         
         # by default, assume that the entry should be public
         is_public = True
-        # look at the past ones
-        count_public = count_not_public = 0
-        for each in DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:10]:
-            if each.is_public:
-                count_public += 1
-            else:
-                count_not_public += 1
-        if count_not_public > count_public:
-            is_public = False
         
         initial = {'location_description': person.location_description,
                    'country': person.country.iso_code,
