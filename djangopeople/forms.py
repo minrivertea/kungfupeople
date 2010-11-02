@@ -139,11 +139,11 @@ class SignupForm(forms.Form):
     
     def clean_region(self):
         # If a region is selected, ensure it matches the selected country
-        if self.cleaned_data['region']:
+        if self.cleaned_data['region'] and self.cleaned_data.get('country'):
             try:
                 region = Region.objects.get(
                     code = self.cleaned_data['region'],
-                    country__iso_code = self.cleaned_data['country']
+                    country__iso_code = self.cleaned_data.get('country')
                 )
             except ObjectDoesNotExist:
                 raise forms.ValidationError(
