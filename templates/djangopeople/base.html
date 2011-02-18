@@ -12,7 +12,7 @@
     <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
     {% block extracss %}{% endblock %}
     {% block extrahead %}{% endblock %}
-    
+
 {% if GOOGLE_ANALYTICS_TRACKER_ID %}
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -21,7 +21,7 @@
 
   (function() {
     var ga = document.createElement('script');
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
         'http://www') + '.google-analytics.com/ga.js';
     ga.setAttribute('async', 'true');
     document.documentElement.firstChild.appendChild(ga);
@@ -56,17 +56,17 @@
 {% block map %}{% endblock %}
 
 <div class="main-div">
-         
+
         {% block content_outer %}
-	
+
         {% block content %}{% endblock %}
-        
+
         {% endblock %}
 
 
 	{% block extra %}{% endblock %}
-        
-        
+
+
 </div>
 
 <br clear="all"/>
@@ -82,6 +82,10 @@
   <a href="/privacy/">privacy policy</a>
  |
   &copy; Kung Fu People {{ COPYRIGHT_YEAR }}
+{% if request.user %}
+ |
+ <a href="{% url leave_site %}">leave site</a>
+{% endif %}
   </p>
 </div>
 

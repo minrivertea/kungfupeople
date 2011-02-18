@@ -14,6 +14,7 @@ FORCE_LOWERCASE_TAGS = True
 
 AUTH_PROFILE_MODULE = 'djangopeople.KungfuPerson'
 RECOVERY_EMAIL_FROM = 'chris@fry-it.com'
+NOREPLY_EMAIL = 'noreply@kungfupeople.com'
 
 ADMINS = (
     ('Chris West', 'chris@fry-it.com'),
@@ -97,18 +98,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'hoptoad.middleware.HoptoadNotifierMiddleware',
 #    'ab.middleware.ABMiddleware',
-                      
+
 )
 
 ROOT_URLCONF = 'djangopeoplenet.urls'
 
+LOGIN_URL = '/login/'
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(OUR_ROOT, 'templates'),
 #    os.path.join(OUR_ROOT, 'djangopeople/templates'),
-                 
+
 )
 
 INSTALLED_APPS = (
@@ -172,8 +174,8 @@ MAP_KEYS = {'fullname':'A',
 # default is 2 weeks, so we can safely increase that because there's nothing
 # secure and confidential on this website
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
-# NOTE! SESSION_COOKIE_AGE can not be more than 30 days otherwise 
-# the django.contrib.sessions.backends.cached_db won't use memcache to store the 
+# NOTE! SESSION_COOKIE_AGE can not be more than 30 days otherwise
+# the django.contrib.sessions.backends.cached_db won't use memcache to store the
 # sessions. Thanks for the tip Bruno!
 
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'

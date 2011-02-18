@@ -60,17 +60,17 @@ def get_unique_user_cache_key(meta_request):
 
 
 def get_previous_next(object_set, object_):
-    """return a tuple (<previous>, <next>) where <previous> and <next> are 
+    """return a tuple (<previous>, <next>) where <previous> and <next> are
     objects from the object_set list/queryset.
     <previous> and <next> can also be None"""
     previous = next = None
-    
+
     _is_next = False
     for each in object_set:
         if _is_next:
             next = each
             break
-        
+
         if each == object_:
             _is_next = True
         else:
@@ -78,19 +78,25 @@ def get_previous_next(object_set, object_):
     if not _is_next:
         # never matched
         previous = None
-    
+
     return previous, next
-    
+
 
 
 hex_to_int = lambda s: int(s, 16)
 int_to_hex = lambda i: hex(i).replace('0x', '')
 
 def lost_url_for_user(username):
+    return _secret_url_for_user('recover', username)
+
+def leave_site_url_for_user(username):
+    return _secret_url_for_user('leavesite', username)
+
+def _secret_url_for_user(prefix, username):
     days = int_to_hex((datetime.date.today() - ORIGIN_DATE).days)
     hash = md5.new(settings.SECRET_KEY + days + username).hexdigest()
-    return '/recover/%s/%s/%s/' % (
-        username, days, hash
+    return '/%s/%s/%s/%s/' % (
+        prefix, username, days, hash
     )
 
 def hash_is_valid(username, days, hash):
@@ -139,7 +145,7 @@ def download_url(url, request_meta):
         headers['Accept-Language'] = request_meta.get('HTTP_ACCEPT_LANGUAGE')
     if request_meta.get('HTTP_ACCEPT'):
         headers['Accept-Encoding'] = request_meta.get('HTTP_ACCEPT')
-        
+
     req = urllib2.Request(url, None, headers)
     u = urllib2.urlopen(req)
     headers = u.info()
@@ -181,18 +187,18 @@ def prowlpy_wrapper(event, description="",
                     priority=None):
     if not prowl_api:
         return
-    
+
     params = dict(application=application,
                   event=event,
                   description=description
                   )
-    
+
     if priority is not None:
         # An integer value ranging [-2, 2]: Very Low, Moderate, Normal, High, Emergency
         priority = int(priority)
         assert priority >= -2 and priority <= 2
         params['priority'] = priority
-    
+
     def params2cachekey(params):
         s = []
         for v in params.values():
@@ -202,18 +208,18 @@ def prowlpy_wrapper(event, description="",
                 s.append(str(v))
         s =  ''.join(s)[:256]
         return re.sub('\W','', s)
-    
+
     cache_key = params2cachekey(params)
-    
+
     if not cache.get(cache_key):
-    
+
         try:
             prowl_api.post(**params)
         except:
             logging.error("Error sending event %r" % event, exc_info=True)
-            
+
         cache.set(cache_key, time(), 10)
-                        
+
 def is_jpeg(filename):
     assert os.path.isfile(filename), "Not a file"
     return imghdr.what(filename) == 'jpeg'

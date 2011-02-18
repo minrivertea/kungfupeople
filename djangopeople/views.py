@@ -13,13 +13,14 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify, truncatewords
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.db import transaction
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.core.paginator import Paginator
-
+from django.core.mail import send_mail
 
 # project
 from sorl.thumbnail.main import DjangoThumbnail, get_thumbnail_setting
@@ -85,19 +86,19 @@ def _base_key_prefixer(request):
 
     if request.user.is_authenticated():
         return None
-    
+
     key = request.get_host().split(':')[0]
-    
+
     return key
 
-    
+
 def basic_key_prefixer(request):
     return _base_key_prefixer(request)
 
 
 @cache_page_with_prefix(ONE_HOUR, loggedin_aware_key_prefix)
 def index(request):
-    
+
     recent_people = KungfuPerson.objects.all().select_related().order_by('-id')[:24]
     people_count = KungfuPerson.objects.all().count()
     clubs = Club.objects.all().order_by('-date_added')[:5]
@@ -106,7 +107,7 @@ def index(request):
     diaries = DiaryEntry.objects.all().exclude(is_public=False).order_by('-date_added')[:3]
     videos = Video.objects.all().order_by('-date_added')[:1]
     your_person = None
-   
+
     # if a user is logged in, perhaps from oauth, but don't have a profile
     # then force them to get a profile
     if not request.user.is_anonymous() and not request.user.is_superuser:
@@ -122,40 +123,40 @@ def index(request):
             except TwitterUser.DoesNotExist:
                 # normal signup
                 return HttpResponseRedirect(reverse('signup'))
-        
+
     cache_key = 'all_people'
     people = cache.get(cache_key)
     if people is None:
         people = KungfuPerson.objects.all().select_related().order_by('-id')
         cache.set(cache_key, people, ONE_WEEK)
-    
+
     recent_people = people[:24]
-    
+
     cache_key = 'people_count'
     people_count = cache.get(cache_key)
     if people_count is None:
         people_count = KungfuPerson.objects.all().count()
         cache.set(cache_key, people_count, ONE_WEEK)
-    
+
     cache_key = 'clubs_recent_5'
     clubs = cache.get(cache_key)
     if clubs is None:
         clubs = Club.objects.all().order_by('-date_added')[:5]  # select_related()???
         cache.set(cache_key, clubs, ONE_WEEK)
-        
+
     cache_key = 'styles_recent_5'
     styles = cache.get(cache_key)
     if styles is None:
         styles = Style.objects.all().order_by('-date_added')[:5] # select_related()???
         cache.set(cache_key, styles, ONE_WEEK)
-    
-    
+
+
     people_locations_json = _get_people_locations_json(people)
-    
+
     unique_countries = uniqify([x.country for x in people],
                               lambda x: x.id)
     unique_countries.sort(lambda x,y: cmp(x.name.lower(), y.name.lower()))
-    
+
     return render(request, 'djangopeople/index.html', {
         'people': people,
         'unique_countries': unique_countries,
@@ -214,7 +215,7 @@ def login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     user = auth.authenticate(username=username, password=password)
-    
+
     if user is not None and user.is_active:
         auth.login(request, user)
         return HttpResponseRedirect(
@@ -246,12 +247,12 @@ def lost_password(request):
             })
         username = person.user.username
         cache_key = 'password_recover_%s' % username.replace(' ','')
-        
+
         if cache.get(cache_key) is not None:
             msg = "Recovery instructions already sent.\n"
             msg += "Please try again a bit later.\n"
             return HttpResponse(msg)
-        
+
         path = utils.lost_url_for_user(username)
         from django.core.mail import send_mail
         import smtplib
@@ -261,7 +262,7 @@ def lost_password(request):
             'person': person,
             'site_url': 'http://' + urlparse(current_url)[1],
             'PROJECT_NAME': settings.PROJECT_NAME,
-                                                       
+
         })
         try:
             send_mail(
@@ -274,10 +275,10 @@ def lost_password(request):
             return render(request, 'djangopeople/lost_password.html', {
                 'message': 'Could not e-mail you a recovery link.',
             })
-        
-        
+
+
         cache.set(cache_key, 1, 60)
-        
+
         return render(request, 'djangopeople/lost_password.html', {
             'message': ('An e-mail has been sent to %s with instructions for '
                 "recovering your password. Don't forget to check your spam "
@@ -288,7 +289,7 @@ def lost_password(request):
 def lost_password_recover(request, username, days, hash):
     user = get_object_or_404(User, username=username)
     if utils.hash_is_valid(username, days, hash):
-        user.backend='django.contrib.auth.backends.ModelBackend' 
+        user.backend='django.contrib.auth.backends.ModelBackend'
         auth.login(request, user)
         return HttpResponseRedirect('/%s/password/' % username)
     else:
@@ -298,32 +299,32 @@ def lost_password_recover(request, username, days, hash):
 
 @transaction.commit_on_success
 def signup(request, initial_user=None):
-    
+
     if not request.user.is_anonymous():
         try:
             request.user.get_profile()
             return HttpResponseRedirect('/')
         except KungfuPerson.DoesNotExist:
             pass
-        
+
     if initial_user is None and request.method == 'POST' and \
       request.POST.get('initial_user_id'):
         initial_user = User.objects.get(pk=request.POST.get('initial_user_id'))
 
     all_clubs = [dict(name=x.name, url=x.url) for x in Club.objects.all()]
     all_clubs_js = simplejson.dumps(all_clubs)
-    
+
     base_location = None
-    
+
     if request.method == 'POST':
         form = SignupForm(request.POST, request.FILES)
         # if there is an initial user drop the password fields
         if initial_user:
             del form.fields['password1']
             del form.fields['password2']
-            
+
         if form.is_valid():
-            
+
             # First create the user
             if initial_user:
                 user = initial_user
@@ -340,19 +341,19 @@ def signup(request, initial_user=None):
                 }
                 if form.cleaned_data.get('password1'):
                     creation_args['password'] = form.cleaned_data['password1']
-                    
+
                 user = User.objects.create(**creation_args)
                 user.first_name = form.cleaned_data['first_name']
                 user.last_name = form.cleaned_data['last_name']
                 user.save()
-                
+
             region = None
             if form.cleaned_data['region']:
                 region = Region.objects.get(
                     country__iso_code = form.cleaned_data['country'],
                     code = form.cleaned_data['region']
                 )
-            
+
             # Now create the KungfuPerson
             person = KungfuPerson.objects.create(
                 user = user,
@@ -364,7 +365,7 @@ def signup(request, initial_user=None):
                 longitude = form.cleaned_data['longitude'],
                 location_description = form.cleaned_data['location_description']
             )
-            
+
             if request.session.get('profile_image_url'):
                 _download_profile_image(person, request.session.get('profile_image_url'))
 
@@ -379,7 +380,7 @@ def signup(request, initial_user=None):
                     style.slug = slug
                     style.save()
                     person.styles.add(style)
-                
+
             # and then add their club membership if provided
             url = form.cleaned_data['club_url'].strip()
             name = form.cleaned_data['club_name'].strip()
@@ -391,12 +392,12 @@ def signup(request, initial_user=None):
                 club.save()
                 person.club_membership.add(club)
                 person.save()
-            
+
             # make sure they get one of those new passwords
             if not initial_user:
                 user.set_password(creation_args['password'])
                 user.save()
-            
+
             # use the cookie Google Analytics gives us
             utmz = request.COOKIES.get('__utmz')
             if utmz:
@@ -415,7 +416,7 @@ def signup(request, initial_user=None):
                         came_from = "%s,%s,%s %s" % (utmcsr, utmcct, utmcmd, utmccn)
                         person.came_from = came_from
                         person.save()
-                    
+
                 except:
                     import sys
                     type_, val, tb = sys.exc_info()
@@ -425,15 +426,15 @@ def signup(request, initial_user=None):
                     traceback.print_tb(tb)
                     logging.error("Unable to set came_from",
                                 exc_info=True)
-                    
+
             if request.session.get('recruiter'):
                 # Note: request.session.get('recruiter') is the user ID
                 recruiter = User.objects.get(id=request.session.get('recruiter'))
                 if recruiter != user:
                     Recruitment.objects.create(recruiter=recruiter,
                                                recruited=user)
-                    
-            
+
+
             from django.contrib.auth import load_backend, login
             for backend in settings.AUTHENTICATION_BACKENDS:
                 if user == load_backend(backend).get_user(user.pk):
@@ -444,7 +445,7 @@ def signup(request, initial_user=None):
             return HttpResponseRedirect('/%s/whatnext/' % username)
         else: print form.errors
     else:
-        
+
         initial = {}
         if initial_user is not None:
             initial['initial_user_id'] = initial_user.id
@@ -468,7 +469,7 @@ def signup(request, initial_user=None):
                 if randint(1,10):
                     # pretend that sometimes we can't get the IP
                     ip = ''
-                
+
             if ip and not (ip == '127.0.0.1' or ip.startswith('192.168.')):
                 base_location = getGeolocationByIP_cached(ip)
                 if base_location['lat'] == 0.0 and base_location['lng'] == 0.0:
@@ -479,7 +480,7 @@ def signup(request, initial_user=None):
                 try:
                     country = Country.objects.get(name__iexact=base_location['country'])
                     initial['country'] = country.iso_code
-                    
+
                     if base_location.get('region') and base_location.get('city') and\
                       base_location.get('region').lower() != base_location.get('city').lower():
                         initial['location_description'] = "%s, %s" % \
@@ -491,9 +492,9 @@ def signup(request, initial_user=None):
                 except Country.DoesNotExist:
                     # the lookup is duff
                     base_location = None
-        
+
         form = SignupForm(initial=initial)
-        
+
     return render(request, 'djangopeople/signup.html', {
         'form': form,
         'api_key': settings.GOOGLE_MAPS_API_KEY,
@@ -514,14 +515,14 @@ def diary_entry(request, username, slug):
     user = request.user
     if not entry.is_public and not user == person.user:
         raise Http404("You're not authorised to view this page")
-    
+
     photos = Photo.objects.filter(diary_entry=entry).order_by('-date_added')
-    
+
     diary_entry_location_json = _get_person_location_json(entry)
-    
+
     is_owner = request.user.username == username
     return render(request, 'djangopeople/diary_entry.html', locals())
-    
+
 
 def _download_profile_image(person, image_url):
     # save the image
@@ -542,7 +543,7 @@ def _download_profile_image(person, image_url):
     open(path, 'w').write(image_content)
     person.photo = 'profiles/%s' % filename
     person.save()
-    
+
 
 def _get_or_create_club(name, url=None):
     assert name, "must have a club name"
@@ -551,7 +552,7 @@ def _get_or_create_club(name, url=None):
         return Club.objects.get(name__iexact=name)
     except Club.DoesNotExist:
         pass
-    
+
     if url:
         if not url.startswith('http'):
             url = 'http://' + url
@@ -560,7 +561,7 @@ def _get_or_create_club(name, url=None):
             return Club.objects.get(url__istartswith=url_start)
         except Club.DoesNotExist:
             pass
-        
+
     # still here?!
     slug = slugify(unaccent_string(name).replace('&','and'))
     return Club.objects.create(url=url, name=name.strip(),
@@ -572,7 +573,7 @@ def _get_or_create_style(name):
         return Style.objects.get(name__iexact=name.strip())
     except Style.DoesNotExist:
         pass
-        
+
     # still here?!
     return Style.objects.create(name=name)
 
@@ -599,7 +600,7 @@ def derive_username(nickname):
 def diary_entry_location_json(request, username, slug):
     person = get_object_or_404(KungfuPerson, user__username=username)
     diary_entry = get_object_or_404(DiaryEntry, slug=slug)
-    
+
     data = {'country': diary_entry.country.iso_code,
             'location_description': diary_entry.location_description,
             'latitude': diary_entry.latitude,
@@ -611,19 +612,19 @@ def diary_entry_location_json(request, username, slug):
 class UploadError(Exception):
     pass
 
-    
 
-    
+
+
 
 def swf_upload_test(request):
     if request.method == "POST":
         person = KungfuPerson.objects.all().order_by('?')[0]
-        
+
         filename = request.POST['Filename']
         filedata = request.FILES['Filedata']
-        
+
         upload_folder = person.get_person_upload_folder()
-        
+
         def _mkdir(newdir):
             """works the way a good mkdir should :)
                 - already exists, silently complete
@@ -641,9 +642,9 @@ def swf_upload_test(request):
                     _mkdir(head)
                 if tail:
                     os.mkdir(newdir)
-                    
+
         _mkdir(upload_folder)
-        
+
         image_content = filedata.read()
         image = Image.open(StringIO(image_content))
         format = image.format
@@ -661,24 +662,24 @@ def swf_upload_test(request):
     else:
         return render(request, 'djangopeople/swf_upload_test.html', {})
 
-    
-        
-        
+
+
+
 
 #@must_be_owner # causes a 403! that's why it's commented out
 def photo_upload_multiple_pre(request, username):
     """ used by the swfupload """
     person = get_object_or_404(KungfuPerson, user__username=username)
-    
+
     # uploadify sends a POST but puts ?folder=xxx on the URL
     folder = request.GET.get('folder')
-        
+
     if not request.method == 'POST':
         raise UploadError("Must be post")
-    
+
     filename = request.POST['Filename']
     filedata = request.FILES['Filedata']
-    
+
     upload_folder = person.get_person_upload_folder()
 
     def _mkdir(newdir):
@@ -698,9 +699,9 @@ def photo_upload_multiple_pre(request, username):
                 _mkdir(head)
             if tail:
                 os.mkdir(newdir)
-                
+
     _mkdir(upload_folder)
-    
+
     image_content = filedata.read()
     image = Image.open(StringIO(image_content))
     format = image.format
@@ -709,20 +710,20 @@ def photo_upload_multiple_pre(request, username):
     # Save the image
     path = os.path.join(upload_folder, filename)
     open(path, 'w').write(image_content)
-    
+
     image.thumbnail((60, 60))
     thumbnail_folder = person.get_person_thumbnail_folder()
     _mkdir(thumbnail_folder)
     thumbnail_path = os.path.join(thumbnail_folder, filename)
     image.save(thumbnail_path, image.format)
-    
+
     return HttpResponse(thumbnail_path.replace(settings.MEDIA_ROOT, '/static'))
 
 
 @must_be_owner
 def photo_upload(request, username, prefer='multiple'):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    
+
     save_preference = False
     if request.method == "GET" and request.GET.get('prefer'):
         prefer = request.GET.get('prefer')
@@ -731,13 +732,13 @@ def photo_upload(request, username, prefer='multiple'):
         else:
             save_preference = prefer
     else:
-        prefer = request.COOKIES.get('photo_upload', prefer)        
-        
+        prefer = request.COOKIES.get('photo_upload', prefer)
+
     upload_folder = person.get_person_upload_folder()
-    
+
     if request.method == 'POST':
         filenames = []
-        
+
         if prefer == 'multiple':
             form = PhotoUploadForm(request.POST)
             del form.fields['photo'] # not needed in multi-upload
@@ -757,7 +758,7 @@ def photo_upload(request, username, prefer='multiple'):
             upload_folder = None
             if prefer == 'single':
                 photo = form.cleaned_data['photo']
-                
+
                 image_content = photo.read()
                 format = Image.open(StringIO(image_content)).format
                 format = format.lower().replace('jpeg', 'jpg')
@@ -773,7 +774,7 @@ def photo_upload(request, username, prefer='multiple'):
                         raise IOError, "Unable to created the directory %s" % dirname
                 open(path, 'w').write(image_content)
                 filenames = [path]
-                
+
             for filepath in filenames:
                 filename = os.path.basename(filepath)
                 upload_folder = os.path.dirname(filepath)
@@ -787,8 +788,8 @@ def photo_upload(request, username, prefer='multiple'):
                     except IOError:
                         raise IOError, "Unable to created the directory %s" % dirname
                 #open(path, 'w').write(image_content)
-                os.rename(filepath, path)    
-    
+                os.rename(filepath, path)
+
                 if form.cleaned_data['diary_entry']:
                     diary_entry = form.cleaned_data['diary_entry']
                     if isinstance(diary_entry, int):
@@ -797,12 +798,12 @@ def photo_upload(request, username, prefer='multiple'):
                             # crazy paranoia
                             from django.forms import ValidationError
                             raise ValidationError("Not your entry")
-    
+
                 if form.cleaned_data['region']:
                     region = Region.objects.get(
                         country__iso_code = form.cleaned_data['country'],
                         code = form.cleaned_data['region']
-                    ) 
+                    )
 
                 from django.core.files import File
                 photo = Photo.objects.create(
@@ -817,31 +818,31 @@ def photo_upload(request, username, prefer='multiple'):
                     region = region,
                     )
 
-                    
+
             if upload_folder:
                 if not os.listdir(upload_folder):
                     os.rmdir(upload_folder)
-                
+
             if diary_entry:
                 url = diary_entry.get_absolute_url()
             else:
                 url = person.get_absolute_url()
             return HttpResponseRedirect(url)
     else:
-        
+
         # make sure all uploaded photos are first deleted
         if os.path.isdir(upload_folder):
             for filename in os.listdir(upload_folder):
                 if os.path.isfile(os.path.join(upload_folder, filename)):
                     os.remove(os.path.join(upload_folder, filename))
-        
+
         initial = {'location_description': person.location_description,
                    'country': person.country.iso_code,
                    'latitude': person.latitude,
                    'longitude': person.longitude,
                   }
         form = PhotoUploadForm(initial=initial)
-        
+
         diary_entries = []
         for entry in DiaryEntry.objects.filter(user=person.user
                                               ).order_by('-date_added')[:100]:
@@ -850,25 +851,25 @@ def photo_upload(request, username, prefer='multiple'):
                 title = title[:40] + '...'
             title += entry.date_added.strftime(' (%d %b %Y)')
             diary_entries.append((entry.id, title))
-            
+
         if diary_entries:
             diary_entries.insert(0, ('', ''))
             form.fields['diary_entry'].widget.choices = tuple(diary_entries)
         else:
             del form.fields['diary_entry']
-            
+
     prefer_multiple = prefer == 'multiple'
-    
+
     response = render(request, 'djangopeople/photo_upload_form.html', {
         'form': form,
         'person': person,
         'prefer_multiple': prefer == 'multiple'
     })
-    
+
     if save_preference:
         set_cookie(response, 'photo_upload', save_preference,
                    expire=60*60*24*60)
-        
+
     return response
 
 
@@ -879,7 +880,7 @@ def photo_edit(request, username, photo_id):
     region = None
     page_title = "Edit your photo"
     button_value = "Save changes"
-    
+
     diary_entries = []
     for entry in DiaryEntry.objects.filter(user=person.user
                                             ).order_by('-date_added')[:100]:
@@ -888,18 +889,18 @@ def photo_edit(request, username, photo_id):
             title = title[:40] + '...'
         title += entry.date_added.strftime(' (%d %b %Y)')
         diary_entries.append((entry.id, title))
-        
+
 
     if request.method == 'POST':
         form = PhotoEditForm(request.POST)
-        
+
         if diary_entries:
             diary_entries.insert(0, ('', ''))
             form.fields['diary_entry'].choices = tuple(diary_entries)
         else:
             del form.fields['diary_entry']
-            
-        if form.is_valid():  
+
+        if form.is_valid():
             diary_entry = photo.diary_entry
 
             if form.cleaned_data['diary_entry']:
@@ -909,7 +910,7 @@ def photo_edit(request, username, photo_id):
                 region = Region.objects.get(
                     country__iso_code = form.cleaned_data['country'],
                     code = form.cleaned_data['region']
-                ) 
+                )
 
             photo.country = Country.objects.get(
                 iso_code = form.cleaned_data['country']
@@ -921,7 +922,7 @@ def photo_edit(request, username, photo_id):
             photo.description = form.cleaned_data['description']
             photo.diary_entry = diary_entry
             photo.save()
-            
+
             return HttpResponseRedirect(photo.get_absolute_url())
             #return HttpResponseRedirect('/%s/upload/done/' % username)
     else:
@@ -937,13 +938,13 @@ def photo_edit(request, username, photo_id):
         if photo.diary_entry:
             initial['diary_entry'] = photo.diary_entry.id
         form = PhotoEditForm(initial=initial)
-        
+
         if diary_entries:
             diary_entries.insert(0, ('', ''))
             form.fields['diary_entry'].choices = tuple(diary_entries)
         else:
             del form.fields['diary_entry']
-            
+
     return render(request, 'djangopeople/photo_upload_form.html', locals())
 
 @must_be_owner
@@ -982,13 +983,13 @@ def upload_profile_photo(request, username):
             open(path, 'w').write(image_content)
             person.photo = 'profiles/%s' % filename
             person.save()
-            
-            # if the image is more than 10% away from being a square, encourage 
+
+            # if the image is more than 10% away from being a square, encourage
             # them to crop it
             (width, height) = image.size
             r = float(width)/height
             if r > 1.1 or r < 0.9:
-                return HttpResponseRedirect(reverse("crop_profile_photo", 
+                return HttpResponseRedirect(reverse("crop_profile_photo",
                                                     args=(person.user.username,)))
             else:
                 return HttpResponseRedirect(person.get_absolute_url())
@@ -1002,7 +1003,7 @@ def upload_profile_photo(request, username):
 @must_be_owner
 def webcam_profile_photo(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    
+
     if request.method == "POST":
         form = ProfilePhotoWebcamForm(data=request.POST)
         if form.is_valid():
@@ -1024,21 +1025,21 @@ def webcam_profile_photo(request, username):
             open(path, 'w').write(image_content)
             person.photo = 'profiles/%s' % filename
             person.save()
-            
-            # if the image is more than 10% away from being a square, encourage 
+
+            # if the image is more than 10% away from being a square, encourage
             # them to crop it
             (width, height) = image.size
             r = float(width)/height
             if r > 1.1 or r < 0.9:
-                return HttpResponseRedirect(reverse("crop_profile_photo", 
+                return HttpResponseRedirect(reverse("crop_profile_photo",
                                                     args=(person.user.username,)))
             else:
                 return HttpResponseRedirect(person.get_absolute_url())
         else:
             print form.errors
-    
+
     form = ProfilePhotoWebcamForm()
-    
+
     return render(request, 'djangopeople/webcam_profile_photo.html', {
         'form': form,
         'person': person,
@@ -1048,12 +1049,12 @@ def webcam_profile_photo(request, username):
 #@must_be_owner
 #def upload_done(request, username):
 #    "Using a double redirect to try and stop back button from re-uploading"
-    
+
 
 def country(request, country_code):
     country = get_object_or_404(Country, iso_code=country_code.upper())
     people = KungfuPerson.objects.filter(country=country)
-    
+
     people_locations_json = _get_people_locations_json(people)
 
     return render(request, 'djangopeople/country.html', {
@@ -1075,7 +1076,7 @@ def country_sites(request, country_code):
     })
 
 def region(request, country_code, region_code):
-    region = get_object_or_404(Region, 
+    region = get_object_or_404(Region,
         country__iso_code = country_code.upper(),
         code = region_code.upper()
     )
@@ -1089,7 +1090,7 @@ def profile(request, username):
         person = KungfuPerson.objects.select_related().get(user__username=username)
     except KungfuPerson.DoesNotExist:
         raise Http404("No user by that username")
-        
+
     clubs = person.club_membership.all().select_related()
     styles = person.styles.all().select_related()
     photos = Photo.objects.filter(user=person.user).order_by('-date_added')\
@@ -1098,7 +1099,7 @@ def profile(request, username):
     diary_entries = DiaryEntry.objects.filter(user=person.user)\
       .select_related().order_by('-date_added')[:5]
     people_near = person.get_nearest(within_range=50)
-    
+
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "profileviews-" + get_unique_user_cache_key(request.META)
         if cache.get(cache_key) is None:
@@ -1108,7 +1109,7 @@ def profile(request, username):
 
     is_owner = request.user.username == username
     show_profile_views = is_owner and person.profile_views > 1
-    
+
     if is_owner:
         # First assume that we don't have to pester the poor user
         # to upload a photo
@@ -1122,10 +1123,10 @@ def profile(request, username):
                 set_cookie(response, 'close_tip_photo', '1',
                            expire=60*60*24*3)
                 return response
-                           
+
             elif not request.COOKIES.get('close_tip_photo'):
                 pester_first_photo = True
-                
+
         # Same thing for the first diary entry
         pester_first_diary_entry = False
         if not diary_entries:
@@ -1137,10 +1138,10 @@ def profile(request, username):
                 set_cookie(response, 'close_tip_diary_entry', '1',
                            expire=60*60*24*30)
                 return response
-                
+
             if not request.COOKIES.get('close_tip_diary_entry'):
                 pester_first_diary_entry = True
-                
+
         pester_first_style = False
         if not person.styles.all():
             if request.GET.get('close_tip_first_style'):
@@ -1151,10 +1152,10 @@ def profile(request, username):
                 set_cookie(response, 'close_tip_style', '1',
                            expire=60*60*24*3)
                 return response
-                           
+
             elif not request.COOKIES.get('close_tip_style'):
                 pester_first_style = True
-            
+
     cache_key = 'same_club_people-%s' % person.user.username
     _same_club_info = cache.get(cache_key)
     if _same_club_info is None:
@@ -1171,7 +1172,7 @@ def profile(request, username):
                   ONE_WEEK)
     else:
         same_clubs, same_club_people = _same_club_info
-    
+
     cache_key = 'same_style_people-%s' % person.user.username
     _same_style_info = cache.get(cache_key)
     if _same_style_info is None:
@@ -1188,17 +1189,17 @@ def profile(request, username):
                   ONE_WEEK)
     else:
         same_styles, same_style_people = _same_style_info
-        
+
     # Prep some SEO meta tags stuff
     meta_description = "%s %s, %s %s" % (person.user.first_name,
                                    person.user.last_name,
                                    person.location_description,
                                    person.country.name
                                   )
-    
+
     if person.bio:
         meta_description += ", " + person.bio
-        
+
     meta_keywords = []
     meta_keywords.append("%s %s" % (person.user.first_name, person.user.last_name))
     meta_keywords.append(person.location_description)
@@ -1208,27 +1209,27 @@ def profile(request, username):
     for style in styles:
         meta_keywords.append(style.name)
     meta_keywords = ','.join(meta_keywords)
-    
+
     try:
         recruiter = Recruitment.objects.get(recruited=person.user).recruiter
         recruiter_profile = recruiter.get_profile()
     except Recruitment.DoesNotExist:
         pass
-    
+
     recruited_users = Recruitment.objects.filter(recruiter=person.user)\
       .order_by('-date_added')
     recruited_people = [x.recruited.get_profile() for x in recruited_users]
-    
+
     # for the world map
     people_locations_json = _get_people_locations_json(people_near)
     person_location_json = _get_person_location_json(person)
 
-    # generate the personal news feed 
+    # generate the personal news feed
     latest = []
     for model, field_name in ((Photo, 'date_added'),
                               (Video, 'date_added'),
                               (DiaryEntry, 'date_added')):
-                        
+
         for instance in model.objects.filter(user=person.user):
 
             latest.append(dict(
@@ -1236,14 +1237,14 @@ def profile(request, username):
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
                                content=instance.get_content(),
-                               title=unicode(instance), 
-                               person=unicode(instance.user.get_full_name()), 
-                               person_url=unicode(instance.user.get_absolute_url()), 
+                               title=unicode(instance),
+                               person=unicode(instance.user.get_full_name()),
+                               person_url=unicode(instance.user.get_absolute_url()),
                                id=instance.id)
-                               ) 
+                               )
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
-    
-    
+
+
     return render(request, 'djangopeople/profile.html', locals())
 
 def user_info_html(request, username, include_photo=False):
@@ -1251,7 +1252,7 @@ def user_info_html(request, username, include_photo=False):
     person = get_object_or_404(KungfuPerson, user__username=username)
     clubs = person.club_membership.all()
     styles = person.styles.all()
-    
+
     return render(request, 'djangopeople/_user-info.html', locals())
 
 
@@ -1263,12 +1264,12 @@ def wall(request):
     blog_entries = DiaryEntry.objects.filter(is_public=True).order_by('-date_added')[:5]
     people_is_current = True
 
-    # generate the news feed 
+    # generate the news feed
     latest = []
     for model, field_name in ((Photo, 'date_added'),
                               (Video, 'date_added'),
                               (DiaryEntry, 'date_added')):
-                        
+
         for instance in model.objects.all():
 
             latest.append(dict(
@@ -1276,11 +1277,11 @@ def wall(request):
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
                                content=instance.get_content(),
-                               title=unicode(instance), 
-                               person=unicode(instance.user.get_full_name()), 
-                               person_url=unicode(instance.user.get_absolute_url()), 
+                               title=unicode(instance),
+                               person=unicode(instance.user.get_full_name()),
+                               person_url=unicode(instance.user.get_absolute_url()),
                                id=instance.id)
-                               ) 
+                               )
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
 
 
@@ -1289,7 +1290,7 @@ def wall(request):
 def photo(request, username, photo_id):
     person = get_object_or_404(KungfuPerson, user__username=username)
     photo = get_object_or_404(Photo, id=photo_id)
-    
+
     try:
         html_title = photo.description.splitlines()[0]
         meta_description = photo.description.replace('\n', '')
@@ -1300,20 +1301,20 @@ def photo(request, username, photo_id):
             html_title += ', %s' % photo.country.name
     except IndexError:
         html_title = None
-        
+
     # to figure out what photo comes next or previous we need to look at what
     # set this photo belong to. If this photo is a list of photos related to a
-    # diary entry, then use that. Otherwise, assume that the photo is related 
-    # to a user simply and work from that. 
+    # diary entry, then use that. Otherwise, assume that the photo is related
+    # to a user simply and work from that.
     if photo.diary_entry:
         photo_set = Photo.objects.filter(diary_entry=photo.diary_entry)\
           .select_related()
     else:
         photo_set = Photo.objects.filter(user=photo.user).select_related()
     previous, next = get_previous_next(photo_set, photo)
-    
+
     photo_location_json = _get_person_location_json(photo)
-    
+
     is_owner = request.user.username == username
     return render(request, 'djangopeople/photo.html', locals())
 
@@ -1332,7 +1333,7 @@ def club(request, name):
     people = members = KungfuPerson.objects.filter(club_membership=club)
     clubs_is_current = True
     count = members.count()
-    
+
     if '/competitions/' not in request.META.get('HTTP_REFERER', ''):
         cache_key = "clicks-club-" + get_unique_user_cache_key(request.META)
         if cache.get(cache_key) is None:
@@ -1343,7 +1344,7 @@ def club(request, name):
     # for the world map
     people_locations_json = _get_people_locations_json(people)
 
-    # generate the style based news feed 
+    # generate the style based news feed
     term = club
     latest = []
 
@@ -1357,11 +1358,11 @@ def club(request, name):
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
                                content=instance.get_content(),
-                               title=unicode(instance), 
-                               person=unicode(instance.user.get_full_name()), 
-                               person_url=unicode(instance.user.get_absolute_url()), 
+                               title=unicode(instance),
+                               person=unicode(instance.user.get_full_name()),
+                               person_url=unicode(instance.user.get_absolute_url()),
                                id=instance.id)
-                               ) 
+                               )
 
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
 
@@ -1381,21 +1382,21 @@ def clubs_all(request):
     return render(request, 'djangopeople/clubs_all.html', {
         'clubs': clubs,
         'clubs_is_current': clubs_is_current,
-    })  
+    })
 
 
 def all_something(request, model, sort_by='name'):
     if sort_by not in ('date','name'):
         raise Http404("unrecognized sort-by")
-    
+
     if model not in ('clubs','styles','people','photos'):
         raise Http404("unrecognized model")
-    
+
     data = locals()
     current_url = request.build_absolute_uri()
-    
+
     list_options = []
-    
+
     if sort_by == 'date':
         _view_name = "all_something_by_date"
     else:
@@ -1406,28 +1407,28 @@ def all_something(request, model, sort_by='name'):
                                  url=url,
                                  active=current_url.endswith(url)
                             ))
-    
+
     order_by_options = []
-    
+
     url = reverse("all_something", args=(model,))
     order_by_options.append(dict(label='name',
                                  url=url,
                                  active=current_url.endswith(url)
                                  ))
-    
+
     url = reverse("all_something_by_date", args=(model,))
     order_by_options.append(dict(label='date',
                                  url=url,
                                  active=current_url.endswith(url)
                                  ))
-    
+
     data.update(dict(list_options=list_options,
                      order_by_options=order_by_options))
-    
+
     data.update(get_all_items(model, sort_by))
-    
+
     return render(request, 'djangopeople/all_something.html', data)
-        
+
 
 def style(request, name):
     style = get_object_or_404(Style, slug=name)
@@ -1445,11 +1446,11 @@ def style(request, name):
             style.clicks += 1 # Not bothering with transactions; only a stat
             style.save()
             cache.set(cache_key, '1', ONE_DAY)
-            
+
     # for the world map
     people_locations_json = _get_people_locations_json(people)
 
-    # generate the style based news feed 
+    # generate the style based news feed
     term = style
     latest = []
 
@@ -1463,14 +1464,14 @@ def style(request, name):
                                url=instance.get_absolute_url(),
                                type=model._meta.verbose_name,
                                content=instance.get_content(),
-                               title=unicode(instance), 
-                               person=unicode(instance.user.get_full_name()), 
-                               person_url=unicode(instance.user.get_absolute_url()), 
+                               title=unicode(instance),
+                               person=unicode(instance.user.get_full_name()),
+                               person_url=unicode(instance.user.get_absolute_url()),
                                id=instance.id)
-                               ) 
+                               )
 
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
-            
+
     return render(request, 'djangopeople/style.html', locals())
 
 
@@ -1485,7 +1486,7 @@ def edit_profile(request, username):
     if request.method == 'POST':
         form = ProfileForm(request.POST, person=person)
         if form.is_valid():
-            user = person.user             
+            user = person.user
             user.email = form.cleaned_data['email']
             person.bio = form.cleaned_data['bio']
             person.club_membership.url = form.cleaned_data['club_url']
@@ -1512,10 +1513,10 @@ def diary_entry_add(request, username):
     person = get_object_or_404(KungfuPerson, user__username = username)
     entries = DiaryEntry.objects.filter(user=person.user).order_by('-date_added')[:5]
     page_title = "Add a blog post"
-    
+
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)
-        if form.is_valid(): 
+        if form.is_valid():
             user = person.user
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
@@ -1549,7 +1550,7 @@ def diary_entry_add(request, username):
                     title=title,
                     content=content,
                     is_public=is_public,
-                    slug=slug, 
+                    slug=slug,
                     country=person.country,
                     latitude=person.latitude,
                     longitude=person.longitude,
@@ -1557,15 +1558,15 @@ def diary_entry_add(request, username):
                     region=person.region,
                 )
 
-            
+
             return HttpResponseRedirect(entry.get_absolute_url())
 
     else:
         # figure out the initial location and country
-        
+
         # by default, assume that the entry should be public
         is_public = True
-        
+
         initial = {'location_description': person.location_description,
                    'country': person.country.iso_code,
                    'latitude': person.latitude,
@@ -1584,7 +1585,7 @@ def diary_entry_edit(request, username, slug):
 
     if request.method == 'POST':
         form = DiaryEntryForm(request.POST)
-        if form.is_valid():  
+        if form.is_valid():
             entry.title = form.cleaned_data['title']
             entry.content = form.cleaned_data['content']
             entry.is_public = form.cleaned_data.get('is_public', entry.is_public)
@@ -1595,7 +1596,7 @@ def diary_entry_edit(request, username, slug):
                     code = form.cleaned_data['region']
                 )
                 entry.region = region
-                
+
             if form.cleaned_data['country']:
                 entry.country = Country.objects.get(iso_code=form.cleaned_data['country'])
                 entry.location_description = form.cleaned_data['location_description']
@@ -1627,7 +1628,7 @@ def diary_entry_delete(request, username, slug):
     entry.delete()
 
     return HttpResponseRedirect('/%s/' % user.username)
-    
+
 
 @must_be_owner
 def edit_club(request, username):
@@ -1636,7 +1637,7 @@ def edit_club(request, username):
 
     if request.method == 'POST':
         form = ClubForm(request.POST)
-        if form.is_valid():        
+        if form.is_valid():
             url = form.cleaned_data['club_url'] # not required field
             name = form.cleaned_data['club_name'] # required field
             # _get_or_create_club() takes care of creating slug if necessary
@@ -1647,7 +1648,7 @@ def edit_club(request, username):
             cache.delete(cache_key)
 
             return HttpResponseRedirect('/%s/club/' % username)
-        
+
         else:
             if form.non_field_errors():
                 non_field_errors = form.non_field_errors()
@@ -1660,7 +1661,7 @@ def edit_club(request, username):
                      if x.id not in current_club_ids]
         all_clubs_js = simplejson.dumps(all_clubs)
         del current_club_ids
-        
+
     return render(request, 'djangopeople/edit_club.html', locals())
 
 @must_be_owner
@@ -1672,7 +1673,7 @@ def delete_club_membership(request, username, clubname):
     if not user == person.user:
         raise Http404("You're not authorised to perform this action")
     person.club_membership.remove(club)
-    
+
     return HttpResponseRedirect('/%s/club/' % user.username)
 
 @must_be_owner
@@ -1682,7 +1683,7 @@ def edit_style(request, username):
 
     if request.method == 'POST':
         form = StyleForm(request.POST)
-        if form.is_valid():        
+        if form.is_valid():
             name = form.cleaned_data['style_name'].strip()
             slug = name.strip().replace(' ', '-')
             slug = slugify(unaccent_string(slug))
@@ -1701,7 +1702,7 @@ def edit_style(request, username):
         # using AJAX instead.
         all_styles = [x.name for x in Style.objects.all()]
         all_styles_js = simplejson.dumps(all_styles)
-        
+
     return render(request, 'djangopeople/edit_style.html', locals())
 
 @must_be_owner
@@ -1713,7 +1714,7 @@ def delete_style(request, username, style):
     if not user == person.user:
         raise Http404("You're not authorised to perform this action")
     person.styles.remove(style)
-    
+
     return HttpResponseRedirect('/%s/style/' % user.username)
 
 
@@ -1737,7 +1738,7 @@ def videos_all(request):
     return render(request, 'djangopeople/videos_all.html', {
         'videos': videos,
         'videos_is_current': videos_is_current,
-    })    
+    })
 
 @must_be_owner
 @transaction.commit_on_success
@@ -1775,9 +1776,9 @@ def delete_video(request, username, pk):
     video = get_object_or_404(Video, pk=pk)
     if not user == video.user:
         raise Http404("Not your video")
-    
+
     video.delete()
-    
+
     return HttpResponseRedirect('/%s/' % user.username)
 
 
@@ -1837,10 +1838,10 @@ def edit_location(request, username):
         if person.location_description:
             initial = dict(initial, location_description=person.location_description)
         if person.latitude and person.longitude:
-            initial = dict(initial, 
+            initial = dict(initial,
                            latitude=person.latitude,
                            longitude=person.longitude)
-            
+
         form = LocationForm(initial=initial)
     return render(request, 'djangopeople/edit_location.html', {
         'form': form,
@@ -1854,18 +1855,18 @@ def search_people(q):
     words = [w.strip() for w in q.split() if len(w.strip()) > 2]
     if not words:
         return []
-    
+
     terms = []
     for word in words:
         terms.append(Q(
-            user__username__icontains = word) | 
-            Q(user__first_name__icontains = word) | 
+            user__username__icontains = word) |
+            Q(user__first_name__icontains = word) |
             Q(user__last_name__icontains = word)
         )
-    
+
     combined = reduce(operator.and_, terms)
     return KungfuPerson.objects.filter(combined).select_related().distinct()
-    
+
 def search(request):
     q = request.GET.get('q', '')
     has_badwords = [
@@ -1902,10 +1903,10 @@ def _valid_url(url):
 def guess_club_name_json(request):
     club_url = request.GET.get('club_url')
     partial = request.GET.get('partial')
-    
+
     if not club_url:
         return render_json(dict(error="no url"))
-    
+
 
     club_url = club_url.strip()
     if not club_url.startswith('http'):
@@ -1917,7 +1918,7 @@ def guess_club_name_json(request):
 
     domain = urlparse(club_url)[1]
     data = {}
-    
+
     if partial:
         try:
             club = Club.objects.get(url__istartswith=club_url)
@@ -1926,17 +1927,17 @@ def guess_club_name_json(request):
             pass
         except Club.MultipleObjectsReturned:
             pass
-        
+
     else:
         for club in Club.objects.filter(url__icontains=domain).order_by('-date_added'):
             data = {'club_name': club.name, 'readonly': True}
             # easy!
             return render_json(data)
-        
+
     if partial:
         # don't go on the internet
         return render_json(data)
-    
+
     # hmm, perhaps we need to download the HTML and scrape the <title> tag
     try:
         club_name_guess = _club_name_from_url(club_url, request)
@@ -1946,15 +1947,15 @@ def guess_club_name_json(request):
         data['error'] = u"Can't find that URL"
     except URLError:
         data['error'] = u"URL not recognized"
-    
-    
+
+
     return render_json(data)
 
 def guess_nearby_clubs(request):
     latitude = request.GET.get('latitude')
     longitude = request.GET.get('longitude')
     clubs = []
-    
+
     return render_json(clubs)
 
 
@@ -1964,15 +1965,15 @@ def _club_name_from_url(url, request=None):
         request_meta = request.META
     else:
         request_meta = {}
-        
+
     html = utils.download_url(url, request_meta)
-    
+
     title_regex = re.compile(r'<title>(.*?)</title>', re.I|re.M|re.DOTALL)
     try:
         title = title_regex.findall(html)[0].strip()
     except IndexError:
         return None
-    
+
     try:
         title = unicode(title, 'utf-8')
     except UnicodeDecodeError:
@@ -1980,15 +1981,15 @@ def _club_name_from_url(url, request=None):
             title = unicode(title, 'latin1')
         except UnicodeDecodeError:
             title = unicode(title, 'utf-8', 'ignore')
-    
+
     parts = re.split('\s+-\s+', title)
     try:
         return parts[0]
     except IndexError:
         pass # :(
-    
+
     return None
-    
+
 
 
 def guess_username_json(request):
@@ -1996,40 +1997,40 @@ def guess_username_json(request):
     if not email:
         # AJAX call made wrong
         return render_json(dict(username=''))
-    
+
     first_name = request.GET.get('first_name', '').strip().lower()
     last_name = request.GET.get('last_name', '').strip().lower()
-    
+
     username = base_username = re.sub('[^\w]', '', email.split('@')[0])
-    
+
     def is_taken(username):
         try:
             User.objects.get(username=username)
             return True
         except User.DoesNotExist:
             return False
-        
+
     if is_taken(username):
         if not first_name and not last_name:
             # not a lot we can do at this point
             return render_json(dict(username=''))
-        
+
         #for double-barrelled names, this removes the hyphen
         username = '%s%s' % (first_name, last_name.replace("-", ""))
-        
+
     # getting really desperate!
     count = 2
     while is_taken(username):
         username = "%s%s" % (base_username, count)
         count += 1
-        
+
     return render_json(dict(username=username))
- 
+
 
 @must_be_owner
 def newsletter_options(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    
+
     if request.method == "POST":
         form = NewsletterOptionsForm(request.POST)
         if form.is_valid():
@@ -2041,27 +2042,27 @@ def newsletter_options(request, username):
         form = NewsletterOptionsForm(initial=dict(newsletter=person.newsletter))
 
     return render(request, 'djangopeople/newsletter_options.html', locals())
-        
+
 
 def find_clubs_by_location_json(request):
-    
+
     try:
-        (latitude, longitude) = (float(request.GET['latitude']), 
+        (latitude, longitude) = (float(request.GET['latitude']),
                                  float(request.GET['longitude']))
     except (KeyError, ValueError):
         return render_json({'error':'Invalid parameters'})
-    
-    
-    
+
+
+
     country = request.GET.get('country')
     location_description = request.GET.get('location_description')
     within_range = int(request.GET.get('within_range', 5)) # important!
-    
+
     clubs = _find_clubs_by_location((latitude, longitude),
                                     country=country,
                                     location_description=location_description,
                                     within_range=within_range)
-    
+
     if not clubs and location_description:
         clubs = _find_clubs_by_location((latitude, longitude),
                                         country=country,
@@ -2070,12 +2071,12 @@ def find_clubs_by_location_json(request):
             clubs = _find_clubs_by_location((latitude, longitude),
                                             country=country,
                                             within_range=within_range * 2)
-            
+
             if not clubs:
                 clubs = _find_clubs_by_location((latitude, longitude),
                                                 country=country,
                                                 within_range=within_range * 4)
-                
+
     data = []
     for club in clubs:
         item = {'id': club.id,
@@ -2083,19 +2084,19 @@ def find_clubs_by_location_json(request):
                 'name': club.name,
                 }
         data.append(item)
-        
+
     return render_json(data)
-                
-            
-    
-    
+
+
+
+
 def _find_clubs_by_location(location,
-                            country=None, 
+                            country=None,
                             location_description=None,
                             within_range=10):
 
     extra_where_sql = []
-    
+
     if country:
         if isinstance(country, basestring):
             if len(country) == 2:
@@ -2113,18 +2114,18 @@ def _find_clubs_by_location(location,
                         pass
         # else, expect country to be an object
         extra_where_sql.append("country_id=%d" % country.id)
-        
+
     if location_description:
         location_description = location_description.replace("'", "").\
           replace(";", "")
         extra_where_sql.append("UPPER(location_description)='%s'" % \
                                location_description.upper())
-        
+
     # need to add extra where that checks if they are members of a club
     # XXX
 
     extra_where_sql = ' AND '.join(extra_where_sql)
-    
+
     if type(location) is dict:
         if len(location) == 2:
             location = (location['latitude'], location['longitude'])
@@ -2133,7 +2134,7 @@ def _find_clubs_by_location(location,
                         location['right'], location['lower'])
         else:
             raise ValueError("Invalid location parameter")
-        
+
     if len(location) == 2:
         people = KungfuPerson.objects.nearest_to(location,
                                                  extra_where_sql=extra_where_sql,
@@ -2141,8 +2142,8 @@ def _find_clubs_by_location(location,
     elif len(location) == 4:
         people = KungfuPerson.objects.in_box(location,
                                              extra_where_sql=extra_where_sql)
-    
-    
+
+
     clubs = []
 
     for (person, distance) in people:
@@ -2166,7 +2167,7 @@ def _get_zoom_content(left, upper, right, lower, request=None):
     styles = []
     countries = []
     people = KungfuPerson.objects.in_box((left, upper, right, lower))
-    
+
     for person in people:
         for club in person.club_membership.all():
             if club not in clubs:
@@ -2174,21 +2175,21 @@ def _get_zoom_content(left, upper, right, lower, request=None):
         for style in person.styles.all():
             if style not in styles:
                 styles.append(style)
-                
+
         if person.country not in countries:
             countries.append(person.country)
-        
+
     photos = Photo.objects.in_box((left, upper, right, lower))
     for photo in photos:
         if photo.country not in countries:
             countries.append(photo.country)
-    
+
     diary_entries = DiaryEntry.objects.\
       in_box((left, upper, right, lower)).filter(is_public=True)
     for diary_entry in diary_entries:
         if diary_entry.country not in countries:
             countries.append(diary_entry.country)
-    
+
     return locals()
 
 
@@ -2196,13 +2197,13 @@ def _get_zoom_content(left, upper, right, lower, request=None):
 def zoom_content(request):
     """zoom_content() just returns a limited block of html which is used to
     show a selection of clubs, styles, people, photos, etc. based on a zoomed
-    region on a map. 
+    region on a map.
     """
-    # Milano  
-    # (right, lower) = 45.520661,9.100456 
-    # Lyon,Bern corner  
+    # Milano
+    # (right, lower) = 45.520661,9.100456
+    # Lyon,Bern corner
     # (left, upper) = 46.789306,4.841881
-    
+
     try:
         left = float(request.POST.get('left'))
         upper = float(request.POST.get('upper'))
@@ -2211,9 +2212,9 @@ def zoom_content(request):
     except (KeyError, ValueError, TypeError):
         logging.error("Invalid zoom", exc_info=True)
         return HttpResponse("Invalid zoom!")
-    
+
     content_data = _get_zoom_content(left, upper, right, lower)
-    
+
     return render(request, 'djangopeople/zoom-content.html', content_data)
 
 
@@ -2230,7 +2231,7 @@ def zoom_content_json(request):
         return HttpResponse("Invalid zoom!")
 
     content_data = _get_zoom_content(left, upper, right, lower)
-    
+
     def _jsonify_person(person):
         data = dict(url=person.get_absolute_url(),
                     fullname=unicode(person),
@@ -2243,7 +2244,7 @@ def zoom_content_json(request):
             thumbnail = DjangoThumbnail(person.photo, (60,60), opts=['crop'],
                                         processors=thumbnail_processors)
             data['thumbnail_url'] = thumbnail.absolute_url
-            
+
             thumbnail = DjangoThumbnail(person.photo, (30,30), opts=['crop'],
                                         processors=thumbnail_processors)
             data['marker_thumbnail_url'] = thumbnail.absolute_url
@@ -2254,9 +2255,9 @@ def zoom_content_json(request):
         for club in person.club_membership.all():
             clubs.append({'name': club.name, 'url':club.get_absolute_url()})
         data['clubs'] = clubs
-            
+
         return data
-    
+
     def _jsonify_photo(photo):
         data = dict(url=photo.get_absolute_url(),
                     fullname=u"%s %s" % (photo.user.first_name, photo.user.last_name),
@@ -2267,56 +2268,56 @@ def zoom_content_json(request):
                     lng=photo.longitude,
                     description=photo.description,
                    )
-        
-        thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=['crop'], 
+
+        thumbnail = DjangoThumbnail(photo.photo, (60,60), opts=['crop'],
                                     processors=thumbnail_processors)
         data['thumbnail_url'] = thumbnail.absolute_url
-        
-        thumbnail = DjangoThumbnail(photo.photo, (30,30), opts=['crop'], 
+
+        thumbnail = DjangoThumbnail(photo.photo, (30,30), opts=['crop'],
                                     processors=thumbnail_processors)
         data['marker_thumbnail_url'] = thumbnail.absolute_url
-        
+
         return data
-    
+
     data = {}
     for person in content_data.get('people', []):
         if 'people' not in data:
             data['people'] = []
-        
+
         data['people'].append(_jsonify_person(person))
-        
+
     for club in content_data.get('clubs', []):
         if 'clubs' not in data:
             data['clubs'] = []
         data['clubs'].append(dict(url=club.get_absolute_url(),
                                   name=club.name))
-        
+
     for style in content_data.get('styles', []):
         if 'styles' not in data:
             data['styles'] = []
         data['styles'].append(dict(url=style.get_absolute_url(),
                                    name=style.name))
-        
+
     for photo in content_data.get('photos', []):
         if 'photos' not in data:
             data['photos'] = []
-        
+
         data['photos'].append(_jsonify_photo(photo))
-        
+
     for diary_entry in content_data.get('diary_entries', []):
         if 'diary_entries' not in data:
             data['diary_entries'] = []
-        
+
         data['diary_entries'].append(dict(url=diary_entry.get_absolute_url(),
                                           title=diary_entry.title))
-        
-        
+
+
     for country in content_data.get('countries', []):
         if 'countries' not in data:
             data['countries'] = []
-        
+
         data['countries'].append(dict(url=country.get_absolute_url(),
-                                      title=country.name))        
+                                      title=country.name))
 
     return render_json(data)
 
@@ -2324,22 +2325,22 @@ def zoom_content_json(request):
 @must_be_owner
 def crop_profile_photo(request, username):
     person = get_object_or_404(KungfuPerson, user__username=username)
-    
+
     if not person.photo:
         return HttpResponseRedirect(reverse("upload_profile_photo",
                                            args=(username,)))
-    
+
     photo = person.photo
-    
+
     if request.GET.get('undo'):
         if not request.session.get('old_profile_path'):
             return HttpResponse("Old profile photo does not exist any more")
-        
+
         person.photo = request.session['old_profile_path']
         person.save()
         return HttpResponseRedirect(reverse("crop_profile_photo",
                                            args=(username,)))
-    
+
     image = Image.open(StringIO(photo.read()))
 
     width, height = image.size
@@ -2373,10 +2374,10 @@ def crop_profile_photo(request, username):
             request.session['old_profile_path'] = old_path
 
         return HttpResponseRedirect(person.get_absolute_url())
-    
-    
-    # set_select is about selecting a preselect box on the image that 
-    # selects the maximum square possible. 
+
+
+    # set_select is about selecting a preselect box on the image that
+    # selects the maximum square possible.
     # If the picture is a portrait, x1 and x2 should be 0 and image-width
     if height > width:
         # round one pixel in
@@ -2387,26 +2388,26 @@ def crop_profile_photo(request, username):
         y1, y2 = 1, height - 1
         x1 = width/2 - height/2
         x2 = x1 + height
-        
+
     set_select_box = [x1, y1, x2, y2]
-    
+
     form = CropForm(initial=dict(w=width, h=height,
                                  x1=set_select_box[0],
                                  y1=set_select_box[1],
                                  x2=set_select_box[2],
                                  y2=set_select_box[3],
                                 ))
-    
-    
+
+
     return render(request, 'djangopeople/crop-profile-photo.html', locals())
-    
+
 
 def tinymce_filebrowser(request):
     type_ = request.GET.get('type') # needed?
     url = request.GET.get('url')
     if request.user and not request.user.is_anonymous():
         photos = Photo.objects.filter(user=request.user)
-        
+
     return render(request, 'tinymce_filebrowser.html', locals())
 
 
@@ -2425,12 +2426,12 @@ def get_youtube_video_by_id_json(request):
     video_id = request.GET.get('video_id')
     if not video_id:
         raise ValueError("No video URL or ID")
-    
+
     try:
         data = get_youtube_video_by_id(video_id)
     except YouTubeVideoError, msg:
         return render_json(dict(error=str(msg)))
-    
+
     return render_json(data)
 
 def runway(request):
@@ -2441,7 +2442,7 @@ def runway_data_js(request):
     js = cache.get(cache_key)
     js=None
     if js is None:
-        
+
         def get_person_subtitle(person):
             return ""
             subtitle = "%s, %s\n" % (person.location_description,
@@ -2451,18 +2452,18 @@ def runway_data_js(request):
                 subtitle += "Club: %s\n" % clubs[0]
             elif clubs:
                 subtitle += "Clubs: %s\n" % ', '.join(clubs)
-                
+
             styles = [x.name for x in person.styles.all()]
             if len(styles) == 1:
                 subtitle += "Style: %s\n" % styles[0]
             elif styles:
                 subtitle += "Styles: %s\n" % ', '.join(styles)
-            
+
             return subtitle
-            
+
         def get_person_title(person):
             return person.user.get_full_name()
-        
+
         root_url = 'http://%s' % urlparse(request.build_absolute_uri())[1]
         people = KungfuPerson.objects.exclude(photo='').order_by('user__date_joined').select_related()
         records = []
@@ -2478,12 +2479,12 @@ def runway_data_js(request):
                         username=person.user.username,
                         url=person.get_absolute_url())
             records.append(data)
-            
+
         js = 'var RUNWAY_RECORDS=%s;\n' % simplejson.dumps(records)
         cache.set(cache_key, js, 60*60)# how many seconds?
-    
+
     return HttpResponse(js, mimetype="text/javascript")
-    
+
 def crossdomain_xml(request):
     domain = "*"
     #print request.META.keys() # referer?
@@ -2494,6 +2495,53 @@ def crossdomain_xml(request):
            <allow-access-from domain="%s" />
           </cross-domain-policy>""" % domain
     xml = xml.strip()
-    
+
     return HttpResponse(xml, mimetype="application/xml")
-    
+
+
+@login_required
+def leave_site(request):
+    person = request.user.get_profile()
+    username = person.user.username
+    cache_key = 'leave_site_%s' % username.replace(' ','')
+    options = {'email': person.user.email,
+               'username': username,
+               'sent_instructions': False,
+               }
+    if request.method == 'POST':
+        path = utils.leave_site_url_for_user(username)
+
+        current_url = request.build_absolute_uri()
+        body = render_to_string('djangopeople/leave_site.txt', {
+            'path': path,
+            'person': person,
+            'site_url': 'http://' + urlparse(current_url)[1],
+            'PROJECT_NAME': settings.PROJECT_NAME,
+
+        })
+        print body
+        send_mail('%s - site leaving instructions' % settings.PROJECT_NAME,
+                      body,
+                settings.NOREPLY_EMAIL,
+                [person.user.email],
+                fail_silently=False
+            )
+        options['sent_instructions'] = True
+
+    return render(request, 'djangopeople/leave_site.html', options)
+
+
+def left_site(request):
+    return render(request, 'djangopeople/left_site.html')
+
+@login_required
+def leave_site_confirm(request, username, days, hash):
+    user = get_object_or_404(User, username=username)
+    if utils.hash_is_valid(username, days, hash):
+        auth.logout(request)
+        person = user.get_profile()
+        person.delete()
+        user.delete()
+        return HttpResponseRedirect(reverse('left_site'))
+    else:
+        return HttpResponse("Invalid link. Please start again.")

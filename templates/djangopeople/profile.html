@@ -46,7 +46,7 @@ div.bio a.edit {
 </style>
 {% endif %}
 
-{% endblock %}  
+{% endblock %}
 
 	{% block signup %}
 	<a href="/signup/">
@@ -88,8 +88,8 @@ div.bio a.edit {
 
 
 	<div id="content-box">
-	
-	
+
+
 	<div id="profile-head">
 
 	{% if person.photo %}
@@ -103,7 +103,7 @@ div.bio a.edit {
 		</div>
 
 	{% else %}
-          
+
 		<div class="profile-photo">
         	{% if is_owner %}
 		<div class="change-photo">
@@ -112,14 +112,14 @@ div.bio a.edit {
 		</a>
 		</div>
 		{% endif %}
-		</div>               
-            
+		</div>
+
 	{% endif %}
 
 		<div id="profile-head-title">
        		<h2>{{ person.user.get_full_name }}</h2>
 		</div>
-		
+
                 {% if request.user.is_superuser %}
                 <div class="admin-only">
                 <h4>Admins only</h4>
@@ -127,7 +127,7 @@ div.bio a.edit {
                 came from: <code>{{ person.came_from }}</code>
                 </div>
                 {% endif %}
-		
+
 			<div class="region">
 			<a href="{% url country person.country.iso_code|lower %}">
 			<img src="{{ person.country.iso_code|get_flag_image }}" alt="{{ person.country }}" title="{{ person.country }}" width="16" height="11" class="flag country-name"></a>
@@ -149,7 +149,7 @@ div.bio a.edit {
 		<a href="{% url edit_club person.user.username %}">Edit clubs</a>
 		|
 		<a href="{% url edit_style person.user.username %}">Edit styles</a>
-		
+
 		</p>
 		</div>
 		{% endif %}
@@ -181,16 +181,16 @@ div.bio a.edit {
 			<strong><span class="dark-grey">Style{{ styles.count|pluralize }}: </span></strong>
 			{% for style in styles %}
 			<a href="{{ style.get_absolute_url }}">{{ style.name|title }}</a>
-				{% if not forloop.last %}, 
+				{% if not forloop.last %},
 				{% endif %}
 			{% endfor %}
 			</span><br/>
 			{% endif %}
- 
+
 			{% if clubs %}
 			<span class="small-text"><strong><span class="dark-grey">Club{{ clubs.count|pluralize }}:</span></strong>
 			{% for club in clubs %}
-		        {% if club.url %} 
+		        {% if club.url %}
 		        <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>{% if not forloop.last %}, {% endif %}
 		        {% else %}
     		        {{ club.name }}{% if not forloop.last %}, {% endif %}
@@ -202,7 +202,7 @@ div.bio a.edit {
 
 			{% if show_profile_views %}
 			<div class="profile-views">
-			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }} 
+			<strong class="dark-grey">Profile views:</strong> {{ person.profile_views }}
 			<abbr title="Number of clicks on your profile">?</abbr>
 			</div>
 			{% endif %}
@@ -210,23 +210,23 @@ div.bio a.edit {
 			{% if recruiter and recruiter_profile %}
 			<div class="recruitment">
 			{{ person.user.first_name }} was recruited to this site by
-			<a href="{% url person.view recruiter.username %}">{{ recruiter.first_name }} 			
+			<a href="{% url person.view recruiter.username %}">{{ recruiter.first_name }}
 			{{ recruiter.last_name }}</a>
 			<img src="{% staticfile "/img/star.png" %}" alt="Star">
 			</div>
 			{% endif %}
-                        
+
 			{% if recruited_people %}
 			<div class="recruitment">
 			{{ person.user.first_name }} has recruited
-                        
+
                         {% for recruited_person in recruited_people %}
 			<a href="{% url person.view recruited_person.user.username %}"
                           >{{ recruited_person.user.first_name }} {{ recruited_person.user.last_name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
-			
+
 			</div>
-			{% endif %} 
+			{% endif %}
 
 	</div>
 		<div id="profile-box-bottom">
@@ -275,7 +275,7 @@ div.bio a.edit {
 		</div>
 		<br/>
 		{% endif %}
-                
+
 	{% endif %}
 
 	<div class="latest-list-left">
@@ -284,18 +284,18 @@ div.bio a.edit {
 		{% ifequal thing.type "Video"%}
 			<div class="latest-list-icon">
 				<img width="30px" src="{{ thing.content|safe }}">
-			</div> 
+			</div>
 			<div class="latest-list-info">
 				<a href="{{ thing.url }}">{{ thing.person }} linked to a new video</a><br/>
 				<span class="dark-grey">{{ thing.title }}</span>
-				
+
 			</div>
 		{% endifequal %}
 
 		{% ifequal thing.type "Photo"%}
 			<div class="latest-list-icon">
 				<img src="{% thumbnail thing.content 30x30 crop %}">
-			</div> 
+			</div>
 			<div class="latest-list-info">
 				<a href="{{ thing.url }}">{{ thing.person }} uploaded a new photo</a>
 			</div>
@@ -304,7 +304,7 @@ div.bio a.edit {
 		{% ifequal thing.type "DiaryEntry"%}
 			<div class="latest-list-icon">
 				<img src="{% staticfile "/img/blog.png" %}">
-			</div> 
+			</div>
 			<div class="latest-list-info">
 				<a href="{{ thing.url }}">{{ thing.person }} wrote a new blog entry</a> ({{ thing.date|date:"d M Y" }})<br/>
 				<span class="dark-grey">{{ thing.title }}</span>
@@ -312,7 +312,7 @@ div.bio a.edit {
 				<span class="meta">
 				(<a href="{{ thing.url }}/delete">Delete</a>  |
 				<a href="{{ thing.url }}/edit">Edit</a>)
-				</span> 
+				</span>
 				{% endif %}
 				</p>
 			</div>
@@ -357,7 +357,7 @@ div.bio a.edit {
               {{ club.name }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </h3>
-            
+
                 {% for person in same_club_people %}
 		    <div class="person-listing">
 		    <div class="person-listing-photo">
@@ -373,14 +373,14 @@ div.bio a.edit {
                 {% endfor %}
 
             {% endif %}
-            
+
             {% if same_style_people %}
             <h3>People who do the same style
             {% for style in same_styles %}
               {{ style.name }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </h3>
-            
+
                 {% for person in same_style_people %}
 		    <div class="person-listing">
 		    <div class="person-listing-photo">
@@ -397,7 +397,7 @@ div.bio a.edit {
 
             {% endif %}
 	</div>
-	
+
 </div>
 
 {% endblock %}

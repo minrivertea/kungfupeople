@@ -1,0 +1,25 @@
+{% extends base_template %}
+
+{% block title%}Leave site{% endblock %}
+
+{% block content %}
+<div class="no-map-wrapper">
+	<div id="no-map-content-box">
+        <h2>Leave this site</h2>
+        {% if sent_instructions %}
+        <p>Instructions have been sent to <code>{{ email }}</code> that contain a
+        link you have to click on.</p>
+        {% else %}
+          {% if email %}
+            <form action="." method="post">
+            <p>Click this button to send the instructions to your email address ({{ email }})</p>
+            <input type="submit" value="Send leaving site instructions by email"/>
+            </form>
+          {% else %}
+            <p>To send the instructions please enter your email address first on your
+            <a href="{% url edit_profile username %}">profile page</a>.</p>
+          {% endif %}
+        {% endif %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+Hello {{ person.user.first_name }},
+
+You have requested instructions to leave our site. To complete follow
+this link:
+
+{{ site_url}}{{ path }}
+
+Best regards,
+{{ PROJECT_NAME }}
