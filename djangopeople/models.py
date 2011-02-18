@@ -41,57 +41,57 @@ RESERVED_USERNAMES = set((
 
 class DistanceManager(models.Manager):
 
-    
+
     def nearest_to(self, point, number=20, within_range=None, offset=0,
                    extra_where_sql=''):
         """finds the model objects nearest to a given point
-        
+
         `point` is a tuple of (x, y) in the spatial ref sys given by `from_srid`
-        
+
         NB: (x,y) <=> (lat, long)
-        
-        returns a list of tuples, sorted by increasing distance from the given `point`. 
-        each tuple being (model_object, dist), where distance is in the units of the 
+
+        returns a list of tuples, sorted by increasing distance from the given `point`.
+        each tuple being (model_object, dist), where distance is in the units of the
         spatial ref sys given by `to_srid`"""
         if not isinstance(point, tuple):
             raise TypeError
-        
+
         # this manager hack only works in mysql or postgres since sqlite3 doesn't
         # support the sqrt function.
         if settings.DATABASE_ENGINE == 'sqlite3':
             # but since running sqlite is so useful for running tests
             # we use a hack
-            return self._manual_nearest_to(point, number=number, 
+            return self._manual_nearest_to(point, number=number,
                                            within_range=within_range,
                                            offset=offset,
                                            extra_where_sql=extra_where_sql)
-        
+
         cursor = connection.cursor()
         x, y = point # x=latitude, y=longitude
         table = self.model._meta.db_table
-        
-        
+
+
         if settings.DATABASE_ENGINE == 'mysql':
             if extra_where_sql:
                 extra_where_sql = 'WHERE\n\t' + extra_where_sql
-                
+
             template = Template("""
-                SELECT 
+                SELECT
                 gl.id,
                 ATAN2(
                     SQRT(
                     POW(COS(RADIANS($y)) *
                         SIN(RADIANS(gl.latitude - $x)), 2) +
                     POW(COS(RADIANS(gl.longitude)) * SIN(RADIANS($y)) -
-                        SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
-                        COS(RADIANS(gl.latitude - $x)), 2)), 
-                    (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) + 
-                    COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) * 
+                        SIN(RADIANS(gl.longitude)) * COS(RADIANS($y)) *
+                        COS(RADIANS(gl.latitude - $x)), 2)),
+                    (SIN(RADIANS(gl.longitude)) * SIN(RADIANS($y)) +
+                    COS(RADIANS(gl.longitude)) * COS(RADIANS($y)) *
                     COS(RADIANS(gl.latitude - $x)))
                     ) * 6372.795 AS distance
-                FROM 
+                FROM
                 $table gl
-                
+
                 %s
                 ORDER BY distance ASC
                 LIMIT $number
@@ -99,35 +99,35 @@ class DistanceManager(models.Manager):
                 ;
             """ % (extra_where_sql,))
             sql_string = template.substitute(locals())
-            
+
         else:
             # Postgres!
-    
+
             distance_clause = ''
             if within_range:
                 # do something
                 distance_clause = Template("""
-                miles_between_lat_long($x,$y, 
+                miles_between_lat_long($x,$y,
                                     gl.latitude::numeric, gl.longitude::numeric
                                     ) < %s
                 """ % within_range
                                         ).substitute(locals())
-                
+
             if extra_where_sql and distance_clause:
                 distance_clause = 'AND\n\t' + distance_clause
-            
+
             if extra_where_sql or distance_clause:
                 extra_where_sql = 'WHERE\n\t' + extra_where_sql
-                
-                
+
+
             template = Template("""
-                SELECT 
+                SELECT
                 gl.id,
                 miles_between_lat_long($x, $y,
                                     gl.latitude::numeric, gl.longitude::numeric
                                     ) AS distance
-    
-                FROM 
+
+                FROM
                 $table gl
                 %s
                 %s
@@ -137,10 +137,10 @@ class DistanceManager(models.Manager):
                 ;
             """ % (extra_where_sql, distance_clause))
             sql_string = template.substitute(locals())
-            
+
         cursor.execute(sql_string)
         nearbys = cursor.fetchall()
-        
+
         # get a list of primary keys of the nearby model objects
         ids = [p[0] for p in nearbys]
         # get a list of distances from the model objects
@@ -159,8 +159,8 @@ class DistanceManager(models.Manager):
                         sorted.append(obj)
             return sorted
         return zip(order_by(places, ids, 'id'), dists)
-    
-    
+
+
     def _manual_nearest_to(self, point, number=20, within_range=None, offset=0,
                            extra_where_sql=''):
         cursor = connection.cursor()
@@ -170,25 +170,25 @@ class DistanceManager(models.Manager):
         if extra_where_sql and not extra_where_sql.strip().lower().startswith('where'):
             extra_where_sql = "WHERE %s" % extra_where_sql
         template = Template("""
-            SELECT 
+            SELECT
             gl.id,
             gl.latitude,
             gl.longitude
-            FROM 
+            FROM
             $table gl
-            
+
             %s
             ;
         """ % (extra_where_sql,))
         sql_string = template.substitute(locals())
         cursor.execute(sql_string)
-        from math import sqrt 
+        from math import sqrt
         from geopy import distance as geopy_distance
         def distance(latitude, longitude):
             return geopy_distance.distance((point[0], point[1]), (latitude, longitude)).miles
 
         nearbys = []
-        
+
         for id, latitude, longitude in cursor.fetchall():
             d = distance(latitude, longitude)
             if within_range:
@@ -199,14 +199,14 @@ class DistanceManager(models.Manager):
         nearbys.sort()
         nearbys = nearbys[:number]
         return [[self.get(id=y), x] for (x,y) in nearbys]
-    
+
     def in_box(self, box):
         """ box is (left, upper, right, lower) """
         return self.filter(latitude__lt=box[0],
                            latitude__gt=box[2],
                            longitude__gt=box[1],
                            longitude__lt=box[3])
-    
+
 
 
 class CountryManager(models.Manager):
@@ -256,12 +256,12 @@ class Country(models.Model):
     bbox_north = models.FloatField()
     bbox_east = models.FloatField()
     bbox_south = models.FloatField()
-    
+
     # De-normalised
     num_people = models.IntegerField(default=0)
-    
+
     objects = CountryManager()
-    
+
     def top_regions(self):
         # Returns populated regions in order of population
         from django.db import connection
@@ -279,7 +279,7 @@ class Country(models.Model):
         #    GROUP BY djangopeople_kungfuperson.region_id
         #    ORDER BY peoplecount DESC
         #""" % self.id)
-        
+
         ## postgresql
         cursor.execute("""
             SELECT
@@ -293,7 +293,7 @@ class Country(models.Model):
             GROUP BY djangopeople_region.id
             ORDER BY peoplecount DESC
         """ % self.id)
-        
+
         rows = cursor.fetchall()
         found = Region.objects.in_bulk([r[0] for r in rows])
         regions = []
@@ -302,17 +302,17 @@ class Country(models.Model):
             region.peoplecount = row[1]
             regions.append(region)
         return regions
-    
+
     class Meta:
         ordering = ('name',)
         verbose_name_plural = 'Countries'
-    
+
     def __unicode__(self):
         return self.name
-    
+
     class Admin:
         pass
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("country", (self.iso_code.lower(),))
@@ -320,34 +320,34 @@ class Country(models.Model):
 class Region(models.Model):
     class Meta:
         ordering = ('name',)
-        
+
     code = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     country = models.ForeignKey(Country)
     flag = models.CharField(max_length=100, blank=True)
-    
+
 #    geoname_id = models.IntegerField()
     bbox_west = models.FloatField()
     bbox_north = models.FloatField()
     bbox_east = models.FloatField()
     bbox_south = models.FloatField()
-    
+
     # De-normalised
     num_people = models.IntegerField(default=0)
-    
+
     def get_absolute_url(self):
         return '/%s/%s/' % (self.country.iso_code.lower(), self.code.lower())
-    
+
     def __unicode__(self):
         return self.name
-    
-    
+
+
 
 class Club(models.Model):
     class Meta:
         verbose_name_plural = "Clubs"
         ordering = ('-date_added',)
-        
+
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200)
     url = models.URLField()
@@ -355,14 +355,14 @@ class Club(models.Model):
     logo = models.ImageField(blank=True, upload_to='clubs')
     date_added = models.DateTimeField('date added', default=datetime.now)
     clicks = models.IntegerField(default=0)
-    
+
     def __unicode__(self):
         return self.name
 
     def get_members(self):
         members = KungfuPerson.objects.filter(club_membership=self)
         return members
-        
+
     @models.permalink
     def get_absolute_url(self):
         if not self.slug:
@@ -372,13 +372,13 @@ class Club(models.Model):
             from utils import unaccent_string
             self.slug = slugify(unaccent_string(self.name))
             self.save()
-            
+
         return ("club.view", (self.slug,))
-    
+
 def _club_saved(sender, instance, created, **__):
     cache_key = 'clubs_recent_5'
     cache.delete(cache_key)
-    
+
 post_save.connect(_club_saved, sender=Club,
                   dispatch_uid="_club_saved")
 
@@ -386,7 +386,7 @@ class Style(models.Model):
     class Meta:
         verbose_name_plural = "Styles"
         ordering = ('-date_added',)
-        
+
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField()
     description = models.TextField()
@@ -396,7 +396,7 @@ class Style(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink 
+    @models.permalink
     def get_absolute_url(self):
         if not self.slug:
             # TODO: This is slow and shouldn't happen but will happen
@@ -406,21 +406,21 @@ class Style(models.Model):
             self.slug = slugify(unaccent_string(self.name[:50]))
             self.save()
         return ("style.view", (self.slug,))
-    
+
 def _style_saved(sender, instance, created, **__):
     cache_key = 'styles_recent_5'
     cache.delete(cache_key)
 post_save.connect(_style_saved, sender=Style,
                   dispatch_uid="_style_saved")
-    
+
 
 class DiaryEntry(models.Model):
     class Meta:
         verbose_name_plural = "Diary entries"
         ordering = ('-date_added',)
-        
+
     user = models.ForeignKey(User)
-    
+
     title = models.CharField(max_length=200)
     slug = models.SlugField()
     content = models.TextField()
@@ -433,9 +433,9 @@ class DiaryEntry(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     location_description = models.CharField(max_length=100)
-    
+
     objects = DistanceManager()
-    
+
     def __unicode__(self):
         return self.title
 
@@ -448,14 +448,14 @@ class DiaryEntry(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ("diaryentry.view", (self.user.username, self.slug))
-        
+
     def location_description_html(self):
         region = ''
         if self.region:
             region = '<a href="%s">%s</a>' % (
                 self.region.get_absolute_url(), self.region.name
             )
-            bits = self.location_description.split(', ')        
+            bits = self.location_description.split(', ')
             if len(bits) > 1 and bits[-1] == self.region.name:
                 bits[-1] = region
             else:
@@ -464,7 +464,7 @@ class DiaryEntry(models.Model):
             return mark_safe(', '.join(bits))
         else:
             return self.location_description
-        
+
     def get_photos(self):
         return Photo.objects.filter(diary_entry=self).order_by('-date_added')
 
@@ -480,7 +480,7 @@ def prowl_new_diary_entry(sender, instance, created, **__):
         except:
             logging.error("Unabled to prowl about new diary entry",
                           exc_info=True)
-        
+
 post_save.connect(prowl_new_diary_entry, sender=DiaryEntry,
                  dispatch_uid="prowl_new_diary_entry")
 
@@ -514,21 +514,21 @@ class Photo(models.Model):
 
     class Meta:
         verbose_name = "Photo"
-    
+
     def __repr__(self):
         return '<%s: %s %r>' % (self.__class__.__name__, self.photo.name, self.slug)
 
     @models.permalink
     def get_absolute_url(self):
         return ("photo.view", (self.user.username, self.id))
-        
+
     def location_description_html(self):
         region = ''
         if self.region:
             region = '<a href="%s">%s</a>' % (
                 self.region.get_absolute_url(), self.region.name
             )
-            bits = self.location_description.split(', ')        
+            bits = self.location_description.split(', ')
             if len(bits) > 1 and bits[-1] == self.region.name:
                 bits[-1] = region
             else:
@@ -549,12 +549,12 @@ def prowl_new_photo(sender, instance, created, **__):
         except:
             logging.error("Unabled to prowl about new photo",
                           exc_info=True)
-            
-        
+
+
 post_save.connect(prowl_new_photo, sender=Photo)
 
-    
-class Video(models.Model):   
+
+class Video(models.Model):
     user = models.ForeignKey(User)
     embed_src = models.TextField()
     title = models.CharField(max_length=250, blank=True)
@@ -563,7 +563,7 @@ class Video(models.Model):
     thumbnail_url = models.CharField(max_length=250, blank=True, null=True)
     date_added = models.DateTimeField('date added', default=datetime.now)
     approved = models.BooleanField(default=True)
-    
+
     class Meta:
         ordering = ('-date_added',)
 
@@ -572,7 +572,7 @@ class Video(models.Model):
 
     def get_content(self):
         return self.thumbnail_url
-        
+
     def __unicode__(self):
         return self.title
 
@@ -581,21 +581,21 @@ class Video(models.Model):
         return ("video.view", (self.user.username, self.id))
 
 
-    
+
 class AutoLoginKey(models.Model):
     """AutoLoginKey objects makes it possible for a user to log in
     automatically without supplying a password as long as they
     supply a valid uuid.
-    
+
     See the middleware for how this is being used
     """
     user = models.ForeignKey(User)
     uuid = models.CharField(max_length=128, db_index=True)
     date_added = models.DateTimeField('date added', default=datetime.now)
-    
+
     def __unicode__(self):
         return "%s (%s)" % (self.uuid, self.user.username)
-    
+
     @classmethod
     def get_or_create(self, user):
         try:
@@ -603,29 +603,29 @@ class AutoLoginKey(models.Model):
         except AutoLoginKey.DoesNotExist:
             return AutoLoginKey.objects.create(user=user,
                                                uuid=str(uuid.uuid4()))
-        
+
     @classmethod
     def find_user_by_uuid(self, uuid):
         try:
             return AutoLoginKey.objects.get(uuid=uuid).user
         except AutoLoginKey.DoesNotExist:
             return None
-        
-    
-    
-    
-    
-    
+
+
+
+
+
+
 class KungfuPerson(models.Model):
     class Meta:
         verbose_name_plural = 'Kung fu people'
 
-    
+
     NEWSLETTER_CHOICES = (('', 'Opt out'),
                           ('plain', 'Plain text'),
                           ('html', 'HTML'),
                           )
-    
+
     user = models.ForeignKey(User, unique=True)
     bio = models.TextField(blank=True)
     styles = models.ManyToManyField(Style)
@@ -638,10 +638,10 @@ class KungfuPerson(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     location_description = models.CharField(max_length=100)
-    
+
     # Profile photo
     photo = models.ImageField(blank=True, upload_to='profiles')
-    
+
     # default is 'html;, they can override that later if they want to unsubscribe
     # (possible values are ('', 'plain', 'html')
     newsletter = models.CharField(max_length=5, default='html',
@@ -652,16 +652,16 @@ class KungfuPerson(models.Model):
     # Stats
     profile_views = models.IntegerField(default=0)
     came_from = models.CharField(max_length=250, null=True, blank=True)
-    
+
     objects = DistanceManager()
 
     def __unicode__(self):
         return unicode(self.user.get_full_name())
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ("person.view", (self.user.username,))
-    
+
     def __repr__(self):
         return "<KungfuPerson: %r>" % self.user.username
 
@@ -674,13 +674,13 @@ class KungfuPerson(models.Model):
         #
         #print r
         #t0=time()
-        
-        
-        ##r = [p for (p, d) 
+
+
+        ##r = [p for (p, d)
         ##     in KungfuPerson.objects.nearest_to((self.longitude, self.latitude),
         ##                                        number=num, within_range=within_range,
         ##                                        extra_where_sql='id<>%s' % self.id)]
-        
+
         r = []
         people = KungfuPerson.objects.nearest_to((self.latitude, self.longitude),
                                                 number=num, within_range=within_range,
@@ -688,20 +688,20 @@ class KungfuPerson(models.Model):
         for person, distance_miles in people:
             person.distance_miles = distance_miles
             r.append(person)
-        
+
         #t1=time()
         #print "RESULT 2", (t1-t0)
         #print r
-        #     
+        #
         #print "\n"
-        
+
         return r
-    
+
     def _get_nearest(self, num=5):
         "Returns the nearest X people, but only within the same continent"
         raise DeprecatedError, " use KungfuPerson.objects.nearest_to() instead"
         # TODO: Add caching
-        
+
         people = list(self.country.kungfuperson_set.select_related().exclude(pk=self.id))
         if len(people) <= num:
             # Not enough in country; use people from the same continent instead
@@ -715,18 +715,18 @@ class KungfuPerson(models.Model):
                 (self.latitude, self.longitude),
                 (person.latitude, person.longitude)
             ).miles
-        
+
         # Return the nearest X
         people.sort(key=lambda x: x.distance_in_miles)
         return people[:num]
-    
+
     def location_description_html(self):
         region = ''
         if self.region:
             region = '<a href="%s">%s</a>' % (
                 self.region.get_absolute_url(), self.region.name
             )
-            bits = self.location_description.split(', ')        
+            bits = self.location_description.split(', ')
             if len(bits) > 1 and bits[-1] == self.region.name:
                 bits[-1] = region
             else:
@@ -735,33 +735,33 @@ class KungfuPerson(models.Model):
             return mark_safe(', '.join(bits))
         else:
             return self.location_description
-    
-    
+
+
     def save(self, force_insert=False, force_update=False, using=None): # TODO: Put in transaction
         # Update country and region counters
-        super(KungfuPerson, self).save(force_insert=force_insert, 
-                                       force_update=force_update, 
+        super(KungfuPerson, self).save(force_insert=force_insert,
+                                       force_update=force_update,
                                        using=using)
         self.country.num_people = self.country.kungfuperson_set.count()
         self.country.save()
         if self.region:
             self.region.num_people = self.region.kungfuperson_set.count()
             self.region.save()
-            
+
     def get_clubs(self):
         return self.club_membership.all()
-    
+
     def get_styles(self):
         return self.styles.all()
-    
+
     def get_person_upload_folder(self):
-        
+
         try:
             temporary_upload_folder_base = settings.TEMPORARY_UPLOAD_FOLDER
         except AttributeError:
             from tempfile import gettempdir
             temporary_upload_folder_base = gettempdir()
-            
+
         today = datetime.now()
         return os.path.join(temporary_upload_folder_base,
                             today.strftime('%Y'),
@@ -769,15 +769,15 @@ class KungfuPerson(models.Model):
                             self.user.username,
                             datetime.now().strftime('%d')
                         )
-    
+
     def get_person_thumbnail_folder(self):
-        return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails', 
+        return os.path.join(settings.MEDIA_ROOT, 'photos', 'upload-thumbnails',
                             self.user.username)
-    
+
     def get_photos(self):
         return Photo.objects.filter(user=self.user).order_by('-date_added').select_related()
-    
-    
+
+
     def get_same_club_people(self):
         """return a queryset of people who belong to the same club"""
         return []
@@ -816,7 +816,7 @@ def prowl_new_person(sender, instance, created, **__):
                 pass
             logging.error("Unabled to prowl about new person",
                           exc_info=True)
-            
+
 post_save.connect(prowl_new_person, sender=KungfuPerson)
 
 def _kungfuperson_saved(sender, instance, created, **__):
@@ -825,16 +825,16 @@ def _kungfuperson_saved(sender, instance, created, **__):
 post_save.connect(_kungfuperson_saved, sender=KungfuPerson,
                   dispatch_uid="_kungfuperson_saved")
 
-    
+
 class CountrySite(models.Model):
     "Community sites for various countries"
     title = models.CharField(max_length = 100)
     url = models.URLField(max_length = 255)
     country = models.ForeignKey(Country)
-    
+
     def __unicode__(self):
         return '%s <%s>' % (self.title, self.url)
-   
+
 
 
 class Recruitment(models.Model):
@@ -842,12 +842,12 @@ class Recruitment(models.Model):
     recruiter = models.ForeignKey(User, related_name='recruiter')
     recruited = models.ForeignKey(User, related_name='recruited')
     date_added = models.DateTimeField('date added', default=datetime.now)
-    
+
     def __unicode__(self):
         return u"%s recruited %s" % (self.recruiter, self.recruited)
-    
-    
-    
+
+
+
 from clever_cache import expire_page
 from django.core.urlresolvers import reverse
 
@@ -859,14 +859,14 @@ def reset_cached_pages(sender, instance, **kwargs):
         expire_page(reverse('zoom'))
     elif sender is Club:
         expire_page(reverse('clubs_all'))
-        
+
     if hasattr(instance, 'get_absolute_url'):
         url = instance.get_absolute_url()
         expire_page(url)
-        
+
     # expire the home page because of the little counters on it
     expire_page(reverse('index'))
-        
+
 post_save.connect(reset_cached_pages, sender=Video,
                   dispatch_uid="reset_cached_pages__Video")
 post_save.connect(reset_cached_pages, sender=KungfuPerson,

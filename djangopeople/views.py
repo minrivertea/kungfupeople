@@ -1231,7 +1231,6 @@ def profile(request, username):
                               (DiaryEntry, 'date_added')):
 
         for instance in model.objects.filter(user=person.user):
-
             latest.append(dict(
                                date=instance.date_added,
                                url=instance.get_absolute_url(),
@@ -1243,7 +1242,6 @@ def profile(request, username):
                                id=instance.id)
                                )
     latest_things = sorted(latest, reverse=True, key=lambda k: k['date'])[:10]
-
 
     return render(request, 'djangopeople/profile.html', locals())
 
@@ -2542,6 +2540,7 @@ def leave_site_confirm(request, username, days, hash):
         person = user.get_profile()
         person.delete()
         user.delete()
+        cache.clear()
         return HttpResponseRedirect(reverse('left_site'))
     else:
         return HttpResponse("Invalid link. Please start again.")
