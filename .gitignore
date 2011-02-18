@@ -16,3 +16,5 @@ rerun_tests.py
 sleeptime.conf
 *.sql.done
 kungfupeople.sql
+static/old_profiles/
+
