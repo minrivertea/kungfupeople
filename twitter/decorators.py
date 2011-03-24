@@ -2,7 +2,6 @@ from django.utils import simplejson
 
 from video.models import TwitterUser
 from utils import is_authenticated
-from utils import CONSUMER, CONNECTION
 
 import oauth
 
@@ -28,4 +27,3 @@ def twitter_auth(function):
             request.user = None
         return function(request, *args, **kwargs)
     return check_auth
-

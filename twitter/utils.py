@@ -3,7 +3,19 @@ import httplib
 from django.conf import settings
 
 CONSUMER = oauth.OAuthConsumer(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-CONNECTION = httplib.HTTPSConnection(settings.OAUTH_SERVER)
+#CONNECTION = httplib.HTTPSConnection(settings.OAUTH_SERVER)
+def create_connection():
+    """The reason for creating a new connection every time instead of having
+    one global connection is because httplib.HTTPSConnection and
+    httplib.HTTPConnection will raise a CannotSendRequest() error if you try
+    to start a new request on the connection before you have gotten the response
+    back out of the existing request.
+    Because we're using multiple uWSGI workers and using the RabbitMQ it's
+    quite plausable that one request get stuck and through another thread a
+    second request is commenced before the next one is read from.
+    """
+    return httplib.HTTPSConnection(settings.OAUTH_SERVER)
+
 SIGNATURE_METHOD = oauth.OAuthSignatureMethod_HMAC_SHA1()
 
 # No rate limit for the following 3 URLs
@@ -15,7 +27,9 @@ AUTHORIZATION_URL = 'http://%s/oauth/authorize' % settings.OAUTH_SERVER
 TWITTER_CHECK_AUTH = 'https://twitter.com/account/verify_credentials.json'
 
 
-def is_authenticated(access_token, consumer=CONSUMER, connection=CONNECTION):
+def is_authenticated(access_token, consumer=CONSUMER, connection=None):
+    if connection is None:
+        connection = create_connection()
     oauth_request = request_oauth_resource(TWITTER_CHECK_AUTH, access_token)
     json = fetch_response(oauth_request, connection=connection)
     if 'screen_name' in json:
@@ -34,7 +48,9 @@ def request_oauth_resource(url, access_token, parameters=None,
     oauth_request.sign_request(signature_method, consumer, access_token)
     return oauth_request
 
-def fetch_response(oauth_request, connection=CONNECTION):
+def fetch_response(oauth_request, connection=None):
+    if connection is None:
+        connection = create_connection()
     url = oauth_request.to_url()
     connection.request(oauth_request.http_method, url)
     response = connection.getresponse()

@@ -9,14 +9,14 @@ from djangopeople.models import KungfuPerson
 from models import TwitterUser
 from djangopeople.views import signup
 import oauth
-from twitter.utils import CONSUMER, CONNECTION
+from twitter.utils import CONSUMER, create_connection
 from twitter.utils import get_unauthorised_request_token, get_authorisation_url, \
         exchange_request_token_for_access_token, is_authenticated
 
 
 def auth(request):
     """Sends the user to twitter's auth page"""
-    token = get_unauthorised_request_token(CONSUMER, CONNECTION)
+    token = get_unauthorised_request_token(CONSUMER, create_connection())
     auth_url = get_authorisation_url(CONSUMER, token)
     response = HttpResponseRedirect(auth_url)
     request.session['unauthed_token'] = token.to_string()
@@ -35,7 +35,8 @@ def return_(request):
     token = oauth.OAuthToken.from_string(unauthed_token)
     if token.key != request.GET.get('oauth_token', 'no-token'):
         return HttpResponse("Something went wrong! Tokens do not match")
-    access_token = exchange_request_token_for_access_token(CONSUMER, CONNECTION, token)
+    access_token = exchange_request_token_for_access_token(
+      CONSUMER, create_connection(), token)
     request.session['access_token'] = access_token.to_string()
     # if the twitter user already exists and has a complete profile
     # redirect them to their profile page
@@ -73,7 +74,7 @@ def twitter_signup(request):
         except KungfuPerson.DoesNotExist:
             # proceed and sign up a full profile
             return signup(request, initial_user=user)
-        
+
         # XXX: At this point we could potentially redirect the user to say
         # to the user: _Your profile_ already exists. Do you want to create
         # a new account?
@@ -87,13 +88,13 @@ def twitter_signup(request):
             login(request, user)
         print "twitter user exists"
         return HttpResponseRedirect('/') # came_from?
-        
+
     except TwitterUser.DoesNotExist:
         # create a new user
         token = oauth.OAuthToken.from_string(access_token)
         auth = is_authenticated(token)
         if auth:
-            
+
             creds = simplejson.loads(auth)
             from pprint import pprint
             pprint(creds)
@@ -108,7 +109,7 @@ def twitter_signup(request):
                                            )
             TwitterUser.objects.create(user=user, token=access_token)
             return signup(request, initial_user=user)
-            
+
     return HttpResponse(request.session.get('access_token'))
 
 def reset_session(request):
