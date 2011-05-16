@@ -1,18 +1,19 @@
 import urllib
 import urllib2
+import logging
 import xml.etree.ElementTree as etree
 from cStringIO import StringIO
 
 def getGeolocationByIP(ip):
     query_args = {'ip':ip}
     encoded_args = urllib.urlencode(query_args)
-    
+
     url = 'http://ipinfodb.com/ip_query.php?' + encoded_args
     try:
         content = urllib2.urlopen(url).read()
     except urllib2.URLError, msg:
         raise urllib2.URLError(str(msg) + " URL trying to open: %s" % url)
-    
+
     t = etree.ElementTree().parse(StringIO(content))
     return {'country': t.find("CountryName").text or '',
             'country_code': t.find("CountryCode").text or '',
@@ -27,10 +28,14 @@ def getGeolocationByIP_cached(ip):
     cache_key = "iplookup_%s" % ip
     result = cache.get(cache_key)
     if result is None:
-        result = getGeolocationByIP(ip)
-        cache.set(cache_key, result)
+        try:
+            result = getGeolocationByIP(ip)
+            cache.set(cache_key, result)
+        except urllib.URLError:
+            logging.error("Unable to run getGeolocationByIP()", exc_info=True)
+            result = {'lat': 0, 'lng': 0}
     return result
-    
+
 
 
 def run_test(ip_addresses):
@@ -46,7 +51,7 @@ def run_test(ip_addresses):
         print "Lat:".ljust(20), data['lat']
         print "Long:".ljust(20), data['lng']
         print "Took:".ljust(20), (t1-t0), "seconds"
-        
+
     return 0
 if __name__=='__main__':
     import sys
