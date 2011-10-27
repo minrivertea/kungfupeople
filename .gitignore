@@ -1,3 +1,12 @@
+
+
+.gitignore
+.uwsgi.workers
+TODO.txt
+kill_djangopeople_fcgi.sh
+kungfupeople.local_googlemaps_api.key
+localhost_googlemaps_api.key
+README-nginx.txt
 local_settings.py
 .venv
 *.pyc
