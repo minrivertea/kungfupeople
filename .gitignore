@@ -17,4 +17,7 @@ sleeptime.conf
 *.sql.done
 kungfupeople.sql
 static/old_profiles/
-
+*.DS_Store
+prowl-peterbe.key
+localhost_googlemaps_api.key
+kungfupeople.local_googlemaps_api.key
