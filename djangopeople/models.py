@@ -422,7 +422,7 @@ class DiaryEntry(models.Model):
     user = models.ForeignKey(User)
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=200)
     content = models.TextField()
     date_added = models.DateTimeField('date added', default=datetime.now)
     is_public = models.BooleanField(default=True)
