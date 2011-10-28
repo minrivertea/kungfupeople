@@ -23,10 +23,10 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'kungfupeople'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'root'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'gumball'         # Not used with sqlite3.
+DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = ''             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
@@ -62,10 +62,10 @@ MEDIA_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'SECRET-KEY-GOES-HERE'
+SECRET_KEY = ''
 
 # Password used by the IRC bot for the API
-API_PASSWORD = 'API-PASSWORD-GOES-HERE'
+API_PASSWORD = ''
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -132,13 +132,9 @@ INSTALLED_APPS = (
     'twitter',
 )
 
-HOPTOAD_API_KEY = '0f57bc180f1bf1f3be224a24f5c52be7'
-
 MIGRATIONS_ROOT = os.path.join(OUR_ROOT, 'migrations')
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
-
-GOOGLE_ANALYTICS_TRACKER_ID = "" # set to something when you have set up an account
 
 OFFLINE_MODE = False
 
@@ -154,8 +150,6 @@ NEWSLETTER_HTML_TEMPLATE_BASE = "html_email_base.html"
 
 # Who sends the welcome email
 WELCOME_EMAIL_SENDER = NEWSLETTER_SENDER
-
-PROWL_API_KEY = open(os.path.join(OUR_ROOT, 'prowl-peterbe.key')).read().strip()
 
 CRASHKIT = None # enabled live
 
@@ -181,10 +175,6 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-
-OAUTH_SERVER = 'twitter.com'
-CONSUMER_KEY = 'nLHRls0R8oiaEm8HsNwWCg'
-CONSUMER_SECRET = 'Zr6dlwTU6RAt55IjVErsn2MfnKcAjvZ07ihXkVaWyVA'
 
 # Anonymous view renderings are cached for an hour
 USE_CACHE_PAGE = True
