@@ -31,7 +31,7 @@ def getGeolocationByIP_cached(ip):
         try:
             result = getGeolocationByIP(ip)
             cache.set(cache_key, result)
-        except urllib.URLError:
+        except urllib2.URLError:
             logging.error("Unable to run getGeolocationByIP()", exc_info=True)
             result = {'lat': 0, 'lng': 0}
     return result
